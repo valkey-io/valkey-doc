@@ -1,6 +1,6 @@
-# Redis documentation
+# PlaceHolderKV documentation
 
-OPEN SOURCE LICENSE VS. TRADEMARKS. The three-clause BSD license gives you the right to redistribute and use the software in source and binary forms, with or without modification, under certain conditions. However, open source licenses like the three-clause BSD license do not address trademarks. For further details please read the [Redis Trademark Policy](https://www.redis.com/legal/trademark-policy)."
+OPEN SOURCE LICENSE VS. TRADEMARKS. The three-clause BSD license gives you the right to redistribute and use the software in source and binary forms, with or without modification, under certain conditions. However, open source licenses like the three-clause BSD license do not address trademarks.
 
 ## Clients
 
@@ -10,13 +10,13 @@ The path follows the pattern: ``clients/{language}/github.com/{owner}/{repositor
 The ``{language}`` component of the path is the path-safe representation
 of the full language name which is mapped in [languages.json](./languages.json).
 
-Each client's JSON object represents the details displayed on the [clients documentation page](https://redis.io/docs/clients).
+Each client's JSON object represents the details displayed on the [clients documentation page](https://placeholderkv.io/docs/clients).
 
-For example [clients/python/github.com/redis](./clients/python/github.com/redis/redis-py.json):
+For example [clients/python/github.com/placeholderkv](./clients/python/github.com/placeholderkv/placeholderkv-py.json):
 
 ```
 {
-    "name": "redis-py",
+    "name": "placeholderkv-py",
     "description": "Mature and supported. Currently the way to go for Python.",
     "recommended": true
 }
@@ -24,10 +24,10 @@ For example [clients/python/github.com/redis](./clients/python/github.com/redis/
 
 ## Commands
 
-Redis commands are described in the `commands.json` file that is auto generated
-from the Redis repo based on the JSON files in the commands folder.
-See: https://github.com/redis/redis/tree/unstable/src/commands
-See: https://github.com/redis/redis/tree/unstable/utils/generate-commands-json.py
+PlaceHolderKV commands are described in the `commands.json` file that is auto generated
+from the placeholderkv repo based on the JSON files in the commands folder.
+See: https://github.com/placeholderkv/placeholderkv/tree/unstable/src/commands
+See: https://github.com/placeholderkv/placeholderkv/tree/unstable/utils/generate-commands-json.py
 
 For each command there's a Markdown file with a complete, human-readable
 description.
@@ -38,7 +38,7 @@ into account:
     backticks.
     For example: `INCR`.
 
-*   You can use some magic keywords to name common elements in Redis.
+*   You can use some magic keywords to name common elements in PlaceHolderKV.
     For example: `@multi-bulk-reply`.
     These keywords will get expanded and auto-linked to relevant parts of the
     documentation.
@@ -68,24 +68,22 @@ when processed, produce Markdown content. Here's an example:
 links for the reply type. Note: do not use `@reply-type` specifiers; use only the Markdown link.
 
 ```md
-@simple-string-reply: [Simple string reply](https://redis.io/docs/reference/protocol-spec#simple-strings)
-@simple-error-reply: [Simple error reply](https://redis.io/docs/reference/protocol-spec#simple-errors)
-@integer-reply: [Integer reply](https://redis.io/docs/reference/protocol-spec#integers)
-@bulk-string-reply: [Bulk string reply](https://redis.io/docs/reference/protocol-spec#bulk-strings)
-@array-reply: [Array reply](https://redis.io/docs/reference/protocol-spec#arrays)
-@nil-reply: [Nil reply](https://redis.io/docs/reference/protocol-spec#bulk-strings)
-@null-reply: [Null reply](https://redis.io/docs/reference/protocol-spec#nulls)
-@boolean-reply: [Boolean reply](https://redis.io/docs/reference/protocol-spec#booleans)
-@double-reply: [Double reply](https://redis.io/docs/reference/protocol-spec#doubles)
-@big-number-reply: [Big number reply](https://redis.io/docs/reference/protocol-spec#big-numbers)
-@bulk-error-reply: [Bulk error reply](https://redis.io/docs/reference/protocol-spec#bulk-errors)
-@verbatim-string-reply: [Verbatim string reply](https://redis.io/docs/reference/protocol-spec#verbatim-strings)
-@map-reply: [Map reply](https://redis.io/docs/reference/protocol-spec#maps)
-@set-reply: [Set reply](https://redis.io/docs/reference/protocol-spec#sets)
-@push-reply: [Push reply](https://redis.io/docs/reference/protocol-spec#pushes)
+@simple-string-reply: [Simple string reply](https://placeholderkv.io/docs/reference/protocol-spec#simple-strings)
+@simple-error-reply: [Simple error reply](https://placeholderkv.io/docs/reference/protocol-spec#simple-errors)
+@integer-reply: [Integer reply](https://placeholderkv.io/docs/reference/protocol-spec#integers)
+@bulk-string-reply: [Bulk string reply](https://placeholderkv.io/docs/reference/protocol-spec#bulk-strings)
+@array-reply: [Array reply](https://placeholderkv.io/docs/reference/protocol-spec#arrays)
+@nil-reply: [Nil reply](https://placeholderkv.io/docs/reference/protocol-spec#bulk-strings)
+@null-reply: [Null reply](https://placeholderkv.io/docs/reference/protocol-spec#nulls)
+@boolean-reply: [Boolean reply](https://placeholderkv.io/docs/reference/protocol-spec#booleans)
+@double-reply: [Double reply](https://placeholderkv.io/docs/reference/protocol-spec#doubles)
+@big-number-reply: [Big number reply](https://placeholderkv.io/docs/reference/protocol-spec#big-numbers)
+@bulk-error-reply: [Bulk error reply](https://placeholderkv.io/docs/reference/protocol-spec#bulk-errors)
+@verbatim-string-reply: [Verbatim string reply](https://placeholderkv.io/docs/reference/protocol-spec#verbatim-strings)
+@map-reply: [Map reply](https://placeholderkv.io/docs/reference/protocol-spec#maps)
+@set-reply: [Set reply](https://placeholderkv.io/docs/reference/protocol-spec#sets)
+@push-reply: [Push reply](https://placeholderkv.io/docs/reference/protocol-spec#pushes)
 ```
-
-**Note:** RESP3 return schemas are not currently included in the `resp2/resp3_replies.json` files for Redis Stack modules.
 
 ## Styling guidelines
 
