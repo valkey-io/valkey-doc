@@ -14,4 +14,4 @@ The following information is provided for each of the libraries in the response:
   * **flags:** an array of [function flags](/docs/manual/programmability/functions-intro/#function-flags).
 * **library_code:** the library's source code (when given the `WITHCODE` modifier).
 
-For more information please refer to [Introduction to Redis Functions](/topics/functions-intro).
+For more information please refer to [Introduction to Valkey Functions](/topics/functions-intro).

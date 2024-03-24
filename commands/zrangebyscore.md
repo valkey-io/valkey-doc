@@ -3,7 +3,7 @@ and `max` (including elements with score equal to `min` or `max`).
 The elements are considered to be ordered from low to high scores.
 
 The elements having the same score are returned in lexicographical order (this
-follows from a property of the sorted set implementation in Redis and does not
+follows from a property of the sorted set implementation in Valkey and does not
 involve further computation).
 
 The optional `LIMIT` argument can be used to only get a range of the matching

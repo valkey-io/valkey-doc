@@ -1,7 +1,7 @@
-In Redis Cluster, each node keeps track of which master is serving
+In Valkey Cluster, each node keeps track of which master is serving
 a particular hash slot.
 
-The `CLUSTER DELSLOTS` command asks a particular Redis Cluster node to
+The `CLUSTER DELSLOTS` command asks a particular Valkey Cluster node to
 forget which master is serving the hash slots specified as arguments.
 
 In the context of a node that has received a `CLUSTER DELSLOTS` command and
@@ -35,9 +35,9 @@ The following command removes the association for slots 5000 and
     > CLUSTER DELSLOTS 5000 5001
     OK
 
-## Usage in Redis Cluster
+## Usage in Valkey Cluster
 
 This command only works in cluster mode and may be useful for
 debugging and in order to manually orchestrate a cluster configuration
-when a new cluster is created. It is currently not used by `redis-cli`,
+when a new cluster is created. It is currently not used by `valkey-cli`,
 and mainly exists for API completeness.

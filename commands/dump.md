@@ -1,6 +1,6 @@
-Serialize the value stored at key in a Redis-specific format and return it to
+Serialize the value stored at key in a Valkey-specific format and return it to
 the user.
-The returned value can be synthesized back into a Redis key using the `RESTORE`
+The returned value can be synthesized back into a Valkey key using the `RESTORE`
 command.
 
 The serialization format is opaque and non-standard, however it has a few
@@ -11,7 +11,7 @@ semantic characteristics:
   The `RESTORE` command makes sure to check the checksum before synthesizing a
   key using the serialized value.
 * Values are encoded in the same format used by RDB.
-* An RDB version is encoded inside the serialized value, so that different Redis
+* An RDB version is encoded inside the serialized value, so that different Valkey
   versions with incompatible RDB formats will refuse to process the serialized
   value.
 

@@ -10,7 +10,7 @@ By default, this option is set to `5`. To sample the all of the nested values, u
 
 @examples
 
-With Redis v7.2.0 64-bit and **jemalloc**, the empty string measures as follows:
+With Valkey v7.2.4 64-bit and **jemalloc**, the empty string measures as follows:
 
 ```
 > SET "" ""

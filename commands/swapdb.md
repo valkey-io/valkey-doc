@@ -1,4 +1,4 @@
-This command swaps two Redis databases, so that immediately all the
+This command swaps two Valkey databases, so that immediately all the
 clients connected to a given database will see the data of the other database, and
 the other way around. Example:
 

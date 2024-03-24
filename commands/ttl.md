@@ -1,5 +1,5 @@
 Returns the remaining time to live of a key that has a timeout.
-This introspection capability allows a Redis client to check how many seconds a
+This introspection capability allows a Valkey client to check how many seconds a
 given key will continue to be part of the dataset.
 
 In Redis 2.6 or older the command returns `-1` if the key does not exist or if the key exist but has no associated expire.

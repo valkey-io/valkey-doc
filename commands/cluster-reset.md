@@ -1,4 +1,4 @@
-Reset a Redis Cluster node, in a more or less drastic way depending on the
+Reset a Valkey Cluster node, in a more or less drastic way depending on the
 reset type, that can be **hard** or **soft**. Note that this command
 **does not work for masters if they hold one or more keys**, in that case
 to completely reset a master node keys must be removed first, e.g. by using `FLUSHALL` first,
@@ -13,9 +13,9 @@ Effects on the node:
 5. **Hard reset only**: `currentEpoch` and `configEpoch` vars are set to 0.
 6. The new configuration is persisted on disk in the node cluster configuration file.
 
-This command is mainly useful to re-provision a Redis Cluster node
+This command is mainly useful to re-provision a Valkey Cluster node
 in order to be used in the context of a new, different cluster. The command
-is also extensively used by the Redis Cluster testing framework in order to
+is also extensively used by the Valkey Cluster testing framework in order to
 reset the state of the cluster every time a new test unit is executed.
 
 If no reset type is specified, the default is **soft**.

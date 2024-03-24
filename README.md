@@ -1,6 +1,9 @@
-# Redis documentation
+# Valkey documentation
 
 ## Clients
+
+**Important**:  Clients listed here, while fully compatible with Valkey, are not official clients for Valkey.
+They are maintained by their original developers.
 
 All clients are listed under language specific sub-folders of [clients](./clients)
 
@@ -8,7 +11,7 @@ The path follows the pattern: ``clients/{language}/github.com/{owner}/{repositor
 The ``{language}`` component of the path is the path-safe representation
 of the full language name which is mapped in [languages.json](./languages.json).
 
-Each client's JSON object represents the details displayed on the [clients documentation page](https://redis.io/docs/clients).
+Each client's JSON object represents the details displayed on the [clients documentation page](https://valkey.io/docs/clients).
 
 For example [clients/python/github.com/redis](./clients/python/github.com/redis/redis-py.json):
 
@@ -22,10 +25,10 @@ For example [clients/python/github.com/redis](./clients/python/github.com/redis/
 
 ## Commands
 
-Redis commands are described in the `commands.json` file that is auto generated
-from the Redis repo based on the JSON files in the commands folder.
-See: https://github.com/redis/redis/tree/unstable/src/commands
-See: https://github.com/redis/redis/tree/unstable/utils/generate-commands-json.py
+Valkey commands are described in the `commands.json` file that is auto generated
+from the Valkey repo based on the JSON files in the commands folder.
+See: https://github.com/valkey-io/valkey/tree/unstable/src/commands
+See: https://github.com/valkey-io/valkey/tree/unstable/utils/generate-commands-json.py
 
 For each command there's a Markdown file with a complete, human-readable
 description.
@@ -36,7 +39,7 @@ into account:
     backticks.
     For example: `INCR`.
 
-*   You can use some magic keywords to name common elements in Redis.
+*   You can use some magic keywords to name common elements in Valkey.
     For example: `@multi-bulk-reply`.
     These keywords will get expanded and auto-linked to relevant parts of the
     documentation.
@@ -50,7 +53,7 @@ Regarding the return values, these are contained in the files:
 Each file is a dictionary with a matching set of keys. Each key is an array of strings that,
 when processed, produce Markdown content. Here's an example:
 
-```
+```json
 {
   ...
   "ACL CAT": [
@@ -65,25 +68,25 @@ when processed, produce Markdown content. Here's an example:
 **Important**: when adding or editing return values, be sure to edit both files. Use the following
 links for the reply type. Note: do not use `@reply-type` specifiers; use only the Markdown link.
 
-```md
-@simple-string-reply: [Simple string reply](https://redis.io/docs/reference/protocol-spec#simple-strings)
-@simple-error-reply: [Simple error reply](https://redis.io/docs/reference/protocol-spec#simple-errors)
-@integer-reply: [Integer reply](https://redis.io/docs/reference/protocol-spec#integers)
-@bulk-string-reply: [Bulk string reply](https://redis.io/docs/reference/protocol-spec#bulk-strings)
-@array-reply: [Array reply](https://redis.io/docs/reference/protocol-spec#arrays)
-@nil-reply: [Nil reply](https://redis.io/docs/reference/protocol-spec#bulk-strings)
-@null-reply: [Null reply](https://redis.io/docs/reference/protocol-spec#nulls)
-@boolean-reply: [Boolean reply](https://redis.io/docs/reference/protocol-spec#booleans)
-@double-reply: [Double reply](https://redis.io/docs/reference/protocol-spec#doubles)
-@big-number-reply: [Big number reply](https://redis.io/docs/reference/protocol-spec#big-numbers)
-@bulk-error-reply: [Bulk error reply](https://redis.io/docs/reference/protocol-spec#bulk-errors)
-@verbatim-string-reply: [Verbatim string reply](https://redis.io/docs/reference/protocol-spec#verbatim-strings)
-@map-reply: [Map reply](https://redis.io/docs/reference/protocol-spec#maps)
-@set-reply: [Set reply](https://redis.io/docs/reference/protocol-spec#sets)
-@push-reply: [Push reply](https://redis.io/docs/reference/protocol-spec#pushes)
-```
+**Important**: all links below are under construction.
 
-**Note:** RESP3 return schemas are not currently included in the `resp2/resp3_replies.json` files for Redis Stack modules.
+```md
+@simple-string-reply: [Simple string reply](https://valkey.io/docs/reference/protocol-spec#simple-strings)
+@simple-error-reply: [Simple error reply](https://valkey.io/docs/reference/protocol-spec#simple-errors)
+@integer-reply: [Integer reply](https://valkey.io/docs/reference/protocol-spec#integers)
+@bulk-string-reply: [Bulk string reply](https://valkey.io/docs/reference/protocol-spec#bulk-strings)
+@array-reply: [Array reply](https://valkey.io/docs/reference/protocol-spec#arrays)
+@nil-reply: [Nil reply](https://valkey.io/docs/reference/protocol-spec#bulk-strings)
+@null-reply: [Null reply](https://valkey.io/docs/reference/protocol-spec#nulls)
+@boolean-reply: [Boolean reply](https://valkey.io/docs/reference/protocol-spec#booleans)
+@double-reply: [Double reply](https://valkey.io/docs/reference/protocol-spec#doubles)
+@big-number-reply: [Big number reply](https://valkey.io/docs/reference/protocol-spec#big-numbers)
+@bulk-error-reply: [Bulk error reply](https://valkey.io/docs/reference/protocol-spec#bulk-errors)
+@verbatim-string-reply: [Verbatim string reply](https://valkey.io/docs/reference/protocol-spec#verbatim-strings)
+@map-reply: [Map reply](https://valkey.io/docs/reference/protocol-spec#maps)
+@set-reply: [Set reply](https://valkey.io/docs/reference/protocol-spec#sets)
+@push-reply: [Push reply](https://valkey.io/docs/reference/protocol-spec#pushes)
+```
 
 ## Styling guidelines
 
@@ -92,13 +95,14 @@ Please use the following formatting rules (aiming for smaller diffs that are eas
 * No need for manual lines wrapping at any specific length,
   doing so usually means that adding a word creates a cascade effect and changes other lines.
 * Please avoid writing lines that are too long,
-  this makes the diff harder to review when only one word is changed. 
+  this makes the diff harder to review when only one word is changed.
 * Start every sentence on a new line.
 
 
 ## Checking your work
 
-After making changes to the documentation, you can use the [spellchecker-cli package](https://www.npmjs.com/package/spellchecker-cli) to validate your spelling as well as some minor grammatical errors. You can install the spellchecker locally by running:
+After making changes to the documentation, you can use the [spellchecker-cli package](https://www.npmjs.com/package/spellchecker-cli)
+to validate your spelling as well as some minor grammatical errors. You can install the spellchecker locally by running:
 
 ```bash
 npm install --global spellchecker-cli

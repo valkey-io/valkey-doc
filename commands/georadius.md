@@ -35,7 +35,7 @@ By default the command returns the items to the client. It is possible to store 
 
 ## Read-only variants
 
-Since `GEORADIUS` and `GEORADIUSBYMEMBER` have a `STORE` and `STOREDIST` option they are technically flagged as writing commands in the Redis command table. For this reason read-only replicas will flag them, and Redis Cluster replicas will redirect them to the master instance even if the connection is in read-only mode (see the `READONLY` command of Redis Cluster).
+Since `GEORADIUS` and `GEORADIUSBYMEMBER` have a `STORE` and `STOREDIST` option they are technically flagged as writing commands in the Valkey command table. For this reason read-only replicas will flag them, and Valkey Cluster replicas will redirect them to the master instance even if the connection is in read-only mode (see the `READONLY` command of Valkey Cluster).
 
 Breaking the compatibility with the past was considered but rejected, at least for Redis 4.0, so instead two read-only variants of the commands were added. They are exactly like the original commands but refuse the `STORE` and `STOREDIST` options. The two variants are called `GEORADIUS_RO` and `GEORADIUSBYMEMBER_RO`, and can safely be used in replicas.
 

@@ -2,7 +2,7 @@ Returns all keys matching `pattern`.
 
 While the time complexity for this operation is O(N), the constant times are
 fairly low.
-For example, Redis running on an entry level laptop can scan a 1 million key
+For example, Valkey running on an entry level laptop can scan a 1 million key
 database in 40 milliseconds.
 
 **Warning**: consider `KEYS` as a command that should only be used in production
@@ -26,11 +26,11 @@ Supported glob-style patterns:
 
 Use `\` to escape special characters if you want to match them verbatim.
 
-When using [Redis Cluster](/docs/management/scaling/), the search is optimized for patterns that imply a single slot.
+When using [Valkey Cluster](/docs/management/scaling/), the search is optimized for patterns that imply a single slot.
 If a pattern can only match keys of one slot,
-Redis only iterates over keys in that slot, rather than the whole database,
+Valkey only iterates over keys in that slot, rather than the whole database,
 when searching for keys matching the pattern.
-For example, with the pattern `{a}h*llo`, Redis would only try to match it with the keys in slot 15495, which hash tag `{a}` implies.
+For example, with the pattern `{a}h*llo`, Valkey would only try to match it with the keys in slot 15495, which hash tag `{a}` implies.
 To use pattern with hash tag, see [Hash tags](/docs/reference/cluster-spec/#hash-tags) in the Cluster specification for more information.
 
 @examples

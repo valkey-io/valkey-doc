@@ -2,14 +2,14 @@ Removes the specified entries from a stream, and returns the number of entries
 deleted.  This number may be less than the number of IDs passed to the command in
 the case where some of the specified IDs do not exist in the stream.
 
-Normally you may think at a Redis stream as an append-only data structure,
-however Redis streams are represented in memory, so we are also able to 
+Normally you may think at a Valkey stream as an append-only data structure,
+however Valkey streams are represented in memory, so we are also able to 
 delete entries. This may be useful, for instance, in order to comply with
 certain privacy policies.
 
 ## Understanding the low level details of entries deletion
 
-Redis streams are represented in a way that makes them memory efficient:
+Valkey streams are represented in a way that makes them memory efficient:
 a radix tree is used in order to index macro-nodes that pack linearly tens
 of stream entries. Normally what happens when you delete an entry from a stream
 is that the entry is not *really* evicted, it just gets marked as deleted.
@@ -21,7 +21,7 @@ entries appended to the stream, the memory usage per entry may increment, since
 what happens is that the stream will become fragmented. However the stream
 performance will remain the same.
 
-In future versions of Redis it is possible that we'll trigger a node garbage
+In future versions of Valkey it is possible that we'll trigger a node garbage
 collection in case a given macro-node reaches a given amount of deleted
 entries. Currently with the usage we anticipate for this data structure, it is
 not a good idea to add such complexity.

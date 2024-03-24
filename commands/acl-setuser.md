@@ -1,7 +1,7 @@
 Create an ACL user with the specified rules or modify the rules of an
 existing user. 
 
-Manipulate Redis ACL users interactively.
+Manipulate Valkey ACL users interactively.
 If the username does not exist, the command creates the username without any privilege.
 It then reads from left to right all the [rules](#acl-rules) provided as successive arguments, setting the user ACL rules as specified.
 If the user already exists, the provided ACL rules are simply applied
@@ -49,8 +49,8 @@ The following documentation is a reference manual about the capabilities of this
 
 ## ACL rules
 
-Redis ACL rules are split into two categories: rules that define command permissions or _command rules_, and rules that define the user state or _user management rules_.
-This is a list of all the supported Redis ACL rules:
+Valkey ACL rules are split into two categories: rules that define command permissions or _command rules_, and rules that define the user state or _user management rules_.
+This is a list of all the supported Valkey ACL rules:
 
 ### Command rules
 
@@ -77,7 +77,7 @@ This is a list of all the supported Redis ACL rules:
 * `off`: Set user as not active, it will be impossible to log as this user. Please note that if a user gets disabled (set to off) after there are connections already authenticated with such a user, the connections will continue to work as expected. To also kill the old connections you can use `CLIENT KILL` with the user option. An alternative is to delete the user with `ACL DELUSER`, that will result in all the connections authenticated as the deleted user to be disconnected.
 * `nopass`: The user is set as a _no password_ user. It means that it will be possible to authenticate as such user with any password. By default, the `default` special user is set as "nopass". The `nopass` rule will also reset all the configured passwords for the user.
 * `>password`: Adds the specified clear text password as a hashed password in the list of the users passwords. Every user can have many active passwords, so that password rotation will be simpler. The specified password is not stored as clear text inside the server. Example: `>mypassword`.
-* `#<hashedpassword>`: Adds the specified hashed password to the list of user passwords. A Redis hashed password is hashed with SHA256 and translated into a hexadecimal string. Example: `#c3ab8ff13720e8ad9047dd39466b3c8974e592c2fa383d4a3960714caef0c4f2`.
+* `#<hashedpassword>`: Adds the specified hashed password to the list of user passwords. A Valkey hashed password is hashed with SHA256 and translated into a hexadecimal string. Example: `#c3ab8ff13720e8ad9047dd39466b3c8974e592c2fa383d4a3960714caef0c4f2`.
 * `<password`: Like `>password` but removes the password instead of adding it.
 * `!<hashedpassword>`: Like `#<hashedpassword>` but removes the password instead of adding it.
 * `(<rule list>)`: (Available in Redis 7.0 and later) Creates a new selector to match rules against. Selectors are evaluated after the user permissions, and are evaluated according to the order they are defined. If a command matches either the user permissions or any selector, it is allowed. See [selectors](/docs/management/security/acl#selectors) for more information.

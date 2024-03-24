@@ -27,7 +27,7 @@ Depending on the strategy, exact trimming means:
 Nearly exact trimming
 ---
 
-Because exact trimming may require additional effort from the Redis server, the optional `~` argument can be provided to make it more efficient.
+Because exact trimming may require additional effort from the Valkey server, the optional `~` argument can be provided to make it more efficient.
 
 For example:
 
@@ -36,7 +36,7 @@ XTRIM mystream MAXLEN ~ 1000
 ```
 
 The `~` argument between the `MAXLEN` strategy and the `threshold` means that the user is requesting to trim the stream so its length is **at least** the `threshold`, but possibly slightly more.
-In this case, Redis will stop trimming early when performance can be gained (for example, when a whole macro node in the data structure can't be removed).
+In this case, Valkey will stop trimming early when performance can be gained (for example, when a whole macro node in the data structure can't be removed).
 This makes trimming much more efficient, and it is usually what you want, although after trimming, the stream may have few tens of additional entries over the `threshold`.
 
 Another way to control the amount of work done by the command when using the `~`, is the `LIMIT` clause. 

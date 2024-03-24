@@ -1,5 +1,5 @@
 The `CONFIG GET` command is used to read the configuration parameters of a
-running Redis server.
+running Valkey server.
 Not all the configuration parameters are supported in Redis 2.4, while Redis 2.6
 can read the whole configuration of a server using this command.
 
@@ -12,7 +12,7 @@ of key-value pairs.
 Example:
 
 ```
-redis> config get *max-*-entries* maxmemory
+valkey> config get *max-*-entries* maxmemory
  1) "maxmemory"
  2) "0"
  3) "hash-max-listpack-entries"
@@ -28,13 +28,13 @@ redis> config get *max-*-entries* maxmemory
 ```
 
 You can obtain a list of all the supported configuration parameters by typing
-`CONFIG GET *` in an open `redis-cli` prompt.
+`CONFIG GET *` in an open `valkey-cli` prompt.
 
 All the supported parameters have the same meaning of the equivalent
-configuration parameter used in the [redis.conf][hgcarr22rc] file:
+configuration parameter used in the [valkey.conf][hgcarr22rc] file:
 
-[hgcarr22rc]: http://github.com/redis/redis/raw/unstable/redis.conf
+[hgcarr22rc]: http://github.com/valkey-io/valkey/raw/unstable/valkey.conf
 
-Note that you should look at the redis.conf file relevant to the version you're
+Note that you should look at the valkey.conf file relevant to the version you're
 working with as configuration options might change between versions. The link
 above is to the latest development version.

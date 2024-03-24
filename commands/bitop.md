@@ -40,7 +40,7 @@ documentation.
 Different bitmaps can be combined in order to obtain a target bitmap where
 the population counting operation is performed.
 
-See the article called "[Fast easy realtime metrics using Redis
+See the article called "[Fast easy realtime metrics using Valkey
 bitmaps][hbgc212fermurb]" for an interesting use cases.
 
 [hbgc212fermurb]: http://blog.getspool.com/2011/11/29/fast-easy-realtime-metrics-using-redis-bitmaps

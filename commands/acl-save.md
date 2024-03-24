@@ -1,4 +1,4 @@
-When Redis is configured to use an ACL file (with the `aclfile` configuration
+When Valkey is configured to use an ACL file (with the `aclfile` configuration
 option), this command will save the currently defined ACLs from the server memory to the ACL file.
 
 @examples

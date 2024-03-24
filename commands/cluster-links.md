@@ -1,4 +1,4 @@
-Each node in a Redis Cluster maintains a pair of long-lived TCP link with each peer in the cluster: One for sending outbound messages towards the peer and one for receiving inbound messages from the peer.
+Each node in a Valkey Cluster maintains a pair of long-lived TCP link with each peer in the cluster: One for sending outbound messages towards the peer and one for receiving inbound messages from the peer.
 
 `CLUSTER LINKS` outputs information of all such peer links as an array, where each array element is a map that contains attributes and their values for an individual link.
 

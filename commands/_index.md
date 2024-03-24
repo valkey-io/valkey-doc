@@ -1,4 +1,4 @@
 ---
-title: "Redis Commands"
+title: "Valkey Commands"
 linkTitle: "Commands"
 ---

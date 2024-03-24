@@ -6,7 +6,7 @@ period between latency spikes, the median deviation, and a human-readable
 analysis of the event. For certain events, like `fork`, additional information
 is provided, like the rate at which the system forks processes.
 
-This is the output you should post in the Redis mailing list if you are
+This is the output you should post in the Valkey mailing list if you are
 looking for help about Latency related issues.
 
 @examples
@@ -14,7 +14,7 @@ looking for help about Latency related issues.
 ```
 127.0.0.1:6379> latency doctor
 
-Dave, I have observed latency spikes in this Redis instance.
+Dave, I have observed latency spikes in this Valkey instance.
 You don't mind talking about it, do you Dave?
 
 1. command: 5 latency spikes (average 300ms, mean deviation 120ms,

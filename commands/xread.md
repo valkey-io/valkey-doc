@@ -4,7 +4,7 @@ This command has an option to block if items are not available, in a similar
 fashion to `BRPOP` or `BZPOPMIN` and others.
 
 Please note that before reading this page, if you are new to streams,
-we recommend to read [our introduction to Redis Streams](/topics/streams-intro).
+we recommend to read [our introduction to Valkey Streams](/topics/streams-intro).
 
 ## Non-blocking usage
 
@@ -134,7 +134,7 @@ get a copy of the data, unlike to what happens when blocking list pop
 operations are used.
 
 In order to block, the **BLOCK** option is used, together with the number
-of milliseconds we want to block before timing out. Normally Redis blocking
+of milliseconds we want to block before timing out. Normally Valkey blocking
 commands take timeouts in seconds, however this command takes a millisecond
 timeout, even if normally the server will have a timeout resolution near
 to 0.1 seconds. This time it is possible to block for a shorter time in
@@ -189,7 +189,7 @@ Blocking list operations on lists or sorted sets have a *pop* behavior.
 Basically, the element is removed from the list or sorted set in order
 to be returned to the client. In this scenario you want the items
 to be consumed in a fair way, depending on the moment clients blocked
-on a given key arrived. Normally Redis uses the FIFO semantics in this
+on a given key arrived. Normally Valkey uses the FIFO semantics in this
 use cases.
 
 However note that with streams this is not a problem: stream entries
@@ -197,6 +197,6 @@ are not removed from the stream when clients are served, so every
 client waiting will be served as soon as an `XADD` command provides
 data to the stream.
 
-Reading the [Redis Streams introduction](/topics/streams-intro) is highly
+Reading the [Valkey Streams introduction](/topics/streams-intro) is highly
 suggested in order to understand more about the streams overall behavior
 and semantics.

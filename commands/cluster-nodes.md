@@ -1,10 +1,10 @@
-Each node in a Redis Cluster has its view of the current cluster configuration,
+Each node in a Valkey Cluster has its view of the current cluster configuration,
 given by the set of known nodes, the state of the connection we have with such
 nodes, their flags, properties and assigned slots, and so forth.
 
 `CLUSTER NODES` provides all this information, that is, the current cluster
 configuration of the node we are contacting, in a serialization format which
-happens to be exactly the same as the one used by Redis Cluster itself in
+happens to be exactly the same as the one used by Valkey Cluster itself in
 order to store on disk the cluster state (however the on disk cluster state
 has a few additional info appended at the end).
 
@@ -12,7 +12,7 @@ Note that normally clients willing to fetch the map between Cluster
 hash slots and node addresses should use `CLUSTER SLOTS` instead.
 `CLUSTER NODES`, that provides more information, should be used for
 administrative tasks, debugging, and configuration inspections.
-It is also used by `redis-cli` in order to manage a cluster.
+It is also used by `valkey-cli` in order to manage a cluster.
 
 ## Serialization format
 
@@ -81,7 +81,7 @@ as already explained above:
 
 However node hash slots can be in a special state, used in order to communicate errors after a node restart (mismatch between the keys in the AOF/RDB file, and the node hash slots configuration), or when there is a resharding operation in progress. This two states are **importing** and **migrating**.
 
-The meaning of the two states is explained in the Redis Specification, however the gist of the two states is the following:
+The meaning of the two states is explained in the Valkey Specification, however the gist of the two states is the following:
 
 * **Importing** slots are yet not part of the nodes hash slot, there is a migration in progress. The node will accept queries about these slots only if the `ASK` command is used.
 * **Migrating** slots are assigned to the node, but are being migrated to some other node. The node will accept queries if all the keys in the command exist already, otherwise it will emit what is called an **ASK redirection**, to force new keys creation directly in the importing node.
@@ -105,4 +105,4 @@ Note that:
 1. Migration and importing slots are only added to the node flagged as `myself`. This information is local to a node, for its own slots.
 2. Importing and migrating slots are provided as **additional info**. If the node has a given hash slot assigned, it will be also a plain number in the list of hash slots, so clients that don't have a clue about hash slots migrations can just skip this special fields.
 
-**A note about the word slave used in this man page and command name**: Starting with Redis 5, if not for backward compatibility, the Redis project no longer uses the word slave. Unfortunately in this command the word slave is part of the protocol, so we'll be able to remove such occurrences only when this API will be naturally deprecated.
+**A note about the word slave used in this man page and command name**: If not for backward compatibility, the Valkey project no longer uses the word slave. Unfortunately in this command the word slave is part of the protocol, so we'll be able to remove such occurrences only when this API will be naturally deprecated.

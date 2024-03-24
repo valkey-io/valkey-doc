@@ -1,4 +1,4 @@
-When Redis is configured to use an ACL file (with the `aclfile` configuration
+When Valkey is configured to use an ACL file (with the `aclfile` configuration
 option), this command will reload the ACLs from the file, replacing all
 the current ACL rules with the ones defined in the file. The command makes
 sure to have an *all or nothing* behavior, that is:

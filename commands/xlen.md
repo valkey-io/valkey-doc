@@ -1,6 +1,6 @@
 Returns the number of entries inside a stream. If the specified key does not
 exist the command returns zero, as if the stream was empty.
-However note that unlike other Redis types, zero-length streams are
+However note that unlike other Valkey types, zero-length streams are
 possible, so you should call `TYPE` or `EXISTS` in order to check if
 a key exists or not.
 

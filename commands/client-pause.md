@@ -1,4 +1,4 @@
-`CLIENT PAUSE` is a connections control command able to suspend all the Redis clients for the specified amount of time (in milliseconds).
+`CLIENT PAUSE` is a connections control command able to suspend all the Valkey clients for the specified amount of time (in milliseconds).
 
 The command performs the following actions:
 
@@ -18,7 +18,7 @@ For the `WRITE` mode, some commands have special behavior:
 * `PFCOUNT`: Will block client.
 * `WAIT`: Acknowledgments will be delayed, so this command will appear blocked.
 
-This command is useful as it makes able to switch clients from a Redis instance to another one in a controlled way. For example during an instance upgrade the system administrator could do the following:
+This command is useful as it makes able to switch clients from a Valkey instance to another one in a controlled way. For example during an instance upgrade the system administrator could do the following:
 
 * Pause the clients using `CLIENT PAUSE`
 * Wait a few seconds to make sure the replicas processed the latest replication stream from the master.

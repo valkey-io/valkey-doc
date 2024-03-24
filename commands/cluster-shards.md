@@ -5,7 +5,7 @@ It is possible for a shard to not be serving any slots while still having replic
 
 This command replaces the `CLUSTER SLOTS` command, by providing a more efficient and extensible representation of the cluster. 
 
-The command is suitable to be used by Redis Cluster client libraries in order to understand the topology of the cluster.
+The command is suitable to be used by Valkey Cluster client libraries in order to understand the topology of the cluster.
 A client should issue this command on startup in order to retrieve the map associating cluster *hash slots* with actual node information.
 This map should be used to direct commands to the node that is likely serving the slot associated with a given command.
 In the event the command is sent to the wrong node, in that it received a '-MOVED' redirect, this command can then be used to update the topology of the cluster.
@@ -43,7 +43,7 @@ The current list of attributes:
 
 The endpoint, along with the port, defines the location that clients should use to send requests for a given slot.
 A NULL value for the endpoint indicates the node has an unknown endpoint and the client should connect to the same endpoint it used to send the `CLUSTER SHARDS` command but with the port returned from the command.
-This unknown endpoint configuration is useful when the Redis nodes are behind a load balancer that Redis doesn't know the endpoint of.
+This unknown endpoint configuration is useful when the Valkey nodes are behind a load balancer that Valkey doesn't know the endpoint of.
 Which endpoint is set is determined by the `cluster-preferred-endpoint-type` config.
 An empty string `""` is another abnormal value of the endpoint field, as well as for the ip field, which is returned if the node doesn't know its own IP address.
 This can happen in a cluster that consists of only one node or the node has not yet been joined with the rest of the cluster.

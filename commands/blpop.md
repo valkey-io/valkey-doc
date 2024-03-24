@@ -42,7 +42,7 @@ specified keys.
 
 * If the client tries to blocks for multiple keys, but at least one key contains elements, the returned key / element pair is the first key from left to right that has one or more elements. In this case the client is not blocked. So for instance `BLPOP key1 key2 key3 key4 0`, assuming that both `key2` and `key4` are non-empty, will always return an element from `key2`.
 * If multiple clients are blocked for the same key, the first client to be served is the one that was waiting for more time (the first that blocked for the key). Once a client is unblocked it does not retain any priority, when it blocks again with the next call to `BLPOP` it will be served accordingly to the number of clients already blocked for the same key, that will all be served before it (from the first to the last that blocked).
-* When a client is blocking for multiple keys at the same time, and elements are available at the same time in multiple keys (because of a transaction or a Lua script added elements to multiple lists), the client will be unblocked using the first key that received a push operation (assuming it has enough elements to serve our client, as there may be other clients as well waiting for this key). Basically after the execution of every command Redis will run a list of all the keys that received data AND that have at least a client blocked. The list is ordered by new element arrival time, from the first key that received data to the last. For every key processed, Redis will serve all the clients waiting for that key in a FIFO fashion, as long as there are elements in this key. When the key is empty or there are no longer clients waiting for this key, the next key that received new data in the previous command / transaction / script is processed, and so forth.
+* When a client is blocking for multiple keys at the same time, and elements are available at the same time in multiple keys (because of a transaction or a Lua script added elements to multiple lists), the client will be unblocked using the first key that received a push operation (assuming it has enough elements to serve our client, as there may be other clients as well waiting for this key). Basically after the execution of every command Valkey will run a list of all the keys that received data AND that have at least a client blocked. The list is ordered by new element arrival time, from the first key that received data to the last. For every key processed, Valkey will serve all the clients waiting for that key in a FIFO fashion, as long as there are elements in this key. When the key is empty or there are no longer clients waiting for this key, the next key that received new data in the previous command / transaction / script is processed, and so forth.
 
 ## Behavior of `!BLPOP` when multiple elements are pushed inside a list.
 
@@ -85,11 +85,11 @@ If you like science fiction, think of time flowing at infinite speed inside a
 @examples
 
 ```
-redis> DEL list1 list2
+valkey> DEL list1 list2
 (integer) 0
-redis> RPUSH list1 a b c
+valkey> RPUSH list1 a b c
 (integer) 3
-redis> BLPOP list1 list2 0
+valkey> BLPOP list1 list2 0
 1) "list1"
 2) "a"
 ```
@@ -105,7 +105,7 @@ This can be a problem with some application where we want a more reliable messag
 Using blocking list operations it is possible to mount different blocking
 primitives.
 For instance for some application you may need to block waiting for elements
-into a Redis Set, so that as far as a new element is added to the Set, it is
+into a Valkey Set, so that as far as a new element is added to the Set, it is
 possible to retrieve it without resort to polling.
 This would require a blocking version of `SPOP` that is not available, but using
 blocking list operations we can easily accomplish this task.

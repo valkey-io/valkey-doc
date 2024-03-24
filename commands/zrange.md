@@ -25,7 +25,7 @@ Out of range indexes do not produce an error.
 
 If `<start>` is greater than either the end index of the sorted set or `<stop>`, an empty list is returned.
 
-If `<stop>` is greater than the end index of the sorted set, Redis will use the last element of the sorted set.
+If `<stop>` is greater than the end index of the sorted set, Valkey will use the last element of the sorted set.
 
 ## Score ranges
 

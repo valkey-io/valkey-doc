@@ -1,10 +1,10 @@
-Enables read queries for a connection to a Redis Cluster replica node. 
+Enables read queries for a connection to a Valkey Cluster replica node. 
 
 Normally replica nodes will redirect clients to the authoritative master for
 the hash slot involved in a given command, however clients can use replicas
 in order to scale reads using the `READONLY` command.
 
-`READONLY` tells a Redis Cluster replica node that the client is willing to
+`READONLY` tells a Valkey Cluster replica node that the client is willing to
 read possibly stale data and is not interested in running write queries.
 
 When the connection is in readonly mode, the cluster will send a redirection

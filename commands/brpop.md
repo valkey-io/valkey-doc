@@ -13,11 +13,11 @@ the tail of a list instead of popping from the head.
 @examples
 
 ```
-redis> DEL list1 list2
+valkey> DEL list1 list2
 (integer) 0
-redis> RPUSH list1 a b c
+valkey> RPUSH list1 a b c
 (integer) 3
-redis> BRPOP list1 list2 0
+valkey> BRPOP list1 list2 0
 1) "list1"
 2) "c"
 ```

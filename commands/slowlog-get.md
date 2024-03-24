@@ -1,6 +1,6 @@
 The `SLOWLOG GET` command returns entries from the slow log in chronological order.
 
-The Redis Slow Log is a system to log queries that exceeded a specified execution time.
+The Valkey Slow Log is a system to log queries that exceeded a specified execution time.
 The execution time does not include I/O operations like talking with the client, sending the reply and so forth, but just the time needed to actually execute the command (this is the only stage of command execution where the thread is blocked and can not serve other requests in the meantime).
 
 A new entry is added to the slow log whenever a command exceeds the execution time threshold defined by the `slowlog-log-slower-than` configuration directive.
@@ -18,5 +18,5 @@ Each entry from the slow log is comprised of the following six values:
 6. Client name if set via the `CLIENT SETNAME` command.
 
 The entry's unique ID can be used in order to avoid processing slow log entries multiple times (for instance you may have a script sending you an email alert for every new slow log entry).
-The ID is never reset in the course of the Redis server execution, only a server
+The ID is never reset in the course of the Valkey server execution, only a server
 restart will reset it.
