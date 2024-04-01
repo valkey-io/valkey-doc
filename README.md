@@ -1,4 +1,4 @@
-# PlaceHolderKV documentation
+# Valkey documentation
 
 ## Clients
 
@@ -8,13 +8,13 @@ The path follows the pattern: ``clients/{language}/github.com/{owner}/{repositor
 The ``{language}`` component of the path is the path-safe representation
 of the full language name which is mapped in [languages.json](./languages.json).
 
-Each client's JSON object represents the details displayed on the [clients documentation page](https://placeholderkv.io/docs/clients).
+Each client's JSON object represents the details displayed on the [clients documentation page](https://valkey.io/docs/clients).
 
-For example [clients/python/github.com/placeholderkv](./clients/python/github.com/placeholderkv/placeholderkv-py.json):
+For example [clients/python/github.com/valkey](./clients/python/github.com/valkey/valkey-py.json):
 
 ```
 {
-    "name": "placeholderkv-py",
+    "name": "valkey-py",
     "description": "Mature and supported. Currently the way to go for Python.",
     "recommended": true
 }
@@ -22,10 +22,10 @@ For example [clients/python/github.com/placeholderkv](./clients/python/github.co
 
 ## Commands
 
-PlaceHolderKV commands are described in the `commands.json` file that is auto generated
-from the PlaceHolderKV repo based on the JSON files in the commands folder.
-See: https://github.com/placeholderkv/placeholderkv/tree/unstable/src/commands
-See: https://github.com/placeholderkv/placeholderkv/placeholderkv/unstable/utils/generate-commands-json.py
+Valkey commands are described in the `commands.json` file that is auto generated
+from the Valkey repo based on the JSON files in the commands folder.
+See: https://github.com/valkey/valkey/tree/unstable/src/commands
+See: https://github.com/valkey/valkey/valkey/unstable/utils/generate-commands-json.py
 
 For each command there's a Markdown file with a complete, human-readable
 description.
@@ -36,7 +36,7 @@ into account:
     backticks.
     For example: `INCR`.
 
-*   You can use some magic keywords to name common elements in PlaceHolderKV.
+*   You can use some magic keywords to name common elements in Valkey.
     For example: `@multi-bulk-reply`.
     These keywords will get expanded and auto-linked to relevant parts of the
     documentation.
@@ -66,21 +66,21 @@ when processed, produce Markdown content. Here's an example:
 links for the reply type. Note: do not use `@reply-type` specifiers; use only the Markdown link.
 
 ```md
-@simple-string-reply: [Simple string reply](https://placeholderkv.io/docs/reference/protocol-spec#simple-strings)
-@simple-error-reply: [Simple error reply](https://placeholderkv.io/docs/reference/protocol-spec#simple-errors)
-@integer-reply: [Integer reply](https://placeholderkv.io/docs/reference/protocol-spec#integers)
-@bulk-string-reply: [Bulk string reply](https://placeholderkv.io/docs/reference/protocol-spec#bulk-strings)
-@array-reply: [Array reply](https://placeholderkv.io/docs/reference/protocol-spec#arrays)
-@nil-reply: [Nil reply](https://placeholderkv.io/docs/reference/protocol-spec#bulk-strings)
-@null-reply: [Null reply](https://placeholderkv.io/docs/reference/protocol-spec#nulls)
-@boolean-reply: [Boolean reply](https://placeholderkv.io/docs/reference/protocol-spec#booleans)
-@double-reply: [Double reply](https://placeholderkv.io/docs/reference/protocol-spec#doubles)
-@big-number-reply: [Big number reply](https://placeholderkv.io/docs/reference/protocol-spec#big-numbers)
-@bulk-error-reply: [Bulk error reply](https://placeholderkv.io/docs/reference/protocol-spec#bulk-errors)
-@verbatim-string-reply: [Verbatim string reply](https://placeholderkv.io/docs/reference/protocol-spec#verbatim-strings)
-@map-reply: [Map reply](https://placeholderkv.io/docs/reference/protocol-spec#maps)
-@set-reply: [Set reply](https://placeholderkv.io/docs/reference/protocol-spec#sets)
-@push-reply: [Push reply](https://placeholderkv.io/docs/reference/protocol-spec#pushes)
+@simple-string-reply: [Simple string reply](https://valkey.io/docs/reference/protocol-spec#simple-strings)
+@simple-error-reply: [Simple error reply](https://valkey.io/docs/reference/protocol-spec#simple-errors)
+@integer-reply: [Integer reply](https://valkey.io/docs/reference/protocol-spec#integers)
+@bulk-string-reply: [Bulk string reply](https://valkey.io/docs/reference/protocol-spec#bulk-strings)
+@array-reply: [Array reply](https://valkey.io/docs/reference/protocol-spec#arrays)
+@nil-reply: [Nil reply](https://valkey.io/docs/reference/protocol-spec#bulk-strings)
+@null-reply: [Null reply](https://valkey.io/docs/reference/protocol-spec#nulls)
+@boolean-reply: [Boolean reply](https://valkey.io/docs/reference/protocol-spec#booleans)
+@double-reply: [Double reply](https://valkey.io/docs/reference/protocol-spec#doubles)
+@big-number-reply: [Big number reply](https://valkey.io/docs/reference/protocol-spec#big-numbers)
+@bulk-error-reply: [Bulk error reply](https://valkey.io/docs/reference/protocol-spec#bulk-errors)
+@verbatim-string-reply: [Verbatim string reply](https://valkey.io/docs/reference/protocol-spec#verbatim-strings)
+@map-reply: [Map reply](https://valkey.io/docs/reference/protocol-spec#maps)
+@set-reply: [Set reply](https://valkey.io/docs/reference/protocol-spec#sets)
+@push-reply: [Push reply](https://valkey.io/docs/reference/protocol-spec#pushes)
 ```
 
 ## Styling guidelines
@@ -102,7 +102,7 @@ After making changes to the documentation, you can use the [spellchecker-cli pac
 npm install --global spellchecker-cli
 ```
 
-You can than validate your spelling by running the following
+You can then validate your spelling by running the following
 
 ```
 spellchecker --no-suggestions -f '**/*.md' -l en-US -q -d wordlist
