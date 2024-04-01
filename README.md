@@ -102,7 +102,7 @@ After making changes to the documentation, you can use the [spellchecker-cli pac
 npm install --global spellchecker-cli
 ```
 
-You can than validate your spelling by running the following
+You can then validate your spelling by running the following
 
 ```
 spellchecker --no-suggestions -f '**/*.md' -l en-US -q -d wordlist
