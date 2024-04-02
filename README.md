@@ -24,8 +24,8 @@ For example [clients/python/github.com/valkey](./clients/python/github.com/valke
 
 Valkey commands are described in the `commands.json` file that is auto generated
 from the Valkey repo based on the JSON files in the commands folder.
-See: https://github.com/valkey/valkey/tree/unstable/src/commands
-See: https://github.com/valkey/valkey/valkey/unstable/utils/generate-commands-json.py
+See: https://github.com/valkey-io/valkey/tree/unstable/src/commands
+See: https://github.com/valkey-io/valkey/tree/unstable/utils/generate-commands-json.py
 
 For each command there's a Markdown file with a complete, human-readable
 description.
