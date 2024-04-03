@@ -13,11 +13,11 @@ of the full language name which is mapped in [languages.json](./languages.json).
 
 Each client's JSON object represents the details displayed on the [clients documentation page](https://valkey.io/docs/clients).
 
-For example [clients/python/github.com/redis](./clients/python/github.com/redis/redis-py.json):
+For example [clients/python/github.com/placeholderkv](./clients/python/github.com/placeholderkv/placeholderkv-py.json):
 
 ```
 {
-    "name": "redis-py",
+    "name": "placeholderkv-py",
     "description": "Mature and supported. Currently the way to go for Python.",
     "recommended": true
 }
