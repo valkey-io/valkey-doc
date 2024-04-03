@@ -80,8 +80,7 @@ In this particular case, running a single `MONITOR` client can reduce the
 throughput by more than 50%.
 Running more `MONITOR` clients will reduce throughput even more.
 
-## Behavior change history
-
-*   `>= 6.0.0`: `AUTH` excluded from the command's output.
-*   `>= 6.2.0`: "`RESET` can be called to exit monitor mode.
-*   `>= 6.2.4`: "`AUTH`, `HELLO`, `EVAL`, `EVAL_RO`, `EVALSHA` and `EVALSHA_RO` included in the command's output.
+Note that, 
+*  `AUTH` is excluded from the command's output.
+*  `RESET` can be called to exit monitor mode.
+*  `AUTH`, `HELLO`, `EVAL`, `EVAL_RO`, `EVALSHA` and `EVALSHA_RO` are included in the command's output.

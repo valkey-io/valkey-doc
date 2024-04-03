@@ -25,16 +25,10 @@ This command is useful as it makes able to switch clients from a Valkey instance
 * Turn one of the replicas into a master.
 * Reconfigure clients to connect with the new master.
 
-Since Redis 6.2, the recommended mode for client pause is `WRITE`. This mode will stop all replication traffic, can be
+The recommended mode for client pause is `WRITE`. This mode will stop all replication traffic, can be
 aborted with the `CLIENT UNPAUSE` command, and allows reconfiguring the old master without risking accepting writes after the
 failover. This is also the mode used during cluster failover.
 
-For versions before 6.2, it is possible to send `CLIENT PAUSE` in a MULTI/EXEC block together with the `INFO replication` command in order to get the current master offset at the time the clients are blocked. This way it is possible to wait for a specific offset in the replica side in order to make sure all the replication stream was processed.
-
-Since Redis 3.2.10 / 4.0.0, this command also prevents keys to be evicted or
-expired during the time clients are paused. This way the dataset is guaranteed
-to be static not just from the point of view of clients not being able to write, but also from the point of view of internal operations.
-
-## Behavior change history
-
-*   `>= 3.2.0`: Client pause prevents client pause and key eviction as well.
+This command also prevents keys to be evicted or expired during the time clients are paused.
+This way the dataset is guaranteed to be static not just from the point of view of clients not being able to write,
+but also from the point of view of internal operations.

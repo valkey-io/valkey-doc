@@ -50,20 +50,14 @@ There are times when a list can receive multiple elements in the context of the 
 
 * Variadic push operations such as `LPUSH mylist a b c`.
 * After an `EXEC` of a `MULTI` block with multiple push operations against the same list.
-* Executing a Lua Script with Redis 2.6 or newer.
+* Executing a Lua Script.
 
-When multiple elements are pushed inside a list where there are clients blocking, the behavior is different for Redis 2.4 and Redis 2.6 or newer.
-
-For Redis 2.6 what happens is that the command performing multiple pushes is executed, and *only after* the execution of the command the blocked clients are served. Consider this sequence of commands.
+What happens is that the command performing multiple pushes is executed, and *only after* the execution of the command the blocked clients are served. Consider this sequence of commands.
 
     Client A:   BLPOP foo 0
     Client B:   LPUSH foo a b c
 
 If the above condition happens using a Redis 2.6 server or greater, Client **A** will be served with the `c` element, because after the `LPUSH` command the list contains `c,b,a`, so taking an element from the left means to return `c`.
-
-Instead Redis 2.4 works in a different way: clients are served *in the context* of the push operation, so as long as `LPUSH foo a b c` starts pushing the first element to the list, it will be delivered to the Client **A**, that will receive `a` (the first element pushed).
-
-The behavior of Redis 2.4 creates a lot of problems when replicating or persisting data into the AOF file, so the much more generic and semantically simpler behavior was introduced into Redis 2.6 to prevent problems.
 
 Note that for the same reason a Lua script or a `MULTI/EXEC` block may push elements into a list and afterward **delete the list**. In this case the blocked clients will not be served at all and will continue to be blocked as long as no data is present on the list after the execution of a single command, transaction, or script.
 

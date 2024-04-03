@@ -4,11 +4,7 @@ It is like the original `BITFIELD` but only accepts `!GET` subcommand and can sa
 Since the original `BITFIELD` has `!SET` and `!INCRBY` options it is technically flagged as a writing command in the Valkey command table.
 For this reason read-only replicas in a Valkey Cluster will redirect it to the master instance even if the connection is in read-only mode (see the `READONLY` command of Valkey Cluster).
 
-Since Redis 6.2, the `BITFIELD_RO` variant was introduced in order to allow `BITFIELD` behavior in read-only replicas without breaking compatibility on command flags.
-
 See original `BITFIELD` for more details.
-
-@examples
 
 ```
 BITFIELD_RO hello GET i8 16

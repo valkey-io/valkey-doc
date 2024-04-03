@@ -31,7 +31,7 @@ SORT mylist ALPHA
 ```
 
 Valkey is UTF-8 aware, assuming you correctly set the `!LC_COLLATE` environment
-variable.
+variable or the `locale-collate` config.
 
 The number of returned elements can be limited using the `!LIMIT` modifier.
 This modifier takes the `offset` argument, specifying the number of elements to
@@ -111,7 +111,7 @@ Starting from 8.0, pattern with hash tag can be mapped to a slot, and so in Valk
 
 To use pattern with hash tag, see [Hash tags](/docs/reference/cluster-spec/#hash-tags) for more information.
 
-Starting from Redis 7.0, any use of `GET` or `BY` which reference external key pattern will only be allowed in case the current user running the command has full key read permissions.
+Any use of `GET` or `BY` which reference external key pattern will only be allowed in case the current user running the command has full key read permissions.
 Full key read permissions can be set for the user by, for example, specifying `'%R~*'` or `'~*` with the relevant command access rules.
 You can check the `ACL SETUSER` command manual for more information on setting ACL access rules.
 If full key read permissions aren't set, the command will fail with an error.

@@ -57,11 +57,7 @@ The second command will not have any problem to execute since the AOF is no long
 
 ## Minimize the risk of data loss
 
-Since Redis 7.0, the server waits for lagging replicas up to a configurable `shutdown-timeout`, by default 10 seconds, before shutting down.
+The server waits for lagging replicas up to a configurable `shutdown-timeout`, by default 10 seconds, before shutting down.
 This provides a best effort minimizing the risk of data loss in a situation where no save points are configured and AOF is disabled.
 Before version 7.0, shutting down a heavily loaded master node in a diskless setup was more likely to result in data loss.
 To minimize the risk of data loss in such setups, it's advised to trigger a manual `FAILOVER` (or `CLUSTER FAILOVER`) to demote the master to a replica and promote one of the replicas to be the new master, before shutting down a master node.
-
-## Behavior change history
-
-*   `>= 7.0.0`: Introduced waiting for lagging replicas before exiting.

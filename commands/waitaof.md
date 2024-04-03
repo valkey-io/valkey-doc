@@ -33,7 +33,7 @@ However, `WAITAOF` does improve real-world data safety.
 Implementation details
 ---
 
-Since Redis 7.2, Valkey tracks and increments the replication offset even when no replicas are configured (as long as AOF exists).
+Valkey tracks and increments the replication offset even when no replicas are configured (as long as AOF exists).
 
 In addition, Valkey replicas asynchronously ping their master with two replication offsets: the offset they have processed in the replication stream, and the offset they have fsynced to their AOF.
 

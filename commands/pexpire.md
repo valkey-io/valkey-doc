@@ -3,7 +3,7 @@ specified in milliseconds instead of seconds.
 
 ## Options
 
-The `PEXPIRE` command supports a set of options since Redis 7.0:
+The `PEXPIRE` command supports a set of options
 
 * `NX` -- Set expiry only when the key has no expiry
 * `XX` -- Set expiry only when the key has an existing expiry

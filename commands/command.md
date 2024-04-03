@@ -25,10 +25,10 @@ The exact number of elements in the array depends on the server's version.
 1. First key
 1. Last key
 1. Step
-1. [ACL categories][ta] (as of Redis 6.0)
-1. [Tips][tb] (as of Redis 7.0)
-1. [Key specifications][td] (as of Redis 7.0)
-1. Subcommands (as of Redis 7.0)
+1. [ACL categories][ta]
+1. [Tips][tb]
+1. [Key specifications][td]
+1. Subcommands
 
 ## Name
 
@@ -73,13 +73,11 @@ Command flags are an array. It can contain the following simple strings (status 
 * **no_multi:** the command isn't allowed inside the context of a [transaction](/topics/transactions).
 * **noscript:** the command can't be called from [scripts](/topics/eval-intro) or [functions](/topics/functions-intro).
 * **pubsub:** the command is related to [Valkey Pub/Sub](/topics/pubsub).
-* **random**: the command returns random results, which is a concern with verbatim script replication.
-  As of Redis 7.0, this flag is a [command tip][tb].
+* **random**: the command returns random results, which is a concern with verbatim script replication. This flag is a [command tip][tb].
 * **readonly:** the command doesn't modify data.
 * **sort_for_script:** the command's output is sorted when called from a script.
 * **skip_monitor:** the command is not shown in `MONITOR`'s output.
-* **skip_slowlog:** the command is not shown in `SLOWLOG`'s output.
-  As of Redis 7.0, this flag is a [command tip][tb].
+* **skip_slowlog:** the command is not shown in `SLOWLOG`'s output. This flag is a [command tip][tb].
 * **stale:** the command is allowed while a replica has stale data.
 * **write:** the command may modify data.
 
@@ -112,7 +110,7 @@ Valkey Cluster clients need to use other measures, as follows, to locate the key
 
 You can use the `COMMAND GETKEYS` command and have your Valkey server report all keys of a given command's invocation.
 
-As of Redis 7.0, clients can use the [key specifications](#key-specifications) to identify the positions of key names.
+Clients can use the [key specifications](#key-specifications) to identify the positions of key names.
 The only commands that require using `COMMAND GETKEYS` are `SORT` and `MIGRATE` for clients that parse keys' specifications.
 
 For more information, please refer to the [key specifications page][tr].

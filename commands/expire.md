@@ -112,10 +112,7 @@ The key time to live can be updated or entirely removed using the `EXPIRE` and
 
 ## Expire accuracy
 
-In Redis 2.4 the expire might not be pin-point accurate, and it could be between
-zero to one seconds out.
-
-Since Redis 2.6 the expire error is from 0 to 1 milliseconds.
+The expire error is from 0 to 1 milliseconds.
 
 ## Expires and persistence
 

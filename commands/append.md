@@ -28,7 +28,7 @@ Accessing individual elements in the time series is not hard:
 * `GETRANGE` allows for random access of elements.
   If our time series have associated time information we can easily implement
   a binary search to get range combining `GETRANGE` with the Lua scripting
-  engine available in Redis 2.6.
+  engine.
 * `SETRANGE` can be used to overwrite an existing time series.
 
 The limitation of this pattern is that we are forced into an append-only mode

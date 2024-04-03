@@ -1,21 +1,20 @@
 Switch to a different protocol, optionally authenticating and setting the
 connection's name, or provide a contextual client report.
 
-Valkey supports two protocols: the old protocol, RESP2, and
-a new one introduced with Valkey 6, RESP3. RESP3 has certain advantages since
+Valkey supports two protocols: RESP2 and RESP3. RESP3 has certain advantages since
 when the connection is in this mode, Valkey is able to reply with more semantical
 replies: for instance, `HGETALL` will return a *map type*, so a client library
 implementation no longer requires to know in advance to translate the array into
 a hash before returning it to the caller. For a full coverage of RESP3, please
 check the [RESP3 specification](https://github.com/redis/redis-specifications/blob/master/protocol/RESP3.md).
 
-In Valkey 6 connections start in RESP2 mode, so clients implementing RESP2 do
+Valkey connections start in RESP2 mode, so clients implementing RESP2 do
 not need to updated or changed. There are no short term plans to drop support for
 RESP2, although future version may default to RESP3.
 
 `HELLO` always replies with a list of current server and connection properties,
 such as: versions, modules loaded, client ID, replication role and so forth.
-When called without any arguments in Redis 6.2 and its default use of RESP2
+When called without any arguments and its default use of RESP2
 protocol, the reply looks like this:
 
     > HELLO
