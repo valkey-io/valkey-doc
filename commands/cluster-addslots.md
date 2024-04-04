@@ -24,10 +24,10 @@ are already assigned:
     > CLUSTER ADDSLOTS 1 2 3
     ERR Slot 1 is already busy
 
-## Usage in Redis Cluster
+## Usage in Valkey Cluster
 
 This command only works in cluster mode and is useful in the following
-Redis Cluster operations:
+Valkey Cluster operations:
 
 1. To create a new `cluster ADDSLOTS` is used in order to initially setup master nodes splitting the available hash slots among them.
 2. In order to fix a broken cluster where certain slots are unassigned.
@@ -42,6 +42,6 @@ node advertising the new hash slot, is greater than the node currently listed
 in the table.
 
 This means that this command should be used with care only by applications
-orchestrating Redis Cluster, like `redis-cli`, and the command if used
+orchestrating Valkey Cluster, like `valkey-cli`, and the command if used
 out of the right context can leave the cluster in a wrong state or cause
 data loss.

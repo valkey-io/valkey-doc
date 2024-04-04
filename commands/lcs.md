@@ -5,7 +5,7 @@ For instance the LCS between "foo" and "fao" is "fo", since scanning the two str
 
 LCS is very useful in order to evaluate how similar two strings are. Strings can represent many things. For instance if two strings are DNA sequences, the LCS will provide a measure of similarity between the two DNA sequences. If the strings represent some text edited by some user, the LCS could represent how different the new text is compared to the old one, and so forth.
 
-Note that this algorithm runs in `O(N*M)` time, where N is the length of the first string and M is the length of the second string. So either spin a different Redis instance in order to run this algorithm, or make sure to run it against very small strings.
+Note that this algorithm runs in `O(N*M)` time, where N is the length of the first string and M is the length of the second string. So either spin a different Valkey instance in order to run this algorithm, or make sure to run it against very small strings.
 
 ```
 > MSET key1 ohmytext key2 mynewtext

@@ -14,15 +14,15 @@ Functions **should never** access keys with programmatically-generated names or 
 Any additional input argument **should not** represent names of keys.
 These are regular arguments and are passed in a Lua table as the callback's second argument.
 
-For more information please refer to the [Redis Programmability](/topics/programmability) and [Introduction to Redis Functions](/topics/functions-intro) pages.
+For more information please refer to the [Valkey Programmability](/topics/programmability) and [Introduction to Valkey Functions](/topics/functions-intro) pages.
 
 @examples
 
 The following example will create a library named `mylib` with a single function, `myfunc`, that returns the first argument it gets.
 
 ```
-redis> FUNCTION LOAD "#!lua name=mylib \n redis.register_function('myfunc', function(keys, args) return args[1] end)"
+valkey> FUNCTION LOAD "#!lua name=mylib \n redis.register_function('myfunc', function(keys, args) return args[1] end)"
 "mylib"
-redis> FCALL myfunc 0 hello
+valkey> FCALL myfunc 0 hello
 "hello"
 ```

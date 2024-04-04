@@ -30,8 +30,8 @@ lexicographically, use the `!ALPHA` modifier:
 SORT mylist ALPHA
 ```
 
-Redis is UTF-8 aware, assuming you correctly set the `!LC_COLLATE` environment
-variable.
+Valkey is UTF-8 aware, assuming you correctly set the `!LC_COLLATE` environment
+variable or the `locale-collate` config.
 
 The number of returned elements can be limited using the `!LIMIT` modifier.
 This modifier takes the `offset` argument, specifying the number of elements to
@@ -105,13 +105,13 @@ SORT mylist BY weight_* GET object_* GET #
 
 ## Restrictions for using external keys
 
-Before 8.0, when enabling `Redis cluster-mode` there is no way to guarantee the existence of the external keys on the node which the command is processed on. In this case, any use of `GET` or `BY` which reference external key pattern will cause the command to fail with an error.
+Before 8.0, when enabling Valkey `cluster-mode` there is no way to guarantee the existence of the external keys on the node which the command is processed on. In this case, any use of `GET` or `BY` which reference external key pattern will cause the command to fail with an error.
 
-Starting from 8.0, pattern with hash tag can be mapped to a slot, and so in `Redis cluster-mode`, the use of `BY` or `GET` is allowed when pattern contains hash tag and implies a specific slot which the key is also in, which means any key matching this pattern must be in the same slot as the key, and therefore in the same node. For example, in cluster mode, `{mylist}weight_*` is acceptable as a pattern when sorting `mylist`, while pattern `{abc}weight_*` will be denied, causing the command to fail with an error.
+Starting from 8.0, pattern with hash tag can be mapped to a slot, and so in Valkey `cluster-mode`, the use of `BY` or `GET` is allowed when pattern contains hash tag and implies a specific slot which the key is also in, which means any key matching this pattern must be in the same slot as the key, and therefore in the same node. For example, in cluster mode, `{mylist}weight_*` is acceptable as a pattern when sorting `mylist`, while pattern `{abc}weight_*` will be denied, causing the command to fail with an error.
 
 To use pattern with hash tag, see [Hash tags](/docs/reference/cluster-spec/#hash-tags) for more information.
 
-Starting from Redis 7.0, any use of `GET` or `BY` which reference external key pattern will only be allowed in case the current user running the command has full key read permissions.
+Any use of `GET` or `BY` which reference external key pattern will only be allowed in case the current user running the command has full key read permissions.
 Full key read permissions can be set for the user by, for example, specifying `'%R~*'` or `'~*` with the relevant command access rules.
 You can check the `ACL SETUSER` command manual for more information on setting ACL access rules.
 If full key read permissions aren't set, the command will fail with an error.

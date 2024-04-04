@@ -1,5 +1,5 @@
 The command shows the available ACL categories if called without arguments.
-If a category name is given, the command shows all the Redis commands in
+If a category name is given, the command shows all the Valkey commands in
 the specified category.
 
 ACL categories are very useful in order to create ACL rules that include or

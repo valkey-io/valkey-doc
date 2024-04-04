@@ -11,7 +11,7 @@ When the string at _key_ is grown, added bits are set to 0.
 
 **Warning**: When setting the last possible bit (_offset_ equal to 2^32 -1) and
 the string value stored at _key_ does not yet hold a string value, or holds a
-small string value, Redis needs to allocate all intermediate memory which can
+small string value, Valkey needs to allocate all intermediate memory which can
 block the server for some time.
 On a 2010 MacBook Pro, setting bit number 2^32 -1 (512MB allocation) takes
 ~300ms, setting bit number 2^30 -1 (128MB allocation) takes ~80ms, setting bit
@@ -42,7 +42,7 @@ defined on the String type (for more information refer to the
 bitmaps can be used with string commands, and most importantly with `SET` and
 `GET`.
 
-Because Redis' strings are binary-safe, a bitmap is trivially encoded as a bytes
+Because Valkey' strings are binary-safe, a bitmap is trivially encoded as a bytes
 stream. The first byte of the string corresponds to offsets 0..7 of
 the bitmap, the second byte to the 8..15 range, and so forth.
 
@@ -85,17 +85,17 @@ For example, the example above could be replaced by:
 
 It is also possible to use the `GETRANGE` and `SETRANGE` string commands to
 efficiently access a range of bit offsets in a bitmap. Below is a sample
-implementation in idiomatic Redis Lua scripting that can be run with the `EVAL`
+implementation in idiomatic Valkey Lua scripting that can be run with the `EVAL`
 command:
 
 ```
 --[[
 Sets a bitmap range
 
-Bitmaps are stored as Strings in Redis. A range spans one or more bytes,
+Bitmaps are stored as Strings in Valkey. A range spans one or more bytes,
 so we can call `SETRANGE` when entire bytes need to be set instead of flipping
 individual bits. Also, to avoid multiple internal memory allocations in
-Redis, we traverse in reverse.
+Valkey, we traverse in reverse.
 Expected input:
   KEYS[1] - bitfield key
   ARGV[1] - start offset (0-based, inclusive)

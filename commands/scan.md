@@ -1,6 +1,6 @@
 The `SCAN` command and the closely related commands `SSCAN`, `HSCAN` and `ZSCAN` are used in order to incrementally iterate over a collection of elements.
 
-* `SCAN` iterates the set of keys in the currently selected Redis database.
+* `SCAN` iterates the set of keys in the currently selected Valkey database.
 * `SSCAN` iterates elements of Sets types.
 * `HSCAN` iterates fields of Hash types and their associated values.
 * `ZSCAN` iterates elements of Sorted Set types and their associated scores.
@@ -148,18 +148,18 @@ redis 127.0.0.1:6379>
 
 As you can see most of the calls returned zero elements, but the last call where a `COUNT` of 1000 was used in order to force the command to do more scanning for that iteration.
 
-When using [Redis Cluster](/docs/management/scaling/), the search is optimized for patterns that imply a single slot.
+When using [Valkey Cluster](/docs/management/scaling/), the search is optimized for patterns that imply a single slot.
 If a pattern can only match keys of one slot,
-Redis only iterates over keys in that slot, rather than the whole database,
+Valkey only iterates over keys in that slot, rather than the whole database,
 when searching for keys matching the pattern.
-For example, with the pattern `{a}h*llo`, Redis would only try to match it with the keys in slot 15495, which hash tag `{a}` implies.
+For example, with the pattern `{a}h*llo`, Valkey would only try to match it with the keys in slot 15495, which hash tag `{a}` implies.
 To use pattern with hash tag, see [Hash tags](/docs/reference/cluster-spec/#hash-tags) in the Cluster specification for more information.
 
 ## The TYPE option
 
 You can use the `!TYPE` option to ask `SCAN` to only return objects that match a given `type`, allowing you to iterate through the database looking for keys of a specific type. The **TYPE** option is only available on the whole-database `SCAN`, not `HSCAN` or `ZSCAN` etc.
 
-The `type` argument is the same string name that the `TYPE` command returns. Note a quirk where some Redis types, such as GeoHashes, HyperLogLogs, Bitmaps, and Bitfields, may internally be implemented using other Redis types, such as a string or zset, so can't be distinguished from other keys of that same type by `SCAN`. For example, a ZSET and GEOHASH:
+The `type` argument is the same string name that the `TYPE` command returns. Note a quirk where some Valkey types, such as GeoHashes, HyperLogLogs, Bitmaps, and Bitfields, may internally be implemented using other Valkey types, such as a string or zset, so can't be distinguished from other keys of that same type by `SCAN`. For example, a ZSET and GEOHASH:
 
 ```
 redis 127.0.0.1:6379> GEOADD geokey 0 0 value
@@ -180,7 +180,7 @@ It is important to note that the **TYPE** filter is also applied after elements 
 
 ## The NOVALUES option
 
-When using `HSCAN`, you can use the `NOVALUES` option to make Redis return only the keys in the hash table without their corresponding values.
+When using `HSCAN`, you can use the `NOVALUES` option to make Valkey return only the keys in the hash table without their corresponding values.
 
 ```
 redis 127.0.0.1:6379> HSET myhash a 1 b 2
@@ -222,7 +222,7 @@ This is easy to see intuitively: if the collection grows there is more and more 
 
 ## Why SCAN may return all the items of an aggregate data type in a single call?
 
-In the `COUNT` option documentation, we state that sometimes this family of commands may return all the elements of a Set, Hash or Sorted Set at once in a single call, regardless of the `COUNT` option value. The reason why this happens is that the cursor-based iterator can be implemented, and is useful, only when the aggregate data type that we are scanning is represented as a hash table. However Redis uses a [memory optimization](/topics/memory-optimization) where small aggregate data types, until they reach a given amount of items or a given max size of single elements, are represented using a compact single-allocation packed encoding. When this is the case, `SCAN` has no meaningful cursor to return, and must iterate the whole data structure at once, so the only sane behavior it has is to return everything in a call.
+In the `COUNT` option documentation, we state that sometimes this family of commands may return all the elements of a Set, Hash or Sorted Set at once in a single call, regardless of the `COUNT` option value. The reason why this happens is that the cursor-based iterator can be implemented, and is useful, only when the aggregate data type that we are scanning is represented as a hash table. However Valkey uses a [memory optimization](/topics/memory-optimization) where small aggregate data types, until they reach a given amount of items or a given max size of single elements, are represented using a compact single-allocation packed encoding. When this is the case, `SCAN` has no meaningful cursor to return, and must iterate the whole data structure at once, so the only sane behavior it has is to return everything in a call.
 
 However once the data structures are bigger and are promoted to use real hash tables, the `SCAN` family of commands will resort to the normal behavior. Note that since this special behavior of returning all the elements is true only for small aggregates, it has no effects on the command complexity or latency. However the exact limits to get converted into real hash tables are [user configurable](/topics/memory-optimization), so the maximum number of elements you can see returned in a single call depends on how big an aggregate data type could be and still use the packed representation.
 
@@ -230,7 +230,7 @@ Also note that this behavior is specific of `SSCAN`, `HSCAN` and `ZSCAN`. `SCAN`
 
 ## Further reading
 
-For more information about managing keys, please refer to the [The Redis Keyspace](/docs/manual/keyspace) tutorial.
+For more information about managing keys, please refer to the [The Valkey Keyspace](/docs/manual/keyspace) tutorial.
 
 ## Additional examples
 

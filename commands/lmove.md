@@ -32,7 +32,7 @@ LRANGE myotherlist 0 -1
 
 ## Pattern: Reliable queue
 
-Redis is often used as a messaging server to implement processing of background
+Valkey is often used as a messaging server to implement processing of background
 jobs or other kinds of messaging tasks.
 A simple form of queue is often obtained pushing values into a list in the
 producer side, and waiting for this values in the consumer side using `RPOP`

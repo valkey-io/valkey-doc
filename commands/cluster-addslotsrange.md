@@ -15,9 +15,9 @@ The same operation can be completed with the following `CLUSTER ADDSLOTSRANGE` c
     OK
 
 
-## Usage in Redis Cluster
+## Usage in Valkey Cluster
 
-This command only works in cluster mode and is useful in the following Redis Cluster operations:
+This command only works in cluster mode and is useful in the following Valkey Cluster operations:
 
 1. To create a new cluster, `CLUSTER ADDSLOTSRANGE` is used to initially set up master nodes splitting the available hash slots among them.
 2. In order to fix a broken cluster where certain slots are unassigned.

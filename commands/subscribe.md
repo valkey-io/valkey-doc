@@ -5,8 +5,7 @@ other commands, except for additional `SUBSCRIBE`, `SSUBSCRIBE`, `PSUBSCRIBE`, `
 `PUNSUBSCRIBE`, `PING`, `RESET` and `QUIT` commands.
 However, if RESP3 is used (see `HELLO`) it is possible for a client to issue any commands while in subscribed state.
 
+Note that `RESET` can be called to exit subscribed state.
+
 For more information, see [Pub/sub](/docs/interact/pubsub/).
 
-## Behavior change history
-
-*   `>= 6.2.0`: `RESET` can be called to exit subscribed state.

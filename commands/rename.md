@@ -11,7 +11,3 @@ SET mykey "Hello"
 RENAME mykey myotherkey
 GET myotherkey
 ```
-
-## Behavior change history
-
-*   `>= 3.2.0`: The command no longer returns an error when source and destination names are the same.

@@ -9,7 +9,7 @@ the higher configuration epoch value (that is the last that failed over) wins
 over other nodes in claiming the hash slots ownership.
 
 However there is an exception to this rule, and it is when a new
-cluster is created from scratch. Redis Cluster *config epoch collision
+cluster is created from scratch. Valkey Cluster *config epoch collision
 resolution* algorithm can deal with new nodes all configured with the
 same configuration at startup, but this process is slow and should be
 the exception, only to make sure that whatever happens, two more

@@ -1,4 +1,4 @@
-Atomically transfer a key from a source Redis instance to a destination Redis
+Atomically transfer a key from a source Valkey instance to a destination Valkey
 instance.
 On success the key is deleted from the original instance and is guaranteed to
 exist in the target instance.
@@ -39,11 +39,11 @@ same name was also _already_ present on the target instance).
 
 If there are no keys to migrate in the source instance `NOKEY` is returned.
 Because missing keys are possible in normal conditions, from expiry for example,
-`NOKEY` isn't an error. 
+`NOKEY` isn't an error.
 
 ## Migrating multiple keys with a single command call
 
-Starting with Redis 3.0.6 `MIGRATE` supports a new bulk-migration mode that
+`MIGRATE` supports a bulk-migration mode that
 uses pipelining in order to migrate multiple keys between instances without
 incurring in the round trip time latency and other overheads that there are
 when moving each key with a single `MIGRATE` call.
@@ -64,4 +64,4 @@ just a single key exists.
 * `REPLACE` -- Replace existing key on the remote instance.
 * `!KEYS` -- If the key argument is an empty string, the command will instead migrate all the keys that follow the `!KEYS` option (see the above section for more info).
 * `!AUTH` -- Authenticate with the given password to the remote instance.
-* `AUTH2` -- Authenticate with the given username and password pair (Redis 6 or greater ACL auth style).
+* `AUTH2` -- Authenticate with the given username and password pair.

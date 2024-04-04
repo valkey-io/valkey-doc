@@ -1,7 +1,7 @@
 Save the DB in background.
 
 Normally the OK code is immediately returned.
-Redis forks, the parent continues to serve the clients, the child saves the DB
+Valkey forks, the parent continues to serve the clients, the child saves the DB
 on disk then exits.
 
 An error is returned if there is already a background save running or if there

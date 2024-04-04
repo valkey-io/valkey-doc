@@ -20,7 +20,7 @@ or Python's `range()` function).
 
 Out of range indexes will not produce an error.
 If `start` is larger than the end of the list, an empty list is returned.
-If `stop` is larger than the actual end of the list, Redis will treat it like
+If `stop` is larger than the actual end of the list, Valkey will treat it like
 the last element of the list.
 
 @examples

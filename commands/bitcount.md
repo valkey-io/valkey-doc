@@ -47,8 +47,7 @@ Later it will be trivial to know the number of single days the user visited the
 web site simply calling the `BITCOUNT` command against the bitmap.
 
 A similar pattern where user IDs are used instead of days is described
-in the article called "[Fast easy realtime metrics using Redis
-bitmaps][hbgc212fermurb]".
+in the article called "[Fast easy realtime metrics using Redis bitmaps][hbgc212fermurb]".
 
 [hbgc212fermurb]: http://blog.getspool.com/2011/11/29/fast-easy-realtime-metrics-using-redis-bitmaps
 
@@ -57,13 +56,13 @@ bitmaps][hbgc212fermurb]".
 In the above example of counting days, even after 10 years the application is
 online we still have just `365*10` bits of data per user, that is just 456 bytes
 per user.
-With this amount of data `BITCOUNT` is still as fast as any other O(1) Redis
+With this amount of data `BITCOUNT` is still as fast as any other O(1) Valkey
 command like `GET` or `INCR`.
 
 When the bitmap is big, there are two alternatives:
 
 * Taking a separated key that is incremented every time the bitmap is modified.
-  This can be very efficient and atomic using a small Redis Lua script.
+  This can be very efficient and atomic using a small Lua script.
 * Running the bitmap incrementally using the `BITCOUNT` _start_ and _end_
   optional parameters, accumulating the results client-side, and optionally
   caching the result into a key.

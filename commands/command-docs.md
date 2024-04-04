@@ -7,7 +7,7 @@ The reply includes a map for each returned command.
 The following keys may be included in the mapped reply:
 
 * **summary:** short command description.
-* **since:** the Redis version that added the command (or for module commands, the module version).
+* **since:** the Valkey version that added the command (or for module commands, the module version).
 * **group:** the functional group to which the command belongs.
   Possible values are:
   - _bitmap_
@@ -33,14 +33,14 @@ The following keys may be included in the mapped reply:
   Possible values are:
   - _deprecated:_ the command is deprecated.
   - _syscmd:_ a system command that isn't meant to be called by users.
-* **deprecated_since:** the Redis version that deprecated the command (or for module commands, the module version)..
+* **deprecated_since:** the Valkey version that deprecated the command (or for module commands, the module version)..
 * **replaced_by:** the alternative for a deprecated command.
 * **history:** an array of historical notes describing changes to the command's output or arguments. It should not contain information about behavioral changes.
   Each entry is an array itself, made up of two elements:
-  1. The Redis version that the entry applies to.
+  1. The Valkey version that the entry applies to.
   2. The description of the change.
 * **arguments:** an array of maps that describe the command's arguments.
-  Please refer to the [Redis command arguments][td] page for more information.
+  Please refer to the [Valkey command arguments][td] page for more information.
 
 [td]: /topics/command-arguments
 

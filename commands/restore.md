@@ -21,15 +21,15 @@ If they don't match an error is returned.
 @examples
 
 ```
-redis> DEL mykey
+valkey> DEL mykey
 0
-redis> RESTORE mykey 0 "\n\x17\x17\x00\x00\x00\x12\x00\x00\x00\x03\x00\
+valkey> RESTORE mykey 0 "\n\x17\x17\x00\x00\x00\x12\x00\x00\x00\x03\x00\
                         x00\xc0\x01\x00\x04\xc0\x02\x00\x04\xc0\x03\x00\
                         xff\x04\x00u#<\xc0;.\xe9\xdd"
 OK
-redis> TYPE mykey
+valkey> TYPE mykey
 list
-redis> LRANGE mykey 0 -1
+valkey> LRANGE mykey 0 -1
 1) "1"
 2) "2"
 3) "3"

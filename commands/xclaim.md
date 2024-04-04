@@ -20,7 +20,7 @@ Moreover, as a side effect, `XCLAIM` will increment the count of attempted deliv
 2. The message exists in the group PEL but not in the stream itself (i.e. the message was read but never acknowledged, and then was deleted from the stream, either by trimming or by `XDEL`)
 
 In both cases the reply will not contain a corresponding entry to that message (i.e. the length of the reply array may be smaller than the number of IDs provided to `XCLAIM`).
-In the latter case, the message will also be deleted from the PEL in which it was found. This feature was introduced in Redis 7.0.
+In the latter case, the message will also be deleted from the PEL in which it was found.
 
 ## Command options
 

@@ -13,7 +13,7 @@ element and so on.
 Out of range indexes will not produce an error: if `start` is larger than the
 end of the list, or `start > end`, the result will be an empty list (which
 causes `key` to be removed).
-If `end` is larger than the end of the list, Redis will treat it like the last
+If `end` is larger than the end of the list, Valkey will treat it like the last
 element of the list.
 
 A common use of `LTRIM` is together with `LPUSH` / `RPUSH`.
@@ -26,7 +26,7 @@ LTRIM mylist 0 99
 
 This pair of commands will push a new element on the list, while making sure
 that the list will not grow larger than 100 elements.
-This is very useful when using Redis to store logs for example.
+This is very useful when using Valkey to store logs for example.
 It is important to note that when used in this way `LTRIM` is an O(1) operation
 because in the average case just one element is removed from the tail of the
 list.

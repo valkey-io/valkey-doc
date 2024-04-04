@@ -1,4 +1,4 @@
-Returns @array-reply of details about multiple Redis commands.
+Returns @array-reply of details about multiple Valkey commands.
 
 Same result format as `COMMAND` except you can specify which commands
 get returned.

@@ -19,9 +19,9 @@ However, note that:
 2. The command fails if the same slot is specified multiple times.
 3. As a side effect of the command execution, the node may go into *down* state because not all hash slots are covered.
 
-## Usage in Redis Cluster
+## Usage in Valkey Cluster
 
 This command only works in cluster mode and may be useful for
 debugging and in order to manually orchestrate a cluster configuration
-when a new cluster is created. It is currently not used by `redis-cli`,
+when a new cluster is created. It is currently not used by `valkey-cli`,
 and mainly exists for API completeness.

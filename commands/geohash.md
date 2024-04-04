@@ -1,6 +1,6 @@
 Return valid [Geohash](https://en.wikipedia.org/wiki/Geohash) strings representing the position of one or more elements in a sorted set value representing a geospatial index (where elements were added using `GEOADD`).
 
-Normally Redis represents positions of elements using a variation of the Geohash
+Normally Valkey represents positions of elements using a variation of the Geohash
 technique where positions are encoded using 52 bit integers. The encoding is
 also different compared to the standard because the initial min and max
 coordinates used during the encoding and decoding process are different. This
@@ -11,7 +11,7 @@ Geohash string properties
 ---
 
 The command returns 11 characters Geohash strings, so no precision is lost
-compared to the Redis internal 52 bit representation. The returned Geohashes
+compared to the Valkey internal 52 bit representation. The returned Geohashes
 have the following properties:
 
 1. They can be shortened removing characters from the right. It will lose precision but will still point to the same area.

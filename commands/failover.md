@@ -1,7 +1,7 @@
 This command will start a coordinated failover between the currently-connected-to master and one of its replicas.
 The failover is not synchronous, instead a background task will handle coordinating the failover. 
 It is designed to limit data loss and unavailability of the cluster during the failover.
-This command is analogous to the `CLUSTER FAILOVER` command for non-clustered Redis and is similar to the failover support provided by sentinel.
+This command is analogous to the `CLUSTER FAILOVER` command for non-clustered Valkey and is similar to the failover support provided by sentinel.
 
 The specific details of the default failover flow are as follows:
 
@@ -23,7 +23,7 @@ If the previous master had additional replicas attached to it, they will continu
 The following optional arguments exist to modify the behavior of the failover flow:
 
 * `TIMEOUT` *milliseconds* -- This option allows specifying a maximum time a master will wait in the `waiting-for-sync` state before aborting the failover attempt and rolling back.
-This is intended to set an upper bound on the write outage the Redis cluster can experience.
+This is intended to set an upper bound on the write outage the Valkey cluster can experience.
 Failovers typically happen in less than a second, but could take longer if there is a large amount of write traffic or the replica is already behind in consuming the replication stream. 
 If this value is not specified, the timeout can be considered to be "infinite".
 

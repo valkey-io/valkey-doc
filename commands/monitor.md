@@ -1,14 +1,14 @@
 `MONITOR` is a debugging command that streams back every command processed by
-the Redis server.
+the Valkey server.
 It can help in understanding what is happening to the database.
-This command can both be used via `redis-cli` and via `telnet`.
+This command can both be used via `valkey-cli` and via `telnet`.
 
 The ability to see all the requests processed by the server is useful in order
-to spot bugs in an application both when using Redis as a database and as a
+to spot bugs in an application both when using Valkey as a database and as a
 distributed caching system.
 
 ```
-$ redis-cli monitor
+$ valkey-cli monitor
 1339518083.107412 [0 127.0.0.1:60866] "keys" "*"
 1339518087.877697 [0 127.0.0.1:60866] "dbsize"
 1339518090.420270 [0 127.0.0.1:60866] "set" "x" "6"
@@ -18,7 +18,7 @@ $ redis-cli monitor
 1339518100.544926 [0 127.0.0.1:60866] "del" "x"
 ```
 
-Use `SIGINT` (Ctrl-C) to stop a `MONITOR` stream running via `redis-cli`.
+Use `SIGINT` (Ctrl-C) to stop a `MONITOR` stream running via `valkey-cli`.
 
 ```
 $ telnet localhost 6379
@@ -65,7 +65,7 @@ GET: 104275.29 requests per second
 INCR: 93283.58 requests per second
 ```
 
-Benchmark result **with** `MONITOR` running (`redis-cli monitor > /dev/null`):
+Benchmark result **with** `MONITOR` running (`valkey-cli monitor > /dev/null`):
 
 ```
 $ src/redis-benchmark -c 10 -n 100000 -q
@@ -80,8 +80,7 @@ In this particular case, running a single `MONITOR` client can reduce the
 throughput by more than 50%.
 Running more `MONITOR` clients will reduce throughput even more.
 
-## Behavior change history
-
-*   `>= 6.0.0`: `AUTH` excluded from the command's output.
-*   `>= 6.2.0`: "`RESET` can be called to exit monitor mode.
-*   `>= 6.2.4`: "`AUTH`, `HELLO`, `EVAL`, `EVAL_RO`, `EVALSHA` and `EVALSHA_RO` included in the command's output.
+Note that, 
+*  `AUTH` is excluded from the command's output.
+*  `RESET` can be called to exit monitor mode.
+*  `AUTH`, `HELLO`, `EVAL`, `EVAL_RO`, `EVALSHA` and `EVALSHA_RO` are included in the command's output.

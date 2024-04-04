@@ -3,7 +3,7 @@ with support for consumer groups. Probably you will have to understand the
 `XREAD` command before reading this page will makes sense.
 
 Moreover, if you are new to streams, we recommend to read our
-[introduction to Redis Streams](/topics/streams-intro).
+[introduction to Valkey Streams](/topics/streams-intro).
 Make sure to understand the concept of consumer group in the introduction
 so that following how this command works will be simpler.
 
@@ -105,9 +105,9 @@ To see how the command actually replies, please check the `XREAD` command page.
 ## What happens when a pending message is deleted?
 
 Entries may be deleted from the stream due to trimming or explicit calls to `XDEL` at any time.
-By design, Redis doesn't prevent the deletion of entries that are present in the stream's PELs.
+By design, Valkey doesn't prevent the deletion of entries that are present in the stream's PELs.
 When this happens, the PELs retain the deleted entries' IDs, but the actual entry payload is no longer available.
-Therefore, when reading such PEL entries, Redis will return a null value in place of their respective data.
+Therefore, when reading such PEL entries, Valkey will return a null value in place of their respective data.
 
 Example:
 
@@ -129,6 +129,6 @@ OK
          2) (nil)
 ```
 
-Reading the [Redis Streams introduction](/topics/streams-intro) is highly
+Reading the [Valkey Streams introduction](/topics/streams-intro) is highly
 suggested in order to understand more about the streams overall behavior
 and semantics.

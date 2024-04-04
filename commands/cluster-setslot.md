@@ -42,7 +42,7 @@ In this way when a node in migrating state generates an `ASK` redirection, the c
 ## CLUSTER SETSLOT `<slot>` STABLE
 
 This subcommand just clears migrating / importing state from the slot. It is
-mainly used to fix a cluster stuck in a wrong state by `redis-cli --cluster fix`.
+mainly used to fix a cluster stuck in a wrong state by `valkey-cli --cluster fix`.
 Normally the two states are cleared automatically at the end of the migration
 using the `SETSLOT ... NODE ...` subcommand as explained in the next section.
 
@@ -58,11 +58,11 @@ command:
 2. If the slot is in *migrating* state, the state gets cleared when the slot is assigned to another node.
 3. If the slot was in *importing* state in the node receiving the command, and the command assigns the slot to this node (which happens in the target node at the end of the resharding of a hash slot from one node to another), the command has the following side effects: A) the *importing* state is cleared. B) If the node config epoch is not already the greatest of the cluster, it generates a new one and assigns the new config epoch to itself. This way its new hash slot ownership will win over any past configuration created by previous failovers or slot migrations.
 
-It is important to note that step 3 is the only time when a Redis Cluster node will create a new config epoch without agreement from other nodes. This only happens when a manual configuration is operated. However it is impossible that this creates a non-transient setup where two nodes have the same config epoch, since Redis Cluster uses a config epoch collision resolution algorithm.
+It is important to note that step 3 is the only time when a Valkey Cluster node will create a new config epoch without agreement from other nodes. This only happens when a manual configuration is operated. However it is impossible that this creates a non-transient setup where two nodes have the same config epoch, since Valkey Cluster uses a config epoch collision resolution algorithm.
 
-## Redis Cluster live resharding explained
+## Valkey Cluster live resharding explained
 
-The `CLUSTER SETSLOT` command is an important piece used by Redis Cluster in order to migrate all the keys contained in one hash slot from one node to another. This is how the migration is orchestrated, with the help of other commands as well. We'll call the node that has the current ownership of the hash slot the `source` node, and the node where we want to migrate the `destination` node.
+The `CLUSTER SETSLOT` command is an important piece used by Valkey Cluster in order to migrate all the keys contained in one hash slot from one node to another. This is how the migration is orchestrated, with the help of other commands as well. We'll call the node that has the current ownership of the hash slot the `source` node, and the node where we want to migrate the `destination` node.
 
 1. Set the destination node slot to *importing* state using `CLUSTER SETSLOT <slot> IMPORTING <source-node-id>`.
 2. Set the source node slot to *migrating* state using `CLUSTER SETSLOT <slot> MIGRATING <destination-node-id>`.

@@ -12,11 +12,11 @@ that inspects the PEL.
 Once a consumer *successfully* processes a message, it should call `XACK`
 so that such message does not get processed again, and as a side effect,
 the PEL entry about this message is also purged, releasing memory from the
-Redis server.
+Valkey server.
 
 @examples
 
 ```
-redis> XACK mystream mygroup 1526569495631-0
+valkey> XACK mystream mygroup 1526569495631-0
 (integer) 1
 ```

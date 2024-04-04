@@ -15,7 +15,7 @@ The `SET` command supports a set of options that modify its behavior:
 * `KEEPTTL` -- Retain the time to live associated with the key.
 * `!GET` -- Return the old string stored at key, or nil if key did not exist. An error is returned and `SET` aborted if the value stored at key is not a string.
 
-Note: Since the `SET` command options can replace `SETNX`, `SETEX`, `PSETEX`, `GETSET`, it is possible that in future versions of Redis these commands will be deprecated and finally removed.
+Note: Since the `SET` command options can replace `SETNX`, `SETEX`, `PSETEX`, `GETSET`, it is possible that in future versions of Valkey these commands will be deprecated and finally removed.
 
 @examples
 
@@ -34,7 +34,7 @@ SET anotherkey "will expire in a minute" EX 60
 
 **Note:** The following pattern is discouraged in favor of [the Redlock algorithm](https://redis.io/topics/distlock) which is only a bit more complex to implement, but offers better guarantees and is fault tolerant.
 
-The command `SET resource-name anystring NX EX max-lock-time` is a simple way to implement a locking system with Redis.
+The command `SET resource-name anystring NX EX max-lock-time` is a simple way to implement a locking system with Valkey.
 
 A client can acquire the lock if the above command returns `OK` (or retry after some time if the command returns Nil), and remove the lock just using `DEL`.
 

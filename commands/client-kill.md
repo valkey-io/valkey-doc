@@ -27,16 +27,14 @@ is valid and will kill only a pubsub client with the specified address. This for
 
 When the new form is used the command no longer returns `OK` or an error, but instead the number of killed clients, that may be zero.
 
-## CLIENT KILL and Redis Sentinel
+## CLIENT KILL and Valkey Sentinel
 
-Recent versions of Redis Sentinel (Redis 2.8.12 or greater) use CLIENT KILL
-in order to kill clients when an instance is reconfigured, in order to
-force clients to perform the handshake with one Sentinel again and update
-its configuration.
+Valkey Sentinel uses CLIENT KILL to terminate client connections when an instance is reconfigured.
+This mechanism ensures that clients re-establish a connection with a Sentinel, refreshing their configurations.
 
 ## Notes
 
-Due to the single-threaded nature of Redis, it is not possible to
+Due to the single-threaded nature of Valkey, it is not possible to
 kill a client connection while it is executing a command. From
 the client point of view, the connection can never be closed
 in the middle of the execution of a command. However, the client

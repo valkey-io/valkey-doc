@@ -1,4 +1,4 @@
-The command treats a Redis string as an array of bits, and is capable of addressing specific integer fields of varying bit widths and arbitrary non (necessary) aligned offset. In practical terms using this command you can set, for example, a signed 5 bits integer at bit offset 1234 to a specific value, retrieve a 31 bit unsigned integer from offset 4567. Similarly the command handles increments and decrements of the specified integers, providing guaranteed and well specified overflow and underflow behavior that the user can configure.
+The command treats a string as an array of bits, and is capable of addressing specific integer fields of varying bit widths and arbitrary non (necessary) aligned offset. In practical terms using this command you can set, for example, a signed 5 bits integer at bit offset 1234 to a specific value, retrieve a 31 bit unsigned integer from offset 4567. Similarly the command handles increments and decrements of the specified integers, providing guaranteed and well specified overflow and underflow behavior that the user can configure.
 
 `BITFIELD` is able to operate with multiple bit fields in the same command call. It takes a list of operations to perform, and returns an array of replies, where each array matches the corresponding operation in the list of arguments.
 
@@ -31,7 +31,7 @@ signed integer of 16 bits.
 
 The supported encodings are up to 64 bits for signed integers, and up to 63 bits for
 unsigned integers. This limitation with unsigned integers is due to the fact
-that currently the Redis protocol is unable to return 64 bit unsigned integers
+that currently the Valkey protocol is unable to return 64 bit unsigned integers
 as replies.
 
 ## Bits and positional offsets
@@ -86,7 +86,7 @@ The following is an example of `OVERFLOW FAIL` returning NULL.
 ## Motivations
 
 The motivation for this command is that the ability to store many small integers
-as a single large bitmap (or segmented over a few keys to avoid having huge keys) is extremely memory efficient, and opens new use cases for Redis to be applied, especially in the field of real time analytics. This use cases are supported by the ability to specify the overflow in a controlled way.
+as a single large bitmap (or segmented over a few keys to avoid having huge keys) is extremely memory efficient, and opens new use cases for Valkey to be applied, especially in the field of real time analytics. This use cases are supported by the ability to specify the overflow in a controlled way.
 
 Fun fact: Reddit's 2017 April fools' project [r/place](https://reddit.com/r/place) was [built using the Redis BITFIELD command](https://redditblog.com/2017/04/13/how-we-built-rplace/) in order to take an in-memory representation of the collaborative canvas.
 

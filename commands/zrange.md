@@ -2,7 +2,7 @@ Returns the specified range of elements in the sorted set stored at `<key>`.
 
 `ZRANGE` can perform different types of range queries: by index (rank), by the score, or by lexicographical order.
 
-Starting with Redis 6.2.0, this command can replace the following commands: `ZREVRANGE`, `ZRANGEBYSCORE`, `ZREVRANGEBYSCORE`, `ZRANGEBYLEX` and `ZREVRANGEBYLEX`.
+This command can replace the following commands: `ZREVRANGE`, `ZRANGEBYSCORE`, `ZREVRANGEBYSCORE`, `ZRANGEBYLEX` and `ZREVRANGEBYLEX`.
 
 ## Common behavior and options
 
@@ -25,7 +25,7 @@ Out of range indexes do not produce an error.
 
 If `<start>` is greater than either the end index of the sorted set or `<stop>`, an empty list is returned.
 
-If `<stop>` is greater than the end index of the sorted set, Redis will use the last element of the sorted set.
+If `<stop>` is greater than the end index of the sorted set, Valkey will use the last element of the sorted set.
 
 ## Score ranges
 

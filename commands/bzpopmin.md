@@ -17,11 +17,11 @@ popped from.
 @examples
 
 ```
-redis> DEL zset1 zset2
+valkey> DEL zset1 zset2
 (integer) 0
-redis> ZADD zset1 0 a 1 b 2 c
+valkey> ZADD zset1 0 a 1 b 2 c
 (integer) 3
-redis> BZPOPMIN zset1 zset2 0
+valkey> BZPOPMIN zset1 zset2 0
 1) "zset1"
 2) "a"
 3) "0"

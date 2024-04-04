@@ -28,13 +28,3 @@ When the `count` is a negative value, the behavior changes as follows:
 * Repeating elements are possible.
 * Exactly `count` elements, or an empty array if the set is empty (non-existing key), are always returned.
 * The order of elements in the reply is truly random.
-
-## Distribution of returned elements
-
-Note: this section is relevant only for Redis 5 or below, as Redis 6 implements a fairer algorithm. 
-
-The distribution of the returned elements is far from perfect when the number of elements in the set is small, this is due to the fact that we used an approximated random element function that does not really guarantees good distribution.
-
-The algorithm used, that is implemented inside dict.c, samples the hash table buckets to find a non-empty one. Once a non empty bucket is found, since we use chaining in our hash table implementation, the number of elements inside the bucket is checked and a random element is selected.
-
-This means that if you have two non-empty buckets in the entire hash table, and one has three elements while one has just one, the element that is alone in its bucket will be returned with much higher probability.

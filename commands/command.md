@@ -1,8 +1,8 @@
-Return an array with details about every Redis command.
+Return an array with details about every Valkey command.
 
 The `COMMAND` command is introspective.
 Its reply describes all commands that the server can process.
-Redis clients can call it to obtain the server's runtime capabilities during the handshake.
+Valkey clients can call it to obtain the server's runtime capabilities during the handshake.
 
 `COMMAND` also has several subcommands.
 Please refer to its subcommands for further details.
@@ -14,7 +14,7 @@ Although most commands accept a single key as their first argument, there are ma
 You can call `COMMAND` and then keep the mapping between commands and their respective key specification rules cached in the client.
 
 The reply it returns is an array with an element per command.
-Each element that describes a Redis command is represented as an array by itself.
+Each element that describes a Valkey command is represented as an array by itself.
 
 The command's array consists of a fixed number of elements.
 The exact number of elements in the array depends on the server's version.
@@ -25,17 +25,17 @@ The exact number of elements in the array depends on the server's version.
 1. First key
 1. Last key
 1. Step
-1. [ACL categories][ta] (as of Redis 6.0)
-1. [Tips][tb] (as of Redis 7.0)
-1. [Key specifications][td] (as of Redis 7.0)
-1. Subcommands (as of Redis 7.0)
+1. [ACL categories][ta]
+1. [Tips][tb]
+1. [Key specifications][td]
+1. Subcommands
 
 ## Name
 
 This is the command's name in lowercase.
 
 **Note:**
-Redis command names are case-insensitive.
+Valkey command names are case-insensitive.
 
 ## Arity
 
@@ -58,7 +58,7 @@ Command flags are an array. It can contain the following simple strings (status 
 
 * **admin:** the command is an administrative command.
 * **asking:** the command is allowed even during hash slot migration.
-  This flag is relevant in Redis Cluster deployments.
+  This flag is relevant in Valkey Cluster deployments.
 * **blocking:** the command may block the requesting client.
 * **denyoom**: the command is rejected if the server's memory usage is too high (see the _maxmemory_ configuration directive).
 * **fast:** the command operates in constant or log(N) time.
@@ -72,14 +72,12 @@ Command flags are an array. It can contain the following simple strings (status 
 * **no_mandatory_keys:** the command may accept key name arguments, but these aren't mandatory.
 * **no_multi:** the command isn't allowed inside the context of a [transaction](/topics/transactions).
 * **noscript:** the command can't be called from [scripts](/topics/eval-intro) or [functions](/topics/functions-intro).
-* **pubsub:** the command is related to [Redis Pub/Sub](/topics/pubsub).
-* **random**: the command returns random results, which is a concern with verbatim script replication.
-  As of Redis 7.0, this flag is a [command tip][tb].
+* **pubsub:** the command is related to [Valkey Pub/Sub](/topics/pubsub).
+* **random**: the command returns random results, which is a concern with verbatim script replication. This flag is a [command tip][tb].
 * **readonly:** the command doesn't modify data.
 * **sort_for_script:** the command's output is sorted when called from a script.
 * **skip_monitor:** the command is not shown in `MONITOR`'s output.
-* **skip_slowlog:** the command is not shown in `SLOWLOG`'s output.
-  As of Redis 7.0, this flag is a [command tip][tb].
+* **skip_slowlog:** the command is not shown in `SLOWLOG`'s output. This flag is a [command tip][tb].
 * **stale:** the command is allowed while a replica has stale data.
 * **write:** the command may modify data.
 
@@ -99,7 +97,7 @@ Consider `SORT`:
    ...
 ```
 
-Some Redis commands have no predetermined key locations or are not easy to find.
+Some Valkey commands have no predetermined key locations or are not easy to find.
 For those commands, the _movablekeys_ flag indicates that the _first key_, _last key_, and _step_ values are insufficient to find all the keys.
 
 Here are several examples of commands that have the _movablekeys_ flag:
@@ -108,11 +106,11 @@ Here are several examples of commands that have the _movablekeys_ flag:
 * `ZUNION`: the _numkeys_ argument specifies the number key name arguments.
 * `MIGRATE`: the keys appear _KEYS_ keyword and only when the second argument is the empty string.
 
-Redis Cluster clients need to use other measures, as follows, to locate the keys for such commands.
+Valkey Cluster clients need to use other measures, as follows, to locate the keys for such commands.
 
-You can use the `COMMAND GETKEYS` command and have your Redis server report all keys of a given command's invocation.
+You can use the `COMMAND GETKEYS` command and have your Valkey server report all keys of a given command's invocation.
 
-As of Redis 7.0, clients can use the [key specifications](#key-specifications) to identify the positions of key names.
+Clients can use the [key specifications](#key-specifications) to identify the positions of key names.
 The only commands that require using `COMMAND GETKEYS` are `SORT` and `MIGRATE` for clients that parse keys' specifications.
 
 For more information, please refer to the [key specifications page][tr].
@@ -126,7 +124,7 @@ Position 0 is always the command name itself.
 ## Last key
 
 The position of the command's last key name argument.
-Redis commands usually accept one, two or multiple number of keys.
+Valkey commands usually accept one, two or multiple number of keys.
 
 Commands that accept a single key have both _first key_ and _last key_ set to 1.
 
@@ -188,7 +186,7 @@ For more information please check the [key specifications page][td].
 ## Subcommands
 
 This is an array containing all of the command's subcommands, if any.
-Some Redis commands have subcommands (e.g., the `REWRITE` subcommand of `CONFIG`).
+Some Valkey commands have subcommands (e.g., the `REWRITE` subcommand of `CONFIG`).
 Each element in the array represents one subcommand and follows the same specifications as those of `COMMAND`'s reply.
 
 [ta]: /topics/acl

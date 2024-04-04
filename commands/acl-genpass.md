@@ -7,11 +7,11 @@ uses a weaker system that is likely still better than picking a weak password
 by hand.
 
 By default (if /dev/urandom is available) the password is strong and
-can be used for other uses in the context of a Redis application, for
+can be used for other uses in the context of an application, for
 instance in order to create unique session identifiers or other kind of
 unguessable and not colliding IDs. The password generation is also very cheap
 because we don't really ask /dev/urandom for bits at every execution. At
-startup Redis creates a seed using /dev/urandom, then it will use SHA256
+startup Valkey creates a seed using /dev/urandom, then it will use SHA256
 in counter mode, with HMAC-SHA256(seed,counter) as primitive, in order to
 create more random bytes as needed. This means that the application developer
 should be feel free to abuse `ACL GENPASS` to create as many secure

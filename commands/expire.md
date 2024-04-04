@@ -1,6 +1,6 @@
 Set a timeout on `key`.
 After the timeout has expired, the key will automatically be deleted.
-A key with an associated timeout is often said to be _volatile_ in Redis
+A key with an associated timeout is often said to be _volatile_ in Valkey
 terminology.
 
 The timeout will only be cleared by commands that delete or overwrite the
@@ -51,13 +51,6 @@ In this case the time to live of a key is _updated_ to the new value.
 There are many useful applications for this, an example is documented in the
 _Navigation session_ pattern section below.
 
-## Differences in Redis prior 2.1.3
-
-In Redis versions prior **2.1.3** altering a key with an expire set using a
-command altering its value had the effect of removing the key entirely.
-This semantics was needed because of limitations in the replication layer that
-are now fixed.
-
 `EXPIRE` would return 0 and not alter the timeout for a key with a timeout set.
 
 @examples
@@ -84,7 +77,7 @@ of your user, that may contain interesting information about what kind of
 products he or she is looking for currently, so that you can recommend related
 products.
 
-You can easily model this pattern in Redis using the following strategy: every
+You can easily model this pattern in Valkey using the following strategy: every
 time the user does a page view you call the following commands:
 
 ```
@@ -101,17 +94,17 @@ recorded.
 This pattern is easily modified to use counters using `INCR` instead of lists
 using `RPUSH`.
 
-# Appendix: Redis expires
+# Appendix: Valkey expires
 
 ## Keys with an expire
 
-Normally Redis keys are created without an associated time to live.
+Normally Valkey keys are created without an associated time to live.
 The key will simply live forever, unless it is removed by the user in an
 explicit way, for instance using the `DEL` command.
 
 The `EXPIRE` family of commands is able to associate an expire to a given key,
 at the cost of some additional memory used by the key.
-When a key has an expire set, Redis will make sure to remove the key when the
+When a key has an expire set, Valkey will make sure to remove the key when the
 specified amount of time elapsed.
 
 The key time to live can be updated or entirely removed using the `EXPIRE` and
@@ -119,16 +112,12 @@ The key time to live can be updated or entirely removed using the `EXPIRE` and
 
 ## Expire accuracy
 
-In Redis 2.4 the expire might not be pin-point accurate, and it could be between
-zero to one seconds out.
-
-Since Redis 2.6 the expire error is from 0 to 1 milliseconds.
+The expire error is from 0 to 1 milliseconds.
 
 ## Expires and persistence
 
-Keys expiring information is stored as absolute Unix timestamps (in milliseconds
-in case of Redis version 2.6 or greater).
-This means that the time is flowing even when the Redis instance is not active.
+Keys expiring information is stored in milliseconds.
+This means that the time is flowing even when the Valkey instance is not active.
 
 For expires to work well, the computer time must be taken stable.
 If you move an RDB file from two computers with a big desync in their clocks,
@@ -140,20 +129,20 @@ you set a key with a time to live of 1000 seconds, and then set your computer
 time 2000 seconds in the future, the key will be expired immediately, instead of
 lasting for 1000 seconds.
 
-## How Redis expires keys
+## How Valkey expires keys
 
-Redis keys are expired in two ways: a passive way, and an active way.
+Valkey keys are expired in two ways: a passive way, and an active way.
 
 A key is passively expired simply when some client tries to access it, and the
 key is found to be timed out.
 
 Of course this is not enough as there are expired keys that will never be
 accessed again.
-These keys should be expired anyway, so periodically Redis tests a few keys at
+These keys should be expired anyway, so periodically Valkey tests a few keys at
 random among keys with an expire set.
 All the keys that are already expired are deleted from the keyspace.
 
-Specifically this is what Redis does 10 times per second:
+Specifically this is what Valkey does 10 times per second:
 
 1. Test 20 random keys from the set of keys with an associated expire.
 2. Delete all the keys found expired.
