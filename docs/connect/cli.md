@@ -1,45 +1,45 @@
 ---
-title: "Redis CLI"
+title: "Valkey CLI"
 linkTitle: "CLI"
 weight: 1
 description: >
-    Overview of redis-cli, the Redis command line interface
+    Overview of valkey-cli, the Valkey command line interface
 aliases:
     - /docs/manual/cli
     - /docs/management/cli
     - /docs/ui/cli
 ---
 
-In interactive mode, `redis-cli` has basic line editing capabilities to provide a familiar typing experience.
+In interactive mode, `valkey-cli` has basic line editing capabilities to provide a familiar typing experience.
 
 To launch the program in special modes, you can use several options, including:
 
 * Simulate a replica and print the replication stream it receives from the primary.
-* Check the latency of a Redis server and display statistics. 
+* Check the latency of a Valkey server and display statistics. 
 * Request ASCII-art spectrogram of latency samples and frequencies.
 
-This topic covers the different aspects of `redis-cli`, starting from the simplest and ending with the more advanced features.
+This topic covers the different aspects of `valkey-cli`, starting from the simplest and ending with the more advanced features.
 
 ## Command line usage
 
-To run a Redis command and return a standard output at the terminal, include the command to execute as separate arguments of `redis-cli`:
+To run a Valkey command and return a standard output at the terminal, include the command to execute as separate arguments of `valkey-cli`:
 
-    $ redis-cli INCR mycounter
+    $ valkey-cli INCR mycounter
     (integer) 7
 
-The reply of the command is "7". Since Redis replies are typed (strings, arrays, integers, nil, errors, etc.), you see the type of the reply between parentheses. This additional information may not be ideal when the output of `redis-cli` must be used as input of another command or redirected into a file.
+The reply of the command is "7". Since Valkey replies are typed (strings, arrays, integers, nil, errors, etc.), you see the type of the reply between parentheses. This additional information may not be ideal when the output of `valkey-cli` must be used as input of another command or redirected into a file.
 
-`redis-cli` only shows additional information for human readability when it detects the standard output is a tty, or terminal. For all other outputs it will auto-enable the *raw output mode*, as in the following example:
+`valkey-cli` only shows additional information for human readability when it detects the standard output is a tty, or terminal. For all other outputs it will auto-enable the *raw output mode*, as in the following example:
 
-    $ redis-cli INCR mycounter > /tmp/output.txt
+    $ valkey-cli INCR mycounter > /tmp/output.txt
     $ cat /tmp/output.txt
     8
 
-Note that `(integer)` is omitted from the output because `redis-cli` detects
+Note that `(integer)` is omitted from the output because `valkey-cli` detects
 the output is no longer written to the terminal. You can force raw output
 even on the terminal with the `--raw` option:
 
-    $ redis-cli --raw INCR mycounter
+    $ valkey-cli --raw INCR mycounter
     9
 
 You can force human readable output when writing to a file or in
@@ -47,7 +47,7 @@ pipe to other commands by using `--no-raw`.
 
 ## String quoting and escaping
 
-When `redis-cli` parses a command, whitespace characters automatically delimit the arguments.
+When `valkey-cli` parses a command, whitespace characters automatically delimit the arguments.
 In interactive mode, a newline sends the command for parsing and execution.
 To input string values that contain whitespaces or non-printable characters, you can use quoted and escaped strings.
 
@@ -89,37 +89,37 @@ When you input strings that contain single or double quotes, as you might in pas
 
 ## Host, port, password, and database
 
-By default, `redis-cli` connects to the server at the address 127.0.0.1 with port 6379.
+By default, `valkey-cli` connects to the server at the address 127.0.0.1 with port 6379.
 You can change the port using several command line options. To specify a different host name or an IP address, use the `-h` option. In order to set a different port, use `-p`.
 
-    $ redis-cli -h redis15.localnet.org -p 6390 PING
+    $ valkey-cli -h redis15.localnet.org -p 6390 PING
     PONG
 
 If your instance is password protected, the `-a <password>` option will
 perform authentication saving the need of explicitly using the `AUTH` command:
 
-    $ redis-cli -a myUnguessablePazzzzzword123 PING
+    $ valkey-cli -a myUnguessablePazzzzzword123 PING
     PONG
 
-**NOTE:** For security reasons, provide the password to `redis-cli` automatically via the
+**NOTE:** For security reasons, provide the password to `valkey-cli` automatically via the
 `REDISCLI_AUTH` environment variable.
 
 Finally, it's possible to send a command that operates on a database number
 other than the default number zero by using the `-n <dbnum>` option:
 
-    $ redis-cli FLUSHALL
+    $ valkey-cli FLUSHALL
     OK
-    $ redis-cli -n 1 INCR a
+    $ valkey-cli -n 1 INCR a
     (integer) 1
-    $ redis-cli -n 1 INCR a
+    $ valkey-cli -n 1 INCR a
     (integer) 2
-    $ redis-cli -n 2 INCR a
+    $ valkey-cli -n 2 INCR a
     (integer) 1
 
 Some or all of this information can also be provided by using the `-u <uri>`
 option and the URI pattern `redis://user:password@host:port/dbnum`:
 
-    $ redis-cli -u redis://LJenkins:p%40ssw0rd@redis-16379.hosted.com:16379/0 PING
+    $ valkey-cli -u redis://LJenkins:p%40ssw0rd@redis-16379.hosted.com:16379/0 PING
     PONG
 
 **NOTE:**
@@ -129,7 +129,7 @@ For TLS, use the scheme `rediss`.
 
 ## SSL/TLS
 
-By default, `redis-cli` uses a plain TCP connection to connect to Redis.
+By default, `valkey-cli` uses a plain TCP connection to connect to Valkey.
 You may enable SSL/TLS using the `--tls` option, along with `--cacert` or
 `--cacertdir` to configure a trusted root certificate bundle or directory.
 
@@ -139,21 +139,21 @@ you can specify a certificate and a corresponding private key using `--cert` and
 
 ## Getting input from other programs
 
-There are two ways you can use `redis-cli` in order to receive input from other
+There are two ways you can use `valkey-cli` in order to receive input from other
 commands via the standard input. One is to use the target payload as the last argument
-from *stdin*. For example, in order to set the Redis key `net_services`
+from *stdin*. For example, in order to set the Valkey key `net_services`
 to the content of the file `/etc/services` from a local file system, use the `-x`
 option:
 
-    $ redis-cli -x SET net_services < /etc/services
+    $ valkey-cli -x SET net_services < /etc/services
     OK
-    $ redis-cli GETRANGE net_services 0 50
+    $ valkey-cli GETRANGE net_services 0 50
     "#\n# Network services, Internet style\n#\n# Note that "
 
-In the first line of the above session, `redis-cli` was executed with the `-x` option and a file was redirected to the CLI's
+In the first line of the above session, `valkey-cli` was executed with the `-x` option and a file was redirected to the CLI's
 standard input as the value to satisfy the `SET net_services` command phrase. This is useful for scripting.
 
-A different approach is to feed `redis-cli` a sequence of commands written in a
+A different approach is to feed `valkey-cli` a sequence of commands written in a
 text file:
 
     $ cat /tmp/commands.txt
@@ -161,21 +161,21 @@ text file:
     INCR item:3374
     APPEND item:3374 xxx
     GET item:3374
-    $ cat /tmp/commands.txt | redis-cli
+    $ cat /tmp/commands.txt | valkey-cli
     OK
     (integer) 101
     (integer) 6
     "101xxx"
 
 All the commands in `commands.txt` are executed consecutively by
-`redis-cli` as if they were typed by the user in interactive mode. Strings can be
+`valkey-cli` as if they were typed by the user in interactive mode. Strings can be
 quoted inside the file if needed, so that it's possible to have single
 arguments with spaces, newlines, or other special characters:
 
     $ cat /tmp/commands.txt
     SET arg_example "This is a single argument"
     STRLEN arg_example
-    $ cat /tmp/commands.txt | redis-cli
+    $ cat /tmp/commands.txt | valkey-cli
     OK
     (integer) 25
 
@@ -195,7 +195,7 @@ to specify values such as 0.1 to represent 100 milliseconds).
 By default the interval (or delay) is set to 0, so commands are just executed
 ASAP:
 
-    $ redis-cli -r 5 INCR counter_value
+    $ valkey-cli -r 5 INCR counter_value
     (integer) 1
     (integer) 2
     (integer) 3
@@ -205,47 +205,47 @@ ASAP:
 To run the same command indefinitely, use `-1` as the count value.
 To monitor over time the RSS memory size it's possible to use the following command:
 
-    $ redis-cli -r -1 -i 1 INFO | grep rss_human
+    $ valkey-cli -r -1 -i 1 INFO | grep rss_human
     used_memory_rss_human:2.71M
     used_memory_rss_human:2.73M
     used_memory_rss_human:2.73M
     used_memory_rss_human:2.73M
     ... a new line will be printed each second ...
 
-## Mass insertion of data using `redis-cli`
+## Mass insertion of data using `valkey-cli`
 
-Mass insertion using `redis-cli` is covered in a separate page as it is a
+Mass insertion using `valkey-cli` is covered in a separate page as it is a
 worthwhile topic itself. Please refer to our [mass insertion guide](/topics/mass-insert).
 
 ## CSV output
 
-A CSV (Comma Separated Values) output feature exists within `redis-cli` to export data from Redis to an external program.  
+A CSV (Comma Separated Values) output feature exists within `valkey-cli` to export data from Valkey to an external program.  
 
-    $ redis-cli LPUSH mylist a b c d
+    $ valkey-cli LPUSH mylist a b c d
     (integer) 4
-    $ redis-cli --csv LRANGE mylist 0 -1
+    $ valkey-cli --csv LRANGE mylist 0 -1
     "d","c","b","a"
 
 Note that the `--csv` flag will only work on a single command, not the entirety of a DB as an export.
 
 ## Running Lua scripts
 
-The `redis-cli` has extensive support for using the debugging facility
-of Lua scripting, available with Redis 3.2 onwards. For this feature, refer to the [Redis Lua debugger documentation](/topics/ldb).
+The `valkey-cli` has extensive support for using the debugging facility
+of Lua scripting, available with Valkey 3.2 onwards. For this feature, refer to the [Valkey Lua debugger documentation](/topics/ldb).
 
-Even without using the debugger, `redis-cli` can be used to
+Even without using the debugger, `valkey-cli` can be used to
 run scripts from a file as an argument:
 
     $ cat /tmp/script.lua
     return redis.call('SET',KEYS[1],ARGV[1])
-    $ redis-cli --eval /tmp/script.lua location:hastings:temp , 23
+    $ valkey-cli --eval /tmp/script.lua location:hastings:temp , 23
     OK
 
-The Redis `EVAL` command takes the list of keys the script uses, and the
+The Valkey `EVAL` command takes the list of keys the script uses, and the
 other non key arguments, as different arrays. When calling `EVAL` you
 provide the number of keys as a number. 
 
-When calling `redis-cli` with the `--eval` option above, there is no need to specify the number of keys
+When calling `valkey-cli` with the `--eval` option above, there is no need to specify the number of keys
 explicitly. Instead it uses the convention of separating keys and arguments
 with a comma. This is why in the above call you see `location:hastings:temp , 23` as arguments.
 
@@ -257,23 +257,23 @@ complex work, the Lua debugger is recommended. It is possible to mix the two app
 Interactive mode
 ===
 
-We have explored how to use the Redis CLI as a command line program.
+We have explored how to use the Valkey CLI as a command line program.
 This is useful for scripts and certain types of testing, however most
-people will spend the majority of time in `redis-cli` using its interactive
+people will spend the majority of time in `valkey-cli` using its interactive
 mode.
 
-In interactive mode the user types Redis commands at the prompt. The command
+In interactive mode the user types Valkey commands at the prompt. The command
 is sent to the server, processed, and the reply is parsed back and rendered
 into a simpler form to read.
 
-Nothing special is needed for running the `redis-cli` in interactive mode -
+Nothing special is needed for running the `valkey-cli` in interactive mode -
 just execute it without any arguments
 
-    $ redis-cli
+    $ valkey-cli
     127.0.0.1:6379> PING
     PONG
 
-The string `127.0.0.1:6379>` is the prompt. It displays the connected Redis server instance's hostname and port.
+The string `127.0.0.1:6379>` is the prompt. It displays the connected Valkey server instance's hostname and port.
 
 The prompt updates as the connected server changes or when operating on a database different from the database number zero:
 
@@ -297,33 +297,33 @@ to connect to:
     PONG
 
 As you can see the prompt changes accordingly when connecting to a different server instance.
-If a connection is attempted to an instance that is unreachable, the `redis-cli` goes into disconnected
+If a connection is attempted to an instance that is unreachable, the `valkey-cli` goes into disconnected
 mode and attempts to reconnect with each new command:
 
     127.0.0.1:6379> CONNECT 127.0.0.1 9999
-    Could not connect to Redis at 127.0.0.1:9999: Connection refused
+    Could not connect to Valkey at 127.0.0.1:9999: Connection refused
     not connected> PING
-    Could not connect to Redis at 127.0.0.1:9999: Connection refused
+    Could not connect to Valkey at 127.0.0.1:9999: Connection refused
     not connected> PING
-    Could not connect to Redis at 127.0.0.1:9999: Connection refused
+    Could not connect to Valkey at 127.0.0.1:9999: Connection refused
 
-Generally after a disconnection is detected, `redis-cli` always attempts to
+Generally after a disconnection is detected, `valkey-cli` always attempts to
 reconnect transparently; if the attempt fails, it shows the error and
 enters the disconnected state. The following is an example of disconnection
 and reconnection:
 
     127.0.0.1:6379> INFO SERVER
-    Could not connect to Redis at 127.0.0.1:6379: Connection refused
+    Could not connect to Valkey at 127.0.0.1:6379: Connection refused
     not connected> PING
     PONG
     127.0.0.1:6379> 
     (now we are connected again)
 
-When a reconnection is performed, `redis-cli` automatically re-selects the
+When a reconnection is performed, `valkey-cli` automatically re-selects the
 last database number selected. However, all other states about the
 connection is lost, such as within a MULTI/EXEC transaction:
 
-    $ redis-cli
+    $ valkey-cli
     127.0.0.1:6379> MULTI
     OK
     127.0.0.1:6379> PING
@@ -334,12 +334,12 @@ connection is lost, such as within a MULTI/EXEC transaction:
     127.0.0.1:6379> EXEC
     (error) ERR EXEC without MULTI
 
-This is usually not an issue when using the `redis-cli` in interactive mode for
+This is usually not an issue when using the `valkey-cli` in interactive mode for
 testing, but this limitation should be known.
 
 ## Editing, history, completion and hints
 
-Because `redis-cli` uses the
+Because `valkey-cli` uses the
 [linenoise line editing library](http://github.com/antirez/linenoise), it
 always has line editing capabilities, without depending on `libreadline` or
 other optional libraries.
@@ -351,19 +351,19 @@ by the `HOME` environment variable. It is possible to use a different
 history filename by setting the `REDISCLI_HISTFILE` environment variable,
 and disable it by setting it to `/dev/null`.
 
-The `redis-cli` is also able to perform command-name completion by pressing the TAB
+The `valkey-cli` is also able to perform command-name completion by pressing the TAB
 key, as in the following example:
 
     127.0.0.1:6379> Z<TAB>
     127.0.0.1:6379> ZADD<TAB>
     127.0.0.1:6379> ZCARD<TAB>
 
-Once Redis command name has been entered at the prompt, the `redis-cli` will display
-syntax hints. Like command history, this behavior can be turned on and off via the `redis-cli` preferences.
+Once Valkey command name has been entered at the prompt, the `valkey-cli` will display
+syntax hints. Like command history, this behavior can be turned on and off via the `valkey-cli` preferences.
 
 ## Preferences
 
-There are two ways to customize `redis-cli` behavior. The file `.redisclirc`
+There are two ways to customize `valkey-cli` behavior. The file `.redisclirc`
 in the home directory is loaded by the CLI on startup. You can override the
 file's default location by setting the `REDISCLI_RCFILE` environment variable to
 an alternative path. Preferences can also be set during a CLI session, in which 
@@ -388,9 +388,9 @@ name by a number:
     (integer) 4
     (integer) 5
 
-## Showing help about Redis commands
+## Showing help about Valkey commands
 
-`redis-cli` provides online help for most Redis [commands](/commands), using the `HELP` command. The command can be used
+`valkey-cli` provides online help for most Valkey [commands](/commands), using the `HELP` command. The command can be used
 in two forms:
 
 * `HELP @<category>` shows all the commands about a given category. The
@@ -429,32 +429,32 @@ Using the `CLEAR` command in interactive mode clears the terminal's screen.
 Special modes of operation
 ===
 
-So far we saw two main modes of `redis-cli`.
+So far we saw two main modes of `valkey-cli`.
 
-* Command line execution of Redis commands.
+* Command line execution of Valkey commands.
 * Interactive "REPL" usage.
 
-The CLI performs other auxiliary tasks related to Redis that
+The CLI performs other auxiliary tasks related to Valkey that
 are explained in the next sections:
 
-* Monitoring tool to show continuous stats about a Redis server.
-* Scanning a Redis database for very large keys.
+* Monitoring tool to show continuous stats about a Valkey server.
+* Scanning a Valkey database for very large keys.
 * Key space scanner with pattern matching.
 * Acting as a [Pub/Sub](/topics/pubsub) client to subscribe to channels.
-* Monitoring the commands executed into a Redis instance.
-* Checking the [latency](/topics/latency) of a Redis server in different ways.
+* Monitoring the commands executed into a Valkey instance.
+* Checking the [latency](/topics/latency) of a Valkey server in different ways.
 * Checking the scheduler latency of the local computer.
-* Transferring RDB backups from a remote Redis server locally.
-* Acting as a Redis replica for showing what a replica receives.
+* Transferring RDB backups from a remote Valkey server locally.
+* Acting as a Valkey replica for showing what a replica receives.
 * Simulating [LRU](/topics/lru-cache) workloads for showing stats about keys hits.
 * A client for the Lua debugger.
 
 ## Continuous stats mode
 
-Continuous stats mode is probably one of the lesser known yet very useful features of `redis-cli` to monitor Redis instances in real time. To enable this mode, the `--stat` option is used.
+Continuous stats mode is probably one of the lesser known yet very useful features of `valkey-cli` to monitor Valkey instances in real time. To enable this mode, the `--stat` option is used.
 The output is very clear about the behavior of the CLI in this mode:
 
-    $ redis-cli --stat
+    $ valkey-cli --stat
     ------- data ------ --------------------- load -------------------- - child -
     keys       mem      clients blocked requests            connections
     506        1015.00K 1       0       24 (+0)             7
@@ -466,7 +466,7 @@ The output is very clear about the behavior of the CLI in this mode:
     508        3.40M    51      0       408642 (+86927)     257
     508        3.40M    51      0       497038 (+88396)     257
 
-In this mode a new line is printed every second with useful information and differences of request values between old data points. Memory usage, client connection counts, and various other statistics about the connected Redis database can be easily understood with this auxiliary `redis-cli` tool.
+In this mode a new line is printed every second with useful information and differences of request values between old data points. Memory usage, client connection counts, and various other statistics about the connected Valkey database can be easily understood with this auxiliary `valkey-cli` tool.
 
 The `-i <interval>` option in this case works as a modifier in order to
 change the frequency at which new lines are emitted. The default is one
@@ -474,12 +474,12 @@ second.
 
 ## Scanning for big keys
 
-In this special mode, `redis-cli` works as a key space analyzer. It scans the
+In this special mode, `valkey-cli` works as a key space analyzer. It scans the
 dataset for big keys, but also provides information about the data types
 that the data set consists of. This mode is enabled with the `--bigkeys` option,
 and produces verbose output:
 
-    $ redis-cli --bigkeys
+    $ valkey-cli --bigkeys
 
     # Scanning the entire keyspace to find biggest keys as well as
     # average sizes per key type.  You can use -i 0.01 to sleep 0.01 sec
@@ -507,7 +507,7 @@ and produces verbose output:
 
 In the first part of the output, each new key larger than the previous larger
 key (of the same type) encountered is reported. The summary section
-provides general stats about the data inside the Redis instance.
+provides general stats about the data inside the Valkey instance.
 
 The program uses the `SCAN` command, so it can be executed against a busy
 server without impacting the operations, however the `-i` option can be
@@ -524,14 +524,14 @@ ASAP if running against a very large data set.
 ## Getting a list of keys
 
 It is also possible to scan the key space, again in a way that does not
-block the Redis server (which does happen when you use a command
+block the Valkey server (which does happen when you use a command
 like `KEYS *`), and print all the key names, or filter them for specific
 patterns. This mode, like the `--bigkeys` option, uses the `SCAN` command,
 so keys may be reported multiple times if the dataset is changing, but no
 key would ever be missing, if that key was present since the start of the
 iteration. Because of the command that it uses this option is called `--scan`.
 
-    $ redis-cli --scan | head -10
+    $ valkey-cli --scan | head -10
     key-419
     key-71
     key-236
@@ -549,7 +549,7 @@ output.
 Scanning is able to use the underlying pattern matching capability of
 the `SCAN` command with the `--pattern` option.
 
-    $ redis-cli --scan --pattern '*-11*'
+    $ valkey-cli --scan --pattern '*-11*'
     key-114
     key-117
     key-118
@@ -565,7 +565,7 @@ the `SCAN` command with the `--pattern` option.
 Piping the output through the `wc` command can be used to count specific
 kind of objects, by key name:
 
-    $ redis-cli --scan --pattern 'user:*' | wc -l
+    $ valkey-cli --scan --pattern 'user:*' | wc -l
     3829433
 
 You can use `-i 0.01` to add a delay between calls to the `SCAN` command.
@@ -573,22 +573,22 @@ This will make the command slower but will significantly reduce load on the serv
 
 ## Pub/sub mode
 
-The CLI is able to publish messages in Redis Pub/Sub channels using
+The CLI is able to publish messages in Valkey Pub/Sub channels using
 the `PUBLISH` command. Subscribing to channels in order to receive
 messages is different - the terminal is blocked and waits for
-messages, so this is implemented as a special mode in `redis-cli`. Unlike
+messages, so this is implemented as a special mode in `valkey-cli`. Unlike
 other special modes this mode is not enabled by using a special option,
 but simply by using the `SUBSCRIBE` or `PSUBSCRIBE` command, which are available in
 interactive or command mode:
 
-    $ redis-cli PSUBSCRIBE '*'
+    $ valkey-cli PSUBSCRIBE '*'
     Reading messages... (press Ctrl-C to quit)
     1) "PSUBSCRIBE"
     2) "*"
     3) (integer) 1
 
 The *reading messages* message shows that we entered Pub/Sub mode.
-When another client publishes some message in some channel, such as with the command `redis-cli PUBLISH mychannel mymessage`, the CLI in Pub/Sub mode will show something such as:
+When another client publishes some message in some channel, such as with the command `valkey-cli PUBLISH mychannel mymessage`, the CLI in Pub/Sub mode will show something such as:
 
     1) "pmessage"
     2) "*"
@@ -598,12 +598,12 @@ When another client publishes some message in some channel, such as with the com
 This is very useful for debugging Pub/Sub issues.
 To exit the Pub/Sub mode just process `CTRL-C`.
 
-## Monitoring commands executed in Redis
+## Monitoring commands executed in Valkey
 
 Similarly to the Pub/Sub mode, the monitoring mode is entered automatically
-once you use the `MONITOR` command. All commands received by the active Redis instance will be printed to the standard output:
+once you use the `MONITOR` command. All commands received by the active Valkey instance will be printed to the standard output:
 
-    $ redis-cli MONITOR
+    $ valkey-cli MONITOR
     OK
     1460100081.165665 [0 127.0.0.1:51706] "set" "shipment:8000736522714:status" "sorting"
     1460100083.053365 [0 127.0.0.1:51707] "get" "shipment:8000736522714:status"
@@ -611,26 +611,26 @@ once you use the `MONITOR` command. All commands received by the active Redis in
 Note that it is possible to pipe the output, so you can monitor
 for specific patterns using tools such as `grep`.
 
-## Monitoring the latency of Redis instances
+## Monitoring the latency of Valkey instances
 
-Redis is often used in contexts where latency is very critical. Latency
+Valkey is often used in contexts where latency is very critical. Latency
 involves multiple moving parts within the application, from the client library
-to the network stack, to the Redis instance itself.
+to the network stack, to the Valkey instance itself.
 
-The `redis-cli` has multiple facilities for studying the latency of a Redis
+The `valkey-cli` has multiple facilities for studying the latency of a Valkey
 instance and understanding the latency's maximum, average and distribution.
 
 The basic latency-checking tool is the `--latency` option. Using this
-option the CLI runs a loop where the `PING` command is sent to the Redis
+option the CLI runs a loop where the `PING` command is sent to the Valkey
 instance and the time to receive a reply is measured. This happens 100
 times per second, and stats are updated in a real time in the console:
 
-    $ redis-cli --latency
+    $ valkey-cli --latency
     min: 0, max: 1, avg: 0.19 (427 samples)
 
 The stats are provided in milliseconds. Usually, the average latency of
 a very fast instance tends to be overestimated a bit because of the
-latency due to the kernel scheduler of the system running `redis-cli`
+latency due to the kernel scheduler of the system running `valkey-cli`
 itself, so the average latency of 0.19 above may easily be 0.01 or less.
 However this is usually not a big problem, since most developers are interested in
 events of a few milliseconds or more.
@@ -640,7 +640,7 @@ evolve during time. The `--latency-history` option is used for that
 purpose: it works exactly like `--latency`, but every 15 seconds (by
 default) a new sampling session is started from scratch:
 
-    $ redis-cli --latency-history
+    $ valkey-cli --latency-history
     min: 0, max: 1, avg: 0.14 (1314 samples) -- 15.01 seconds range
     min: 0, max: 1, avg: 0.18 (1299 samples) -- 15.00 seconds range
     min: 0, max: 1, avg: 0.20 (113 samples)^C
@@ -654,25 +654,25 @@ different percentages of samples, and different ASCII characters that indicate
 different latency figures. This mode is enabled using the `--latency-dist`
 option:
 
-    $ redis-cli --latency-dist
+    $ valkey-cli --latency-dist
     (output not displayed, requires a color terminal, try it!)
 
-There is another pretty unusual latency tool implemented inside `redis-cli`.
-It does not check the latency of a Redis instance, but the latency of the
-computer running `redis-cli`. This latency is intrinsic to the kernel scheduler, 
+There is another pretty unusual latency tool implemented inside `valkey-cli`.
+It does not check the latency of a Valkey instance, but the latency of the
+computer running `valkey-cli`. This latency is intrinsic to the kernel scheduler, 
 the hypervisor in case of virtualized instances, and so forth.
 
-Redis calls it *intrinsic latency* because it's mostly opaque to the programmer.
-If the Redis instance has high latency regardless of all the obvious things
+Valkey calls it *intrinsic latency* because it's mostly opaque to the programmer.
+If the Valkey instance has high latency regardless of all the obvious things
 that may be the source cause, it's worth to check what's the best your system
-can do by running `redis-cli` in this special mode directly in the system you
-are running Redis servers on.
+can do by running `valkey-cli` in this special mode directly in the system you
+are running Valkey servers on.
 
 By measuring the intrinsic latency, you know that this is the baseline,
-and Redis cannot outdo your system. In order to run the CLI
+and Valkey cannot outdo your system. In order to run the CLI
 in this mode, use the `--intrinsic-latency <test-time>`. Note that the test time is in seconds and dictates how long the test should run.
 
-    $ ./redis-cli --intrinsic-latency 5
+    $ ./valkey-cli --intrinsic-latency 5
     Max latency so far: 1 microseconds.
     Max latency so far: 7 microseconds.
     Max latency so far: 9 microseconds.
@@ -687,30 +687,30 @@ in this mode, use the `--intrinsic-latency <test-time>`. Note that the test time
     65433042 total runs (avg latency: 0.0764 microseconds / 764.14 nanoseconds per run).
     Worst run took 9671x longer than the average latency.
 
-IMPORTANT: this command must be executed on the computer that runs the Redis server instance, not on a different host. It does not connect to a Redis instance and performs the test locally.
+IMPORTANT: this command must be executed on the computer that runs the Valkey server instance, not on a different host. It does not connect to a Valkey instance and performs the test locally.
 
 In the above case, the system cannot do better than 739 microseconds of worst
 case latency, so one can expect certain queries to occasionally run less than 1 millisecond.
 
 ## Remote backups of RDB files
 
-During a Redis replication's first synchronization, the primary and the replica
+During a Valkey replication's first synchronization, the primary and the replica
 exchange the whole data set in the form of an RDB file. This feature is exploited
-by `redis-cli` in order to provide a remote backup facility that allows a
-transfer of an RDB file from any Redis instance to the local computer running
-`redis-cli`. To use this mode, call the CLI with the `--rdb <dest-filename>`
+by `valkey-cli` in order to provide a remote backup facility that allows a
+transfer of an RDB file from any Valkey instance to the local computer running
+`valkey-cli`. To use this mode, call the CLI with the `--rdb <dest-filename>`
 option:
 
-    $ redis-cli --rdb /tmp/dump.rdb
+    $ valkey-cli --rdb /tmp/dump.rdb
     SYNC sent to master, writing 13256 bytes to '/tmp/dump.rdb'
     Transfer finished with success.
 
 This is a simple but effective way to ensure disaster recovery
-RDB backups exist of your Redis instance. When using this options in
+RDB backups exist of your Valkey instance. When using this options in
 scripts or `cron` jobs, make sure to check the return value of the command.
 If it is non zero, an error occurred as in the following example:
 
-    $ redis-cli --rdb /tmp/dump.rdb
+    $ valkey-cli --rdb /tmp/dump.rdb
     SYNC with master failed: -ERR Can't SYNC while not connected with my master
     $ echo $?
     1
@@ -718,12 +718,12 @@ If it is non zero, an error occurred as in the following example:
 ## Replica mode
 
 The replica mode of the CLI is an advanced feature useful for
-Redis developers and for debugging operations.
+Valkey developers and for debugging operations.
 It allows for the inspection of the content a primary sends to its replicas in the replication
 stream in order to propagate the writes to its replicas. The option
 name is simply `--replica`. The following is a working example:
 
-    $ redis-cli --replica
+    $ valkey-cli --replica
     SYNC with master, discarding 13256 bytes of bulk transfer...
     SYNC done. Logging commands from master.
     "PING"
@@ -741,30 +741,30 @@ in order to improve the bug report.
 
 ## Performing an LRU simulation
 
-Redis is often used as a cache with [LRU eviction](/topics/lru-cache).
+Valkey is often used as a cache with [LRU eviction](/topics/lru-cache).
 Depending on the number of keys and the amount of memory allocated for the
 cache (specified via the `maxmemory` directive), the amount of cache hits
 and misses will change. Sometimes, simulating the rate of hits is very
 useful to correctly provision your cache.
 
-The `redis-cli` has a special mode where it performs a simulation of GET and SET
+The `valkey-cli` has a special mode where it performs a simulation of GET and SET
 operations, using an 80-20% power law distribution in the requests pattern.
 This means that 20% of keys will be requested 80% of times, which is a
 common distribution in caching scenarios.
 
-Theoretically, given the distribution of the requests and the Redis memory
+Theoretically, given the distribution of the requests and the Valkey memory
 overhead, it should be possible to compute the hit rate analytically
-with a mathematical formula. However, Redis can be configured with
+with a mathematical formula. However, Valkey can be configured with
 different LRU settings (number of samples) and LRU's implementation, which
-is approximated in Redis, changes a lot between different versions. Similarly
+is approximated in Valkey, changes a lot between different versions. Similarly
 the amount of memory per key may change between versions. That is why this
-tool was built: its main motivation was for testing the quality of Redis' LRU
+tool was built: its main motivation was for testing the quality of Valkey' LRU
 implementation, but now is also useful for testing how a given version
 behaves with the settings originally intended for deployment.
 
 To use this mode, specify the amount of keys in the test and configure a sensible `maxmemory` setting as a first attempt.
 
-IMPORTANT NOTE: Configuring the `maxmemory` setting in the Redis configuration
+IMPORTANT NOTE: Configuring the `maxmemory` setting in the Valkey configuration
 is crucial: if there is no cap to the maximum memory usage, the hit will
 eventually be 100% since all the keys can be stored in memory. If too many keys are specified with maximum memory, eventually all of the computer RAM will be used. It is also needed to configure an appropriate
 *maxmemory policy*; most of the time `allkeys-lru` is selected.
@@ -775,7 +775,7 @@ simulation using 10 million keys.
 WARNING: the test uses pipelining and will stress the server, don't use it
 with production instances.
 
-    $ ./redis-cli --lru-test 10000000
+    $ ./valkey-cli --lru-test 10000000
     156000 Gets/sec | Hits: 4552 (2.92%) | Misses: 151448 (97.08%)
     153750 Gets/sec | Hits: 12906 (8.39%) | Misses: 140844 (91.61%)
     159250 Gets/sec | Hits: 21811 (13.70%) | Misses: 137439 (86.30%)
