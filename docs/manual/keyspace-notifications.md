@@ -1,15 +1,15 @@
 ---
-title: "Redis keyspace notifications"
+title: "Valkey keyspace notifications"
 linkTitle: "Keyspace notifications"
 weight: 4
 description: >
-    Monitor changes to Redis keys and values in real time
+    Monitor changes to Valkey keys and values in real time
 aliases:
     - /topics/notifications
 ---
 
 Keyspace notifications allow clients to subscribe to Pub/Sub channels in order
-to receive events affecting the Redis data set in some way.
+to receive events affecting the Valkey data set in some way.
 
 Examples of events that can be received are:
 
@@ -17,14 +17,14 @@ Examples of events that can be received are:
 * All the keys receiving an LPUSH operation.
 * All the keys expiring in the database 0.
 
-Note: Redis Pub/Sub is *fire and forget* that is, if your Pub/Sub client disconnects,
+Note: Valkey Pub/Sub is *fire and forget* that is, if your Pub/Sub client disconnects,
 and reconnects later, all the events delivered during the time the client was
 disconnected are lost.
 
 ### Type of events
 
 Keyspace notifications are implemented by sending two distinct types of events
-for every operation affecting the Redis data space. For instance a `DEL`
+for every operation affecting the Valkey data space. For instance a `DEL`
 operation targeting the key named `mykey` in database `0` will trigger
 the delivering of two messages, exactly equivalent to the following two
 `PUBLISH` commands:
@@ -53,7 +53,7 @@ just the subset of events we are interested in.
 
 By default keyspace event notifications are disabled because while not
 very sensible the feature uses some CPU power. Notifications are enabled
-using the `notify-keyspace-events` of redis.conf or via the **CONFIG SET**.
+using the `notify-keyspace-events` of Valkey.conf or via the **CONFIG SET**.
 
 Setting the parameter to the empty string disables notifications.
 In order to enable the feature a non-empty string is used, composed of multiple
@@ -146,13 +146,13 @@ Different commands generate different kind of events according to the following 
 If in doubt about how events are generated for a given command, the simplest
 thing to do is to watch yourself:
 
-    $ redis-cli config set notify-keyspace-events KEA
-    $ redis-cli --csv psubscribe '__key*__:*'
+    $ valkey-cli config set notify-keyspace-events KEA
+    $ valkey-cli --csv psubscribe '__key*__:*'
     Reading messages... (press Ctrl-C to quit)
     "psubscribe","__key*__:*",1
 
-At this point use `redis-cli` in another terminal to send commands to the
-Redis server and watch the events generated:
+At this point use `valkey-cli` in another terminal to send commands to the
+Valkey server and watch the events generated:
 
     "pmessage","__key*__:*","__keyspace@0__:foo","set"
     "pmessage","__key*__:*","__keyevent@0__:set","foo"
@@ -160,23 +160,17 @@ Redis server and watch the events generated:
 
 ### Timing of expired events
 
-Keys with a time to live associated are expired by Redis in two ways:
+Keys with a time to live associated are expired by Valkey in two ways:
 
 * When the key is accessed by a command and is found to be expired.
 * Via a background system that looks for expired keys in the background, incrementally, in order to be able to also collect keys that are never accessed.
 
-The `expired` events are generated when a key is accessed and is found to be expired by one of the above systems, as a result there are no guarantees that the Redis server will be able to generate the `expired` event at the time the key time to live reaches the value of zero.
+The `expired` events are generated when a key is accessed and is found to be expired by one of the above systems, as a result there are no guarantees that the Valkey server will be able to generate the `expired` event at the time the key time to live reaches the value of zero.
 
 If no command targets the key constantly, and there are many keys with a TTL associated, there can be a significant delay between the time the key time to live drops to zero, and the time the `expired` event is generated.
 
-Basically `expired` events **are generated when the Redis server deletes the key** and not when the time to live theoretically reaches the value of zero.
+Basically `expired` events **are generated when the Valkey server deletes the key** and not when the time to live theoretically reaches the value of zero.
 
 ### Events in a cluster
 
-Every node of a Redis cluster generates events about its own subset of the keyspace as described above. However, unlike regular Pub/Sub communication in a cluster, events' notifications **are not** broadcasted to all nodes. Put differently, keyspace events are node-specific. This means that to receive all keyspace events of a cluster, clients need to subscribe to each of the nodes.
-
-@history
-
-*   `>= 6.0`: Key miss events were added.
-*   `>= 7.0`: Event type `new` added
-
+Every node of a Valkey cluster generates events about its own subset of the keyspace as described above. However, unlike regular Pub/Sub communication in a cluster, events' notifications **are not** broadcasted to all nodes. Put differently, keyspace events are node-specific. This means that to receive all keyspace events of a cluster, clients need to subscribe to each of the nodes.

@@ -2,7 +2,7 @@
 title: "ACL"
 linkTitle: "ACL"
 weight: 1
-description: Redis Access Control List
+description: Valkey Access Control List
 aliases: [
     /topics/acl,
     /docs/manual/security/acl,
@@ -10,36 +10,23 @@ aliases: [
 ]
 ---
 
-The Redis ACL, short for Access Control List, is the feature that allows certain
-connections to be limited in terms of the commands that can be executed and the
-keys that can be accessed. The way it works is that, after connecting, a client
-is required to provide a username and a valid password to authenticate. If authentication succeeded, the connection is associated with a given
-user and the limits the user has. Redis can be configured so that new
-connections are already authenticated with a "default" user (this is the
-default configuration). Configuring the default user has, as a side effect,
-the ability to provide only a specific subset of functionalities to connections
-that are not explicitly authenticated.
+The Valkey ACL, short for Access Control List, is a feature that allows certain connections to be limited in terms of the commands that can be executed and the keys that can be accessed.
+The way it works is that, after connecting, a client is required to provide a username and a valid password to authenticate.
+If authentication succeeded, the connection is associated with a given user and the limits the user has.
+Valkey can be configured so that new connections are already authenticated with a "default" user (this is the default configuration).
+Configuring the default user has, as a side effect, the ability to provide only a specific subset of functionalities to connections that are not explicitly authenticated.
 
-In the default configuration, Redis 6 (the first version to have ACLs) works
-exactly like older versions of Redis. Every new connection is
-capable of calling every possible command and accessing every key, so the
-ACL feature is backward compatible with old clients and applications. Also
-the old way to configure a password, using the **requirepass** configuration
-directive, still works as expected. However, it now
-sets a password for the default user.
-
-The Redis `AUTH` command was extended in Redis 6, so now it is possible to
-use it in the two-arguments form:
+The standard way to authenticate is the two-argument form of the `AUTH` command:
 
     AUTH <username> <password>
 
-Here's an example of the old form:
+If the password is valid matches, the connection will be authenticated to the user with the name `<username>`.
+
+When the single argument form of the command is used, where only the password is specified, it is assumed that the implicit username is "default".
 
     AUTH <password>
 
-What happens is that the username used to authenticate is "default", so
-just specifying the password implies that we want to authenticate against
-the default user. This provides backward compatibility.
+This form authenticates against the "default" user's password, either set by ACLs or by setting `requirepass`.
 
 ## When ACLs are useful
 
@@ -48,11 +35,11 @@ accomplish by implementing this layer of protection. Normally there are
 two main goals that are well served by ACLs:
 
 1. You want to improve security by restricting the access to commands and keys, so that untrusted clients have no access and trusted clients have just the minimum access level to the database in order to perform the work needed. For instance, certain clients may just be able to execute read only commands.
-2. You want to improve operational safety, so that processes or humans accessing Redis are not allowed to damage the data or the configuration due to software errors or manual mistakes. For instance, there is no reason for a worker that fetches delayed jobs from Redis to be able to call the `FLUSHALL` command.
+2. You want to improve operational safety, so that processes or humans accessing Valkey are not allowed to damage the data or the configuration due to software errors or manual mistakes. For instance, there is no reason for a worker that fetches delayed jobs from Valkey to be able to call the `FLUSHALL` command.
 
-Another typical usage of ACLs is related to managed Redis instances. Redis is
+Another typical usage of ACLs is related to managed Valkey instances. Valkey is
 often provided as a managed service both by internal company teams that handle
-the Redis infrastructure for the other internal customers they have, or is
+the Valkey infrastructure for the other internal customers they have, or is
 provided in a software-as-a-service setup by cloud providers. In both 
 setups, we want to be sure that configuration commands are excluded for the
 customers.
@@ -67,13 +54,13 @@ important to understand what the user is really able to do.
 By default there is a single user defined, called *default*. We
 can use the `ACL LIST` command in order to check the currently active ACLs
 and verify what the configuration of a freshly started, defaults-configured
-Redis instance is:
+Valkey instance is:
 
     > ACL LIST
     1) "user default on nopass ~* &* +@all"
 
 The command above reports the list of users in the same format that is
-used in the Redis configuration files, by translating the current ACLs set
+used in the Valkey configuration files, by translating the current ACLs set
 for the users back into their description.
 
 The first two words in each line are "user" followed by the username. The
@@ -102,7 +89,7 @@ Enable and disallow users:
 Allow and disallow commands:
 
 * `+<command>`: Add the command to the list of commands the user can call. Can be used with `|` for allowing subcommands (e.g "+config|get").
-* `-<command>`: Remove the command to the list of commands the user can call. Starting Redis 7.0, it can be used with `|` for blocking subcommands (e.g "-config|set").
+* `-<command>`: Remove the command to the list of commands the user can call. Starting Valkey 7.0, it can be used with `|` for blocking subcommands (e.g "-config|set").
 * `+@<category>`: Add all the commands in such category to be called by the user, with valid categories being like @admin, @set, @sortedset, ... and so forth, see the full list by calling the `ACL CAT` command. The special category @all means all the commands, both the ones currently present in the server, and the ones that will be loaded in the future via modules.
 * `-@<category>`: Like `+@<category>` but removes the commands from the list of commands the client can call.
 * `+<command>|first-arg`: Allow a specific first argument of an otherwise disabled command. It is only supported on commands with no sub-commands, and is not allowed as negative form like -SELECT|1, only additive starting with "+". This feature is deprecated and may be removed in the future.
@@ -112,15 +99,15 @@ Allow and disallow commands:
 Allow and disallow certain keys and key permissions:
 
 * `~<pattern>`: Add a pattern of keys that can be mentioned as part of commands. For instance `~*` allows all the keys. The pattern is a glob-style pattern like the one of `KEYS`. It is possible to specify multiple patterns.
-* `%R~<pattern>`: (Available in Redis 7.0 and later) Add the specified read key pattern. This behaves similar to the regular key pattern but only grants permission to read from keys that match the given pattern. See [key permissions](#key-permissions) for more information.
-* `%W~<pattern>`: (Available in Redis 7.0 and later) Add the specified write key pattern. This behaves similar to the regular key pattern but only grants permission to write to keys that match the given pattern. See [key permissions](#key-permissions) for more information.
-* `%RW~<pattern>`: (Available in Redis 7.0 and later) Alias for `~<pattern>`. 
+* `%R~<pattern>`: Add the specified read key pattern. This behaves similar to the regular key pattern but only grants permission to read from keys that match the given pattern. See [key permissions](#key-permissions) for more information.
+* `%W~<pattern>`: Add the specified write key pattern. This behaves similar to the regular key pattern but only grants permission to write to keys that match the given pattern. See [key permissions](#key-permissions) for more information.
+* `%RW~<pattern>`: Alias for `~<pattern>`. 
 * `allkeys`: Alias for `~*`.
 * `resetkeys`: Flush the list of allowed keys patterns. For instance the ACL `~foo:* ~bar:* resetkeys ~objects:*`, will only allow the client to access keys that match the pattern `objects:*`.
 
 Allow and disallow Pub/Sub channels:
 
-* `&<pattern>`: (Available in Redis 6.2 and later) Add a glob style pattern of Pub/Sub channels that can be accessed by the user. It is possible to specify multiple channel patterns. Note that pattern matching is done only for channels mentioned by `PUBLISH` and `SUBSCRIBE`, whereas `PSUBSCRIBE` requires a literal match between its channel patterns and those allowed for user.
+* `&<pattern>`: Add a glob style pattern of Pub/Sub channels that can be accessed by the user. It is possible to specify multiple channel patterns. Note that pattern matching is done only for channels mentioned by `PUBLISH` and `SUBSCRIBE`, whereas `PSUBSCRIBE` requires a literal match between its channel patterns and those allowed for user.
 * `allchannels`: Alias for `&*` that allows the user to access all Pub/Sub channels.
 * `resetchannels`: Flush the list of allowed channel patterns and disconnect the user's Pub/Sub clients if these are no longer able to access their respective channels and/or channel patterns.
 
@@ -137,8 +124,8 @@ Configure valid passwords for the user:
 
 Configure selectors for the user:
 
-* `(<rule list>)`: (Available in Redis 7.0 and later) Create a new selector to match rules against. Selectors are evaluated after the user permissions, and are evaluated according to the order they are defined. If a command matches either the user permissions or any selector, it is allowed. See [selectors](#selectors) for more information.
-* `clearselectors`: (Available in Redis 7.0 and later) Delete all of the selectors attached to the user.
+* `(<rule list>)`: Create a new selector to match rules against. Selectors are evaluated after the user permissions, and are evaluated according to the order they are defined. If a command matches either the user permissions or any selector, it is allowed. See [selectors](#selectors) for more information.
+* `clearselectors`: Delete all of the selectors attached to the user.
 
 Reset the user:
 
@@ -179,11 +166,6 @@ The new user "alice" is:
 * Cannot access any command. Note that the user is created by default without the ability to access any command, so the `-@all` in the output above could be omitted; however, `ACL LIST` attempts to be explicit rather than implicit.
 * There are no key patterns that the user can access.
 * There are no Pub/Sub channels that the user can access.
-
-New users are created with restrictive permissions by default. Starting with Redis 6.2, ACL provides Pub/Sub channels access management as well. To ensure backward compatibility with version 6.0 when upgrading to Redis 6.2, new users are granted the 'allchannels' permission by default. The default can be set to `resetchannels` via the `acl-pubsub-default` configuration directive.
-
-From 7.0, The `acl-pubsub-default` value is set to `resetchannels` to restrict the channels access by default to provide better security.
-The default can be set to `allchannels` via the `acl-pubsub-default` configuration directive to be compatible with previous versions.
 
 Such user is completely useless. Let's try to define the user so that
 it is active, has a password, and can access with only the `GET` command
@@ -232,7 +214,7 @@ The `ACL GETUSER` returns a field-value array that describes the user in more pa
     5# "channels" => ""
     6# "selectors" => (empty array)
 
-*Note: from now on, we'll continue using the Redis default protocol, version 2*
+*Note: from now on, we'll continue using the Valkey default protocol, version 2*
 
 Using another `ACL SETUSER` command (from a different user, because alice cannot run the `ACL` command), we can add multiple patterns to the user:
 
@@ -275,12 +257,12 @@ really annoying, so instead we do things like this:
     > ACL SETUSER antirez on +@all -@dangerous >42a979... ~*
 
 By saying +@all and -@dangerous, we included all the commands and later removed
-all the commands that are tagged as dangerous inside the Redis command table.
+all the commands that are tagged as dangerous inside the Valkey command table.
 Note that command categories **never include modules commands** with
 the exception of +@all. If you say +@all, all the commands can be executed by
 the user, even future commands loaded via the modules system. However if you
 use the ACL rule +@read or any other, the modules commands are always
-excluded. This is very important because you should just trust the Redis
+excluded. This is very important because you should just trust the Valkey
 internal command table. Modules may expose dangerous things and in
 the case of an ACL that is just additive, that is, in the form of `+@all -...`
 You should be absolutely sure that you'll never include what you did not mean
@@ -321,7 +303,7 @@ The following is a list of command categories and their meanings:
 * **transaction** - `WATCH` / `MULTI` / `EXEC` related commands.
 * **write** - Writing to keys (values or metadata).
 
-Redis can also show you a list of all categories and the exact commands each category includes using the Redis `ACL CAT` command. It can be used in two forms:
+Valkey can also show you a list of all categories and the exact commands each category includes using the Valkey `ACL CAT` command. It can be used in two forms:
 
     ACL CAT -- Will just list all the categories available
     ACL CAT <category-name> -- Will list all the commands inside the category
@@ -372,16 +354,15 @@ excluded because they are read-only commands.
 
 ## Allow/block subcommands
 
-Starting from Redis 7.0, subcommands can be allowed/blocked just like other
+Subcommands can be allowed/blocked just like other
 commands (by using the separator `|` between the command and subcommand, for
 example: `+config|get` or `-config|set`)
 
-That is true for all commands except DEBUG. In order to allow/block specific
-DEBUG subcommands, see the next section.
+That is true for all commands except DEBUG. In order to allow/block specific DEBUG subcommands, see the next section.
 
 ## Allow the first-arg of a blocked command
 
-**Note: This feature is deprecated since Redis 7.0 and may be removed in the future.**
+**Note: This feature is deprecated and may be removed in the future.**
 
 Sometimes the ability to exclude or include a command or a subcommand as a whole is not enough.
 Many deployments may not be happy providing the ability to execute a `SELECT` for any DB, but may
@@ -405,7 +386,7 @@ Note that first-arg matching may add some performance penalty; however, it is ha
 additional CPU cost is only paid when such commands are called, and not when
 other commands are called.
 
-It is possible to use this mechanism in order to allow subcommands in Redis
+It is possible to use this mechanism in order to allow subcommands in Valkey
 versions prior to 7.0 (see above section).
 
 ## +@all VS -@all
@@ -415,7 +396,7 @@ ACLs based on adding/removing single commands.
 
 ## Selectors
 
-Starting with Redis 7.0, Redis supports adding multiple sets of rules that are evaluated independently of each other.
+Valkey supports adding multiple sets of rules that are evaluated independently of each other.
 These secondary sets of permissions are called selectors and added by wrapping a set of rules within parentheses.
 In order to execute a command, either the root permissions (rules defined outside of parenthesis) or any of the selectors (rules defined inside parenthesis) must match the given command.
 Internally, the root permissions are checked first followed by selectors in the order they were added.
@@ -429,7 +410,7 @@ Note that `clearselectors` does not remove the root permissions.
 
 ## Key permissions
 
-Starting with Redis 7.0, key patterns can also be used to define how a command is able to touch a key.
+key patterns can also be used to define how a command is able to touch a key.
 This is achieved through rules that define key permissions.
 The key permission rules take the form of `%(<permission>)~<pattern>`.
 Permissions are defined as individual characters that map to the following key permissions:
@@ -465,7 +446,7 @@ If an application needs to make sure no data is accessed from a key, including s
 
 ## How passwords are stored internally
 
-Redis internally stores passwords hashed with SHA256. If you set a password
+Valkey internally stores passwords hashed with SHA256. If you set a password
 and check the output of `ACL LIST` or `ACL GETUSER`, you'll see a long hex
 string that looks pseudo random. Here is an example, because in the previous
 examples, for the sake of brevity, the long hex string was trimmed:
@@ -486,7 +467,7 @@ examples, for the sake of brevity, the long hex string was trimmed:
 
 Using SHA256 provides the ability to avoid storing the password in clear text
 while still allowing for a very fast `AUTH` command, which is a very important
-feature of Redis and is coherent with what clients expect from Redis.
+feature of Valkey and is coherent with what clients expect from Valkey.
 
 However ACL *passwords* are not really passwords. They are shared secrets
 between the server and the client, because the password is
@@ -494,7 +475,7 @@ not an authentication token used by a human being. For instance:
 
 * There are no length limits, the password will just be memorized in some client software. There is no human that needs to recall a password in this context.
 * The ACL password does not protect any other thing. For example, it will never be the password for some email account.
-* Often when you are able to access the hashed password itself, by having full access to the Redis commands of a given server, or corrupting the system itself, you already have access to what the password is protecting: the Redis instance stability and the data it contains.
+* Often when you are able to access the hashed password itself, by having full access to the Valkey commands of a given server, or corrupting the system itself, you already have access to what the password is protecting: the Valkey instance stability and the data it contains.
 
 For this reason, slowing down the password authentication, in order to use an
 algorithm that uses time and space to make password cracking hard,
@@ -510,21 +491,21 @@ generator:
 The command outputs a 32-byte (256-bit) pseudorandom string converted to a
 64-byte alphanumerical string. This is long enough to avoid attacks and short
 enough to be easy to manage, cut & paste, store, and so forth. This is what
-you should use in order to generate Redis passwords.
+you should use in order to generate Valkey passwords.
 
 ## Use an external ACL file
 
-There are two ways to store users inside the Redis configuration:
+There are two ways to store users inside the Valkey configuration:
 
-1. Users can be specified directly inside the `redis.conf` file.
+1. Users can be specified directly inside the `valkey.conf` file.
 2. It is possible to specify an external ACL file.
 
-The two methods are *mutually incompatible*, so Redis will ask you to use one
-or the other. Specifying users inside `redis.conf` is
+The two methods are *mutually incompatible*, so Valkey will ask you to use one
+or the other. Specifying users inside `valkey.conf` is
 good for simple use cases. When there are multiple users to define, in a
 complex environment, we recommend you use the ACL file instead.
 
-The format used inside `redis.conf` and in the external ACL file is exactly
+The format used inside `valkey.conf` and in the external ACL file is exactly
 the same, so it is trivial to switch from one to the other, and is
 the following:
 
@@ -537,15 +518,15 @@ For instance:
 When you want to use an external ACL file, you are required to specify
 the configuration directive called `aclfile`, like this:
 
-    aclfile /etc/redis/users.acl
+    aclfile /etc/valkey/users.acl
 
-When you are just specifying a few users directly inside the `redis.conf`
+When you are just specifying a few users directly inside the `valkey.conf`
 file, you can use `CONFIG REWRITE` in order to store the new user configuration
 inside the file by rewriting it.
 
 The external ACL file however is more powerful. You can do the following:
 
-* Use `ACL LOAD` if you modified the ACL file manually and you want Redis to reload the new configuration. Note that this command is able to load the file *only if all the users are correctly specified*. Otherwise, an error is reported to the user, and the old configuration will remain valid.
+* Use `ACL LOAD` if you modified the ACL file manually and you want Valkey to reload the new configuration. Note that this command is able to load the file *only if all the users are correctly specified*. Otherwise, an error is reported to the user, and the old configuration will remain valid.
 * Use `ACL SAVE` to save the current ACL configuration to the ACL file.
 
 Note that `CONFIG REWRITE` does not also trigger `ACL SAVE`. When you use
@@ -553,8 +534,8 @@ an ACL file, the configuration and the ACLs are handled separately.
 
 ## ACL rules for Sentinel and Replicas
 
-In case you don't want to provide Redis replicas and Redis Sentinel instances
-full access to your Redis instances, the following is the set of commands
+In case you don't want to provide Valkey replicas and Valkey Sentinel instances
+full access to your Valkey instances, the following is the set of commands
 that must be allowed in order for everything to work correctly.
 
 For Sentinel, allow the user to access the following commands both in the master and replica instances:
@@ -565,7 +546,7 @@ Sentinel does not need to access any key in the database but does use Pub/Sub, s
 
     ACL SETUSER sentinel-user on >somepassword allchannels +multi +slaveof +ping +exec +subscribe +config|rewrite +role +publish +info +client|setname +client|kill +script|kill
 
-Redis replicas require the following commands to be allowed on the master instance:
+Valkey replicas require the following commands to be allowed on the master instance:
 
 * PSYNC, REPLCONF, PING
 
