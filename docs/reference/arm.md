@@ -34,7 +34,6 @@ run as expected.
 
 ## Building Redis in the Pi
 
-* Download Redis version 4.0 or higher.
 * Use `make` as usual to create the executable.
 
 There is nothing special in the process. The only difference is that by

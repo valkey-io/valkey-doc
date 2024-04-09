@@ -302,9 +302,9 @@ Please refer to the [Data type conversion](#data-type-conversion) for more infor
 **Note:**
 this feature is only available when script effects replication is employed.
 Calling it when using verbatim script replication will result in an error.
-As of Redis version 2.6.0, scripts were replicated verbatim, meaning that the scripts' source code was sent for execution by replicas and stored in the AOF.
+Scripts were replicated verbatim, meaning that the scripts' source code was sent for execution by replicas and stored in the AOF.
 An alternative replication mode allows replicating only the scripts' effects.
-As of Redis version 7.0, script replication is no longer supported, and the only replication mode available is script effects replication.
+Script replication is no longer supported, and the only replication mode available is script effects replication.
 
 **Warning:**
 this is an advanced feature. Misuse can cause damage by violating the contract that binds the Redis master, its replicas, and AOF contents to hold the same logical content.
@@ -637,9 +637,8 @@ That means, for example, that returning the RESP3 map type to a RESP2 connection
 ### Using `SELECT` inside scripts
 
 You can call the `SELECT` command from your Lua scripts, like you can with any normal client connection.
-However, one subtle aspect of the behavior changed between Redis versions 2.8.11 and 2.8.12.
-Prior to Redis version 2.8.12, the database selected by the Lua script was *set as the current database* for the client connection that had called it.
-As of Redis version 2.8.12, the database selected by the Lua script only affects the execution context of the script, and does not modify the database that's selected by the client calling the script.
+The database selected by the Lua script was *set as the current database* for the client connection that had called it.
+The database selected by the Lua script only affects the execution context of the script, and does not modify the database that's selected by the client calling the script.
 This semantic change between patch level releases was required since the old behavior was inherently incompatible with Redis' replication and introduced bugs.
 
 ## Runtime libraries
