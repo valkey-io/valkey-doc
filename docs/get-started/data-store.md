@@ -79,10 +79,3 @@ SCAN 0 MATCH "bike:*" COUNT 100
 {{< /clients-example >}}
 
 [SCAN](/commands/scan/) returns a cursor position, allowing you to scan iteratively for the next batch of keys until you reach the cursor value 0.
-
-## Next steps
-
-You can address more use cases with Redis by learning about Redis Stack. Here are two additional quick start guides:
-
-* [Redis as a document database](/docs/get-started/document-database/)
-* [Redis as a vector database](/docs/get-started/vector-database/)

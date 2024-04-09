@@ -13,7 +13,7 @@ Install Redis and the Redis client, then connect your .NET application to a Redi
 ## NRedisStack
 
 [NRedisStack](https://github.com/redis/NRedisStack) is a .NET client for Redis.
-`NredisStack` requires a running Redis or [Redis Stack](https://redis.io/docs/getting-started/install-stack/) server. See [Getting started](/docs/getting-started/) for Redis installation instructions.
+`NredisStack` requires a running Redis server. See [Getting started](/docs/getting-started/) for Redis installation instructions.
 
 ### Install
 
@@ -29,7 +29,6 @@ Connect to localhost on port 6379.
 
 ```
 using NRedisStack;
-using NRedisStack.RedisStackCommands;
 using StackExchange.Redis;
 //...
 ConnectionMultiplexer redis = ConnectionMultiplexer.Connect("localhost");
@@ -58,20 +57,6 @@ var hashFields = db.HashGetAll("user-session:123");
 Console.WriteLine(String.Join("; ", hashFields));
 // Prints: 
 // name: John; surname: Smith; company: Redis; age: 29
-```
-
-To access Redis Stack capabilities, you should use appropriate interface like this:
-
-```
-IBloomCommands bf = db.BF();
-ICuckooCommands cf = db.CF();
-ICmsCommands cms = db.CMS();
-IGraphCommands graph = db.GRAPH();
-ITopKCommands topk = db.TOPK();
-ITdigestCommands tdigest = db.TDIGEST();
-ISearchCommands ft = db.FT();
-IJsonCommands json = db.JSON();
-ITimeSeriesCommands ts = db.TS();
 ```
 
 #### Connect to a Redis cluster
@@ -159,115 +144,6 @@ conn.StringSet("foo", "bar");
 Console.WriteLine(conn.StringGet("foo"));   
 ```
 
-### Example: Indexing and querying JSON documents
-
-This example shows how to convert Redis search results to JSON format using `NRedisStack`.
-
-Make sure that you have Redis Stack and `NRedisStack` installed. 
-
-Import dependencies and connect to the Redis server:
-
-```csharp
-using NRedisStack;
-using NRedisStack.RedisStackCommands;
-using NRedisStack.Search;
-using NRedisStack.Search.Aggregation;
-using NRedisStack.Search.Literals.Enums;
-using StackExchange.Redis;
-
-// ...
-
-ConnectionMultiplexer redis = ConnectionMultiplexer.Connect("localhost");
-```
-
-Get a reference to the database and for search and JSON commands.
-
-```csharp
-var db = redis.GetDatabase();
-var ft = db.FT();
-var json = db.JSON();
-```
-
-Let's create some test data to add to your database.
-
-```csharp
-var user1 = new {
-    name = "Paul John",
-    email = "paul.john@example.com",
-    age = 42,
-    city = "London"
-};
-
-var user2 = new {
-    name = "Eden Zamir",
-    email = "eden.zamir@example.com",
-    age = 29,
-    city = "Tel Aviv"
-};
-
-var user3 = new {
-    name = "Paul Zamir",
-    email = "paul.zamir@example.com",
-    age = 35,
-    city = "Tel Aviv"
-};
-```
-
-Create an index. In this example, all JSON documents with the key prefix `user:` are indexed. For more information, see [Query syntax](/docs/interact/search-and-query/query/).
-
-```csharp
-var schema = new Schema()
-    .AddTextField(new FieldName("$.name", "name"))
-    .AddTagField(new FieldName("$.city", "city"))
-    .AddNumericField(new FieldName("$.age", "age"));
-
-ft.Create(
-    "idx:users",
-    new FTCreateParams().On(IndexDataType.JSON).Prefix("user:"),
-    schema);
-```
-
-Use `JSON.SET` to set each user value at the specified path.
-
-```csharp
-json.Set("user:1", "$", user1);
-json.Set("user:2", "$", user2);
-json.Set("user:3", "$", user3);
-```
-
-Let's find user `Paul` and filter the results by age.
-
-```csharp
-var res = ft.Search("idx:users", new Query("Paul @age:[30 40]")).Documents.Select(x => x["json"]);
-Console.WriteLine(string.Join("\n", res)); 
-// Prints: {"name":"Paul Zamir","email":"paul.zamir@example.com","age":35,"city":"Tel Aviv"}
-```
-
-Return only the `city` field.
-
-```csharp
-var res_cities = ft.Search("idx:users", new Query("Paul").ReturnFields(new FieldName("$.city", "city"))).Documents.Select(x => x["city"]);
-Console.WriteLine(string.Join(", ", res_cities)); 
-// Prints: London, Tel Aviv
-```
-
-Count all users in the same city.
-
-```csharp
-var request = new AggregationRequest("*").GroupBy("@city", Reducers.Count().As("count"));
-var result = ft.Aggregate("idx:users", request);
-
-for (var i=0; i<result.TotalResults; i++)
-{
-    var row = result.GetRow(i);
-    Console.WriteLine($"{row["city"]} - {row["count"]}");
-}
-// Prints:
-// London - 1
-// Tel Aviv - 2
-```
-
 ### Learn more
 
 * [GitHub](https://github.com/redis/NRedisStack)
- 
