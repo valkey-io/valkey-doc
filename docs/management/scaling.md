@@ -1,8 +1,8 @@
 ---
-title: Scale with Redis Cluster
-linkTitle: Scale with Redis Cluster
+title: Scale with Valkey Cluster
+linkTitle: Scale with Valkey Cluster
 weight: 6
-description: Horizontal scaling with Redis Cluster
+description: Horizontal scaling with Valkey Cluster
 aliases: [
     /topics/cluster-tutorial,
     /topics/partitioning,
@@ -11,62 +11,62 @@ aliases: [
 ]
 ---
 
-Redis scales horizontally with a deployment topology called Redis Cluster. 
-This topic will teach you how to set up, test, and operate Redis Cluster in production.
-You will learn about the availability and consistency characteristics of Redis Cluster from the end user's point of view.
+Valkey scales horizontally with a deployment topology called Valkey Cluster. 
+This topic will teach you how to set up, test, and operate Valkey Cluster in production.
+You will learn about the availability and consistency characteristics of Valkey Cluster from the end user's point of view.
 
-If you plan to run a production Redis Cluster deployment or want to understand better how Redis Cluster works internally, consult the [Redis Cluster specification](/topics/cluster-spec). To learn how Redis Enterprise handles scaling, see [Linear Scaling with Redis Enterprise](https://redis.com/redis-enterprise/technology/linear-scaling-redis-enterprise/).
+If you plan to run a production Valkey Cluster deployment or want to understand better how Valkey Cluster works internally, consult the [Valkey Cluster specification](/topics/cluster-spec). To learn how Valkey Enterprise handles scaling, see [Linear Scaling with Valkey Enterprise](https://valkey.com/valkey-enterprise/technology/linear-scaling-valkey-enterprise/).
 
-## Redis Cluster 101
+## Valkey Cluster 101
 
-Redis Cluster provides a way to run a Redis installation where data is automatically sharded across multiple Redis nodes. 
-Redis Cluster also provides some degree of availability during partitions&mdash;in practical terms, the ability to continue operations when some nodes fail or are unable to communicate. 
+Valkey Cluster provides a way to run a Valkey installation where data is automatically sharded across multiple Valkey nodes. 
+Valkey Cluster also provides some degree of availability during partitions&mdash;in practical terms, the ability to continue operations when some nodes fail or are unable to communicate. 
 However, the cluster will become unavailable in the event of larger failures (for example, when the majority of masters are unavailable).
 
-So, with Redis Cluster, you get the ability to:
+So, with Valkey Cluster, you get the ability to:
 
 * Automatically split your dataset among multiple nodes.
 * Continue operations when a subset of the nodes are experiencing failures or are unable to communicate with the rest of the cluster.
 
-#### Redis Cluster TCP ports
+#### Valkey Cluster TCP ports
 
-Every Redis Cluster node requires two open TCP connections: a Redis TCP port used to serve clients, e.g., 6379, and second port known as the _cluster bus port_. 
+Every Valkey Cluster node requires two open TCP connections: a Valkey TCP port used to serve clients, e.g., 6379, and second port known as the _cluster bus port_. 
 By default, the cluster bus port is set by adding 10000 to the data port (e.g., 16379); however, you can override this in the `cluster-port` configuration.
 
 Cluster bus is a node-to-node communication channel that uses a binary protocol, which is more suited to exchanging information between nodes due to
 little bandwidth and processing time. 
 Nodes use the cluster bus for failure detection, configuration updates, failover authorization, and so forth. 
-Clients should never try to communicate with the cluster bus port, but rather use the Redis command port. 
-However, make sure you open both ports in your firewall, otherwise Redis cluster nodes won't be able to communicate.
+Clients should never try to communicate with the cluster bus port, but rather use the Valkey command port. 
+However, make sure you open both ports in your firewall, otherwise Valkey cluster nodes won't be able to communicate.
 
-For a Redis Cluster to work properly you need, for each node:
+For a Valkey Cluster to work properly you need, for each node:
 
 1. The client communication port (usually 6379) used to communicate with clients and be open to all the clients that need to reach the cluster, plus all the other cluster nodes that use the client port for key migrations.
 2. The cluster bus port must be reachable from all the other cluster nodes.
 
 If you don't open both TCP ports, your cluster will not work as expected.
 
-#### Redis Cluster and Docker
+#### Valkey Cluster and Docker
 
-Currently, Redis Cluster does not support NATted environments and in general
+Currently, Valkey Cluster does not support NATted environments and in general
 environments where IP addresses or TCP ports are remapped.
 
 Docker uses a technique called _port mapping_: programs running inside Docker containers may be exposed with a different port compared to the one the program believes to be using. 
 This is useful for running multiple containers using the same ports, at the same time, in the same server.
 
-To make Docker compatible with Redis Cluster, you need to use Docker's _host networking mode_. 
+To make Docker compatible with Valkey Cluster, you need to use Docker's _host networking mode_. 
 Please see the `--net=host` option in the [Docker documentation](https://docs.docker.com/engine/userguide/networking/dockernetworks/) for more information.
 
-#### Redis Cluster data sharding
+#### Valkey Cluster data sharding
 
-Redis Cluster does not use consistent hashing, but a different form of sharding
+Valkey Cluster does not use consistent hashing, but a different form of sharding
 where every key is conceptually part of what we call a **hash slot**.
 
-There are 16384 hash slots in Redis Cluster, and to compute the hash
+There are 16384 hash slots in Valkey Cluster, and to compute the hash
 slot for a given key, we simply take the CRC16 of the key modulo
 16384.
 
-Every node in a Redis Cluster is responsible for a subset of the hash slots,
+Every node in a Valkey Cluster is responsible for a subset of the hash slots,
 so, for example, you may have a cluster with 3 nodes, where:
 
 * Node A contains hash slots from 0 to 5500.
@@ -82,18 +82,18 @@ I can remove it from the cluster completely.
 Moving hash slots from a node to another does not require stopping
 any operations; therefore, adding and removing nodes, or changing the percentage of hash slots held by a node, requires no downtime.
 
-Redis Cluster supports multiple key operations as long as all of the keys involved in a single command execution (or whole transaction, or Lua script
+Valkey Cluster supports multiple key operations as long as all of the keys involved in a single command execution (or whole transaction, or Lua script
 execution) belong to the same hash slot. The user can force multiple keys
 to be part of the same hash slot by using a feature called *hash tags*.
 
-Hash tags are documented in the Redis Cluster specification, but the gist is
+Hash tags are documented in the Valkey Cluster specification, but the gist is
 that if there is a substring between {} brackets in a key, only what is
 inside the string is hashed. For example, the keys `user:{123}:profile` and `user:{123}:account` are guaranteed to be in the same hash slot because they share the same hash tag. As a result, you can operate on these two keys in the same multi-key operation.
 
-#### Redis Cluster master-replica model
+#### Valkey Cluster master-replica model
 
 To remain available when a subset of master nodes are failing or are
-not able to communicate with the majority of nodes, Redis Cluster uses a
+not able to communicate with the majority of nodes, Valkey Cluster uses a
 master-replica model where every hash slot has from 1 (the master itself) to N
 replicas (N-1 additional replica nodes).
 
@@ -109,15 +109,15 @@ This way, the system can continue if node B fails.
 Node B1 replicates B, and B fails, the cluster will promote node B1 as the new
 master and will continue to operate correctly.
 
-However, note that if nodes B and B1 fail at the same time, Redis Cluster will not be able to continue to operate.
+However, note that if nodes B and B1 fail at the same time, Valkey Cluster will not be able to continue to operate.
 
-#### Redis Cluster consistency guarantees
+#### Valkey Cluster consistency guarantees
 
-Redis Cluster does not guarantee **strong consistency**. In practical
-terms this means that under certain conditions it is possible that Redis
+Valkey Cluster does not guarantee **strong consistency**. In practical
+terms this means that under certain conditions it is possible that Valkey
 Cluster will lose writes that were acknowledged by the system to the client.
 
-The first reason why Redis Cluster can lose writes is because it uses
+The first reason why Valkey Cluster can lose writes is because it uses
 asynchronous replication. This means that during writes the following
 happens:
 
@@ -127,7 +127,7 @@ happens:
 
 As you can see, B does not wait for an acknowledgement from B1, B2, B3 before
 replying to the client, since this would be a prohibitive latency penalty
-for Redis, so if your client writes something, B acknowledges the write,
+for Valkey, so if your client writes something, B acknowledges the write,
 but crashes before being able to send the write to its replicas, one of the
 replicas (that did not receive the write) can be promoted to master, losing
 the write forever.
@@ -139,18 +139,18 @@ database systems not involving distributed systems. Similarly you can
 improve consistency by forcing the database to flush data to disk before
 replying to the client, but this usually results in prohibitively low
 performance. That would be the equivalent of synchronous replication in
-the case of Redis Cluster.
+the case of Valkey Cluster.
 
 Basically, there is a trade-off to be made between performance and consistency.
 
-Redis Cluster has support for synchronous writes when absolutely needed,
+Valkey Cluster has support for synchronous writes when absolutely needed,
 implemented via the `WAIT` command. This makes losing writes a lot less
-likely. However, note that Redis Cluster does not implement strong consistency
+likely. However, note that Valkey Cluster does not implement strong consistency
 even when synchronous replication is used: it is always possible, under more
 complex failure scenarios, that a replica that was not able to receive the write
 will be elected as master.
 
-There is another notable scenario where Redis Cluster will lose writes, that
+There is another notable scenario where Valkey Cluster will lose writes, that
 happens during a network partition where a client is isolated with a minority
 of instances including at least a master.
 
@@ -173,7 +173,7 @@ partition to elect a replica as master, every master node in the minority
 side will have stopped accepting writes.
 {{% /alert %}}
 
-This amount of time is a very important configuration directive of Redis
+This amount of time is a very important configuration directive of Valkey
 Cluster, and is called the **node timeout**.
 
 After node timeout has elapsed, a master node is considered to be failing,
@@ -182,27 +182,27 @@ Similarly, after node timeout has elapsed without a master node to be able
 to sense the majority of the other master nodes, it enters an error state
 and stops accepting writes.
 
-## Redis Cluster configuration parameters
+## Valkey Cluster configuration parameters
 
 We are about to create an example cluster deployment. 
-Before we continue, let's introduce the configuration parameters that Redis Cluster introduces
-in the `redis.conf` file.
+Before we continue, let's introduce the configuration parameters that Valkey Cluster introduces
+in the `valkey.conf` file.
 
-* **cluster-enabled `<yes/no>`**: If yes, enables Redis Cluster support in a specific Redis instance. Otherwise the instance starts as a standalone instance as usual.
-* **cluster-config-file `<filename>`**: Note that despite the name of this option, this is not a user editable configuration file, but the file where a Redis Cluster node automatically persists the cluster configuration (the state, basically) every time there is a change, in order to be able to re-read it at startup. The file lists things like the other nodes in the cluster, their state, persistent variables, and so forth. Often this file is rewritten and flushed on disk as a result of some message reception.
-* **cluster-node-timeout `<milliseconds>`**: The maximum amount of time a Redis Cluster node can be unavailable, without it being considered as failing. If a master node is not reachable for more than the specified amount of time, it will be failed over by its replicas. This parameter controls other important things in Redis Cluster. Notably, every node that can't reach the majority of master nodes for the specified amount of time, will stop accepting queries.
-* **cluster-slave-validity-factor `<factor>`**: If set to zero, a replica will always consider itself valid, and will therefore always try to failover a master, regardless of the amount of time the link between the master and the replica remained disconnected. If the value is positive, a maximum disconnection time is calculated as the *node timeout* value multiplied by the factor provided with this option, and if the node is a replica, it will not try to start a failover if the master link was disconnected for more than the specified amount of time. For example, if the node timeout is set to 5 seconds and the validity factor is set to 10, a replica disconnected from the master for more than 50 seconds will not try to failover its master. Note that any value different than zero may result in Redis Cluster being unavailable after a master failure if there is no replica that is able to failover it. In that case the cluster will return to being available only when the original master rejoins the cluster.
+* **cluster-enabled `<yes/no>`**: If yes, enables Valkey Cluster support in a specific Valkey instance. Otherwise the instance starts as a standalone instance as usual.
+* **cluster-config-file `<filename>`**: Note that despite the name of this option, this is not a user editable configuration file, but the file where a Valkey Cluster node automatically persists the cluster configuration (the state, basically) every time there is a change, in order to be able to re-read it at startup. The file lists things like the other nodes in the cluster, their state, persistent variables, and so forth. Often this file is rewritten and flushed on disk as a result of some message reception.
+* **cluster-node-timeout `<milliseconds>`**: The maximum amount of time a Valkey Cluster node can be unavailable, without it being considered as failing. If a master node is not reachable for more than the specified amount of time, it will be failed over by its replicas. This parameter controls other important things in Valkey Cluster. Notably, every node that can't reach the majority of master nodes for the specified amount of time, will stop accepting queries.
+* **cluster-slave-validity-factor `<factor>`**: If set to zero, a replica will always consider itself valid, and will therefore always try to failover a master, regardless of the amount of time the link between the master and the replica remained disconnected. If the value is positive, a maximum disconnection time is calculated as the *node timeout* value multiplied by the factor provided with this option, and if the node is a replica, it will not try to start a failover if the master link was disconnected for more than the specified amount of time. For example, if the node timeout is set to 5 seconds and the validity factor is set to 10, a replica disconnected from the master for more than 50 seconds will not try to failover its master. Note that any value different than zero may result in Valkey Cluster being unavailable after a master failure if there is no replica that is able to failover it. In that case the cluster will return to being available only when the original master rejoins the cluster.
 * **cluster-migration-barrier `<count>`**: Minimum number of replicas a master will remain connected with, for another replica to migrate to a master which is no longer covered by any replica. See the appropriate section about replica migration in this tutorial for more information.
 * **cluster-require-full-coverage `<yes/no>`**: If this is set to yes, as it is by default, the cluster stops accepting writes if some percentage of the key space is not covered by any node. If the option is set to no, the cluster will still serve queries even if only requests about a subset of keys can be processed.
-* **cluster-allow-reads-when-down `<yes/no>`**: If this is set to no, as it is by default, a node in a Redis Cluster will stop serving all traffic when the cluster is marked as failed, either when a node can't reach a quorum of masters or when full coverage is not met. This prevents reading potentially inconsistent data from a node that is unaware of changes in the cluster. This option can be set to yes to allow reads from a node during the fail state, which is useful for applications that want to prioritize read availability but still want to prevent inconsistent writes. It can also be used for when using Redis Cluster with only one or two shards, as it allows the nodes to continue serving writes when a master fails but automatic failover is impossible.
+* **cluster-allow-reads-when-down `<yes/no>`**: If this is set to no, as it is by default, a node in a Valkey Cluster will stop serving all traffic when the cluster is marked as failed, either when a node can't reach a quorum of masters or when full coverage is not met. This prevents reading potentially inconsistent data from a node that is unaware of changes in the cluster. This option can be set to yes to allow reads from a node during the fail state, which is useful for applications that want to prioritize read availability but still want to prevent inconsistent writes. It can also be used for when using Valkey Cluster with only one or two shards, as it allows the nodes to continue serving writes when a master fails but automatic failover is impossible.
 
-## Create and use a Redis Cluster
+## Create and use a Valkey Cluster
 
-To create and use a Redis Cluster, follow these steps:
+To create and use a Valkey Cluster, follow these steps:
 
-* [Create a Redis Cluster](#create-a-redis-cluster)
+* [Create a Valkey Cluster](#create-a-valkey-cluster)
 * [Interact with the cluster](#interact-with-the-cluster)
-* [Write an example app with redis-rb-cluster](#write-an-example-app-with-redis-rb-cluster)
+* [Write an example app with valkey-rb-cluster](#write-an-example-app-with-valkey-rb-cluster)
 * [Reshard the cluster](#reshard-the-cluster)
 * [A more interesting example application](#a-more-interesting-example-application)
 * [Test the failover](#test-the-failover)
@@ -210,16 +210,16 @@ To create and use a Redis Cluster, follow these steps:
 * [Add a new node](#add-a-new-node)
 * [Remove a node](#remove-a-node)
 * [Replica migration](#replica-migration)
-* [Upgrade nodes in a Redis Cluster](#upgrade-nodes-in-a-redis-cluster)
-* [Migrate to Redis Cluster](#migrate-to-redis-cluster)
+* [Upgrade nodes in a Valkey Cluster](#upgrade-nodes-in-a-valkey-cluster)
+* [Migrate to Valkey Cluster](#migrate-to-valkey-cluster)
 
 But, first, familiarize yourself with the requirements for creating a cluster.
 
-#### Requirements to create a Redis Cluster
+#### Requirements to create a Valkey Cluster
 
-To create a cluster, the first thing you need is to have a few empty Redis instances running in _cluster mode_. 
+To create a cluster, the first thing you need is to have a few empty Valkey instances running in _cluster mode_. 
 
-At minimum, set the following directives in the `redis.conf` file:
+At minimum, set the following directives in the `valkey.conf` file:
 
 ```
 port 7000
@@ -233,7 +233,7 @@ To enable cluster mode, set the `cluster-enabled` directive to `yes`.
 Every instance also contains the path of a file where the
 configuration for this node is stored, which by default is `nodes.conf`.
 This file is never touched by humans; it is simply generated at startup
-by the Redis Cluster instances, and updated every time it is needed.
+by the Valkey Cluster instances, and updated every time it is needed.
 
 Note that the **minimal cluster** that works as expected must contain
 at least three master nodes. For deployment, we strongly recommend
@@ -250,7 +250,7 @@ cd cluster-test
 mkdir 7000 7001 7002 7003 7004 7005
 ```
 
-Create a `redis.conf` file inside each of the directories, from 7000 to 7005.
+Create a `valkey.conf` file inside each of the directories, from 7000 to 7005.
 As a template for your configuration file just use the small example above,
 but make sure to replace the port number `7000` with the right port number
 according to the directory name.
@@ -260,7 +260,7 @@ You can start each instance as follows, each running in a separate terminal tab:
 
 ```
 cd 7000
-redis-server ./redis.conf
+valkey-server ./valkey.conf
 ```
 You'll see from the logs that every node assigns itself a new ID:
 
@@ -272,7 +272,7 @@ remembers every other node using this IDs, and not by IP or port.
 IP addresses and ports may change, but the unique node identifier will never
 change for all the life of the node. We call this identifier simply **Node ID**.
 
-#### Create a Redis Cluster
+#### Create a Valkey Cluster
 
 Now that we have a number of instances running, you need to create your cluster by writing some meaningful configuration to the nodes.
 
@@ -281,7 +281,7 @@ Let's go over how you do it manually.
 
 To create the cluster, run:
 
-    redis-cli --cluster create 127.0.0.1:7000 127.0.0.1:7001 \
+    valkey-cli --cluster create 127.0.0.1:7000 127.0.0.1:7001 \
     127.0.0.1:7002 127.0.0.1:7003 127.0.0.1:7004 127.0.0.1:7005 \
     --cluster-replicas 1
 
@@ -291,7 +291,7 @@ The option `--cluster-replicas 1` means that we want a replica for every master 
 The other arguments are the list of addresses of the instances I want to use
 to create the new cluster.
 
-`redis-cli` will propose a configuration. Accept the proposed configuration by typing **yes**.
+`valkey-cli` will propose a configuration. Accept the proposed configuration by typing **yes**.
 The cluster will be configured and *joined*, which means that instances will be
 bootstrapped into talking with each other. Finally, if everything has gone well, you'll see a message like this:
 
@@ -300,11 +300,11 @@ bootstrapped into talking with each other. Finally, if everything has gone well,
 This means that there is at least one master instance serving each of the
 16384 available slots.
 
-If you don't want to create a Redis Cluster by configuring and executing
+If you don't want to create a Valkey Cluster by configuring and executing
 individual instances manually as explained above, there is a much simpler
 system (but you'll not learn the same amount of operational details).
 
-Find the `utils/create-cluster` directory in the Redis distribution.
+Find the `utils/create-cluster` directory in the Valkey distribution.
 There is a script called `create-cluster` inside (same name as the directory
 it is contained into), it's a simple bash script. In order to start
 a 6 nodes cluster with 3 masters and 3 replicas just type the following
@@ -313,7 +313,7 @@ commands:
 1. `create-cluster start`
 2. `create-cluster create`
 
-Reply to `yes` in step 2 when the `redis-cli` utility wants you to accept
+Reply to `yes` in step 2 when the `valkey-cli` utility wants you to accept
 the cluster layout.
 
 You can now interact with the cluster, the first node will start at port 30001
@@ -326,23 +326,23 @@ to run the script.
 
 #### Interact with the cluster
 
-To connect to Redis Cluster, you'll need a cluster-aware Redis client. 
+To connect to Valkey Cluster, you'll need a cluster-aware Valkey client. 
 See the [documentation](/docs/clients) for your client of choice to determine its cluster support.
 
-You can also test your Redis Cluster using the `redis-cli` command line utility:
+You can also test your Valkey Cluster using the `valkey-cli` command line utility:
 
 ```
-$ redis-cli -c -p 7000
-redis 127.0.0.1:7000> set foo bar
+$ valkey-cli -c -p 7000
+valkey 127.0.0.1:7000> set foo bar
 -> Redirected to slot [12182] located at 127.0.0.1:7002
 OK
-redis 127.0.0.1:7002> set hello world
+valkey 127.0.0.1:7002> set hello world
 -> Redirected to slot [866] located at 127.0.0.1:7000
 OK
-redis 127.0.0.1:7000> get foo
+valkey 127.0.0.1:7000> get foo
 -> Redirected to slot [12182] located at 127.0.0.1:7002
 "bar"
-redis 127.0.0.1:7002> get hello
+valkey 127.0.0.1:7002> get hello
 -> Redirected to slot [866] located at 127.0.0.1:7000
 "world"
 ```
@@ -352,32 +352,32 @@ If you created the cluster using the script, your nodes may listen
 on different ports, starting from 30001 by default.
 {{% /alert %}}
 
-The `redis-cli` cluster support is very basic, so it always uses the fact that
-Redis Cluster nodes are able to redirect a client to the right node.
+The `valkey-cli` cluster support is very basic, so it always uses the fact that
+Valkey Cluster nodes are able to redirect a client to the right node.
 A serious client is able to do better than that, and cache the map between
 hash slots and nodes addresses, to directly use the right connection to the
 right node. The map is refreshed only when something changed in the cluster
 configuration, for example after a failover or after the system administrator
 changed the cluster layout by adding or removing nodes.
 
-#### Write an example app with redis-rb-cluster
+#### Write an example app with valkey-rb-cluster
 
-Before going forward showing how to operate the Redis Cluster, doing things
+Before going forward showing how to operate the Valkey Cluster, doing things
 like a failover, or a resharding, we need to create some example application
-or at least to be able to understand the semantics of a simple Redis Cluster
+or at least to be able to understand the semantics of a simple Valkey Cluster
 client interaction.
 
 In this way we can run an example and at the same time try to make nodes
-failing, or start a resharding, to see how Redis Cluster behaves under real
+failing, or start a resharding, to see how Valkey Cluster behaves under real
 world conditions. It is not very helpful to see what happens while nobody
 is writing to the cluster.
 
 This section explains some basic usage of
-[redis-rb-cluster](https://github.com/antirez/redis-rb-cluster) showing two
+[valkey-rb-cluster](https://github.com/antirez/valkey-rb-cluster) showing two
 examples. 
 The first is the following, and is the
-[`example.rb`](https://github.com/antirez/redis-rb-cluster/blob/master/example.rb)
-file inside the redis-rb-cluster distribution:
+[`example.rb`](https://github.com/antirez/valkey-rb-cluster/blob/master/example.rb)
+file inside the valkey-rb-cluster distribution:
 
 ```
    1  require './cluster'
@@ -432,21 +432,21 @@ show errors on the screen instead of exiting with an exception, so every
 operation performed with the cluster is wrapped by `begin` `rescue` blocks.
 
 The **line 14** is the first interesting line in the program. It creates the
-Redis Cluster object, using as argument a list of *startup nodes*, the maximum
+Valkey Cluster object, using as argument a list of *startup nodes*, the maximum
 number of connections this object is allowed to take against different nodes,
 and finally the timeout after a given operation is considered to be failed.
 
 The startup nodes don't need to be all the nodes of the cluster. The important
-thing is that at least one node is reachable. Also note that redis-rb-cluster
+thing is that at least one node is reachable. Also note that valkey-rb-cluster
 updates this list of startup nodes as soon as it is able to connect with the
 first node. You should expect such a behavior with any other serious client.
 
-Now that we have the Redis Cluster object instance stored in the **rc** variable,
-we are ready to use the object like if it was a normal Redis object instance.
+Now that we have the Valkey Cluster object instance stored in the **rc** variable,
+we are ready to use the object like if it was a normal Valkey object instance.
 
 This is exactly what happens in **line 18 to 26**: when we restart the example
 we don't want to start again with `foo0`, so we store the counter inside
-Redis itself. The code above is designed to read this counter, or if the
+Valkey itself. The code above is designed to read this counter, or if the
 counter does not exist, to assign it the value of zero.
 
 However note how it is a while loop, as we want to try again and again even
@@ -493,16 +493,16 @@ call to have some more serious write load during resharding.
 
 Resharding basically means to move hash slots from a set of nodes to another
 set of nodes. 
-Like cluster creation, it is accomplished using the redis-cli utility.
+Like cluster creation, it is accomplished using the valkey-cli utility.
 
 To start a resharding, just type:
 
-    redis-cli --cluster reshard 127.0.0.1:7000
+    valkey-cli --cluster reshard 127.0.0.1:7000
 
-You only need to specify a single node, redis-cli will find the other nodes
+You only need to specify a single node, valkey-cli will find the other nodes
 automatically.
 
-Currently redis-cli is only able to reshard with the administrator support,
+Currently valkey-cli is only able to reshard with the administrator support,
 you can't just say move 5% of slots from this node to the other one (but
 this is pretty trivial to implement). So it starts with questions. The first
 is how much of a resharding do you want to do:
@@ -513,15 +513,15 @@ We can try to reshard 1000 hash slots, that should already contain a non
 trivial amount of keys if the example is still running without the sleep
 call.
 
-Then redis-cli needs to know what is the target of the resharding, that is,
+Then valkey-cli needs to know what is the target of the resharding, that is,
 the node that will receive the hash slots.
 I'll use the first master node, that is, 127.0.0.1:7000, but I need
 to specify the Node ID of the instance. This was already printed in a
-list by redis-cli, but I can always find the ID of a node with the following
+list by valkey-cli, but I can always find the ID of a node with the following
 command if I need:
 
 ```
-$ redis-cli -p 7000 cluster nodes | grep myself
+$ valkey-cli -p 7000 cluster nodes | grep myself
 97a3a64667477371c4479320d683e4c8db5858b1 :0 myself,master - 0 0 0 connected 0-5460
 ```
 
@@ -532,7 +532,7 @@ I'll just type `all` in order to take a bit of hash slots from all the
 other master nodes.
 
 After the final confirmation you'll see a message for every slot that
-redis-cli is going to move from a node to another, and a dot will be printed
+valkey-cli is going to move from a node to another, and a dot will be printed
 for every actual key moved from one side to the other.
 
 While the resharding is in progress you should be able to see your
@@ -542,7 +542,7 @@ during the resharding if you want.
 At the end of the resharding, you can test the health of the cluster with
 the following command:
 
-    redis-cli --cluster check 127.0.0.1:7000
+    valkey-cli --cluster check 127.0.0.1:7000
 
 All the slots will be covered as usual, but this time the master at
 127.0.0.1:7000 will have more hash slots, something around 6461.
@@ -551,10 +551,10 @@ Resharding can be performed automatically without the need to manually
 enter the parameters in an interactive way. This is possible using a command
 line like the following:
 
-    redis-cli --cluster reshard <host>:<port> --cluster-from <node-id> --cluster-to <node-id> --cluster-slots <number of slots> --cluster-yes
+    valkey-cli --cluster reshard <host>:<port> --cluster-from <node-id> --cluster-to <node-id> --cluster-slots <number of slots> --cluster-yes
 
 This allows to build some automatism if you are likely to reshard often,
-however currently there is no way for `redis-cli` to automatically
+however currently there is no way for `valkey-cli` to automatically
 rebalance the cluster checking the distribution of keys across the cluster
 nodes and intelligently moving slots as needed. This feature will be added
 in the future.
@@ -574,7 +574,7 @@ From our point of view the cluster receiving the writes could just always
 write the key `foo` to `42` to every operation, and we would not notice at
 all.
 
-So in the `redis-rb-cluster` repository, there is a more interesting application
+So in the `valkey-rb-cluster` repository, there is a more interesting application
 that is called `consistency-test.rb`. It uses a set of counters, by default 1000, and sends `INCR` commands in order to increment the counters.
 
 However instead of just writing, the application does two additional things:
@@ -611,7 +611,7 @@ This is what happens, for example, if I reset a counter manually while
 the program is running:
 
 ```
-$ redis-cli -h 127.0.0.1 -p 7000 set key_217 0
+$ valkey-cli -h 127.0.0.1 -p 7000 set key_217 0
 OK
 
 (in the other tab I see...)
@@ -626,7 +626,7 @@ When I set the counter to 0 the real value was 114, so the program reports
 114 lost writes (`INCR` commands that are not remembered by the cluster).
 
 This program is much more interesting as a test case, so we'll use it
-to test the Redis Cluster failover.
+to test the Valkey Cluster failover.
 
 #### Test the failover
 
@@ -642,7 +642,7 @@ application running.
 We can identify a master and crash it with the following command:
 
 ```
-$ redis-cli -p 7000 cluster nodes | grep master
+$ valkey-cli -p 7000 cluster nodes | grep master
 3e3a6cb0d9a9a87168e266b0a0b24026c0aae3f0 127.0.0.1:7001 master - 0 1385482984082 0 connected 5960-10921
 2938205e12de373867bf38f1ca29d31d0ddb3e46 127.0.0.1:7002 master - 0 1385482983582 0 connected 11423-16383
 97a3a64667477371c4479320d683e4c8db5858b1 :0 myself,master - 0 0 0 connected 0-5959 10922-11422
@@ -652,7 +652,7 @@ Ok, so 7000, 7001, and 7002 are masters. Let's crash node 7002 with the
 **DEBUG SEGFAULT** command:
 
 ```
-$ redis-cli -p 7002 debug segfault
+$ valkey-cli -p 7002 debug segfault
 Error: Server closed the connection
 ```
 
@@ -672,21 +672,21 @@ Now we can look at the output of the consistency test to see what it reported.
 ```
 
 As you can see during the failover the system was not able to accept 578 reads and 577 writes, however no inconsistency was created in the database. This may
-sound unexpected as in the first part of this tutorial we stated that Redis
+sound unexpected as in the first part of this tutorial we stated that Valkey
 Cluster can lose writes during the failover because it uses asynchronous
 replication. What we did not say is that this is not very likely to happen
-because Redis sends the reply to the client, and the commands to replicate
+because Valkey sends the reply to the client, and the commands to replicate
 to the replicas, about at the same time, so there is a very small window to
 lose data. However the fact that it is hard to trigger does not mean that it
 is impossible, so this does not change the consistency guarantees provided
-by Redis cluster.
+by Valkey cluster.
 
 We can now check what is the cluster setup after the failover (note that
 in the meantime I restarted the crashed instance so that it rejoins the
 cluster as a replica):
 
 ```
-$ redis-cli -p 7000 cluster nodes
+$ valkey-cli -p 7000 cluster nodes
 3fc783611028b1707fd65345e763befb36454d73 127.0.0.1:7004 slave 3e3a6cb0d9a9a87168e266b0a0b24026c0aae3f0 0 1385503418521 0 connected
 a211e242fc6b22a9427fed61285e85892fa04e08 127.0.0.1:7003 slave 97a3a64667477371c4479320d683e4c8db5858b1 0 1385503419023 0 connected
 97a3a64667477371c4479320d683e4c8db5858b1 :0 myself,master - 0 0 0 connected 0-5959 10922-11422
@@ -696,7 +696,7 @@ a211e242fc6b22a9427fed61285e85892fa04e08 127.0.0.1:7003 slave 97a3a64667477371c4
 ```
 
 Now the masters are running on ports 7000, 7001 and 7005. What was previously
-a master, that is the Redis instance running on port 7002, is now a replica of
+a master, that is the Valkey instance running on port 7002, is now a replica of
 7005.
 
 The output of the `CLUSTER NODES` command may look intimidating, but it is actually pretty simple, and is composed of the following tokens:
@@ -714,11 +714,11 @@ The output of the `CLUSTER NODES` command may look intimidating, but it is actua
 #### Manual failover
 
 Sometimes it is useful to force a failover without actually causing any problem
-on a master. For example, to upgrade the Redis process of one of the
+on a master. For example, to upgrade the Valkey process of one of the
 master nodes it is a good idea to failover it to turn it into a replica
 with minimal impact on availability.
 
-Manual failovers are supported by Redis Cluster using the `CLUSTER FAILOVER`
+Manual failovers are supported by Valkey Cluster using the `CLUSTER FAILOVER`
 command, that must be executed in one of the replicas of the master you want
 to failover.
 
@@ -768,30 +768,30 @@ do in order to conform with the setup we used for the previous nodes:
 * Create a new tab in your terminal application.
 * Enter the `cluster-test` directory.
 * Create a directory named `7006`.
-* Create a redis.conf file inside, similar to the one used for the other nodes but using 7006 as port number.
-* Finally start the server with `../redis-server ./redis.conf`
+* Create a valkey.conf file inside, similar to the one used for the other nodes but using 7006 as port number.
+* Finally start the server with `../valkey-server ./valkey.conf`
 
 At this point the server should be running.
 
-Now we can use **redis-cli** as usual in order to add the node to
+Now we can use **valkey-cli** as usual in order to add the node to
 the existing cluster.
 
-    redis-cli --cluster add-node 127.0.0.1:7006 127.0.0.1:7000
+    valkey-cli --cluster add-node 127.0.0.1:7006 127.0.0.1:7000
 
 As you can see I used the **add-node** command specifying the address of the
 new node as first argument, and the address of a random existing node in the
 cluster as second argument.
 
-In practical terms redis-cli here did very little to help us, it just
+In practical terms valkey-cli here did very little to help us, it just
 sent a `CLUSTER MEET` message to the node, something that is also possible
-to accomplish manually. However redis-cli also checks the state of the
+to accomplish manually. However valkey-cli also checks the state of the
 cluster before to operate, so it is a good idea to perform cluster operations
-always via redis-cli even when you know how the internals work.
+always via valkey-cli even when you know how the internals work.
 
 Now we can connect to the new node to see if it really joined the cluster:
 
 ```
-redis 127.0.0.1:7006> cluster nodes
+valkey 127.0.0.1:7006> cluster nodes
 3e3a6cb0d9a9a87168e266b0a0b24026c0aae3f0 127.0.0.1:7001 master - 0 1385543178575 0 connected 5960-10921
 3fc783611028b1707fd65345e763befb36454d73 127.0.0.1:7004 slave 3e3a6cb0d9a9a87168e266b0a0b24026c0aae3f0 0 1385543179583 0 connected
 f093c80dde814da99c5cf72a7dd01590792b783b :0 myself,master - 0 0 0 connected
@@ -809,7 +809,7 @@ the cluster. However it has two peculiarities compared to the other masters:
 * Because it is a master without assigned slots, it does not participate in the election process when a replica wants to become a master.
 
 Now it is possible to assign hash slots to this node using the resharding
-feature of `redis-cli`. 
+feature of `valkey-cli`. 
 It is basically useless to show this as we already
 did in a previous section, there is no difference, it is just a resharding
 having as a target the empty node.
@@ -817,19 +817,19 @@ having as a target the empty node.
 ##### Add a new node as a replica
 
 Adding a new replica can be performed in two ways. The obvious one is to
-use redis-cli again, but with the --cluster-slave option, like this:
+use valkey-cli again, but with the --cluster-slave option, like this:
 
-    redis-cli --cluster add-node 127.0.0.1:7006 127.0.0.1:7000 --cluster-slave
+    valkey-cli --cluster add-node 127.0.0.1:7006 127.0.0.1:7000 --cluster-slave
 
 Note that the command line here is exactly like the one we used to add
 a new master, so we are not specifying to which master we want to add
-the replica. In this case, what happens is that redis-cli will add the new
+the replica. In this case, what happens is that valkey-cli will add the new
 node as replica of a random master among the masters with fewer replicas.
 
 However you can specify exactly what master you want to target with your
 new replica with the following command line:
 
-    redis-cli --cluster add-node 127.0.0.1:7006 127.0.0.1:7000 --cluster-slave --cluster-master-id 3c3a0c74aae0b56170ccb03a76b60cfe7dc1912e
+    valkey-cli --cluster add-node 127.0.0.1:7006 127.0.0.1:7000 --cluster-slave --cluster-master-id 3c3a0c74aae0b56170ccb03a76b60cfe7dc1912e
 
 This way we assign the new replica to a specific master.
 
@@ -843,14 +843,14 @@ currently serving hash slots in the range 11423-16383, that has a Node ID
 3c3a0c74aae0b56170ccb03a76b60cfe7dc1912e, all I need to do is to connect
 with the new node (already added as empty master) and send the command:
 
-    redis 127.0.0.1:7006> cluster replicate 3c3a0c74aae0b56170ccb03a76b60cfe7dc1912e
+    valkey 127.0.0.1:7006> cluster replicate 3c3a0c74aae0b56170ccb03a76b60cfe7dc1912e
 
 That's it. Now we have a new replica for this set of hash slots, and all
 the other nodes in the cluster already know (after a few seconds needed to
 update their config). We can verify with the following command:
 
 ```
-$ redis-cli -p 7000 cluster nodes | grep slave | grep 3c3a0c74aae0b56170ccb03a76b60cfe7dc1912e
+$ valkey-cli -p 7000 cluster nodes | grep slave | grep 3c3a0c74aae0b56170ccb03a76b60cfe7dc1912e
 f093c80dde814da99c5cf72a7dd01590792b783b 127.0.0.1:7006 slave 3c3a0c74aae0b56170ccb03a76b60cfe7dc1912e 0 1385543617702 3 connected
 2938205e12de373867bf38f1ca29d31d0ddb3e46 127.0.0.1:7002 slave 3c3a0c74aae0b56170ccb03a76b60cfe7dc1912e 0 1385543617198 3 connected
 ```
@@ -859,9 +859,9 @@ The node 3c3a0c... now has two replicas, running on ports 7002 (the existing one
 
 #### Remove a node
 
-To remove a replica node just use the `del-node` command of redis-cli:
+To remove a replica node just use the `del-node` command of valkey-cli:
 
-    redis-cli --cluster del-node 127.0.0.1:7000 `<node-id>`
+    valkey-cli --cluster del-node 127.0.0.1:7000 `<node-id>`
 
 The first argument is just a random node in the cluster, the second argument
 is the ID of the node you want to remove.
@@ -879,13 +879,13 @@ There is a special scenario where you want to remove a failed node.
 You should not use the `del-node` command because it tries to connect to all nodes and you will encounter a "connection refused" error.
 Instead, you can use the `call` command:
 
-    redis-cli --cluster call 127.0.0.1:7000 cluster forget `<node-id>`
+    valkey-cli --cluster call 127.0.0.1:7000 cluster forget `<node-id>`
 
 This command will execute `CLUSTER FORGET` command on every node. 
 
 #### Replica migration
 
-In Redis Cluster, you can reconfigure a replica to replicate with a
+In Valkey Cluster, you can reconfigure a replica to replicate with a
 different master at any time just using this command:
 
     CLUSTER REPLICATE <master-node-id>
@@ -893,15 +893,15 @@ different master at any time just using this command:
 However there is a special scenario where you want replicas to move from one
 master to another one automatically, without the help of the system administrator.
 The automatic reconfiguration of replicas is called *replicas migration* and is
-able to improve the reliability of a Redis Cluster.
+able to improve the reliability of a Valkey Cluster.
 
 {{% alert title="Note" color="info" %}} 
-You can read the details of replicas migration in the [Redis Cluster Specification](/topics/cluster-spec), here we'll only provide some information about the
+You can read the details of replicas migration in the [Valkey Cluster Specification](/topics/cluster-spec), here we'll only provide some information about the
 general idea and what you should do in order to benefit from it.
 {{% /alert %}} 
 
 The reason why you may want to let your cluster replicas to move from one master
-to another under certain condition, is that usually the Redis Cluster is as
+to another under certain condition, is that usually the Valkey Cluster is as
 resistant to failures as the number of replicas attached to a given master.
 
 For example a cluster where every master has a single replica can't continue
@@ -932,12 +932,12 @@ So what you should know about replicas migration in short?
 
 * The cluster will try to migrate a replica from the master that has the greatest number of replicas in a given moment.
 * To benefit from replica migration you have just to add a few more replicas to a single master in your cluster, it does not matter what master.
-* There is a configuration parameter that controls the replica migration feature that is called `cluster-migration-barrier`: you can read more about it in the example `redis.conf` file provided with Redis Cluster.
+* There is a configuration parameter that controls the replica migration feature that is called `cluster-migration-barrier`: you can read more about it in the example `valkey.conf` file provided with Valkey Cluster.
 
-#### Upgrade nodes in a Redis Cluster
+#### Upgrade nodes in a Valkey Cluster
 
 Upgrading replica nodes is easy since you just need to stop the node and restart
-it with an updated version of Redis. If there are clients scaling reads using
+it with an updated version of Valkey. If there are clients scaling reads using
 replica nodes, they should be able to reconnect to a different replica if a given
 one is not available.
 
@@ -952,14 +952,14 @@ Upgrading masters is a bit more complex, and the suggested procedure is:
 Following this procedure you should upgrade one node after the other until
 all the nodes are upgraded.
 
-#### Migrate to Redis Cluster
+#### Migrate to Valkey Cluster
 
-Users willing to migrate to Redis Cluster may have just a single master, or
+Users willing to migrate to Valkey Cluster may have just a single master, or
 may already using a preexisting sharding setup, where keys
 are split among N nodes, using some in-house algorithm or a sharding algorithm
-implemented by their client library or Redis proxy.
+implemented by their client library or Valkey proxy.
 
-In both cases it is possible to migrate to Redis Cluster easily, however
+In both cases it is possible to migrate to Valkey Cluster easily, however
 what is the most important detail is if multiple-keys operations are used
 by the application, and how. There are three different cases:
 
@@ -967,7 +967,7 @@ by the application, and how. There are three different cases:
 2. Multiple keys operations, or transactions, or Lua scripts involving multiple keys are used but only with keys having the same **hash tag**, which means that the keys used together all have a `{...}` sub-string that happens to be identical. For example the following multiple keys operation is defined in the context of the same hash tag: `SUNION {user:1000}.foo {user:1000}.bar`.
 3. Multiple keys operations, or transactions, or Lua scripts involving multiple keys are used with key names not having an explicit, or the same, hash tag.
 
-The third case is not handled by Redis Cluster: the application requires to
+The third case is not handled by Valkey Cluster: the application requires to
 be modified in order to not use multi keys operations or only use them in
 the context of the same hash tag.
 
@@ -976,35 +976,35 @@ in the same way, so no distinction will be made in the documentation.
 
 Assuming you have your preexisting data set split into N masters, where
 N=1 if you have no preexisting sharding, the following steps are needed
-in order to migrate your data set to Redis Cluster:
+in order to migrate your data set to Valkey Cluster:
 
-1. Stop your clients. No automatic live-migration to Redis Cluster is currently possible. You may be able to do it orchestrating a live migration in the context of your application / environment.
+1. Stop your clients. No automatic live-migration to Valkey Cluster is currently possible. You may be able to do it orchestrating a live migration in the context of your application / environment.
 2. Generate an append only file for all of your N masters using the `BGREWRITEAOF` command, and waiting for the AOF file to be completely generated.
 3. Save your AOF files from aof-1 to aof-N somewhere. At this point you can stop your old instances if you wish (this is useful since in non-virtualized deployments you often need to reuse the same computers).
-4. Create a Redis Cluster composed of N masters and zero replicas. You'll add replicas later. Make sure all your nodes are using the append only file for persistence.
+4. Create a Valkey Cluster composed of N masters and zero replicas. You'll add replicas later. Make sure all your nodes are using the append only file for persistence.
 5. Stop all the cluster nodes, substitute their append only file with your pre-existing append only files, aof-1 for the first node, aof-2 for the second node, up to aof-N.
-6. Restart your Redis Cluster nodes with the new AOF files. They'll complain that there are keys that should not be there according to their configuration.
-7. Use `redis-cli --cluster fix` command in order to fix the cluster so that keys will be migrated according to the hash slots each node is authoritative or not.
-8. Use `redis-cli --cluster check` at the end to make sure your cluster is ok.
-9. Restart your clients modified to use a Redis Cluster aware client library.
+6. Restart your Valkey Cluster nodes with the new AOF files. They'll complain that there are keys that should not be there according to their configuration.
+7. Use `valkey-cli --cluster fix` command in order to fix the cluster so that keys will be migrated according to the hash slots each node is authoritative or not.
+8. Use `valkey-cli --cluster check` at the end to make sure your cluster is ok.
+9. Restart your clients modified to use a Valkey Cluster aware client library.
 
-There is an alternative way to import data from external instances to a Redis
-Cluster, which is to use the `redis-cli --cluster import` command.
+There is an alternative way to import data from external instances to a Valkey
+Cluster, which is to use the `valkey-cli --cluster import` command.
 
 The command moves all the keys of a running instance (deleting the keys from
-the source instance) to the specified pre-existing Redis Cluster. However
-note that if you use a Redis 2.8 instance as source instance the operation
+the source instance) to the specified pre-existing Valkey Cluster. However
+note that if you use a Valkey 2.8 instance as source instance the operation
 may be slow since 2.8 does not implement migrate connection caching, so you
-may want to restart your source instance with a Redis 3.x version before
+may want to restart your source instance with a Valkey 3.x version before
 to perform such operation.
 
 {{% alert title="Note" color="info" %}} 
-Starting with Redis 5, if not for backward compatibility, the Redis project no longer uses the word slave. Unfortunately in this command the word slave is part of the protocol, so we'll be able to remove such occurrences only when this API will be naturally deprecated.
+Starting with Valkey 5, if not for backward compatibility, the Valkey project no longer uses the word slave. Unfortunately in this command the word slave is part of the protocol, so we'll be able to remove such occurrences only when this API will be naturally deprecated.
 {{% /alert %}} 
 
 ## Learn more
 
-* [Redis Cluster specification](/topics/cluster-spec)
-* [Linear Scaling with Redis Enterprise](https://redis.com/redis-enterprise/technology/linear-scaling-redis-enterprise/)
+* [Valkey Cluster specification](/topics/cluster-spec)
+* [Linear Scaling with Valkey Enterprise](https://valkey.com/valkey-enterprise/technology/linear-scaling-valkey-enterprise/)
 * [Docker documentation](https://docs.docker.com/engine/userguide/networking/dockernetworks/)
 

@@ -1,8 +1,8 @@
 ---
-title: Redis replication
+title: Valkey replication
 linkTitle: Replication
 weight: 5
-description: How Redis supports high availability and failover with replication
+description: How Valkey supports high availability and failover with replication
 aliases: [
     /topics/replication,
     /topics/replication.md,
@@ -11,7 +11,7 @@ aliases: [
 ]
 ---
 
-At the base of Redis replication (excluding the high availability features provided as an additional layer by Redis Cluster or Redis Sentinel) there is a *leader follower* (master-replica) replication that is simple to use and configure. It allows replica Redis instances to be exact copies of master instances. The replica will automatically reconnect to the master every time the link breaks, and will attempt to be an exact copy of it *regardless* of what happens to the master.
+At the base of Valkey replication (excluding the high availability features provided as an additional layer by Valkey Cluster or Valkey Sentinel) there is a *leader follower* (master-replica) replication that is simple to use and configure. It allows replica Valkey instances to be exact copies of master instances. The replica will automatically reconnect to the master every time the link breaks, and will attempt to be an exact copy of it *regardless* of what happens to the master.
 
 This system works using three main mechanisms:
 
@@ -19,38 +19,38 @@ This system works using three main mechanisms:
 2. When the link between the master and the replica breaks, for network issues or because a timeout is sensed in the master or the replica, the replica reconnects and attempts to proceed with a partial resynchronization: it means that it will try to just obtain the part of the stream of commands it missed during the disconnection.
 3. When a partial resynchronization is not possible, the replica will ask for a full resynchronization. This will involve a more complex process in which the master needs to create a snapshot of all its data, send it to the replica, and then continue sending the stream of commands as the dataset changes.
 
-Redis uses by default asynchronous replication, which being low latency and
-high performance, is the natural replication mode for the vast majority of Redis
-use cases. However, Redis replicas asynchronously acknowledge the amount of data
+Valkey uses by default asynchronous replication, which being low latency and
+high performance, is the natural replication mode for the vast majority of Valkey
+use cases. However, Valkey replicas asynchronously acknowledge the amount of data
 they received periodically with the master. So the master does not wait every time
 for a command to be processed by the replicas, however it knows, if needed, what
 replica already processed what command. This allows having optional synchronous replication.
 
 Synchronous replication of certain data can be requested by the clients using
 the `WAIT` command. However `WAIT` is only able to ensure there are the
-specified number of acknowledged copies in the other Redis instances, it does not
-turn a set of Redis instances into a CP system with strong consistency: acknowledged
+specified number of acknowledged copies in the other Valkey instances, it does not
+turn a set of Valkey instances into a CP system with strong consistency: acknowledged
 writes can still be lost during a failover, depending on the exact configuration
-of the Redis persistence. However with `WAIT` the probability of losing a write
+of the Valkey persistence. However with `WAIT` the probability of losing a write
 after a failure event is greatly reduced to certain hard to trigger failure
 modes.
 
-You can check the Redis Sentinel or Redis Cluster documentation for more information
-about high availability and failover. The rest of this document mainly describes the basic characteristics of Redis basic replication.
+You can check the Valkey Sentinel or Valkey Cluster documentation for more information
+about high availability and failover. The rest of this document mainly describes the basic characteristics of Valkey basic replication.
 
-### Important facts about Redis replication
+### Important facts about Valkey replication
 
-* Redis uses asynchronous replication, with asynchronous replica-to-master acknowledges of the amount of data processed.
+* Valkey uses asynchronous replication, with asynchronous replica-to-master acknowledges of the amount of data processed.
 * A master can have multiple replicas.
-* Replicas are able to accept connections from other replicas. Aside from connecting a number of replicas to the same master, replicas can also be connected to other replicas in a cascading-like structure. Since Redis 4.0, all the sub-replicas will receive exactly the same replication stream from the master.
-* Redis replication is non-blocking on the master side. This means that the master will continue to handle queries when one or more replicas perform the initial synchronization or a partial resynchronization.
-* Replication is also largely non-blocking on the replica side. While the replica is performing the initial synchronization, it can handle queries using the old version of the dataset, assuming you configured Redis to do so in redis.conf.  Otherwise, you can configure Redis replicas to return an error to clients if the replication stream is down. However, after the initial sync, the old dataset must be deleted and the new one must be loaded. The replica will block incoming connections during this brief window (that can be as long as many seconds for very large datasets). Since Redis 4.0 you can configure Redis so that the deletion of the old data set happens in a different thread, however loading the new initial dataset will still happen in the main thread and block the replica.
+* Replicas are able to accept connections from other replicas. Aside from connecting a number of replicas to the same master, replicas can also be connected to other replicas in a cascading-like structure. Since Valkey 4.0, all the sub-replicas will receive exactly the same replication stream from the master.
+* Valkey replication is non-blocking on the master side. This means that the master will continue to handle queries when one or more replicas perform the initial synchronization or a partial resynchronization.
+* Replication is also largely non-blocking on the replica side. While the replica is performing the initial synchronization, it can handle queries using the old version of the dataset, assuming you configured Valkey to do so in valkey.conf.  Otherwise, you can configure Valkey replicas to return an error to clients if the replication stream is down. However, after the initial sync, the old dataset must be deleted and the new one must be loaded. The replica will block incoming connections during this brief window (that can be as long as many seconds for very large datasets). Since Valkey 4.0 you can configure Valkey so that the deletion of the old data set happens in a different thread, however loading the new initial dataset will still happen in the main thread and block the replica.
 * Replication can be used both for scalability, to have multiple replicas for read-only queries (for example, slow O(N) operations can be offloaded to replicas), or simply for improving data safety and high availability.
-* You can use replication to avoid the cost of having the master writing the full dataset to disk: a typical technique involves configuring your master `redis.conf` to avoid persisting to disk at all, then connect a replica configured to save from time to time, or with AOF enabled. However, this setup must be handled with care, since a restarting master will start with an empty dataset: if the replica tries to sync with it, the replica will be emptied as well.
+* You can use replication to avoid the cost of having the master writing the full dataset to disk: a typical technique involves configuring your master `valkey.conf` to avoid persisting to disk at all, then connect a replica configured to save from time to time, or with AOF enabled. However, this setup must be handled with care, since a restarting master will start with an empty dataset: if the replica tries to sync with it, the replica will be emptied as well.
 
 ## Safety of replication when master has persistence turned off
 
-In setups where Redis replication is used, it is strongly advised to have
+In setups where Valkey replication is used, it is strongly advised to have
 persistence turned on in the master and in the replicas. When this is not possible,
 for example because of latency concerns due to very slow disks, instances should
 be configured to **avoid restarting automatically** after a reboot.
@@ -63,14 +63,14 @@ is wiped from the master and all its replicas:
 2. Node A crashes, however it has some auto-restart system, that restarts the process. However since persistence is turned off, the node restarts with an empty data set.
 3. Nodes B and C will replicate from node A, which is empty, so they'll effectively destroy their copy of the data.
 
-When Redis Sentinel is used for high availability, also turning off persistence
+When Valkey Sentinel is used for high availability, also turning off persistence
 on the master, together with auto restart of the process, is dangerous. For example the master can restart fast enough for Sentinel to not detect a failure, so that the failure mode described above happens.
 
 Every time data safety is important, and replication is used with master configured without persistence, auto restart of instances should be disabled.
 
-## How Redis replication works
+## How Valkey replication works
 
-Every Redis master has a replication ID: it is a large pseudo random string
+Every Valkey master has a replication ID: it is a large pseudo random string
 that marks a given story of the dataset. Each master also takes an offset that
 increments for every byte of replication stream that it is produced to be
 sent to replicas, to update the state of the replicas with the new changes
@@ -90,13 +90,13 @@ happens: in this case the replica will get a full copy of the dataset, from scra
 
 This is how a full synchronization works in more details:
 
-The master starts a background saving process to produce an RDB file. At the same time it starts to buffer all new write commands received from the clients. When the background saving is complete, the master transfers the database file to the replica, which saves it on disk, and then loads it into memory. The master will then send all buffered commands to the replica. This is done as a stream of commands and is in the same format of the Redis protocol itself.
+The master starts a background saving process to produce an RDB file. At the same time it starts to buffer all new write commands received from the clients. When the background saving is complete, the master transfers the database file to the replica, which saves it on disk, and then loads it into memory. The master will then send all buffered commands to the replica. This is done as a stream of commands and is in the same format of the Valkey protocol itself.
 
-You can try it yourself via telnet. Connect to the Redis port while the
+You can try it yourself via telnet. Connect to the Valkey port while the
 server is doing some work and issue the `SYNC` command. You'll see a bulk
 transfer and then every command received by the master will be re-issued
 in the telnet session. Actually `SYNC` is an old protocol no longer used by
-newer Redis instances, but is still there for backward compatibility: it does
+newer Valkey instances, but is still there for backward compatibility: it does
 not allow partial resynchronizations, so now `PSYNC` is used instead.
 
 As already said, replicas are able to automatically reconnect when the master-replica link goes down for some reason. If the master receives multiple concurrent replica synchronization requests, it performs a single background save in to serve all of them.
@@ -122,7 +122,7 @@ with offset 1000 and one with offset 1023, it means that the first lacks certain
 commands applied to the data set. It also means that A, by applying just a few
 commands, may reach exactly the same state of B.
 
-The reason why Redis instances have two replication IDs is because of replicas
+The reason why Valkey instances have two replication IDs is because of replicas
 that are promoted to masters. After a failover, the promoted replica requires
 to still remember what was its past replication ID, because such replication ID
 was the one of the former master. In this way, when other replicas will sync
@@ -148,13 +148,13 @@ Normally a full resynchronization requires creating an RDB file on disk,
 then reloading the same RDB from disk to feed the replicas with the data.
 
 With slow disks this can be a very stressing operation for the master.
-Redis version 2.8.18 is the first version to have support for diskless
+Valkey version 2.8.18 is the first version to have support for diskless
 replication. In this setup the child process directly sends the
 RDB over the wire to replicas, without using the disk as intermediate storage.
 
 ## Configuration
 
-To configure basic Redis replication is trivial: just add the following line to the replica configuration file:
+To configure basic Valkey replication is trivial: just add the following line to the replica configuration file:
 
     replicaof 192.168.1.1 6379
 
@@ -164,27 +164,27 @@ master host will start a sync with the replica.
 
 There are also a few parameters for tuning the replication backlog taken
 in memory by the master to perform the partial resynchronization. See the example
-`redis.conf` shipped with the Redis distribution for more information.
+`valkey.conf` shipped with the Valkey distribution for more information.
 
 Diskless replication can be enabled using the `repl-diskless-sync` configuration
 parameter. The delay to start the transfer to wait for more replicas to
 arrive after the first one is controlled by the `repl-diskless-sync-delay`
-parameter. Please refer to the example `redis.conf` file in the Redis distribution
+parameter. Please refer to the example `valkey.conf` file in the Valkey distribution
 for more details.
 
 ## Read-only replica
 
-Since Redis 2.6, replicas support a read-only mode that is enabled by default.
-This behavior is controlled by the `replica-read-only` option in the redis.conf file, and can be enabled and disabled at runtime using `CONFIG SET`.
+Since Valkey 2.6, replicas support a read-only mode that is enabled by default.
+This behavior is controlled by the `replica-read-only` option in the valkey.conf file, and can be enabled and disabled at runtime using `CONFIG SET`.
 
-Read-only replicas will reject all write commands, so that it is not possible to write to a replica because of a mistake. This does not mean that the feature is intended to expose a replica instance to the internet or more generally to a network where untrusted clients exist, because administrative commands like `DEBUG` or `CONFIG` are still enabled. The [Security](/topics/security) page describes how to secure a Redis instance.
+Read-only replicas will reject all write commands, so that it is not possible to write to a replica because of a mistake. This does not mean that the feature is intended to expose a replica instance to the internet or more generally to a network where untrusted clients exist, because administrative commands like `DEBUG` or `CONFIG` are still enabled. The [Security](/topics/security) page describes how to secure a Valkey instance.
 
 You may wonder why it is possible to revert the read-only setting
 and have replica instances that can be targeted by write operations.
 The answer is that writable replicas exist only for historical reasons.
 Using writable replicas can result in inconsistency between the master and the replica, so it is not recommended to use writable replicas.
 To understand in which situations this can be a problem, we need to understand how replication works.
-Changes on the master is replicated by propagating regular Redis commands to the replica.
+Changes on the master is replicated by propagating regular Valkey commands to the replica.
 When a key expires on the master, this is propagated as a DEL command.
 If a key which exists on the master but is deleted, expired or has a different type on the replica compared to the master will react differently to commands like DEL, INCR or RPOP propagated from the master than intended.
 The propagated command may fail on the replica or result in a different outcome.
@@ -213,10 +213,10 @@ While writes to a replica will be discarded if the replica and the master resync
 
 Before version 4.0, writable replicas were incapable of expiring keys with a time to live set.
 This means that if you use `EXPIRE` or other commands that set a maximum TTL for a key, the key will leak, and while you may no longer see it while accessing it with read commands, you will see it in the count of keys and it will still use memory.
-Redis 4.0 RC3 and greater versions are able to evict keys with TTL as masters do, with the exceptions of keys written in DB numbers greater than 63 (but by default Redis instances only have 16 databases).
+Valkey 4.0 RC3 and greater versions are able to evict keys with TTL as masters do, with the exceptions of keys written in DB numbers greater than 63 (but by default Valkey instances only have 16 databases).
 Note though that even in versions greater than 4.0, using `EXPIRE` on a key that could ever exists on the master can cause inconsistency between the replica and the master.
 
-Also note that since Redis 4.0 replica writes are only local, and are not propagated to sub-replicas attached to the instance. Sub-replicas instead will always receive the replication stream identical to the one sent by the top-level master to the intermediate replicas. So for example in the following setup:
+Also note that since Valkey 4.0 replica writes are only local, and are not propagated to sub-replicas attached to the instance. Sub-replicas instead will always receive the replication stream identical to the one sent by the top-level master to the intermediate replicas. So for example in the following setup:
 
     A ---> B ---> C
 
@@ -227,7 +227,7 @@ Even if `B` is writable, C will not see `B` writes and will instead have identic
 If your master has a password via `requirepass`, it's trivial to configure the
 replica to use that password in all sync operations.
 
-To do it on a running instance, use `redis-cli` and type:
+To do it on a running instance, use `valkey-cli` and type:
 
     config set masterauth <password>
 
@@ -237,18 +237,18 @@ To set it permanently, add this to your config file:
 
 ## Allow writes only with N attached replicas
 
-Starting with Redis 2.8, you can configure a Redis master to
+Starting with Valkey 2.8, you can configure a Valkey master to
 accept write queries only if at least N replicas are currently connected to the
 master.
 
-However, because Redis uses asynchronous replication it is not possible to ensure
+However, because Valkey uses asynchronous replication it is not possible to ensure
 the replica actually received a given write, so there is always a window for data
 loss.
 
 This is how the feature works:
 
-* Redis replicas ping the master every second, acknowledging the amount of replication stream processed.
-* Redis masters will remember the last time it received a ping from every replica.
+* Valkey replicas ping the master every second, acknowledging the amount of replication stream processed.
+* Valkey masters will remember the last time it received a ping from every replica.
 * The user can configure a minimum number of replicas that have a lag not greater than a maximum number of seconds.
 
 If there are at least N replicas, with a lag less than M seconds, then the write will be accepted.
@@ -262,19 +262,19 @@ There are two configuration parameters for this feature:
 * min-replicas-to-write `<number of replicas>`
 * min-replicas-max-lag `<number of seconds>`
 
-For more information, please check the example `redis.conf` file shipped with the
-Redis source distribution.
+For more information, please check the example `valkey.conf` file shipped with the
+Valkey source distribution.
 
-## How Redis replication deals with expires on keys
+## How Valkey replication deals with expires on keys
 
-Redis expires allow keys to have a limited time to live (TTL). Such a feature depends
-on the ability of an instance to count the time, however Redis replicas correctly
+Valkey expires allow keys to have a limited time to live (TTL). Such a feature depends
+on the ability of an instance to count the time, however Valkey replicas correctly
 replicate keys with expires, even when such keys are altered using Lua
 scripts.
 
-To implement such a feature Redis cannot rely on the ability of the master and
+To implement such a feature Valkey cannot rely on the ability of the master and
 replica to have synced clocks, since this is a problem that cannot be solved
-and would result in race conditions and diverging data sets, so Redis
+and would result in race conditions and diverging data sets, so Valkey
 uses three main techniques to make the replication of expired keys
 able to work:
 
@@ -286,7 +286,7 @@ Once a replica is promoted to a master it will start to expire keys independentl
 
 ## Configuring replication in Docker and NAT
 
-When Docker, or other types of containers using port forwarding, or Network Address Translation is used, Redis replication needs some extra care, especially when using Redis Sentinel or other systems where the master `INFO` or `ROLE` commands output is scanned to discover replicas' addresses.
+When Docker, or other types of containers using port forwarding, or Network Address Translation is used, Valkey replication needs some extra care, especially when using Valkey Sentinel or other systems where the master `INFO` or `ROLE` commands output is scanned to discover replicas' addresses.
 
 The problem is that the `ROLE` command, and the replication section of
 the `INFO` output, when issued into a master instance, will show replicas
@@ -295,21 +295,21 @@ environments using NAT may be different compared to the logical address of the
 replica instance (the one that clients should use to connect to replicas).
 
 Similarly the replicas will be listed with the listening port configured
-into `redis.conf`, that may be different from the forwarded port in case
+into `valkey.conf`, that may be different from the forwarded port in case
 the port is remapped.
 
-To fix both issues, it is possible, since Redis 3.2.2, to force
+To fix both issues, it is possible, since Valkey 3.2.2, to force
 a replica to announce an arbitrary pair of IP and port to the master.
 The two configurations directives to use are:
 
     replica-announce-ip 5.5.5.5
     replica-announce-port 1234
 
-And are documented in the example `redis.conf` of recent Redis distributions.
+And are documented in the example `valkey.conf` of recent Valkey distributions.
 
 ## The INFO and ROLE command
 
-There are two Redis commands that provide a lot of information on the current
+There are two Valkey commands that provide a lot of information on the current
 replication parameters of master and replica instances. One is `INFO`. If the
 command is called with the `replication` argument as `INFO replication` only
 information relevant to the replication are displayed. Another more
@@ -319,7 +319,7 @@ replicas and so forth.
 
 ## Partial sync after restarts and failovers
 
-Since Redis 4.0, when an instance is promoted to master after a failover,
+Since Valkey 4.0, when an instance is promoted to master after a failover,
 it will still be able to perform a partial resynchronization with the replicas
 of the old master. To do so, the replica remembers the old replication ID and
 offset of its former master, so can provide part of the backlog to the connecting
