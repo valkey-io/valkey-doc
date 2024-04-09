@@ -8,7 +8,11 @@ aliases:
     - /topics/license
 ---
 
+
 * Redis is **open source software** released under the terms of the **three clause BSD license**. Most of the Redis source code was written and is copyrighted by Salvatore Sanfilippo and Pieter Noordhuis. A list of other contributors can be found in the git history.
+
+  The Redis trademark and logo are owned by Redis Ltd. and can be
+used in accordance with the [Redis Trademark Guidelines](https://redis.com/legal/trademark-guidelines/).
 
 ## Licences:
 
@@ -41,11 +45,6 @@ INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
 CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
-
-### REDIS SOURCE AVAILABLE LICENSE (RSAL) 2.0
-
-
-_Last updated: November 15, 2022_
 
 #### Acceptance
 
