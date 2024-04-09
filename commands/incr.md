@@ -115,8 +115,7 @@ If for some reason the client performs the `INCR` command but does not perform
 the `EXPIRE` the key will be leaked until we'll see the same IP address again.
 
 This can be fixed easily turning the `INCR` with optional `EXPIRE` into a Lua
-script that is send using the `EVAL` command (only available since Valkey version
-2.6).
+script that is send using the `EVAL` command.
 
 ```
 local current
