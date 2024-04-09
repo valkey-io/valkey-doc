@@ -6,19 +6,9 @@ description: >
     Redis license and trademark information
 aliases:
     - /topics/license
-    - /docs/stack/license/
 ---
 
-
 * Redis is **open source software** released under the terms of the **three clause BSD license**. Most of the Redis source code was written and is copyrighted by Salvatore Sanfilippo and Pieter Noordhuis. A list of other contributors can be found in the git history.
-
-  The Redis trademark and logo are owned by Redis Ltd. and can be
-used in accordance with the [Redis Trademark Guidelines](https://redis.com/legal/trademark-guidelines/).
-
-* RedisInsight is licensed under the Server Side Public License (SSPL).
-
-* Redis Stack Server, which combines open source Redis with Search and Query features, JSON, Time Series, and Probabilistic data structures is dual-licensed under the Redis Source Available License (RSALv2), as described below, and the [Server Side Public License](https://en.wikipedia.org/wiki/Server_Side_Public_License) (SSPL). For information about licensing per version, see [Versions and licenses](/docs/about/about-stack/#redis-stack-license).
-
 
 ## Licences:
 
