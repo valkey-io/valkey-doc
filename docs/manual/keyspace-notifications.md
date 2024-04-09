@@ -53,7 +53,7 @@ just the subset of events we are interested in.
 
 By default keyspace event notifications are disabled because while not
 very sensible the feature uses some CPU power. Notifications are enabled
-using the `notify-keyspace-events` of Valkey.conf or via the **CONFIG SET**.
+using the `notify-keyspace-events` of valkey.conf or via the **CONFIG SET**.
 
 Setting the parameter to the empty string disables notifications.
 In order to enable the feature a non-empty string is used, composed of multiple
