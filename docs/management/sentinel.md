@@ -1,8 +1,8 @@
 ---
-title: "High availability with Redis Sentinel"
+title: "High availability with Valkey Sentinel"
 linkTitle: "High availability with Sentinel"
 weight: 4
-description: High availability for non-clustered Redis
+description: High availability for non-clustered Valkey
 aliases: [
     /topics/sentinel,
     /docs/manual/sentinel,
@@ -10,29 +10,29 @@ aliases: [
 ]
 ---
 
-Redis Sentinel provides high availability for Redis when not using [Redis Cluster](/docs/manual/scaling). 
+Valkey Sentinel provides high availability for Valkey when not using [Valkey Cluster](/docs/manual/scaling). 
 
-Redis Sentinel also provides other collateral tasks such as monitoring,
+Valkey Sentinel also provides other collateral tasks such as monitoring,
 notifications and acts as a configuration provider for clients.
 
 This is the full list of Sentinel capabilities at a macroscopic level (i.e. the *big picture*):
 
 * **Monitoring**. Sentinel constantly checks if your master and replica instances are working as expected.
-* **Notification**. Sentinel can notify the system administrator, or other computer programs, via an API, that something is wrong with one of the monitored Redis instances.
-* **Automatic failover**. If a master is not working as expected, Sentinel can start a failover process where a replica is promoted to master, the other additional replicas are reconfigured to use the new master, and the applications using the Redis server are informed about the new address to use when connecting.
-* **Configuration provider**. Sentinel acts as a source of authority for clients service discovery: clients connect to Sentinels in order to ask for the address of the current Redis master responsible for a given service. If a failover occurs, Sentinels will report the new address.
+* **Notification**. Sentinel can notify the system administrator, or other computer programs, via an API, that something is wrong with one of the monitored Valkey instances.
+* **Automatic failover**. If a master is not working as expected, Sentinel can start a failover process where a replica is promoted to master, the other additional replicas are reconfigured to use the new master, and the applications using the Valkey server are informed about the new address to use when connecting.
+* **Configuration provider**. Sentinel acts as a source of authority for clients service discovery: clients connect to Sentinels in order to ask for the address of the current Valkey master responsible for a given service. If a failover occurs, Sentinels will report the new address.
 
 ## Sentinel as a distributed system
 
-Redis Sentinel is a distributed system:
+Valkey Sentinel is a distributed system:
 
 Sentinel itself is designed to run in a configuration where there are multiple Sentinel processes cooperating together. The advantage of having multiple Sentinel processes cooperating are the following:
 
 1. Failure detection is performed when multiple Sentinels agree about the fact a given master is no longer available. This lowers the probability of false positives.
 2. Sentinel works even if not all the Sentinel processes are working, making the system robust against failures. There is no fun in having a failover system which is itself a single point of failure, after all.
 
-The sum of Sentinels, Redis instances (masters and replicas) and clients
-connecting to Sentinel and Redis, are also a larger distributed system with
+The sum of Sentinels, Valkey instances (masters and replicas) and clients
+connecting to Sentinel and Valkey, are also a larger distributed system with
 specific properties. In this document concepts will be introduced gradually
 starting from basic information needed in order to understand the basic
 properties of Sentinel, to more complex information (that are optional) in
@@ -46,26 +46,26 @@ The current version of Sentinel is called **Sentinel 2**. It is a rewrite of
 the initial Sentinel implementation using stronger and simpler-to-predict
 algorithms (that are explained in this documentation).
 
-A stable release of Redis Sentinel is shipped since Redis 2.8.
+PLEASE-REVIEW{A stable release of Valkey Sentinel is shipped since Redis 2.8.}
 
 New developments are performed in the *unstable* branch, and new features
 sometimes are back ported into the latest stable branch as soon as they are
 considered to be stable.
 
-Redis Sentinel version 1, shipped with Redis 2.6, is deprecated and should not be used.
+PLEASE-REVIEW{Redis Sentinel version 1, shipped with Redis 2.6, is deprecated and should not be used}.
 
 ### Running Sentinel
 
-If you are using the `redis-sentinel` executable (or if you have a symbolic
-link with that name to the `redis-server` executable) you can run Sentinel
+If you are using the `valkey-sentinel` executable (or if you have a symbolic
+link with that name to the `valkey-server` executable) you can run Sentinel
 with the following command line:
 
-    redis-sentinel /path/to/sentinel.conf
+    valkey-sentinel /path/to/sentinel.conf
 
-Otherwise you can use directly the `redis-server` executable starting it in
+Otherwise you can use directly the `valkey-server` executable starting it in
 Sentinel mode:
 
-    redis-server /path/to/sentinel.conf --sentinel
+    valkey-server /path/to/sentinel.conf --sentinel
 
 Both ways work the same.
 
@@ -81,14 +81,14 @@ will never be performed.
 
 1. You need at least three Sentinel instances for a robust deployment.
 2. The three Sentinel instances should be placed into computers or virtual machines that are believed to fail in an independent way. So for example different physical servers or Virtual Machines executed on different availability zones.
-3. Sentinel + Redis distributed system does not guarantee that acknowledged writes are retained during failures, since Redis uses asynchronous replication. However there are ways to deploy Sentinel that make the window to lose writes limited to certain moments, while there are other less secure ways to deploy it.
+3. Sentinel + Valkey distributed system does not guarantee that acknowledged writes are retained during failures, since Valkey uses asynchronous replication. However there are ways to deploy Sentinel that make the window to lose writes limited to certain moments, while there are other less secure ways to deploy it.
 4. You need Sentinel support in your clients. Popular client libraries have Sentinel support, but not all.
 5. There is no HA setup which is safe if you don't test from time to time in development environments, or even better if you can, in production environments, if they work. You may have a misconfiguration that will become apparent only when it's too late (at 3am when your master stops working).
 6. **Sentinel, Docker, or other forms of Network Address Translation or Port Mapping should be mixed with care**: Docker performs port remapping, breaking Sentinel auto discovery of other Sentinel processes and the list of replicas for a master. Check the [section about _Sentinel and Docker_](#sentinel-docker-nat-and-possible-issues) later in this document for more information.
 
 ### Configuring Sentinel
 
-The Redis source distribution contains a file called `sentinel.conf`
+The Valkey source distribution contains a file called `sentinel.conf`
 that is a self-documented example configuration file you can use to
 configure Sentinel, however a typical minimal configuration file looks like the
 following:
@@ -111,7 +111,7 @@ order to retain the information in case of restart). The configuration is
 also rewritten every time a replica is promoted to master during a failover
 and every time a new Sentinel is discovered.
 
-The example configuration above basically monitors two sets of Redis
+The example configuration above basically monitors two sets of Valkey
 instances, each composed of a master and an undefined number of replicas.
 One set of instances is called `mymaster`, and the other `resque`.
 
@@ -122,7 +122,7 @@ The meaning of the arguments of `sentinel monitor` statements is the following:
 For the sake of clarity, let's check line by line what the configuration
 options mean:
 
-The first line is used to tell Redis to monitor a master called *mymaster*,
+The first line is used to tell Valkey to monitor a master called *mymaster*,
 that is at address 127.0.0.1 and port 6379, with a quorum of 2. Everything
 is pretty obvious but the **quorum** argument:
 
@@ -158,7 +158,7 @@ load the bulk data from the master. You may want to make sure only one replica
 at a time is not reachable by setting this option to the value of 1.
 
 Additional options are described in the rest of this document and
-documented in the example `sentinel.conf` file shipped with the Redis
+documented in the example `sentinel.conf` file shipped with the Valkey
 distribution.
 
 Configuration parameters can be modified at runtime:
@@ -186,10 +186,10 @@ format, this is what the different symbols means:
 
 We write inside the boxes what they are running:
 
-    +-------------------+
-    | Redis master M1   |
-    | Redis Sentinel S1 |
-    +-------------------+
+    +--------------------+
+    | Valkey master M1   |
+    | Valkey Sentinel S1 |
+    +--------------------+
 
 Different boxes are connected by lines, to show that they are able to talk:
 
@@ -246,7 +246,7 @@ So please **deploy at least three Sentinels in three different boxes** always.
 
 This is a very simple setup, that has the advantage to be simple to tune
 for additional safety. It is based on three boxes, each box running both
-a Redis process and a Sentinel process.
+a Valkey process and a Sentinel process.
 
 
            +----+
@@ -264,7 +264,7 @@ a Redis process and a Sentinel process.
 If the master M1 fails, S2 and S3 will agree about the failure and will
 be able to authorize a failover, making clients able to continue.
 
-In every Sentinel setup, as Redis uses asynchronous replication, there is
+In every Sentinel setup, as Valkey uses asynchronous replication, there is
 always the risk of losing some writes because a given acknowledged write
 may not be able to reach the replica which is promoted to master. However in
 the above setup there is a higher risk due to clients being partitioned away
@@ -289,23 +289,23 @@ to the old master. This data will be lost forever since when the partition
 will heal, the master will be reconfigured as a replica of the new master,
 discarding its data set.
 
-This problem can be mitigated using the following Redis replication
+This problem can be mitigated using the following Valkey replication
 feature, that allows to stop accepting writes if a master detects that
 it is no longer able to transfer its writes to the specified number of replicas.
 
     min-replicas-to-write 1
     min-replicas-max-lag 10
 
-With the above configuration (please see the self-commented `redis.conf` example in the Redis distribution for more information) a Redis instance, when acting as a master, will stop accepting writes if it can't write to at least 1 replica. Since replication is asynchronous *not being able to write* actually means that the replica is either disconnected, or is not sending us asynchronous acknowledges for more than the specified `max-lag` number of seconds.
+With the above configuration (please see the self-commented `valkey.conf` example in the Valkey distribution for more information) a Valkey instance, when acting as a master, will stop accepting writes if it can't write to at least 1 replica. Since replication is asynchronous *not being able to write* actually means that the replica is either disconnected, or is not sending us asynchronous acknowledges for more than the specified `max-lag` number of seconds.
 
-Using this configuration, the old Redis master M1 in the above example, will become unavailable after 10 seconds. When the partition heals, the Sentinel configuration will converge to the new one, the client C1 will be able to fetch a valid configuration and will continue with the new master.
+Using this configuration, the old Valkey master M1 in the above example, will become unavailable after 10 seconds. When the partition heals, the Sentinel configuration will converge to the new one, the client C1 will be able to fetch a valid configuration and will continue with the new master.
 
 However there is no free lunch. With this refinement, if the two replicas are
 down, the master will stop accepting writes. It's a trade off.
 
 #### Example 3: Sentinel in the client boxes
 
-Sometimes we have only two Redis boxes available, one for the master and
+Sometimes we have only two Valkey boxes available, one for the master and
 one for the replica. The configuration in the example 2 is not viable in
 that case, so we can resort to the following, where Sentinels are placed
 where clients are:
@@ -328,14 +328,14 @@ where clients are:
 In this setup, the point of view Sentinels is the same as the clients: if
 a master is reachable by the majority of the clients, it is fine.
 C1, C2, C3 here are generic clients, it does not mean that C1 identifies
-a single client connected to Redis. It is more likely something like
+a single client connected to Valkey. It is more likely something like
 an application server, a Rails app, or something like that.
 
 If the box where M1 and S1 are running fails, the failover will happen
 without issues, however it is easy to see that different network partitions
 will result in different behaviors. For example Sentinel will not be able
-to setup if the network between the clients and the Redis servers is
-disconnected, since the Redis master and replica will both be unavailable.
+to setup if the network between the clients and the Valkey servers is
+disconnected, since the Valkey master and replica will both be unavailable.
 
 Note that if C3 gets partitioned with M1 (hardly possible with
 the network described above, but more likely possible with different
@@ -346,7 +346,7 @@ the master can't stop accepting queries when it is disconnected from its replica
 otherwise the master would never be available during replica failures.
 
 So this is a valid setup but the setup in the Example 2 has advantages
-such as the HA system of Redis running in the same boxes as Redis itself
+such as the HA system of Valkey running in the same boxes as Valkey itself
 which may be simpler to manage, and the ability to put a bound on the amount
 of time a master in the minority partition can receive writes.
 
@@ -377,7 +377,7 @@ the other three Sentinels will perform the failover.
 
 In theory this setup works removing the box where C2 and S4 are running, and
 setting the quorum to 2. However it is unlikely that we want HA in the
-Redis side without having high availability in our application layer.
+Valkey side without having high availability in our application layer.
 
 ### Sentinel, Docker, NAT, and possible issues
 
@@ -393,7 +393,7 @@ not ports but also IP addresses.
 Remapping ports and addresses creates issues with Sentinel in two ways:
 
 1. Sentinel auto-discovery of other Sentinels no longer works, since it is based on *hello* messages where each Sentinel announce at which port and IP address they are listening for connection. However Sentinels have no way to understand that an address or port is remapped, so it is announcing an information that is not correct for other Sentinels to connect.
-2. Replicas are listed in the `INFO` output of a Redis master in a similar way: the address is detected by the master checking the remote peer of the TCP connection, while the port is advertised by the replica itself during the handshake, however the port may be wrong for the same reason as exposed in point 1.
+2. Replicas are listed in the `INFO` output of a Valkey master in a similar way: the address is detected by the master checking the remote peer of the TCP connection, while the port is advertised by the replica itself during the handshake, however the port may be wrong for the same reason as exposed in point 1.
 
 Since Sentinels auto detect replicas using masters `INFO` output information,
 the detected replicas will not be reachable, and Sentinel will never be able to
@@ -419,8 +419,8 @@ Starting with version 6.2, Sentinel has *optional* support for host names.
 
 **This capability is disabled by default. If you're going to enable DNS/hostnames support, please note:**
 
-1. The name resolution configuration on your Redis and Sentinel nodes must be reliable and be able to resolve addresses quickly. Unexpected delays in address resolution may have a negative impact on Sentinel.
-2. You should use hostnames everywhere and avoid mixing hostnames and IP addresses. To do that, use `replica-announce-ip <hostname>` and `sentinel announce-ip <hostname>` for all Redis and Sentinel instances, respectively.
+1. The name resolution configuration on your Valkey and Sentinel nodes must be reliable and be able to resolve addresses quickly. Unexpected delays in address resolution may have a negative impact on Sentinel.
+2. You should use hostnames everywhere and avoid mixing hostnames and IP addresses. To do that, use `replica-announce-ip <hostname>` and `sentinel announce-ip <hostname>` for all Valkey and Sentinel instances, respectively.
 
 Enabling the `resolve-hostnames` global configuration allows Sentinel to accept host names:
 
@@ -443,7 +443,7 @@ that want to play with the system ASAP, this section is a tutorial that shows
 how to configure and interact with 3 Sentinel instances.
 
 Here we assume that the instances are executed at port 5000, 5001, 5002.
-We also assume that you have a running Redis master at port 6379 with a
+We also assume that you have a running Valkey master at port 6379 with a
 replica running at port 6380. We will use the IPv4 loopback address 127.0.0.1
 everywhere during the tutorial, assuming you are running the simulation
 on your personal computer.
@@ -481,7 +481,7 @@ Asking Sentinel about the state of a master
 The most obvious thing to do with Sentinel to get started, is check if the
 master it is monitoring is doing well:
 
-    $ redis-cli -p 5000
+    $ valkey-cli -p 5000
     127.0.0.1:5000> sentinel master mymaster
      1) "name"
      2) "mymaster"
@@ -559,7 +559,7 @@ At this point our toy Sentinel deployment is ready to be tested. We can
 just kill our master and check if the configuration changes. To do so
 we can just do:
 
-    redis-cli -p 6379 DEBUG sleep 30
+    valkey-cli -p 6379 DEBUG sleep 30
 
 This command will make our master no longer reachable, sleeping for 30 seconds.
 It basically simulates a master hanging for some reason.
@@ -588,12 +588,12 @@ of monitored masters and replicas, subscribe in order to receive specific
 notifications, and change the Sentinel configuration at run time.
 
 By default Sentinel runs using TCP port 26379 (note that 6379 is the normal
-Redis port). Sentinels accept commands using the Redis protocol, so you can
-use `redis-cli` or any other unmodified Redis client in order to talk with
+Valkey port). Sentinels accept commands using the Valkey protocol, so you can
+use `valkey-cli` or any other unmodified Valkey client in order to talk with
 Sentinel.
 
 It is possible to directly query a Sentinel to check what is the state of
-the monitored Redis instances from its point of view, to see what other
+the monitored Valkey instances from its point of view, to see what other
 Sentinels it knows, and so forth. Alternatively, using Pub/Sub, it is possible
 to receive *push style* notifications from Sentinels, every time some event
 happens, like a failover, or an instance entering an error condition, and
@@ -603,7 +603,7 @@ so forth.
 
 The `SENTINEL` command is the main API for Sentinel. The following is the list of its subcommands (minimal version is noted for where applicable):
 
-* **SENTINEL CONFIG GET `<name>`** (`>= 6.2`) Get the current value of a global Sentinel configuration parameter. The specified name may be a wildcard, similar to the Redis `CONFIG GET` command.
+* **SENTINEL CONFIG GET `<name>`** (`>= 6.2`) Get the current value of a global Sentinel configuration parameter. The specified name may be a wildcard, similar to the Valkey `CONFIG GET` command.
 * **SENTINEL CONFIG SET `<name>` `<value>`** (`>= 6.2`) Set the value of a global Sentinel configuration parameter.
 * **SENTINEL CKQUORUM `<master name>`** Check if the current Sentinel configuration is able to reach the quorum needed to failover a master, and the majority needed to authorize the failover. This command should be used in monitoring systems to check if a Sentinel deployment is ok.
 * **SENTINEL FLUSHCONFIG** Force Sentinel to rewrite its configuration on disk, including the current Sentinel state. Normally Sentinel rewrites the configuration every time something changes in its state (in the context of the subset of the state which is persisted on disk across restart). However sometimes it is possible that the configuration file is lost because of operation errors, disk failures, package upgrade scripts or configuration managers. In those cases a way to force Sentinel to rewrite the configuration file is handy. This command works even if the previous configuration file is completely missing.
@@ -623,7 +623,7 @@ The `SENTINEL` command is the main API for Sentinel. The following is the list o
 * **SENTINEL SIMULATE-FAILURE (crash-after-election|crash-after-promotion|help)** (`>= 3.2`) This command simulates different Sentinel crash scenarios.
 * **SENTINEL RESET `<pattern>`** This command will reset all the masters with matching name. The pattern argument is a glob-style pattern. The reset process clears any previous state in a master (including a failover in progress), and removes every replica and sentinel already discovered and associated with the master.
 
-For connection management and administration purposes, Sentinel supports the following subset of Redis' commands:
+For connection management and administration purposes, Sentinel supports the following subset of Valkey's commands:
 
 * **ACL** (`>= 6.2`) This command manages the Sentinel Access Control List. For more information refer to the [ACL](/topics/acl) documentation page and the [_Sentinel Access Control List authentication_](#sentinel-access-control-list-authentication).
 * **AUTH** (`>= 5.0.1`) Authenticate a client connection. For more information refer to the `AUTH` command and the [_Configuring Sentinel instances with authentication_ section](#configuring-sentinel-instances-with-authentication).
@@ -639,13 +639,13 @@ Lastly, Sentinel also supports the `SUBSCRIBE`, `UNSUBSCRIBE`, `PSUBSCRIBE` and 
 
 ### Reconfiguring Sentinel at Runtime
 
-Starting with Redis version 2.8.4, Sentinel provides an API in order to add, remove, or change the configuration of a given master. Note that if you have multiple sentinels you should apply the changes to all to your instances for Redis Sentinel to work properly. This means that changing the configuration of a single Sentinel does not automatically propagate the changes to the other Sentinels in the network.
+PLEASE-REVIEW{Starting with Redis version 2.8.4,} Sentinel provides an API in order to add, remove, or change the configuration of a given master. Note that if you have multiple sentinels you should apply the changes to all to your instances for Valkey Sentinel to work properly. This means that changing the configuration of a single Sentinel does not automatically propagate the changes to the other Sentinels in the network.
 
 The following is a list of `SENTINEL` subcommands used in order to update the configuration of a Sentinel instance.
 
 * **SENTINEL MONITOR `<name>` `<ip>` `<port>` `<quorum>`** This command tells the Sentinel to start monitoring a new master with the specified name, ip, port, and quorum. It is identical to the `sentinel monitor` configuration directive in `sentinel.conf` configuration file, with the difference that you can't use a hostname in as `ip`, but you need to provide an IPv4 or IPv6 address.
 * **SENTINEL REMOVE `<name>`** is used in order to remove the specified master: the master will no longer be monitored, and will totally be removed from the internal state of the Sentinel, so it will no longer listed by `SENTINEL masters` and so forth.
-* **SENTINEL SET `<name>` [`<option>` `<value>` ...]** The SET command is very similar to the `CONFIG SET` command of Redis, and is used in order to change configuration parameters of a specific master. Multiple option / value pairs can be specified (or none at all). All the configuration parameters that can be configured via `sentinel.conf` are also configurable using the SET command.
+* **SENTINEL SET `<name>` [`<option>` `<value>` ...]** The SET command is very similar to the `CONFIG SET` command of Valkey, and is used in order to change configuration parameters of a specific master. Multiple option / value pairs can be specified (or none at all). All the configuration parameters that can be configured via `sentinel.conf` are also configurable using the SET command.
 
 The following is an example of `SENTINEL SET` command in order to modify the `down-after-milliseconds` configuration of a master called `objects-cache`:
 
@@ -657,9 +657,9 @@ As already stated, `SENTINEL SET` can be used to set all the configuration param
 
 Note that there is no equivalent GET command since `SENTINEL MASTER` provides all the configuration parameters in a simple to parse format (as a field/value pairs array).
 
-Starting with Redis version 6.2, Sentinel also allows getting and setting global configuration parameters which were only supported in the configuration file prior to that.
+PLEASE-REVIEW{Starting with Redis version 6.2,} Sentinel also allows getting and setting global configuration parameters which were only supported in the configuration file prior to that.
 
-* **SENTINEL CONFIG GET `<name>`** Get the current value of a global Sentinel configuration parameter. The specified name may be a wildcard, similar to the Redis `CONFIG GET` command.
+* **SENTINEL CONFIG GET `<name>`** Get the current value of a global Sentinel configuration parameter. The specified name may be a wildcard, similar to the Valkey `CONFIG GET` command.
 * **SENTINEL CONFIG SET `<name>` `<value>`** Set the value of a global Sentinel configuration parameter.
 
 Global parameters that can be manipulated include:
@@ -719,7 +719,7 @@ current master `INFO` output.
 
 ### Pub/Sub messages
 
-A client can use a Sentinel as a Redis-compatible Pub/Sub server
+A client can use a Sentinel as a Valkey-compatible Pub/Sub server
 (but you can't use `PUBLISH`) in order to `SUBSCRIBE` or `PSUBSCRIBE` to
 channels and get notified about specific events.
 
@@ -768,9 +768,9 @@ and is only specified if the instance is not a master itself.
 
 ### Handling of -BUSY state
 
-The -BUSY error is returned by a Redis instance when a Lua script is running for
+The -BUSY error is returned by a Valkey instance when a Lua script is running for
 more time than the configured Lua script time limit. When this happens before
-triggering a fail over Redis Sentinel will try to send a `SCRIPT KILL`
+triggering a fail over Valkey Sentinel will try to send a `SCRIPT KILL`
 command, that will only succeed if the script was read-only.
 
 If the instance is still in an error condition after this try, it will
@@ -779,8 +779,8 @@ eventually be failed over.
 Replicas priority
 ---
 
-Redis instances have a configuration parameter called `replica-priority`.
-This information is exposed by Redis replica instances in their `INFO` output,
+Valkey instances have a configuration parameter called `replica-priority`.
+This information is exposed by Valkey replica instances in their `INFO` output,
 and Sentinel uses it in order to pick a replica among the ones that can be
 used in order to failover a master:
 
@@ -794,31 +794,31 @@ fails and both S1 and S2 are available, S1 will be preferred.
 
 For more information about the way replicas are selected, please check the [_Replica selection and priority_ section](#replica-selection-and-priority) of this documentation.
 
-### Sentinel and Redis authentication
+### Sentinel and Valkey authentication
 
 When the master is configured to require authentication from clients,
 as a security measure, replicas need to also be aware of the credentials in
 order to authenticate with the master and create the master-replica connection
 used for the asynchronous replication protocol.
 
-## Redis Access Control List authentication
+## Valkey Access Control List authentication
 
-Starting with Redis 6, user authentication and permission is managed with the [Access Control List (ACL)](/topics/acl).
+PLEASE-REVIEW{Starting with Redis 6,} user authentication and permission is managed with the [Access Control List (ACL)](/topics/acl).
 
-In order for Sentinels to connect to Redis server instances when they are
+In order for Sentinels to connect to Valkey server instances when they are
 configured with ACL, the Sentinel configuration must include the
 following directives:
 
     sentinel auth-user <master-name> <username>
     sentinel auth-pass <master-name> <password>
 
-Where `<username>` and `<password>` are the username and password for accessing the group's instances. These credentials should be provisioned on all of the group's Redis instances with the minimal control permissions. For example:
+Where `<username>` and `<password>` are the username and password for accessing the group's instances. These credentials should be provisioned on all of the group's Valkey instances with the minimal control permissions. For example:
 
     127.0.0.1:6379> ACL SETUSER sentinel-user ON >somepassword allchannels +multi +slaveof +ping +exec +subscribe +config|rewrite +role +publish +info +client|setname +client|kill +script|kill
 
-### Redis password-only authentication
+### Valkey password-only authentication
 
-Until Redis 6, authentication is achieved using the following configuration directives:
+PLEASE-REVIEW{Until Redis 6,} authentication is achieved using the following configuration directives:
 
 * `requirepass` in the master, in order to set the authentication password, and to make sure the instance will not process requests for non authenticated clients.
 * `masterauth` in the replicas in order for the replicas to authenticate with the master in order to correctly replicate data from it.
@@ -838,7 +838,7 @@ configuring in this replica only the `masterauth` directive, without
 using the `requirepass` directive, so that data will be readable by
 unauthenticated clients.
 
-In order for Sentinels to connect to Redis server instances when they are
+In order for Sentinels to connect to Valkey server instances when they are
 configured with `requirepass`, the Sentinel configuration must include the
 `sentinel auth-pass` directive, in the format:
 
@@ -847,7 +847,7 @@ configured with `requirepass`, the Sentinel configuration must include the
 Configuring Sentinel instances with authentication
 ---
 
-Sentinel instances themselves can be secured by requiring clients to authenticate via the `AUTH` command. Starting with Redis 6.2, the [Access Control List (ACL)](/topics/acl) is available, whereas previous versions (starting with Redis 5.0.1) support password-only authentication. 
+Sentinel instances themselves can be secured by requiring clients to authenticate via the `AUTH` command. PLEASE-REVIEW{Starting with Redis 6.2, the [Access Control List (ACL)](/topics/acl) is available, whereas previous versions (starting with Redis 5.0.1) support password-only authentication. }
 
 Note that Sentinel's authentication configuration should be **applied to each of the instances** in your deployment, and **all instances should use the same configuration**. Furthermore, ACL and password-only authentication should not be used together.
 
@@ -881,7 +881,7 @@ To use Sentinel with password-only authentication, add the `requirepass` configu
 
 When configured this way, Sentinels will do two things:
 
-1. A password will be required from clients in order to send commands to Sentinels. This is obvious since this is how such configuration directive works in Redis in general.
+1. A password will be required from clients in order to send commands to Sentinels. This is obvious since this is how such configuration directive works in Valkey in general.
 2. Moreover the same password configured to access the local Sentinel, will be used by this Sentinel instance in order to authenticate to all the other Sentinel instances it connects to.
 
 This means that **you will have to configure the same `requirepass` password in all the Sentinel instances**. This way every Sentinel can talk with every other Sentinel without any need to configure for each Sentinel the password to access all the other Sentinels, that would be very impractical.
@@ -901,7 +901,7 @@ covered in the final part of this document.
 
 ### SDOWN and ODOWN failure state
 
-Redis Sentinel has two different concepts of *being down*, one is called
+Valkey Sentinel has two different concepts of *being down*, one is called
 a *Subjectively Down* condition (SDOWN) and is a down condition that is
 local to a given Sentinel instance. Another is called *Objectively Down*
 condition (ODOWN) and is reached when enough Sentinels (at least the
@@ -930,7 +930,7 @@ interval configured, so for instance if the interval is 30000 milliseconds
 instance is considered to be working.
 
 SDOWN is not enough to trigger a failover: it only means a single Sentinel
-believes a Redis instance is not available. To trigger a failover, the
+believes a Valkey instance is not available. To trigger a failover, the
 ODOWN state must be reached.
 
 To switch from SDOWN to ODOWN no strong consensus algorithm is used, but
@@ -955,7 +955,7 @@ Sentinels and replicas auto discovery
 Sentinels stay connected with other Sentinels in order to reciprocally
 check the availability of each other, and to exchange messages. However you
 don't need to configure a list of other Sentinel addresses in every Sentinel
-instance you run, as Sentinel uses the Redis instances Pub/Sub capabilities
+instance you run, as Sentinel uses the Valkey instances Pub/Sub capabilities
 in order to discover the other Sentinels that are monitoring the same masters
 and replicas.
 
@@ -963,7 +963,7 @@ This feature is implemented by sending *hello messages* into the channel named
 `__sentinel__:hello`.
 
 Similarly you don't need to configure what is the list of the replicas attached
-to a master, as Sentinel will auto discover this list querying Redis.
+to a master, as Sentinel will auto discover this list querying Valkey.
 
 * Every Sentinel publishes a message to every monitored master and replica Pub/Sub channel `__sentinel__:hello`, every two seconds, announcing its presence with ip, port, runid.
 * Every Sentinel is subscribed to the Pub/Sub channel `__sentinel__:hello` of every master and replica, looking for unknown sentinels. When new sentinels are detected, they are added as sentinels of this master.
@@ -1020,7 +1020,7 @@ Is considered to be unreliable and is disregarded entirely.
 The replica selection only considers the replicas that passed the above test,
 and sorts it based on the above criteria, in the following order.
 
-1. The replicas are sorted by `replica-priority` as configured in the `redis.conf` file of the Redis instance. A lower priority will be preferred.
+1. The replicas are sorted by `replica-priority` as configured in the `valkey.conf` file of the Valkey instance. A lower priority will be preferred.
 2. If the priority is the same, the replication offset processed by the replica is checked, and the replica that received more data from the master is selected.
 3. If multiple replicas have the same priority and processed the same data from the master, a further check is performed, selecting the replica with the lexicographically smaller run ID. Having a lower run ID is not a real advantage for a replica, but is useful in order to make the process of replica selection more deterministic, instead of resorting to select a random replica.
 
@@ -1030,7 +1030,7 @@ preference, `replica-priority` must be set on all instances, including masters,
 as a master may become a replica at some future point in time - and it will then
 need the proper `replica-priority` settings.
 
-A Redis instance can be configured with a special `replica-priority` of zero
+A Valkey instance can be configured with a special `replica-priority` of zero
 in order to be **never selected** by Sentinels as the new master.
 However a replica configured in this way will still be reconfigured by
 Sentinels in order to replicate with the new master after a failover, the
@@ -1077,9 +1077,9 @@ When a Sentinel is authorized, it gets a unique **configuration epoch** for the 
 
 Moreover Sentinels have a rule: if a Sentinel voted another Sentinel for the failover of a given master, it will wait some time to try to failover the same master again. This delay is the `2 * failover-timeout` you can configure in `sentinel.conf`. This means that Sentinels will not try to failover the same master at the same time, the first to ask to be authorized will try, if it fails another will try after some time, and so forth.
 
-Redis Sentinel guarantees the *liveness* property that if a majority of Sentinels are able to talk, eventually one will be authorized to failover if the master is down.
+Valkey Sentinel guarantees the *liveness* property that if a majority of Sentinels are able to talk, eventually one will be authorized to failover if the master is down.
 
-Redis Sentinel also guarantees the *safety* property that every Sentinel will failover the same master using a different *configuration epoch*.
+Valkey Sentinel also guarantees the *safety* property that every Sentinel will failover the same master using a different *configuration epoch*.
 
 ### Configuration propagation
 
@@ -1092,7 +1092,7 @@ At this point, even if the reconfiguration of the replicas is in progress, the f
 The way a new configuration is propagated is the reason why we need that every
 Sentinel failover is authorized with a different version number (configuration epoch).
 
-Every Sentinel continuously broadcast its version of the configuration of a master using Redis Pub/Sub messages, both in the master and all the replicas.  At the same time all the Sentinels wait for messages to see what is the configuration
+Every Sentinel continuously broadcast its version of the configuration of a master using Valkey Pub/Sub messages, both in the master and all the replicas.  At the same time all the Sentinels wait for messages to see what is the configuration
 advertised by the other Sentinels.
 
 Configurations are broadcast in the `__sentinel__:hello` Pub/Sub channel.
@@ -1113,32 +1113,32 @@ partition and every Sentinel will agree about the configuration.
 
 ### Consistency under partitions
 
-Redis Sentinel configurations are eventually consistent, so every partition will
+Valkey Sentinel configurations are eventually consistent, so every partition will
 converge to the higher configuration available.
 However in a real-world system using Sentinel there are three different players:
 
-* Redis instances.
+* Valkey instances.
 * Sentinel instances.
 * Clients.
 
 In order to define the behavior of the system we have to consider all three.
 
 The following is a simple network where there are 3 nodes, each running
-a Redis instance, and a Sentinel instance:
+a Valkey instance, and a Sentinel instance:
 
-                +-------------+
-                | Sentinel 1  |----- Client A
-                | Redis 1 (M) |
-                +-------------+
+                +--------------+
+                | Sentinel 1   |----- Client A
+                | Valkey 1 (M) |
+                +--------------+
                         |
                         |
-    +-------------+     |          +------------+
-    | Sentinel 2  |-----+-- // ----| Sentinel 3 |----- Client B
-    | Redis 2 (S) |                | Redis 3 (M)|
-    +-------------+                +------------+
+    +--------------+    |          +-------------+
+    | Sentinel 2   |----+-- // ----| Sentinel 3  |----- Client B
+    | Valkey 2 (S) |               | Valkey 3 (M)|
+    +--------------+               +-------------+
 
-In this system the original state was that Redis 3 was the master, while
-Redis 1 and 2 were replicas. A partition occurred isolating the old master.
+In this system the original state was that Valkey 3 was the master, while
+Valkey 1 and 2 were replicas. A partition occurred isolating the old master.
 Sentinels 1 and 2 started a failover promoting Sentinel 1 as the new master.
 
 The Sentinel properties guarantee that Sentinel 1 and 2 now have the new
@@ -1149,33 +1149,33 @@ We know that Sentinel 3 will get its configuration updated when the network
 partition will heal, however what happens during the partition if there
 are clients partitioned with the old master?
 
-Clients will be still able to write to Redis 3, the old master. When the
-partition will rejoin, Redis 3 will be turned into a replica of Redis 1, and
+Clients will be still able to write to Valkey 3, the old master. When the
+partition will rejoin, Valkey 3 will be turned into a replica of Valkey 1, and
 all the data written during the partition will be lost.
 
 Depending on your configuration you may want or not that this scenario happens:
 
-* If you are using Redis as a cache, it could be handy that Client B is still able to write to the old master, even if its data will be lost.
-* If you are using Redis as a store, this is not good and you need to configure the system in order to partially prevent this problem.
+* If you are using Valkey as a cache, it could be handy that Client B is still able to write to the old master, even if its data will be lost.
+* If you are using Valkey as a store, this is not good and you need to configure the system in order to partially prevent this problem.
 
-Since Redis is asynchronously replicated, there is no way to totally prevent data loss in this scenario, however you can bound the divergence between Redis 3 and Redis 1
-using the following Redis configuration option:
+Since Valkey is asynchronously replicated, there is no way to totally prevent data loss in this scenario, however you can bound the divergence between Valkey 3 and Valkey 1
+using the following Valkey configuration option:
 
     min-replicas-to-write 1
     min-replicas-max-lag 10
 
-With the above configuration (please see the self-commented `redis.conf` example in the Redis distribution for more information) a Redis instance, when acting as a master, will stop accepting writes if it can't write to at least 1 replica. Since replication is asynchronous *not being able to write* actually means that the replica is either disconnected, or is not sending us asynchronous acknowledges for more than the specified `max-lag` number of seconds.
+With the above configuration (please see the self-commented `valkey.conf` example in the Valkey distribution for more information) a Valkey instance, when acting as a master, will stop accepting writes if it can't write to at least 1 replica. Since replication is asynchronous *not being able to write* actually means that the replica is either disconnected, or is not sending us asynchronous acknowledges for more than the specified `max-lag` number of seconds.
 
-Using this configuration the Redis 3 in the above example will become unavailable after 10 seconds. When the partition heals, the Sentinel 3 configuration will converge to
+Using this configuration the Valkey 3 in the above example will become unavailable after 10 seconds. When the partition heals, the Sentinel 3 configuration will converge to
 the new one, and Client B will be able to fetch a valid configuration and continue.
 
-In general Redis + Sentinel as a whole are an **eventually consistent system** where the merge function is **last failover wins**, and the data from old masters are discarded to replicate the data of the current master, so there is always a window for losing acknowledged writes. This is due to Redis asynchronous
+In general Valkey + Sentinel as a whole are an **eventually consistent system** where the merge function is **last failover wins**, and the data from old masters are discarded to replicate the data of the current master, so there is always a window for losing acknowledged writes. This is due to Valkey asynchronous
 replication and the discarding nature of the "virtual" merge function of the system. Note that this is not a limitation of Sentinel itself, and if you orchestrate the failover with a strongly consistent replicated state machine, the same properties will still apply. There are only two ways to avoid losing acknowledged writes:
 
 1. Use synchronous replication (and a proper consensus algorithm to run a replicated state machine).
 2. Use an eventually consistent system where different versions of the same object can be merged.
 
-Redis currently is not able to use any of the above systems, and is currently outside the development goals. However there are proxies implementing solution "2" on top of Redis stores such as SoundCloud [Roshi](https://github.com/soundcloud/roshi), or Netflix [Dynomite](https://github.com/Netflix/dynomite).
+Valkey currently is not able to use any of the above systems, and is currently outside the development goals. PLEASE-REVIEW{However there are proxies implementing solution "2" on top of Redis stores such as SoundCloud [Roshi](https://github.com/soundcloud/roshi), or Netflix [Dynomite](https://github.com/Netflix/dynomite).}
 
 Sentinel persistent state
 ---
@@ -1187,7 +1187,7 @@ epoch. This means that it is safe to stop and restart Sentinel processes.
 
 ### TILT mode
 
-Redis Sentinel is heavily dependent on the computer time: for instance in
+Valkey Sentinel is heavily dependent on the computer time: for instance in
 order to understand if an instance is available it remembers the time of the
 latest successful reply to the PING command, and compares it with the current
 time to understand how old it is.
@@ -1216,7 +1216,7 @@ If everything appears to be normal for 30 second, the TILT mode is exited.
  
 In the Sentinel TILT mode, if we send the INFO command, we could get the following response:
 
-    $ redis-cli -p 26379
+    $ valkey-cli -p 26379
     127.0.0.1:26379> info
     (Other information from Sentinel server skipped.)
 
@@ -1237,4 +1237,4 @@ API that many kernels offer. However it is not still clear if this is a good
 solution since the current system avoids issues in case the process is just
 suspended or not executed by the scheduler for a long time.
 
-**A note about the word slave used in this man page**: Starting with Redis 5, if not for backward compatibility, the Redis project no longer uses the word slave. Unfortunately in this command the word slave is part of the protocol, so we'll be able to remove such occurrences only when this API will be naturally deprecated.
+**A note about the word slave used in this man page**: PLEASE-REVIEW{Starting with Redis 5, if not for backward compatibility, the Redis project no longer uses the word slave. Unfortunately in this command the word slave is part of the protocol, so we'll be able to remove such occurrences only when this API will be naturally deprecated.}
