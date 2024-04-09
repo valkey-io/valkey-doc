@@ -13,7 +13,7 @@ Install Redis and the Redis client, then connect your .NET application to a Redi
 ## NRedisStack
 
 [NRedisStack](https://github.com/redis/NRedisStack) is a .NET client for Redis.
-`NredisStack` requires a running Redis. See [Getting started](/docs/getting-started/) for Redis installation instructions.
+`NredisStack` requires a running Redis server. See [Getting started](/docs/getting-started/) for Redis installation instructions.
 
 ### Install
 
@@ -147,4 +147,3 @@ Console.WriteLine(conn.StringGet("foo"));
 ### Learn more
 
 * [GitHub](https://github.com/redis/NRedisStack)
- 

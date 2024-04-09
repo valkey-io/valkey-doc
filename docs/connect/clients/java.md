@@ -295,7 +295,7 @@ All the Jedis exceptions are runtime exceptions and in most cases irrecoverable,
 
 ## DNS cache and Redis
 
-When you connect to a Redis with a DNS endpoint, it's recommended to disable the JVM's DNS cache to load-balance requests across servers behind the endpoint.
+When you connect to Redis with a DNS endpoint, it's recommended to disable the JVM's DNS cache to load-balance requests across servers behind the endpoint.
 
 You can do this in your application's code with the following snippet:
 ```java
