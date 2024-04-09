@@ -302,7 +302,7 @@ Please refer to the [Data type conversion](#data-type-conversion) for more infor
 **Note:**
 this feature is only available when script effects replication is employed.
 Calling it when using verbatim script replication will result in an error.
-Scripts were replicated verbatim, meaning that the scripts' source code was sent for execution by replicas and stored in the AOF.
+Verbatim script replication, meaning that the scripts' source code was sent for execution by replicas and stored in the AOF.
 An alternative replication mode allows replicating only the scripts' effects.
 Script replication is no longer supported, and the only replication mode available is script effects replication.
 
