@@ -792,11 +792,8 @@ redis-stable
 Redis-to-Lua
 RedisCallReply
 RedisConf
-RediSearch
 Redises
 RedisHost.
-RedisInsight
-RedisJSON
 REDISMODULE_OPTIONS_HANDLE_REPL_ASYNC_LOAD
 RedisModule.*
 redisObjectVM

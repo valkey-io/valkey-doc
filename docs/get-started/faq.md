@@ -44,12 +44,6 @@ If your real problem is not the total RAM needed, but the fact that you need
 to split your data set into multiple Redis instances, please read the
 [partitioning page](/topics/partitioning) in this documentation for more info.
 
-Redis Ltd., the company sponsoring Redis development, has developed a
-"Redis on Flash" solution that uses a mixed RAM/flash approach for
-larger data sets with a biased access pattern. You may check their offering
-for more information, however this feature is not part of the open source Redis
-code base.
-
 ## Can you use Redis with a disk-based database?
 
 Yes, a common design pattern involves taking very write-heavy small data

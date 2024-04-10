@@ -15,13 +15,12 @@ While you can install Redis on any of the platforms listed below, you might also
 
 ## Install Redis
 
-How you install Redis depends on your operating system and whether you'd like to install it bundled with Redis Stack and Redis UI. See the guide below that best fits your needs:
+See the guide below that best fits your needs:
 
 * [Install Redis from Source](/docs/install/install-redis/install-redis-from-source)
 * [Install Redis on Linux](/docs/install/install-redis/install-redis-on-linux)
 * [Install Redis on macOS](/docs/install/install-redis/install-redis-on-mac-os)
 * [Install Redis on Windows](/docs/install/install-redis/install-redis-on-windows)
-* [Install Redis with Redis Stack and RedisInsight](/docs/install/install-stack/)
 
 Refer to [Redis Administration](/docs/management/admin/) for detailed setup tips.
 
@@ -88,12 +87,6 @@ A proper install using an init script is strongly recommended.
 {{% alert title="Note" color="warning" %}}
 The available packages for supported Linux distributions already include the capability of starting the Redis server from `/etc/init`.
 {{% /alert  %}}
-
-{{% alert title="Note" color="warning" %}}
-The remainder of this section assumes you've [installed Redis from its source code](/docs/install/install-redis/install-redis-from-source). If instead you have installed Redis Stack, you will need to download a [basic init script](https://raw.githubusercontent.com/redis/redis/7.2/utils/redis_init_script) and then modify both it and the following instructions to conform to the way Redis Stack was installed on your platform. For example, on Ubuntu 20.04 LTS, Redis Stack is installed in `/opt/redis-stack`, not `/usr/local`, so you'll need to adjust accordingly.
-{{% /alert  %}}
-
-The following instructions can be used to perform a proper installation using the init script shipped with the Redis source code, `/path/to/redis-stable/utils/redis_init_script`.
 
 If you have not yet run `make install` after building the Redis source, you will need to do so before continuing. By default, `make install` will copy the `redis-server` and `redis-cli` binaries to `/usr/local/bin`.
 

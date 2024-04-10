@@ -1,5 +1,5 @@
 ---
-title: "Install Redis or Redis Stack"
+title: "Install Redis"
 linkTitle: "Install"
 weight: 30
 hideListLinks: true
@@ -8,11 +8,8 @@ aliases:
   - /docs/getting-started
 ---
 
-You can install [Redis](https://redis.io/docs/about/) or [Redis Stack](/docs/about/about-stack) locally on your machine. Redis and Redis Stack are available on Linux, macOS, and Windows. 
+You can install [Redis](https://redis.io/docs/about/) locally on your machine. Redis is available on Linux, macOS, and Windows.
 
 Here are the installation instructions:
 
 * [Install Redis](/docs/install/install-redis)
-* [Install Redis Stack](/docs/install/install-stack)
-
-While you can install Redis (Stack) locally, you might also consider using Redis Cloud by creating a [free account](https://redis.com/try-free/?utm_source=redisio&utm_medium=referral&utm_campaign=2023-09-try_free&utm_content=cu-redis_cloud_users).
