@@ -10,7 +10,7 @@ aliases: [
 ]
 ---
 
-SSL/TLS is supported by Valkey starting with version 6 as an optional feature
+SSL/TLS is supported by Valkey as an optional feature
 that needs to be enabled at compile time.
 
 ## Getting Started
@@ -125,7 +125,7 @@ versions, ciphers and cipher suites, etc. Please consult the self documented
 
 ### Performance considerations
 
-TLS adds a layer to the communication stack with overheads due to writing/reading to/from an SSL connection, encryption/decryption and integrity checks. Consequently, using TLS results in a decrease of the achievable throughput per Valkey instance (for more information refer to this PLEASE_REVIEW{[discussion](https://github.com/redis/redis/issues/7595)}). 
+TLS adds a layer to the communication stack with overheads due to writing/reading to/from an SSL connection, encryption/decryption and integrity checks. Consequently, using TLS results in a decrease of the achievable throughput per Valkey instance.
 
 ### Limitations
 
