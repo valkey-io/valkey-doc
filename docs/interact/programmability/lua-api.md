@@ -300,11 +300,8 @@ Please refer to the [Data type conversion](#data-type-conversion) for more infor
 * Available in functions: no
 
 **Note:**
-this feature is only available when script effects replication is employed.
-Calling it when using verbatim script replication will result in an error.
-Verbatim script replication, meaning that the scripts' source code was sent for execution by replicas and stored in the AOF.
-An alternative replication mode allows replicating only the scripts' effects.
-Script replication is no longer supported, and the only replication mode available is script effects replication.
+this feature is only available when script effects replication is employed,
+the replication mode available is script effects replication, And no script replication is supported.
 
 **Warning:**
 this is an advanced feature. Misuse can cause damage by violating the contract that binds the Redis master, its replicas, and AOF contents to hold the same logical content.
