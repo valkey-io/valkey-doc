@@ -34,6 +34,7 @@ run as expected.
 
 ## Building Valkey in the Pi
 
+* Download Valkey.
 * Use `make` as usual to create the executable.
 
 There is nothing special in the process. The only difference is that by
