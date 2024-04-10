@@ -76,7 +76,7 @@ disable protected mode or manually bind all the interfaces.
 ## Authentication
 
 Valkey provides two ways to authenticate clients.
-The recommended authentication method, introduced in Redis OSS 6.0 is via Access Control Lists, allowing named users to be created and assigned fine-grained permissions.
+The recommended authentication method, introduced in Redis OSS 6.0, is via Access Control Lists, allowing named users to be created and assigned fine-grained permissions.
 Read more about Access Control Lists [here](/docs/management/security/acl/).
 
 The legacy authentication method is enabled by editing the **valkey.conf** file, and providing a database password using the `requirepass` setting.
