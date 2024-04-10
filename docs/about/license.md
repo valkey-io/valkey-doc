@@ -6,7 +6,6 @@ description: >
     Redis license and trademark information
 aliases:
     - /topics/license
-    - /docs/stack/license/
 ---
 
 
@@ -14,11 +13,6 @@ aliases:
 
   The Redis trademark and logo are owned by Redis Ltd. and can be
 used in accordance with the [Redis Trademark Guidelines](https://redis.com/legal/trademark-guidelines/).
-
-* RedisInsight is licensed under the Server Side Public License (SSPL).
-
-* Redis Stack Server, which combines open source Redis with Search and Query features, JSON, Time Series, and Probabilistic data structures is dual-licensed under the Redis Source Available License (RSALv2), as described below, and the [Server Side Public License](https://en.wikipedia.org/wiki/Server_Side_Public_License) (SSPL). For information about licensing per version, see [Versions and licenses](/docs/about/about-stack/#redis-stack-license).
-
 
 ## Licences:
 
@@ -51,11 +45,6 @@ INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
 CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
-
-### REDIS SOURCE AVAILABLE LICENSE (RSAL) 2.0
-
-
-_Last updated: November 15, 2022_
 
 #### Acceptance
 

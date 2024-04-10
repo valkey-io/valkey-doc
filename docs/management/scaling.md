@@ -15,7 +15,7 @@ Redis scales horizontally with a deployment topology called Redis Cluster.
 This topic will teach you how to set up, test, and operate Redis Cluster in production.
 You will learn about the availability and consistency characteristics of Redis Cluster from the end user's point of view.
 
-If you plan to run a production Redis Cluster deployment or want to understand better how Redis Cluster works internally, consult the [Redis Cluster specification](/topics/cluster-spec). To learn how Redis Enterprise handles scaling, see [Linear Scaling with Redis Enterprise](https://redis.com/redis-enterprise/technology/linear-scaling-redis-enterprise/).
+If you plan to run a production Redis Cluster deployment or want to understand better how Redis Cluster works internally, consult the [Redis Cluster specification](/topics/cluster-spec).
 
 ## Redis Cluster 101
 
@@ -1005,6 +1005,5 @@ Starting with Redis 5, if not for backward compatibility, the Redis project no l
 ## Learn more
 
 * [Redis Cluster specification](/topics/cluster-spec)
-* [Linear Scaling with Redis Enterprise](https://redis.com/redis-enterprise/technology/linear-scaling-redis-enterprise/)
 * [Docker documentation](https://docs.docker.com/engine/userguide/networking/dockernetworks/)
 

@@ -235,11 +235,6 @@ Most sorted set operations are O(log(n)), where _n_ is the number of members.
 Exercise some caution when running the `ZRANGE` command with large returns values (e.g., in the tens of thousands or more).
 This command's time complexity is O(log(n) + m), where _m_ is the number of results returned. 
 
-## Alternatives
-
-Redis sorted sets are sometimes used for indexing other Redis data structures.
-If you need to index and query your data, consider the [JSON](/docs/stack/json) data type and the [Search and query](/docs/stack/search) features.
-
 ## Learn more
 
 * [Redis Sorted Sets Explained](https://www.youtube.com/watch?v=MUKlxdBQZ7g) is an entertaining introduction to sorted sets in Redis.

@@ -171,9 +171,6 @@ As an alternative, consider the `SSCAN`, which lets you retrieve all members of 
 Sets membership checks on large datasets (or on streaming data) can use a lot of memory.
 If you're concerned about memory usage and don't need perfect precision, consider a [Bloom filter or Cuckoo filter](/docs/stack/bloom) as an alternative to a set.
 
-Redis sets are frequently used as a kind of index.
-If you need to index and query your data, consider the [JSON](/docs/stack/json) data type and the [Search and query](/docs/stack/search) features.
-
 ## Learn more
 
 * [Redis Sets Explained](https://www.youtube.com/watch?v=PKdCppSNTGQ) and [Redis Sets Elaborated](https://www.youtube.com/watch?v=aRw5ME_5kMY) are two short but thorough video explainers covering Redis sets.
