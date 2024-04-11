@@ -40,19 +40,7 @@ order to understand how exactly Sentinel works.
 
 ## Sentinel quick start
 
-### Obtaining Sentinel
-
-The current version of Sentinel is called **Sentinel 2**. It is a rewrite of
-the initial Sentinel implementation using stronger and simpler-to-predict
-algorithms (that are explained in this documentation).
-
-PLEASE-REVIEW{A stable release of Valkey Sentinel is shipped since Redis 2.8.}
-
-New developments are performed in the *unstable* branch, and new features
-sometimes are back ported into the latest stable branch as soon as they are
-considered to be stable.
-
-PLEASE-REVIEW{Redis Sentinel version 1, shipped with Redis 2.6, is deprecated and should not be used}.
+Valkey Sentinel is included in Valkey.
 
 ### Running Sentinel
 
@@ -639,7 +627,7 @@ Lastly, Sentinel also supports the `SUBSCRIBE`, `UNSUBSCRIBE`, `PSUBSCRIBE` and 
 
 ### Reconfiguring Sentinel at Runtime
 
-PLEASE-REVIEW{Starting with Redis version 2.8.4,} Sentinel provides an API in order to add, remove, or change the configuration of a given master. Note that if you have multiple sentinels you should apply the changes to all to your instances for Valkey Sentinel to work properly. This means that changing the configuration of a single Sentinel does not automatically propagate the changes to the other Sentinels in the network.
+Sentinel provides an API in order to add, remove, or change the configuration of a given master. Note that if you have multiple sentinels you should apply the changes to all to your instances for Valkey Sentinel to work properly. This means that changing the configuration of a single Sentinel does not automatically propagate the changes to the other Sentinels in the network.
 
 The following is a list of `SENTINEL` subcommands used in order to update the configuration of a Sentinel instance.
 
@@ -657,7 +645,7 @@ As already stated, `SENTINEL SET` can be used to set all the configuration param
 
 Note that there is no equivalent GET command since `SENTINEL MASTER` provides all the configuration parameters in a simple to parse format (as a field/value pairs array).
 
-PLEASE-REVIEW{Starting with Redis version 6.2,} Sentinel also allows getting and setting global configuration parameters which were only supported in the configuration file prior to that.
+Starting with Redis OSS 6.2, Sentinel also allows getting and setting global configuration parameters which were only supported in the configuration file prior to that.
 
 * **SENTINEL CONFIG GET `<name>`** Get the current value of a global Sentinel configuration parameter. The specified name may be a wildcard, similar to the Valkey `CONFIG GET` command.
 * **SENTINEL CONFIG SET `<name>` `<value>`** Set the value of a global Sentinel configuration parameter.
@@ -847,7 +835,7 @@ configured with `requirepass`, the Sentinel configuration must include the
 Configuring Sentinel instances with authentication
 ---
 
-Sentinel instances themselves can be secured by requiring clients to authenticate via the `AUTH` command. PLEASE-REVIEW{Starting with Redis 6.2, the [Access Control List (ACL)](/topics/acl) is available, whereas previous versions (starting with Redis 5.0.1) support password-only authentication. }
+Sentinel instances themselves can be secured by requiring clients to authenticate via the `AUTH` command. Starting with Redis OSS 6.2, the [Access Control List (ACL)](/topics/acl) is available, whereas previous versions (starting with Redis OSS 5.0.1) support password-only authentication.
 
 Note that Sentinel's authentication configuration should be **applied to each of the instances** in your deployment, and **all instances should use the same configuration**. Furthermore, ACL and password-only authentication should not be used together.
 
@@ -1175,7 +1163,7 @@ replication and the discarding nature of the "virtual" merge function of the sys
 1. Use synchronous replication (and a proper consensus algorithm to run a replicated state machine).
 2. Use an eventually consistent system where different versions of the same object can be merged.
 
-Valkey currently is not able to use any of the above systems, and is currently outside the development goals. PLEASE-REVIEW{However there are proxies implementing solution "2" on top of Redis stores such as SoundCloud [Roshi](https://github.com/soundcloud/roshi), or Netflix [Dynomite](https://github.com/Netflix/dynomite).}
+Valkey (like it's predecessor Redis OSS) is currently not able to use any of the above systems, and using them is currently outside the development goals. However, there are proxies implementing solution "2" on top of Redis OSS stores such as SoundCloud [Roshi](https://github.com/soundcloud/roshi), or Netflix [Dynomite](https://github.com/Netflix/dynomite).
 
 Sentinel persistent state
 ---
@@ -1237,4 +1225,4 @@ API that many kernels offer. However it is not still clear if this is a good
 solution since the current system avoids issues in case the process is just
 suspended or not executed by the scheduler for a long time.
 
-**A note about the word slave used in this man page**: PLEASE-REVIEW{Starting with Redis 5, if not for backward compatibility, the Redis project no longer uses the word slave. Unfortunately in this command the word slave is part of the protocol, so we'll be able to remove such occurrences only when this API will be naturally deprecated.}
+**A note about the word slave used in this man page**: Starting with Redis OSS 5, if not for backward compatibility, the Redis project no longer uses the word slave. Unfortunately in this command the word slave is part of the protocol, so we'll be able to remove such occurrences only when this API will be naturally deprecated.
