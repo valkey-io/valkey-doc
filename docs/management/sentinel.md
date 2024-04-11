@@ -791,7 +791,7 @@ used for the asynchronous replication protocol.
 
 ## Valkey Access Control List authentication
 
-PLEASE-REVIEW{Starting with Redis 6,} user authentication and permission is managed with the [Access Control List (ACL)](/topics/acl).
+Starting with Redis OSS 6, user authentication and permission is managed with the [Access Control List (ACL)](/topics/acl).
 
 In order for Sentinels to connect to Valkey server instances when they are
 configured with ACL, the Sentinel configuration must include the
@@ -806,7 +806,7 @@ Where `<username>` and `<password>` are the username and password for accessing 
 
 ### Valkey password-only authentication
 
-PLEASE-REVIEW{Until Redis 6,} authentication is achieved using the following configuration directives:
+Until Redis OSS 6, authentication is achieved using the following configuration directives:
 
 * `requirepass` in the master, in order to set the authentication password, and to make sure the instance will not process requests for non authenticated clients.
 * `masterauth` in the replicas in order for the replicas to authenticate with the master in order to correctly replicate data from it.
