@@ -1,6 +1,6 @@
 {
     "name": "Runnel",
-    "description": "Distributed event processing for Python based on Redis Streams",
+    "description": "Distributed event processing for Python based on Valkey Streams",
     "twitter": [
         "mjwestcott"
     ]

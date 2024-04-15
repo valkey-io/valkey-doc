@@ -1,5 +1,5 @@
 ---
-title: "Optimizing Redis"
+title: "Optimizing Valkey"
 linkTitle: "Optimization"
 weight: 8
 description: Benchmarking, profiling, and optimizations for memory and latency

@@ -1,43 +1,43 @@
 ---
-title: "Install Redis on Windows"
+title: "Install Valkey on Windows"
 linkTitle: "Windows"
 weight: 1
-description: Use Redis on Windows for development
+description: Use Valkey on Windows for development
 aliases:
 - /docs/getting-started/installation/install-redis-on-windows/
 ---
 
-Redis is not officially supported on Windows. However, you can install Redis on Windows for development by following the instructions below.
+Valkey is not officially supported on Windows. However, you can install Valkey on Windows for development by following the instructions below.
 
-To install Redis on Windows, you'll first need to enable [WSL2](https://docs.microsoft.com/en-us/windows/wsl/install) (Windows Subsystem for Linux). WSL2 lets you run Linux binaries natively on Windows. For this method to work, you'll need to be running Windows 10 version 2004 and higher or Windows 11.
+To install Valkey on Windows, you'll first need to enable [WSL2](https://docs.microsoft.com/en-us/windows/wsl/install) (Windows Subsystem for Linux). WSL2 lets you run Linux binaries natively on Windows. For this method to work, you'll need to be running Windows 10 version 2004 and higher or Windows 11.
 
 ## Install or enable WSL2
 
 Microsoft provides [detailed instructions for installing WSL](https://docs.microsoft.com/en-us/windows/wsl/install). Follow these instructions, and take note of the default Linux distribution it installs. This guide assumes Ubuntu.
 
-## Install Redis
+## Install Valkey
 
-Once you're running Ubuntu on Windows, you can follow the steps detailed at [Install on Ubuntu/Debian](/docs/install/install-redis/install-redis-on-linux#install-on-ubuntu-debian) to install recent stable versions of Redis from the official `packages.redis.io` APT repository.
+Once you're running Ubuntu on Windows, you can follow the steps detailed at [Install on Ubuntu/Debian](/docs/install/install-redis/install-redis-on-linux#install-on-ubuntu-debian) to install recent stable versions of Valkey from the official `packages.server.io` APT repository.
 Add the repository to the <code>apt</code> index, update it, and then install:
 
 {{< highlight bash  >}}
-curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
+curl -fsSL https://packages.server.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
 
-echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list
+echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.server.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/server.list
 
 sudo apt-get update
 sudo apt-get install redis
 {{< / highlight  >}}
 
-Lastly, start the Redis server like so:
+Lastly, start the Valkey server like so:
 
 {{< highlight bash  >}}
 sudo service redis-server start
 {{< / highlight  >}}
 
-## Connect to Redis
+## Connect to Valkey
 
-You can test that your Redis server is running by connecting with the Redis CLI:
+You can test that your Valkey server is running by connecting with the Valkey CLI:
 
 {{< highlight bash  >}}
 redis-cli 

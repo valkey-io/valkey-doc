@@ -2,42 +2,42 @@
 title: "Virtual memory (deprecated)"
 linkTitle: "Virtual memory"
 weight: 1
-description: A description of the Redis virtual memory system that was deprecated in 2.6. This document exists for historical interest.
+description: A description of the Valkey virtual memory system that was deprecated in 2.6. This document exists for historical interest.
 aliases:
   - /topics/internals-vm
   - /topics/virtual-memory
 ---
 
-**Note: this document was written by the creator of Redis, Salvatore Sanfilippo, early in the development of Redis (c. 2010). Virtual Memory has been deprecated since Redis 2.6, so this documentation
+**Note: this document was written by the creator of Valkey, Salvatore Sanfilippo, early in the development of Valkey (c. 2010). Virtual Memory has been deprecated since Valkey 2.6, so this documentation
 is here only for historical interest.**
 
-This document details the internals of the Redis Virtual Memory subsystem prior to Redis 2.6. The intended audience is not the final user but programmers willing to understand or modify the Virtual Memory implementation.
+This document details the internals of the Valkey Virtual Memory subsystem prior to Valkey 2.6. The intended audience is not the final user but programmers willing to understand or modify the Virtual Memory implementation.
 
 Keys vs Values: what is swapped out?
 ---
 
-The goal of the VM subsystem is to free memory transferring Redis Objects from memory to disk. This is a very generic command, but specifically, Redis transfers only objects associated with _values_. In order to understand better this concept we'll show, using the DEBUG command, how a key holding a value looks from the point of view of the Redis internals:
+The goal of the VM subsystem is to free memory transferring Valkey Objects from memory to disk. This is a very generic command, but specifically, Valkey transfers only objects associated with _values_. In order to understand better this concept we'll show, using the DEBUG command, how a key holding a value looks from the point of view of the Valkey internals:
 
-    redis> set foo bar
+    > set foo bar
     OK
-    redis> debug object foo
+    > debug object foo
     Key at:0x100101d00 refcount:1, value at:0x100101ce0 refcount:1 encoding:raw serializedlength:4
 
-As you can see from the above output, the Redis top level hash table maps Redis Objects (keys) to other Redis Objects (values). The Virtual Memory is only able to swap _values_ on disk, the objects associated to _keys_ are always taken in memory: this trade off guarantees very good lookup performances, as one of the main design goals of the Redis VM is to have performances similar to Redis with VM disabled when the part of the dataset frequently used fits in RAM.
+As you can see from the above output, the Valkey top level hash table maps Valkey Objects (keys) to other Valkey Objects (values). The Virtual Memory is only able to swap _values_ on disk, the objects associated to _keys_ are always taken in memory: this trade off guarantees very good lookup performances, as one of the main design goals of the Valkey VM is to have performances similar to Valkey with VM disabled when the part of the dataset frequently used fits in RAM.
 
 How does a swapped value looks like internally
 ---
 
 When an object is swapped out, this is what happens in the hash table entry:
 
- * The key continues to hold a Redis Object representing the key.
+ * The key continues to hold a Valkey Object representing the key.
  * The value is set to NULL
 
 So you may wonder where we store the information that a given value (associated to a given key) was swapped out. Just in the key object!
 
-This is how the Redis Object structure _robj_ looks like:
+This is how the Valkey Object structure _robj_ looks like:
 
-    /* The actual Redis Object */
+    /* The actual Valkey Object */
     typedef struct redisObject {
         void *ptr;
         unsigned char type;
@@ -50,7 +50,7 @@ This is how the Redis Object structure _robj_ looks like:
         /* VM fields, this are only allocated if VM is active, otherwise the
          * object allocation function will just allocate
          * sizeof(redisObject) minus sizeof(redisObjectVM), so using
-         * Redis without VM active will not have any overhead. */
+         * Valkey without VM active will not have any overhead. */
         struct redisObjectVM vm;
     } robj;
 
@@ -59,9 +59,9 @@ As you can see there are a few fields about VM. The most important one is _stora
  * `REDIS_VM_MEMORY`: the associated value is in memory.
  * `REDIS_VM_SWAPPED`: the associated values is swapped, and the value entry of the hash table is just set to NULL.
  * `REDIS_VM_LOADING`: the value is swapped on disk, the entry is NULL, but there is a job to load the object from the swap to the memory (this field is only used when threaded VM is active).
- * `REDIS_VM_SWAPPING`: the value is in memory, the entry is a pointer to the actual Redis Object, but there is an I/O job in order to transfer this value to the swap file.
+ * `REDIS_VM_SWAPPING`: the value is in memory, the entry is a pointer to the actual Valkey Object, but there is an I/O job in order to transfer this value to the swap file.
 
-If an object is swapped on disk (`REDIS_VM_SWAPPED` or `REDIS_VM_LOADING`), how do we know where it is stored, what type it is, and so forth? That's simple: the _vtype_ field is set to the original type of the Redis object swapped, while the _vm_ field (that is a _redisObjectVM_ structure) holds information about the location of the object. This is the definition of this additional structure:
+If an object is swapped on disk (`REDIS_VM_SWAPPED` or `REDIS_VM_LOADING`), how do we know where it is stored, what type it is, and so forth? That's simple: the _vtype_ field is set to the original type of the Valkey object swapped, while the _vm_ field (that is a _redisObjectVM_ structure) holds information about the location of the object. This is the definition of this additional structure:
 
     /* The VM object structure */
     struct redisObjectVM {
@@ -72,7 +72,7 @@ If an object is swapped on disk (`REDIS_VM_SWAPPED` or `REDIS_VM_LOADING`), how 
 
 As you can see the structure contains the page at which the object is located in the swap file, the number of pages used, and the last access time of the object (this is very useful for the algorithm that select what object is a good candidate for swapping, as we want to transfer on disk objects that are rarely accessed).
 
-As you can see, while all the other fields are using unused bytes in the old Redis Object structure (we had some free bit due to natural memory alignment concerns), the _vm_ field is new, and indeed uses additional memory. Should we pay such a memory cost even when VM is disabled? No! This is the code to create a new Redis Object:
+As you can see, while all the other fields are using unused bytes in the old Valkey Object structure (we had some free bit due to natural memory alignment concerns), the _vm_ field is new, and indeed uses additional memory. Should we pay such a memory cost even when VM is disabled? No! This is the code to create a new Valkey Object:
 
     ... some code ...
             if (server.vm_enabled) {
@@ -83,19 +83,19 @@ As you can see, while all the other fields are using unused bytes in the old Red
             }
     ... some code ...
 
-As you can see if the VM system is not enabled we allocate just `sizeof(*o)-sizeof(struct redisObjectVM)` of memory. Given that the _vm_ field is the last in the object structure, and that this fields are never accessed if VM is disabled, we are safe and Redis without VM does not pay the memory overhead.
+As you can see if the VM system is not enabled we allocate just `sizeof(*o)-sizeof(struct redisObjectVM)` of memory. Given that the _vm_ field is the last in the object structure, and that this fields are never accessed if VM is disabled, we are safe and Valkey without VM does not pay the memory overhead.
 
 The Swap File
 ---
 
-The next step in order to understand how the VM subsystem works is understanding how objects are stored inside the swap file. The good news is that's not some kind of special format, we just use the same format used to store the objects in .rdb files, that are the usual dump files produced by Redis using the `SAVE` command.
+The next step in order to understand how the VM subsystem works is understanding how objects are stored inside the swap file. The good news is that's not some kind of special format, we just use the same format used to store the objects in .rdb files, that are the usual dump files produced by Valkey using the `SAVE` command.
 
-The swap file is composed of a given number of pages, where every page size is a given number of bytes. This parameters can be changed in redis.conf, since different Redis instances may work better with different values: it depends on the actual data you store inside it. The following are the default values:
+The swap file is composed of a given number of pages, where every page size is a given number of bytes. This parameters can be changed in server.conf, since different Valkey instances may work better with different values: it depends on the actual data you store inside it. The following are the default values:
 
     vm-page-size 32
     vm-pages 134217728
 
-Redis takes a "bitmap" (a contiguous array of bits set to zero or one) in memory, every bit represent a page of the swap file on disk: if a given bit is set to 1, it represents a page that is already used (there is some Redis Object stored there), while if the corresponding bit is zero, the page is free.
+Valkey takes a "bitmap" (a contiguous array of bits set to zero or one) in memory, every bit represent a page of the swap file on disk: if a given bit is set to 1, it represents a page that is already used (there is some Valkey Object stored there), while if the corresponding bit is zero, the page is free.
 
 Taking this bitmap (that will call the page table) in memory is a huge win in terms of performances, and the memory used is small: we just need 1 bit for every page on disk. For instance in the example below 134217728 pages of 32 bytes each (4GB swap file) is using just 16 MB of RAM for the page table.
 
@@ -117,20 +117,20 @@ Loading an object from swap to memory is simpler, as we already know where the o
 
 Calling the function `vmLoadObject` passing the key object associated to the value object we want to load back is enough. The function will also take care of fixing the storage type of the key (that will be `REDIS_VM_MEMORY`), marking the pages as freed in the page table, and so forth.
 
-The return value of the function is the loaded Redis Object itself, that we'll have to set again as value in the main hash table (instead of the NULL value we put in place of the object pointer when the value was originally swapped out).
+The return value of the function is the loaded Valkey Object itself, that we'll have to set again as value in the main hash table (instead of the NULL value we put in place of the object pointer when the value was originally swapped out).
 
 How blocking VM works
 ---
 
-Now we have all the building blocks in order to describe how the blocking VM works. First of all, an important detail about configuration. In order to enable blocking VM in Redis `server.vm_max_threads` must be set to zero.
-We'll see later how this max number of threads info is used in the threaded VM, for now all it's needed to now is that Redis reverts to fully blocking VM when this is set to zero.
+Now we have all the building blocks in order to describe how the blocking VM works. First of all, an important detail about configuration. In order to enable blocking VM in Valkey `server.vm_max_threads` must be set to zero.
+We'll see later how this max number of threads info is used in the threaded VM, for now all it's needed to now is that Valkey reverts to fully blocking VM when this is set to zero.
 
-We also need to introduce another important VM parameter, that is, `server.vm_max_memory`. This parameter is very important as it is used in order to trigger swapping: Redis will try to swap objects only if it is using more memory than the max memory setting, otherwise there is no need to swap as we are matching the user requested memory usage.
+We also need to introduce another important VM parameter, that is, `server.vm_max_memory`. This parameter is very important as it is used in order to trigger swapping: Valkey will try to swap objects only if it is using more memory than the max memory setting, otherwise there is no need to swap as we are matching the user requested memory usage.
 
 Blocking VM swapping
 ---
 
-Swapping of object from memory to disk happens in the cron function. This function used to be called every second, while in the recent Redis versions on git it is called every 100 milliseconds (that is, 10 times per second).
+Swapping of object from memory to disk happens in the cron function. This function used to be called every second, while in the recent Valkey versions on git it is called every 100 milliseconds (that is, 10 times per second).
 If this function detects we are out of memory, that is, the memory used is greater than the vm-max-memory setting, it starts transferring objects from memory to disk in a loop calling the function `vmSwapOneObect`. This function takes just one argument, if 0 it will swap objects in a blocking way, otherwise if it is 1, I/O threads are used. In the blocking scenario we just call it with zero as argument.
 
 vmSwapOneObject acts performing the following steps:
@@ -154,11 +154,11 @@ The age is the number of seconds the key was not requested, while size_in_memory
 Blocking VM loading
 ---
 
-What happens if an operation against a key associated with a swapped out object is requested? For instance Redis may just happen to process the following command:
+What happens if an operation against a key associated with a swapped out object is requested? For instance Valkey may just happen to process the following command:
 
     GET foo
 
-If the value object of the `foo` key is swapped we need to load it back in memory before processing the operation. In Redis the key lookup process is centralized in the `lookupKeyRead` and `lookupKeyWrite` functions, this two functions are used in the implementation of all the Redis commands accessing the keyspace, so we have a single point in the code where to handle the loading of the key from the swap file to memory.
+If the value object of the `foo` key is swapped we need to load it back in memory before processing the operation. In Valkey the key lookup process is centralized in the `lookupKeyRead` and `lookupKeyWrite` functions, this two functions are used in the implementation of all the Valkey commands accessing the keyspace, so we have a single point in the code where to handle the loading of the key from the swap file to memory.
 
 So this is what happens:
 
@@ -171,7 +171,7 @@ This is pretty straightforward, but things will get more _interesting_ with the 
 Background saving when VM is active
 ---
 
-The default Redis way to persist on disk is to create .rdb files using a child process. Redis calls the fork() system call in order to create a child, that has the exact copy of the in memory dataset, since fork duplicates the whole program memory space (actually thanks to a technique called Copy on Write memory pages are shared between the parent and child process, so the fork() call will not require too much memory).
+The default Valkey way to persist on disk is to create .rdb files using a child process. Valkey calls the fork() system call in order to create a child, that has the exact copy of the in memory dataset, since fork duplicates the whole program memory space (actually thanks to a technique called Copy on Write memory pages are shared between the parent and child process, so the fork() call will not require too much memory).
 
 In the child process we have a copy of the dataset in a given point in the time. Other commands issued by clients will just be served by the parent process and will not modify the child data.
 
@@ -180,7 +180,7 @@ The child process will just store the whole dataset into the dump.rdb file and f
 * The parent process needs to access the swap file in order to load values back into memory if an operation against swapped out values are performed.
 * The child process needs to access the swap file in order to retrieve the full dataset while saving the data set on disk.
 
-In order to avoid problems while both the processes are accessing the same swap file we do a simple thing, that is, not allowing values to be swapped out in the parent process while a background saving is in progress. This way both the processes will access the swap file in read only. This approach has the problem that while the child process is saving no new values can be transferred on the swap file even if Redis is using more memory than the max memory parameters dictates. This is usually not a problem as the background saving will terminate in a short amount of time and if still needed a percentage of values will be swapped on disk ASAP.
+In order to avoid problems while both the processes are accessing the same swap file we do a simple thing, that is, not allowing values to be swapped out in the parent process while a background saving is in progress. This way both the processes will access the swap file in read only. This approach has the problem that while the child process is saving no new values can be transferred on the swap file even if Valkey is using more memory than the max memory parameters dictates. This is usually not a problem as the background saving will terminate in a short amount of time and if still needed a percentage of values will be swapped on disk ASAP.
 
 An alternative to this scenario is to enable the Append Only File that will have this problem only when a log rewrite is performed using the `BGREWRITEAOF` command.
 
@@ -188,7 +188,7 @@ The problem with the blocking VM
 ---
 
 The problem of blocking VM is that... it's blocking :)
-This is not a problem when Redis is used in batch processing activities, but for real-time usage one of the good points of Redis is the low latency. The blocking VM will have bad latency behaviors as when a client is accessing a swapped out value, or when Redis needs to swap out values, no other clients will be served in the meantime.
+This is not a problem when Valkey is used in batch processing activities, but for real-time usage one of the good points of Valkey is the low latency. The blocking VM will have bad latency behaviors as when a client is accessing a swapped out value, or when Valkey needs to swap out values, no other clients will be served in the meantime.
 
 Swapping out keys should happen in background. Similarly when a client is accessing a swapped out value other clients accessing in memory values should be served mostly as fast as when VM is disabled. Only the clients dealing with swapped out keys should be delayed.
 
@@ -198,27 +198,27 @@ Threaded VM
 ---
 
 There are basically three main ways to turn the blocking VM into a non blocking one.
-* 1: One way is obvious, and in my opinion, not a good idea at all, that is, turning Redis itself into a threaded server: if every request is served by a different thread automatically other clients don't need to wait for blocked ones. Redis is fast, exports atomic operations, has no locks, and is just 10k lines of code, *because* it is single threaded, so this was not an option for me.
-* 2: Using non-blocking I/O against the swap file. After all you can think Redis already event-loop based, why don't just handle disk I/O in a non-blocking fashion? I also discarded this possibility because of two main reasons. One is that non blocking file operations, unlike sockets, are an incompatibility nightmare. It's not just like calling select, you need to use OS-specific things. The other problem is that the I/O is just one part of the time consumed to handle VM, another big part is the CPU used in order to encode/decode data to/from the swap file. This is I picked option three, that is...
-* 3: Using I/O threads, that is, a pool of threads handling the swap I/O operations. This is what the Redis VM is using, so let's detail how this works.
+* 1: One way is obvious, and in my opinion, not a good idea at all, that is, turning Valkey itself into a threaded server: if every request is served by a different thread automatically other clients don't need to wait for blocked ones. Valkey is fast, exports atomic operations, has no locks, and is just 10k lines of code, *because* it is single threaded, so this was not an option for me.
+* 2: Using non-blocking I/O against the swap file. After all you can think Valkey already event-loop based, why don't just handle disk I/O in a non-blocking fashion? I also discarded this possibility because of two main reasons. One is that non blocking file operations, unlike sockets, are an incompatibility nightmare. It's not just like calling select, you need to use OS-specific things. The other problem is that the I/O is just one part of the time consumed to handle VM, another big part is the CPU used in order to encode/decode data to/from the swap file. This is I picked option three, that is...
+* 3: Using I/O threads, that is, a pool of threads handling the swap I/O operations. This is what the Valkey VM is using, so let's detail how this works.
 
 I/O Threads
 ---
 
 The threaded VM design goals where the following, in order of importance:
 
- * Simple implementation, little room for race conditions, simple locking, VM system more or less completely decoupled from the rest of Redis code.
+ * Simple implementation, little room for race conditions, simple locking, VM system more or less completely decoupled from the rest of Valkey code.
  * Good performances, no locks for clients accessing values in memory.
  * Ability to decode/encode objects in the I/O threads.
 
-The above goals resulted in an implementation where the Redis main thread (the one serving actual clients) and the I/O threads communicate using a queue of jobs, with a single mutex.
+The above goals resulted in an implementation where the Valkey main thread (the one serving actual clients) and the I/O threads communicate using a queue of jobs, with a single mutex.
 Basically when main thread requires some work done in the background by some I/O thread, it pushes an I/O job structure in the `server.io_newjobs` queue (that is, just a linked list). If there are no active I/O threads, one is started. At this point some I/O thread will process the I/O job, and the result of the processing is pushed in the `server.io_processed` queue. The I/O thread will send a byte using an UNIX pipe to the main thread in order to signal that a new job was processed and the result is ready to be processed.
 
 This is how the `iojob` structure looks like:
 
     typedef struct iojob {
         int type;   /* Request type, REDIS_IOJOB_* */
-        redisDb *db;/* Redis database */
+        redisDb *db;/* Valkey database */
         robj *key;  /* This I/O request is about swapping this key */
         robj *val;  /* the value to swap for REDIS_IOREQ_*_SWAP, otherwise this
                      * field is populated by the I/O thread for REDIS_IOREQ_LOAD. */
@@ -234,7 +234,7 @@ There are just three type of jobs that an I/O thread can perform (the type is sp
 * `REDIS_IOJOB_PREPARE_SWAP`: compute the number of pages needed in order to save the object pointed by `val` into the swap. The result of this operation will populate the `pages` field.
 * `REDIS_IOJOB_DO_SWAP`: Transfer the object pointed by `val` to the swap file, at page offset `page`.
 
-The main thread delegates just the above three tasks. All the rest is handled by the I/O thread itself, for instance finding a suitable range of free pages in the swap file page table (that is a fast operation), deciding what object to swap, altering the storage field of a Redis object to reflect the current state of a value.
+The main thread delegates just the above three tasks. All the rest is handled by the I/O thread itself, for instance finding a suitable range of free pages in the swap file page table (that is a fast operation), deciding what object to swap, altering the storage field of a Valkey object to reflect the current state of a value.
 
 Non blocking VM as probabilistic enhancement of blocking VM
 ---
@@ -245,7 +245,7 @@ Fortunately there was a much, much simpler way to do this. And we love simple th
 
 This is what we do:
 
- * Every time a client sends us a command, *before* the command is executed, we examine the argument vector of the command in search for swapped keys. After all we know for every command what arguments are keys, as the Redis command format is pretty simple.
+ * Every time a client sends us a command, *before* the command is executed, we examine the argument vector of the command in search for swapped keys. After all we know for every command what arguments are keys, as the Valkey command format is pretty simple.
  * If we detect that at least a key in the requested command is swapped on disk, we block the client instead of really issuing the command. For every swapped value associated to a requested key, an I/O job is created, in order to bring the values back in memory. The main thread continues the execution of the event loop, without caring about the blocked client.
  * In the meanwhile, I/O threads are loading values in memory. Every time an I/O thread finished loading a value, it sends a byte to the main thread using an UNIX pipe. The pipe file descriptor has a readable event associated in the main thread event loop, that is the function `vmThreadedIOCompletedJob`. If this function detects that all the values needed for a blocked client were loaded, the client is restarted and the original command called.
 

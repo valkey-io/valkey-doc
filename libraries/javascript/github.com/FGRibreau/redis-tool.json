@@ -1,6 +1,6 @@
 {
-    "name": "Redis tool",
-    "description": "Redis-tool - Little helpers for Redis (ztrim, del-all, rename)",
+    "name": "Valkey tool",
+    "description": "Valkey-tool - Little helpers for Valkey (ztrim, del-all, rename)",
     "twitter": [
         "fgribreau"
     ]

@@ -1,5 +1,5 @@
 {
-    "name": "Redis OM for .NET",
-    "description": "Object mapping, and more, for Redis and .NET.",
+    "name": "Valkey OM for .NET",
+    "description": "Object mapping, and more, for Valkey and .NET.",
     "recommended": true
 }

@@ -1,4 +1,4 @@
 {
     "name": "redis-stats",
-    "description": "A lightweight dashboard to show statistics about your Redis server. Flushing databases is available when set in config."
+    "description": "A lightweight dashboard to show statistics about your Valkey server. Flushing databases is available when set in config."
 }

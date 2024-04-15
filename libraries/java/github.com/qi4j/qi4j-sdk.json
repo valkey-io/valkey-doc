@@ -1,6 +1,6 @@
 {
-    "name": "Redis Qi4j EntityStore",
-    "description": "Qi4j EntityStore backed by Redis",
+    "name": "Valkey Qi4j EntityStore",
+    "description": "Qi4j EntityStore backed by Valkey",
     "twitter": [
         "eskatos"
     ]

@@ -1,6 +1,6 @@
 {
     "name": "Hibernate OGM",
-    "description": "Hibernate OGM is the JPA integration for Redis",
+    "description": "Hibernate OGM is the JPA integration for Valkey",
     "homepage": "http://hibernate.org/ogm/",
     "twitter": [
         "mp911de",

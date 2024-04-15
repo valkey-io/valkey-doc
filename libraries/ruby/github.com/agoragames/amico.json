@@ -1,6 +1,6 @@
 {
     "name": "Amico",
-    "description": "Relationships (e.g. friendships) backed by Redis.",
+    "description": "Relationships (e.g. friendships) backed by Valkey.",
     "twitter": [
         "czarneckid"
     ]

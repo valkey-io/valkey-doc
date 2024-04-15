@@ -7,20 +7,20 @@
    - /topics/key-specs
 ---
 
-Many of the commands in Redis accept key names as input arguments.
+Many of the commands in Valkey accept key names as input arguments.
 The 9th element in the reply of `COMMAND` (and `COMMAND INFO`) is an array that consists of the command's key specifications.
 
 A _key specification_ describes a rule for extracting the names of one or more keys from the arguments of a given command.
-Key specifications provide a robust and flexible mechanism, compared to the _first key_, _last key_ and _step_ scheme employed until Redis 7.0.
-Before introducing these specifications, Redis clients had no trivial programmatic means to extract key names for all commands.
+Key specifications provide a robust and flexible mechanism, compared to the _first key_, _last key_ and _step_ scheme employed until Valkey 7.0.
+Before introducing these specifications, Valkey clients had no trivial programmatic means to extract key names for all commands.
 
-Cluster-aware Redis clients had to have the keys' extraction logic hard-coded in the cases of commands such as `EVAL` and `ZUNIONSTORE` that rely on a _numkeys_ argument or `SORT` and its many clauses.
+Cluster-aware Valkey clients had to have the keys' extraction logic hard-coded in the cases of commands such as `EVAL` and `ZUNIONSTORE` that rely on a _numkeys_ argument or `SORT` and its many clauses.
 Alternatively, the `COMMAND GETKEYS` can be used to achieve a similar extraction effect but at a higher latency.
 
-A Redis client isn't obligated to support key specifications.
+A Valkey client isn't obligated to support key specifications.
 It can continue using the legacy _first key_, _last key_ and _step_ scheme along with the [_movablekeys_ flag](/commands/command#flags) that remain unchanged.
 
-However, a Redis client that implements key specifications support can consolidate most of its keys' extraction logic.
+However, a Valkey client that implements key specifications support can consolidate most of its keys' extraction logic.
 Even if the client encounters an unfamiliar type of key specification, it can always revert to the `COMMAND GETKEYS` command.
 
 That said, most cluster-aware clients only require a single key name to perform correct command routing, so it is possible that although a command features one unfamiliar specification, its other specification may still be usable by the client.
@@ -161,7 +161,7 @@ In addition, the specification may include precisely one of the following:
 Key specifications may have the following flags:
 
 * **not_key:** this flag indicates that the specified argument isn't a key.
-  This argument is treated the same as a key when computing which slot a command should be assigned to for Redis cluster. 
+  This argument is treated the same as a key when computing which slot a command should be assigned to for Valkey cluster. 
   For all other purposes this argument should not be considered a key.
 * **incomplete:** this flag is explained below.
 * **variable_flags:** this flag is explained below.

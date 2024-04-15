@@ -5,7 +5,7 @@
   },
   "cluster": {
     "display": "Cluster",
-    "description": "Redis Cluster management"
+    "description": "Valkey Cluster management"
   },
   "connection": {
     "display": "Connection",
@@ -37,11 +37,11 @@
   },
   "scripting": {
     "display": "Scripting and Functions",
-    "description": "Redis server-side scripting and functions"
+    "description": "Valkey server-side scripting and functions"
   },
   "sentinel": {
     "display": "Sentinel",
-    "description": "Redis Sentinel commands"
+    "description": "Valkey Sentinel commands"
   },
   "server": {
     "display": "Server",
@@ -65,6 +65,6 @@
   },
   "transactions": {
     "display": "Transactions",
-    "description": "Redis Transaction management"
+    "description": "Valkey Transaction management"
   }
 }

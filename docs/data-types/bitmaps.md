@@ -1,9 +1,9 @@
 ---
-title: "Redis bitmaps"
+title: "Valkey bitmaps"
 linkTitle: "Bitmaps"
 weight: 120
 description: >
-    Introduction to Redis bitmaps
+    Introduction to Valkey bitmaps
 ---
 
 Bitmaps are not an actual data type, but a set of bit-oriented operations
@@ -22,7 +22,7 @@ Some examples of bitmap use cases include:
 * `SETBIT` sets a bit at the provided offset to 0 or 1.
 * `GETBIT` returns the value of a bit at a given offset.
 
-See the [complete list of bitmap commands](https://redis.io/commands/?group=bitmap).
+See the [complete list of bitmap commands](https://server.io/commands/?group=bitmap).
 
 
 ## Example
@@ -109,5 +109,5 @@ the Nth bit to address inside the key with `bit-number MOD M`.
 
 ## Learn more
 
-* [Redis Bitmaps Explained](https://www.youtube.com/watch?v=oj8LdJQjhJo) teaches you how to use bitmaps for map exploration in an online game. 
-* [Redis University's RU101](https://university.redis.com/courses/ru101/) covers Redis bitmaps in detail.
+* [Valkey Bitmaps Explained](https://www.youtube.com/watch?v=oj8LdJQjhJo) teaches you how to use bitmaps for map exploration in an online game. 
+* [Valkey University's RU101](https://university.server.com/courses/ru101/) covers Valkey bitmaps in detail.

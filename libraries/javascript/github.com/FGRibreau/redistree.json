@@ -1,6 +1,6 @@
 {
-    "name": "Redis Tree",
-    "description": "Load and save Trees to Redis using sets.",
+    "name": "Valkey Tree",
+    "description": "Load and save Trees to Valkey using sets.",
     "twitter": [
         "fgribreau"
     ]

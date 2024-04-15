@@ -43,7 +43,7 @@ The following information is provided for each consumer:
 * **pel-count**: the number of entries in the PEL: pending messages for the consumer, which are messages that were delivered but are yet to be acknowledged
 * **pending**: an array with pending entries information, has the same structure as described above, except the consumer name is omitted (redundant, since anyway we are in a specific consumer context)
 
-Note that before Redis 7.2.0, **seen-time** used to denote the last successful interaction.
+Note that before Valkey 7.2.0, **seen-time** used to denote the last successful interaction.
 In 7.2.0, **active-time** was added and **seen-time** was changed to denote the last attempted interaction.
 
 The `COUNT` option can be used to limit the number of stream and PEL entries that are returned (The first `<count>` entries are returned).

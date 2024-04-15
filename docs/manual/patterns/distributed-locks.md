@@ -1,9 +1,9 @@
 ---
-title: "Distributed Locks with Redis"
+title: "Distributed Locks with Valkey"
 linkTitle: "Distributed locks"
 weight: 1
 description: >
-    A distributed lock pattern with Redis
+    A distributed lock pattern with Valkey
 aliases: [
     /topics/distlock,
     /docs/reference/patterns/distributed-locks,
@@ -15,12 +15,12 @@ different processes must operate with shared resources in a mutually
 exclusive way.
 
 There are a number of libraries and blog posts describing how to implement
-a DLM (Distributed Lock Manager) with Redis, but every library uses a different
+a DLM (Distributed Lock Manager) with Valkey, but every library uses a different
 approach, and many use a simple approach with lower guarantees compared to
 what can be achieved with slightly more complex designs.
 
 This page describes a more canonical algorithm to implement
-distributed locks with Redis. We propose an algorithm, called **Redlock**,
+distributed locks with Valkey. We propose an algorithm, called **Redlock**,
 which implements a DLM which we believe to be safer than the vanilla single
 instance approach. We hope that the community will analyze it, provide
 feedback, and use it as a starting point for the implementations or more
@@ -41,9 +41,9 @@ already available that can be used for reference.
 * [rtckit/react-redlock](https://github.com/rtckit/reactphp-redlock) (Async PHP implementation).
 * [Redsync](https://github.com/go-redsync/redsync) (Go implementation).
 * [Redisson](https://github.com/mrniko/redisson) (Java implementation).
-* [Redis::DistLock](https://github.com/sbertrang/redis-distlock) (Perl implementation).
+* [Valkey::DistLock](https://github.com/sbertrang/redis-distlock) (Perl implementation).
 * [Redlock-cpp](https://github.com/jacket-code/redlock-cpp) (C++ implementation).
-* [Redis-plus-plus](https://github.com/sewenew/redis-plus-plus/#redlock) (C++ implementation).
+* [Valkey-plus-plus](https://github.com/sewenew/redis-plus-plus/#redlock) (C++ implementation).
 * [Redlock-cs](https://github.com/kidfashion/redlock-cs) (C#/.NET implementation).
 * [RedLock.net](https://github.com/samcook/RedLock.net) (C#/.NET implementation). Includes async and lock extension support.
 * [ScarletLock](https://github.com/psibernetic/scarletlock) (C# .NET implementation with configurable datastore).
@@ -58,16 +58,16 @@ We are going to model our design with just three properties that, from our point
 
 1. Safety property: Mutual exclusion. At any given moment, only one client can hold a lock.
 2. Liveness property A: Deadlock free. Eventually it is always possible to acquire a lock, even if the client that locked a resource crashes or gets partitioned.
-3. Liveness property B: Fault tolerance. As long as the majority of Redis nodes are up, clients are able to acquire and release locks.
+3. Liveness property B: Fault tolerance. As long as the majority of Valkey nodes are up, clients are able to acquire and release locks.
 
 ## Why Failover-based Implementations Are Not Enough
 
-To understand what we want to improve, let’s analyze the current state of affairs with most Redis-based distributed lock libraries.
+To understand what we want to improve, let’s analyze the current state of affairs with most Valkey-based distributed lock libraries.
 
-The simplest way to use Redis to lock a resource is to create a key in an instance. The key is usually created with a limited time to live, using the Redis expires feature, so that eventually it will get released (property 2 in our list). When the client needs to release the resource, it deletes the key.
+The simplest way to use Valkey to lock a resource is to create a key in an instance. The key is usually created with a limited time to live, using the Valkey expires feature, so that eventually it will get released (property 2 in our list). When the client needs to release the resource, it deletes the key.
 
-Superficially this works well, but there is a problem: this is a single point of failure in our architecture. What happens if the Redis master goes down?
-Well, let’s add a replica! And use it if the master is unavailable. This is unfortunately not viable. By doing so we can’t implement our safety property of mutual exclusion, because Redis replication is asynchronous.
+Superficially this works well, but there is a problem: this is a single point of failure in our architecture. What happens if the Valkey master goes down?
+Well, let’s add a replica! And use it if the master is unavailable. This is unfortunately not viable. By doing so we can’t implement our safety property of mutual exclusion, because Valkey replication is asynchronous.
 
 There is a race condition with this model:
 
@@ -90,10 +90,10 @@ To acquire the lock, the way to go is the following:
 The command will set the key only if it does not already exist (`NX` option), with an expire of 30000 milliseconds (`PX` option).
 The key is set to a value “my\_random\_value”. This value must be unique across all clients and all lock requests.
 
-Basically the random value is used in order to release the lock in a safe way, with a script that tells Redis: remove the key only if it exists and the value stored at the key is exactly the one I expect to be. This is accomplished by the following Lua script:
+Basically the random value is used in order to release the lock in a safe way, with a script that tells Valkey: remove the key only if it exists and the value stored at the key is exactly the one I expect to be. This is accomplished by the following Lua script:
 
-    if redis.call("get",KEYS[1]) == ARGV[1] then
-        return redis.call("del",KEYS[1])
+    if server.call("get",KEYS[1]) == ARGV[1] then
+        return server.call("del",KEYS[1])
     else
         return 0
     end
@@ -111,12 +111,12 @@ So now we have a good way to acquire and release the lock. With this system, rea
 
 ## The Redlock Algorithm
 
-In the distributed version of the algorithm we assume we have N Redis masters. Those nodes are totally independent, so we don’t use replication or any other implicit coordination system. We already described how to acquire and release the lock safely in a single instance. We take for granted that the algorithm will use this method to acquire and release the lock in a single instance. In our examples we set N=5, which is a reasonable value, so we need to run 5 Redis masters on different computers or virtual machines in order to ensure that they’ll fail in a mostly independent way.
+In the distributed version of the algorithm we assume we have N Valkey masters. Those nodes are totally independent, so we don’t use replication or any other implicit coordination system. We already described how to acquire and release the lock safely in a single instance. We take for granted that the algorithm will use this method to acquire and release the lock in a single instance. In our examples we set N=5, which is a reasonable value, so we need to run 5 Valkey masters on different computers or virtual machines in order to ensure that they’ll fail in a mostly independent way.
 
 In order to acquire the lock, the client performs the following operations:
 
 1. It gets the current time in milliseconds.
-2. It tries to acquire the lock in all the N instances sequentially, using the same key name and random value in all the instances. During step 2, when setting the lock in each instance, the client uses a timeout which is small compared to the total lock auto-release time in order to acquire it. For example if the auto-release time is 10 seconds, the timeout could be in the ~ 5-50 milliseconds range. This prevents the client from remaining blocked for a long time trying to talk with a Redis node which is down: if an instance is not available, we should try to talk with the next instance ASAP.
+2. It tries to acquire the lock in all the N instances sequentially, using the same key name and random value in all the instances. During step 2, when setting the lock in each instance, the client uses a timeout which is small compared to the total lock auto-release time in order to acquire it. For example if the auto-release time is 10 seconds, the timeout could be in the ~ 5-50 milliseconds range. This prevents the client from remaining blocked for a long time trying to talk with a Valkey node which is down: if an instance is not available, we should try to talk with the next instance ASAP.
 3. The client computes how much time elapsed in order to acquire the lock, by subtracting from the current time the timestamp obtained in step 1. If and only if the client was able to acquire the lock in the majority of the instances (at least 3), and the total time elapsed to acquire the lock is less than lock validity time, the lock is considered to be acquired.
 4. If the lock was acquired, its validity time is considered to be the initial validity time minus the time elapsed, as computed in step 3.
 5. If the client failed to acquire the lock for some reason (either it was not able to lock N/2+1 instances or the validity time is negative), it will try to unlock all the instances (even the instances it believed it was not able to lock).
@@ -131,9 +131,9 @@ This paper contains more information about similar systems requiring a bound *cl
 
 ### Retry on Failure
 
-When a client is unable to acquire the lock, it should try again after a random delay in order to try to desynchronize multiple clients trying to acquire the lock for the same resource at the same time (this may result in a split brain condition where nobody wins). Also the faster a client tries to acquire the lock in the majority of Redis instances, the smaller the window for a split brain condition (and the need for a retry), so ideally the client should try to send the `SET` commands to the N instances at the same time using multiplexing.
+When a client is unable to acquire the lock, it should try again after a random delay in order to try to desynchronize multiple clients trying to acquire the lock for the same resource at the same time (this may result in a split brain condition where nobody wins). Also the faster a client tries to acquire the lock in the majority of Valkey instances, the smaller the window for a split brain condition (and the need for a retry), so ideally the client should try to send the `SET` commands to the N instances at the same time using multiplexing.
 
-It is worth stressing how important it is for clients that fail to acquire the majority of locks, to release the (partially) acquired locks ASAP, so that there is no need to wait for key expiry in order for the lock to be acquired again (however if a network partition happens and the client is no longer able to communicate with the Redis instances, there is an availability penalty to pay as it waits for key expiration).
+It is worth stressing how important it is for clients that fail to acquire the majority of locks, to release the (partially) acquired locks ASAP, so that there is no need to wait for key expiry in order for the lock to be acquired again (however if a network partition happens and the client is no longer able to communicate with the Valkey instances, there is an availability penalty to pay as it waits for key expiration).
 
 ### Releasing the Lock
 
@@ -166,14 +166,14 @@ Basically if there are infinite continuous network partitions, the system may be
 
 ### Performance, Crash Recovery and fsync
 
-Many users using Redis as a lock server need high performance in terms of both latency to acquire and release a lock, and number of acquire / release operations that it is possible to perform per second. In order to meet this requirement, the strategy to talk with the N Redis servers to reduce latency is definitely multiplexing (putting the socket in non-blocking mode, send all the commands, and read all the commands later, assuming that the RTT between the client and each instance is similar).
+Many users using Valkey as a lock server need high performance in terms of both latency to acquire and release a lock, and number of acquire / release operations that it is possible to perform per second. In order to meet this requirement, the strategy to talk with the N Valkey servers to reduce latency is definitely multiplexing (putting the socket in non-blocking mode, send all the commands, and read all the commands later, assuming that the RTT between the client and each instance is similar).
 
 However there is another consideration around persistence if we want to target a crash-recovery system model.
 
-Basically to see the problem here, let’s assume we configure Redis without persistence at all. A client acquires the lock in 3 of 5 instances. One of the instances where the client was able to acquire the lock is restarted, at this point there are again 3 instances that we can lock for the same resource, and another client can lock it again, violating the safety property of exclusivity of lock.
+Basically to see the problem here, let’s assume we configure Valkey without persistence at all. A client acquires the lock in 3 of 5 instances. One of the instances where the client was able to acquire the lock is restarted, at this point there are again 3 instances that we can lock for the same resource, and another client can lock it again, violating the safety property of exclusivity of lock.
 
-If we enable AOF persistence, things will improve quite a bit. For example we can upgrade a server by sending it a `SHUTDOWN` command and restarting it. Because Redis expires are semantically implemented so that time still elapses when the server is off, all our requirements are fine.
-However everything is fine as long as it is a clean shutdown. What about a power outage? If Redis is configured, as by default, to fsync on disk every second, it is possible that after a restart our key is missing. In theory, if we want to guarantee the lock safety in the face of any kind of instance restart, we need to enable `fsync=always` in the persistence settings. This will affect performance due to the additional sync overhead.
+If we enable AOF persistence, things will improve quite a bit. For example we can upgrade a server by sending it a `SHUTDOWN` command and restarting it. Because Valkey expires are semantically implemented so that time still elapses when the server is off, all our requirements are fine.
+However everything is fine as long as it is a clean shutdown. What about a power outage? If Valkey is configured, as by default, to fsync on disk every second, it is possible that after a restart our key is missing. In theory, if we want to guarantee the lock safety in the face of any kind of instance restart, we need to enable `fsync=always` in the persistence settings. This will affect performance due to the additional sync overhead.
 
 However things are better than they look like at a first glance. Basically,
 the algorithm safety is retained as long as when an instance restarts after a
@@ -187,7 +187,7 @@ for all the keys about the locks that existed when the instance crashed to
 become invalid and be automatically released.
 
 Using *delayed restarts* it is basically possible to achieve safety even
-without any kind of Redis persistence available, however note that this may
+without any kind of Valkey persistence available, however note that this may
 translate into an availability penalty. For example if a majority of instances
 crash, the system will become globally unavailable for `TTL` (here globally means
 that no resource at all will be lockable during this time).
@@ -220,7 +220,7 @@ If you are concerned about consistency and correctness, you should pay attention
 1. You should implement fencing tokens.
   This is especially important for processes that can take significant time and applies to any distributed locking system.
   Extending locks' lifetime is also an option, but don´t assume that a lock is retained as long as the process that had acquired it is alive.
-2. Redis is not using monotonic clock for TTL expiration mechanism.
+2. Valkey is not using monotonic clock for TTL expiration mechanism.
   That means that a wall-clock shift may result in a lock being acquired by more than one process.
   Even though the problem can be mitigated by preventing admins from manually setting the server's time and setting up NTP properly, there's still a chance of this issue occurring in real life and compromising consistency.
 

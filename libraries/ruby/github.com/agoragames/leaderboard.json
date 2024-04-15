@@ -1,6 +1,6 @@
 {
     "name": "leaderboard",
-    "description": "Leaderboards backed by Redis.",
+    "description": "Leaderboards backed by Valkey.",
     "twitter": [
         "czarneckid"
     ]

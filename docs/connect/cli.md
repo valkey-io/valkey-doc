@@ -237,7 +237,7 @@ Even without using the debugger, `valkey-cli` can be used to
 run scripts from a file as an argument:
 
     $ cat /tmp/script.lua
-    return redis.call('SET',KEYS[1],ARGV[1])
+    return server.call('SET',KEYS[1],ARGV[1])
     $ valkey-cli --eval /tmp/script.lua location:hastings:temp , 23
     OK
 

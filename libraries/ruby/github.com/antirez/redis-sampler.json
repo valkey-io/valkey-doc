@@ -1,6 +1,6 @@
 {
-    "name": "Redis-sampler",
-    "description": "Sample a Redis DB to understand dataset composition.",
+    "name": "Valkey-sampler",
+    "description": "Sample a Valkey DB to understand dataset composition.",
     "twitter": [
         "antirez"
     ]

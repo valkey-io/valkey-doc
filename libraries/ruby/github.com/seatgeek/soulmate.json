@@ -1,6 +1,6 @@
 {
     "name": "Soulmate",
-    "description": "Redis-backed service for fast autocompleting.",
+    "description": "Valkey-backed service for fast autocompleting.",
     "twitter": [
         "seatgeek"
     ]

@@ -1,13 +1,13 @@
 ---
-title: "Install Redis on macOS"
+title: "Install Valkey on macOS"
 linkTitle: "MacOS"
 weight: 1
-description: Use Homebrew to install and start Redis on macOS
+description: Use Homebrew to install and start Valkey on macOS
 aliases:
 - /docs/getting-started/installation/install-redis-on-mac-os
 ---
 
-This guide shows you how to install Redis on macOS using Homebrew. Homebrew is the easiest way to install Redis on macOS. If you'd prefer to build Redis from the source files on macOS, see [Installing Redis from Source](/docs/install/install-redis/install-redis-from-source).
+This guide shows you how to install Valkey on macOS using Homebrew. Homebrew is the easiest way to install Valkey on macOS. If you'd prefer to build Valkey from the source files on macOS, see [Installing Valkey from Source](/docs/install/install-redis/install-redis-from-source).
 
 ## Prerequisites
 
@@ -27,29 +27,29 @@ From the terminal, run:
 brew install redis
 {{< / highlight >}}
 
-This will install Redis on your system.
+This will install Valkey on your system.
 
-## Starting and stopping Redis in the foreground
+## Starting and stopping Valkey in the foreground
 
-To test your Redis installation, you can run the `redis-server` executable from the command line:
+To test your Valkey installation, you can run the `redis-server` executable from the command line:
 
 {{< highlight bash  >}}
 redis-server
 {{< / highlight >}}
 
-If successful, you'll see the startup logs for Redis, and Redis will be running in the foreground.
+If successful, you'll see the startup logs for Valkey, and Valkey will be running in the foreground.
 
-To stop Redis, enter `Ctrl-C`.
+To stop Valkey, enter `Ctrl-C`.
 
-### Starting and stopping Redis using launchd
+### Starting and stopping Valkey using launchd
 
-As an alternative to running Redis in the foreground, you can also use `launchd` to start the process in the background:
+As an alternative to running Valkey in the foreground, you can also use `launchd` to start the process in the background:
 
 {{< highlight bash  >}}
 brew services start redis
 {{< / highlight >}}
 
-This launches Redis and restarts it at login. You can check the status of a `launchd` managed Redis by running the following:
+This launches Valkey and restarts it at login. You can check the status of a `launchd` managed Valkey by running the following:
 
 {{< highlight bash  >}}
 brew services info redis
@@ -71,15 +71,15 @@ To stop the service, run:
 brew services stop redis
 {{< / highlight >}}
 
-## Connect to Redis
+## Connect to Valkey
 
-Once Redis is running, you can test it by running `redis-cli`:
+Once Valkey is running, you can test it by running `redis-cli`:
 
 {{< highlight bash  >}}
 redis-cli
 {{< / highlight >}}
 
-This will open the Redis REPL. Try running some commands:
+This will open the Valkey REPL. Try running some commands:
 
 {{< highlight bash >}}
 127.0.0.1:6379> lpush demos redis-macOS-demo
@@ -90,7 +90,7 @@ OK
 
 ## Next steps
 
-Once you have a running Redis instance, you may want to:
+Once you have a running Valkey instance, you may want to:
 
-* Try the Redis CLI tutorial
-* Connect using one of the Redis clients
+* Try the Valkey CLI tutorial
+* Connect using one of the Valkey clients

@@ -1,25 +1,25 @@
 ---
-title: "Redis latency monitoring"
+title: "Valkey latency monitoring"
 linkTitle: "Latency monitoring"
 weight: 1
-description: Discovering slow server events in Redis
+description: Discovering slow server events in Valkey
 aliases: [
     /topics/latency-monitor,
     /docs/reference/optimization/latency-monitor
 ]
 ---
 
-Redis is often used for demanding use cases, where it
+Valkey is often used for demanding use cases, where it
 serves a large number of queries per second per instance, but also has strict latency requirements for the average response
 time and the worst-case latency.
 
-While Redis is an in-memory system, it deals with the operating system in
+While Valkey is an in-memory system, it deals with the operating system in
 different ways, for example, in the context of persisting to disk.
-Moreover Redis implements a rich set of commands. Certain commands
+Moreover Valkey implements a rich set of commands. Certain commands
 are fast and run in constant or logarithmic time. Other commands are slower
 O(N) commands that can cause latency spikes.
 
-Finally, Redis is single threaded. This is usually an advantage
+Finally, Valkey is single threaded. This is usually an advantage
 from the point of view of the amount of work it can perform per core, and in
 the latency figures it is able to provide. However, it poses
 a challenge for latency, since the single
@@ -27,7 +27,7 @@ thread must be able to perform certain tasks incrementally, for
 example key expiration, in a way that does not impact the other clients
 that are served.
 
-For all these reasons, Redis 2.8.13 introduced a new feature called
+For all these reasons, Valkey 2.8.13 introduced a new feature called
 **Latency Monitoring**, that helps the user to check and troubleshoot possible
 latency problems. Latency monitoring is composed of the following conceptual
 parts:
@@ -38,8 +38,8 @@ parts:
 * Analysis engine to provide human-readable reports and hints according to the measurements.
 
 The rest of this document covers the latency monitoring subsystem
-details. For more information about the general topic of Redis
-and latency, see [Redis latency problems troubleshooting](/topics/latency).
+details. For more information about the general topic of Valkey
+and latency, see [Valkey latency problems troubleshooting](/topics/latency).
 
 ## Events and time series
 
@@ -47,8 +47,8 @@ Different monitored code paths have different names and are called *events*.
 For example, `command` is an event that measures latency spikes of possibly slow
 command executions, while `fast-command` is the event name for the monitoring
 of the O(1) and O(log N) commands. Other events are less generic and monitor
-specific operations performed by Redis. For example, the `fork` event
-only monitors the time taken by Redis to execute the `fork(2)` system call.
+specific operations performed by Valkey. For example, the `fork` event
+only monitors the time taken by Valkey to execute the `fork(2)` system call.
 
 A latency spike is an event that takes more time to run than the configured latency
 threshold. There is a separate time series associated with every monitored
@@ -90,12 +90,12 @@ with the following command:
 
     CONFIG SET latency-monitor-threshold 100
 
-Monitoring is turned off by default (threshold set to 0), even if the actual cost of latency monitoring is near zero. While the memory requirements of latency monitoring are very small, there is no good reason to raise the baseline memory usage of a Redis instance that is working well.
+Monitoring is turned off by default (threshold set to 0), even if the actual cost of latency monitoring is near zero. While the memory requirements of latency monitoring are very small, there is no good reason to raise the baseline memory usage of a Valkey instance that is working well.
 
 ## Report information with the LATENCY command
 
 The user interface to the latency monitoring subsystem is the `LATENCY` command.
-Like many other Redis commands, `LATENCY` accepts subcommands that modify its behavior. These subcommands are:
+Like many other Valkey commands, `LATENCY` accepts subcommands that modify its behavior. These subcommands are:
 
 * `LATENCY LATEST` - returns the latest latency samples for all events.
 * `LATENCY HISTORY` - returns latency time series for a given event.

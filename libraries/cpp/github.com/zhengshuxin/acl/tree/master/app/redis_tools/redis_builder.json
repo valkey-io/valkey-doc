@@ -1,6 +1,6 @@
 {
     "name": "redis_builder",
-    "description": "A C++ Redis tool to create and manage a Redis cluster",
+    "description": "A C++ Valkey tool to create and manage a Valkey cluster",
     "homepage": "https://github.com/zhengshuxin/acl/tree/master/app/redis_tools/redis_builder",
     "twitter": [
         "zhengshuxin"

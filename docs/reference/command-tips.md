@@ -1,5 +1,5 @@
 ---
-title: "Redis command tips"
+title: "Valkey command tips"
 linkTitle: "Command tips"
 weight: 1
 description: Get additional information about a command
@@ -8,8 +8,8 @@ aliases:
 ---
 
 Command tips are an array of strings.
-These provide Redis clients with additional information about the command.
-The information can instruct Redis Cluster clients as to how the command should be executed and its output processed in a clustered deployment.
+These provide Valkey clients with additional information about the command.
+The information can instruct Valkey Cluster clients as to how the command should be executed and its output processed in a clustered deployment.
 
 Unlike the command's flags (see the 3rd element of `COMMAND`'s reply), which are strictly internal to the server's operation, tips don't serve any purpose other than being reported to clients.
 
@@ -23,14 +23,14 @@ That means that calls to the command may yield different results with the same a
 That difference could be the result of the command's random nature (e.g., `RANDOMKEY` and `SPOP`); the call's timing (e.g., `TTL`); or generic differences that relate to the server's state (e.g., `INFO` and `CLIENT LIST`).
 
 **Note:**
-Prior to Redis 7.0, this tip was the _random_ command flag.
+Prior to Valkey 7.0, this tip was the _random_ command flag.
 
 ## nondeterministic_output_order
 
 The existence of this tip indicates that the command's output is deterministic, but its ordering is random (e.g., `HGETALL` and `SMEMBERS`).
 
 **Note:**
-Prior to Redis 7.0, this tip was the _sort_\__for_\__script_ flag.
+Prior to Valkey 7.0, this tip was the _sort_\__for_\__script_ flag.
 
 ## request_policy
 
@@ -97,7 +97,7 @@ This tip can be one of:
 ## Example
 
 ```
-redis> command info ping
+> command info ping
 1)  1) "ping"
     2) (integer) -1
     3) 1) fast

@@ -1,4 +1,4 @@
-**A note about the word slave used in this man page and command name**: If not for Redis compatibility, the Valkey project does not use the word slave. Please use the new command `REPLICAOF`. The command `SLAVEOF` will continue to work for backward compatibility.
+**A note about the word slave used in this man page and command name**: If not for Valkey compatibility, the Valkey project does not use the word slave. Please use the new command `REPLICAOF`. The command `SLAVEOF` will continue to work for backward compatibility.
 
 The `SLAVEOF` command can change the replication settings of a replica on the fly.
 If a Valkey server is already acting as replica, the command `SLAVEOF` NO ONE will

@@ -1,55 +1,55 @@
 ---
-title: Redis cluster specification
+title: Valkey cluster specification
 linkTitle: Cluster spec
 weight: 9
 description: >
-    Detailed specification for Redis cluster
+    Detailed specification for Valkey cluster
 aliases:
   - /topics/cluster-spec
 ---
 
-Welcome to the **Redis Cluster Specification**. Here you'll find information
-about the algorithms and design rationales of Redis Cluster. This document is a work
+Welcome to the **Valkey Cluster Specification**. Here you'll find information
+about the algorithms and design rationales of Valkey Cluster. This document is a work
 in progress as it is continuously synchronized with the actual implementation
-of Redis.
+of Valkey.
 
 ## Main properties and rationales of the design
 
-### Redis Cluster goals
+### Valkey Cluster goals
 
-Redis Cluster is a distributed implementation of Redis with the following goals in order of importance in the design:
+Valkey Cluster is a distributed implementation of Valkey with the following goals in order of importance in the design:
 
 * High performance and linear scalability up to 1000 nodes. There are no proxies, asynchronous replication is used, and no merge operations are performed on values.
 * Acceptable degree of write safety: the system tries (in a best-effort way) to retain all the writes originating from clients connected with the majority of the master nodes. Usually there are small windows where acknowledged writes can be lost. Windows to lose acknowledged writes are larger when clients are in a minority partition.
-* Availability: Redis Cluster is able to survive partitions where the majority of the master nodes are reachable and there is at least one reachable replica for every master node that is no longer reachable. Moreover using *replicas migration*, masters no longer replicated by any replica will receive one from a master which is covered by multiple replicas.
+* Availability: Valkey Cluster is able to survive partitions where the majority of the master nodes are reachable and there is at least one reachable replica for every master node that is no longer reachable. Moreover using *replicas migration*, masters no longer replicated by any replica will receive one from a master which is covered by multiple replicas.
 
-What is described in this document is implemented in Redis 3.0 or greater.
+What is described in this document is implemented in Valkey 3.0 or greater.
 
 ### Implemented subset
 
-Redis Cluster implements all the single key commands available in the
-non-distributed version of Redis. Commands performing complex multi-key
+Valkey Cluster implements all the single key commands available in the
+non-distributed version of Valkey. Commands performing complex multi-key
 operations like set unions and intersections are implemented for cases where
 all of the keys involved in the operation hash to the same slot.
 
-Redis Cluster implements a concept called **hash tags** that can be used
+Valkey Cluster implements a concept called **hash tags** that can be used
 to force certain keys to be stored in the same hash slot. However, during
 manual resharding, multi-key operations may become unavailable for some time
 while single-key operations are always available.
 
-Redis Cluster does not support multiple databases like the standalone version
-of Redis. We only support database `0`; the `SELECT` command is not allowed.
+Valkey Cluster does not support multiple databases like the standalone version
+of Valkey. We only support database `0`; the `SELECT` command is not allowed.
 
-## Client and Server roles in the Redis cluster protocol
+## Client and Server roles in the Valkey cluster protocol
 
-In Redis Cluster, nodes are responsible for holding the data,
+In Valkey Cluster, nodes are responsible for holding the data,
 and taking the state of the cluster, including mapping keys to the right nodes.
 Cluster nodes are also able to auto-discover other nodes, detect non-working
 nodes, and promote replica nodes to master when needed in order
 to continue to operate when a failure occurs.
 
 To perform their tasks all the cluster nodes are connected using a
-TCP bus and a binary protocol, called the **Redis Cluster Bus**.
+TCP bus and a binary protocol, called the **Valkey Cluster Bus**.
 Every node is connected to every other node in the cluster using the cluster
 bus. Nodes use a gossip protocol to propagate information about the cluster
 in order to discover new nodes, to send ping packets to make sure all the
@@ -57,7 +57,7 @@ other nodes are working properly, and to send cluster messages needed to
 signal specific conditions. The cluster bus is also used in order to
 propagate Pub/Sub messages across the cluster and to orchestrate manual
 failovers when requested by users (manual failovers are failovers which
-are not initiated by the Redis Cluster failure detector, but by the
+are not initiated by the Valkey Cluster failure detector, but by the
 system administrator directly).
 
 Since cluster nodes are not able to proxy requests, clients may be redirected
@@ -69,9 +69,9 @@ keys and nodes can improve the performance in a sensible way.
 
 ### Write safety
 
-Redis Cluster uses asynchronous replication between nodes, and **last failover wins** implicit merge function. This means that the last elected master dataset eventually replaces all the other replicas. There is always a window of time when it is possible to lose writes during partitions. However these windows are very different in the case of a client that is connected to the majority of masters, and a client that is connected to the minority of masters.
+Valkey Cluster uses asynchronous replication between nodes, and **last failover wins** implicit merge function. This means that the last elected master dataset eventually replaces all the other replicas. There is always a window of time when it is possible to lose writes during partitions. However these windows are very different in the case of a client that is connected to the majority of masters, and a client that is connected to the minority of masters.
 
-Redis Cluster tries harder to retain writes that are performed by clients connected to the majority of masters, compared to writes performed in the minority side.
+Valkey Cluster tries harder to retain writes that are performed by clients connected to the majority of masters, compared to writes performed in the minority side.
 The following are examples of scenarios that lead to loss of acknowledged
 writes received in the majority partitions during failures:
 
@@ -86,21 +86,21 @@ writes received in the majority partitions during failures:
 
 The second failure mode is unlikely to happen because master nodes unable to communicate with the majority of the other masters for enough time to be failed over will no longer accept writes, and when the partition is fixed writes are still refused for a small amount of time to allow other nodes to inform about configuration changes. This failure mode also requires that the client's routing table has not yet been updated.
 
-Writes targeting the minority side of a partition have a larger window in which to get lost. For example, Redis Cluster loses a non-trivial number of writes on partitions where there is a minority of masters and at least one or more clients, since all the writes sent to the masters may potentially get lost if the masters are failed over in the majority side.
+Writes targeting the minority side of a partition have a larger window in which to get lost. For example, Valkey Cluster loses a non-trivial number of writes on partitions where there is a minority of masters and at least one or more clients, since all the writes sent to the masters may potentially get lost if the masters are failed over in the majority side.
 
-Specifically, for a master to be failed over it must be unreachable by the majority of masters for at least `NODE_TIMEOUT`, so if the partition is fixed before that time, no writes are lost. When the partition lasts for more than `NODE_TIMEOUT`, all the writes performed in the minority side up to that point may be lost. However the minority side of a Redis Cluster will start refusing writes as soon as `NODE_TIMEOUT` time has elapsed without contact with the majority, so there is a maximum window after which the minority becomes no longer available. Hence, no writes are accepted or lost after that time.
+Specifically, for a master to be failed over it must be unreachable by the majority of masters for at least `NODE_TIMEOUT`, so if the partition is fixed before that time, no writes are lost. When the partition lasts for more than `NODE_TIMEOUT`, all the writes performed in the minority side up to that point may be lost. However the minority side of a Valkey Cluster will start refusing writes as soon as `NODE_TIMEOUT` time has elapsed without contact with the majority, so there is a maximum window after which the minority becomes no longer available. Hence, no writes are accepted or lost after that time.
 
 ### Availability
 
-Redis Cluster is not available in the minority side of the partition. In the majority side of the partition assuming that there are at least the majority of masters and a replica for every unreachable master, the cluster becomes available again after `NODE_TIMEOUT` time plus a few more seconds required for a replica to get elected and failover its master (failovers are usually executed in a matter of 1 or 2 seconds).
+Valkey Cluster is not available in the minority side of the partition. In the majority side of the partition assuming that there are at least the majority of masters and a replica for every unreachable master, the cluster becomes available again after `NODE_TIMEOUT` time plus a few more seconds required for a replica to get elected and failover its master (failovers are usually executed in a matter of 1 or 2 seconds).
 
-This means that Redis Cluster is designed to survive failures of a few nodes in the cluster, but it is not a suitable solution for applications that require availability in the event of large net splits.
+This means that Valkey Cluster is designed to survive failures of a few nodes in the cluster, but it is not a suitable solution for applications that require availability in the event of large net splits.
 
 In the example of a cluster composed of N master nodes where every node has a single replica, the majority side of the cluster will remain available as long as a single node is partitioned away, and will remain available with a probability of `1-(1/(N*2-1))` when two nodes are partitioned away (after the first node fails we are left with `N*2-1` nodes in total, and the probability of the only master without a replica to fail is `1/(N*2-1))`.
 
 For example, in a cluster with 5 nodes and a single replica per node, there is a `1/(5*2-1) = 11.11%` probability that after two nodes are partitioned away from the majority, the cluster will no longer be available.
 
-Thanks to a Redis Cluster feature called **replicas migration** the Cluster
+Thanks to a Valkey Cluster feature called **replicas migration** the Cluster
 availability is improved in many real world scenarios by the fact that
 replicas migrate to orphaned masters (masters no longer having replicas).
 So at every successful failure event, the cluster may reconfigure the replicas
@@ -108,7 +108,7 @@ layout in order to better resist the next failure.
 
 ### Performance
 
-In Redis Cluster nodes don't proxy commands to the right node in charge for a given key, but instead they redirect clients to the right nodes serving a given portion of the key space.
+In Valkey Cluster nodes don't proxy commands to the right node in charge for a given key, but instead they redirect clients to the right nodes serving a given portion of the key space.
 
 Eventually clients obtain an up-to-date representation of the cluster and which node serves which subset of keys, so during normal operations clients directly contact the right nodes in order to send a given command.
 
@@ -116,23 +116,23 @@ Because of the use of asynchronous replication, nodes do not wait for other node
 
 Also, because multi-key commands are only limited to *near* keys, data is never moved between nodes except when resharding.
 
-Normal operations are handled exactly as in the case of a single Redis instance. This means that in a Redis Cluster with N master nodes you can expect the same performance as a single Redis instance multiplied by N as the design scales linearly. At the same time the query is usually performed in a single round trip, since clients usually retain persistent connections with the nodes, so latency figures are also the same as the single standalone Redis node case.
+Normal operations are handled exactly as in the case of a single Valkey instance. This means that in a Valkey Cluster with N master nodes you can expect the same performance as a single Valkey instance multiplied by N as the design scales linearly. At the same time the query is usually performed in a single round trip, since clients usually retain persistent connections with the nodes, so latency figures are also the same as the single standalone Valkey node case.
 
 Very high performance and scalability while preserving weak but
 reasonable forms of data safety and availability is the main goal of
-Redis Cluster.
+Valkey Cluster.
 
 ### Why merge operations are avoided
 
-The Redis Cluster design avoids conflicting versions of the same key-value pair in multiple nodes as in the case of the Redis data model this is not always desirable. Values in Redis are often very large; it is common to see lists or sorted sets with millions of elements. Also data types are semantically complex. Transferring and merging these kind of values can be a major bottleneck and/or may require the non-trivial involvement of application-side logic, additional memory to store meta-data, and so forth.
+The Valkey Cluster design avoids conflicting versions of the same key-value pair in multiple nodes as in the case of the Valkey data model this is not always desirable. Values in Valkey are often very large; it is common to see lists or sorted sets with millions of elements. Also data types are semantically complex. Transferring and merging these kind of values can be a major bottleneck and/or may require the non-trivial involvement of application-side logic, additional memory to store meta-data, and so forth.
 
 There are no strict technological limits here. CRDTs or synchronously replicated
-state machines can model complex data types similar to Redis. However, the
-actual run time behavior of such systems would not be similar to Redis Cluster.
-Redis Cluster was designed in order to cover the exact use cases of the
-non-clustered Redis version.
+state machines can model complex data types similar to Valkey. However, the
+actual run time behavior of such systems would not be similar to Valkey Cluster.
+Valkey Cluster was designed in order to cover the exact use cases of the
+non-clustered Valkey version.
 
-## Overview of Redis Cluster main components
+## Overview of Valkey Cluster main components
 
 ### Key distribution model
 
@@ -176,7 +176,7 @@ keys evenly across the 16384 slots.
 There is an exception for the computation of the hash slot that is used in order
 to implement **hash tags**. Hash tags are a way to ensure that multiple keys
 are allocated in the same hash slot. This is used in order to implement
-multi-key operations in Redis Cluster.
+multi-key operations in Valkey Cluster.
 
 To implement hash tags, the hash slot for a key is computed in a
 slightly different way in certain conditions.
@@ -203,7 +203,7 @@ Examples:
 
 Commands accepting a glob-style pattern, including `KEYS`, `SCAN` and `SORT`, are optimized for patterns that imply a single slot.
 This means that if all keys that can match a pattern must belong to a specific slot, only this slot is searched for keys matching the pattern.
-The pattern slot optimization is introduced in Redis 8.0.
+The pattern slot optimization is introduced in Valkey 8.0.
 
 The optimization kicks in when the pattern meets the following conditions:
 
@@ -285,7 +285,7 @@ the node was pinged and the last time the pong was received, the current
 *configuration epoch* of the node (explained later in this specification),
 the link state and finally the set of hash slots served.
 
-A detailed [explanation of all the node fields](https://redis.io/commands/cluster-nodes) is described in the `CLUSTER NODES` documentation.
+A detailed [explanation of all the node fields](https://server.io/commands/cluster-nodes) is described in the `CLUSTER NODES` documentation.
 
 The `CLUSTER NODES` command can be sent to any node in the cluster and provides the state of the cluster and the information for each node according to the local view the queried node has of the cluster.
 
@@ -297,36 +297,36 @@ node in a small cluster of three nodes.
     3886e65cc906bfd9b1f7e7bde468726a052d1dae 127.0.0.1:6380 master - 1318428930 1318428931 2 connected 1365-2729
     d289c575dcbc4bdd2931585fd4339089e461a27d 127.0.0.1:6381 master - 1318428931 1318428931 3 connected 2730-4095
 
-In the above listing the different fields are in order: node id, address:port, flags, last ping sent, last pong received, configuration epoch, link state, slots. Details about the above fields will be covered as soon as we talk of specific parts of Redis Cluster.
+In the above listing the different fields are in order: node id, address:port, flags, last ping sent, last pong received, configuration epoch, link state, slots. Details about the above fields will be covered as soon as we talk of specific parts of Valkey Cluster.
 
 ### The cluster bus
 
-Every Redis Cluster node has an additional TCP port for receiving
-incoming connections from other Redis Cluster nodes. This port will be derived by adding 10000 to the data port or it can be specified with the cluster-port config. 
+Every Valkey Cluster node has an additional TCP port for receiving
+incoming connections from other Valkey Cluster nodes. This port will be derived by adding 10000 to the data port or it can be specified with the cluster-port config. 
 
 Example 1:
 
-If a Redis node is listening for client connections on port 6379, 
-and you do not add cluster-port parameter in redis.conf,
+If a Valkey node is listening for client connections on port 6379, 
+and you do not add cluster-port parameter in server.conf,
 the Cluster bus port 16379 will be opened.
 
 Example 2:
 
-If a Redis node is listening for client connections on port 6379, 
-and you set cluster-port 20000 in redis.conf,
+If a Valkey node is listening for client connections on port 6379, 
+and you set cluster-port 20000 in server.conf,
 the Cluster bus port 20000 will be opened.
 
 Node-to-node communication happens exclusively using the Cluster bus and
 the Cluster bus protocol: a binary protocol composed of frames
 of different types and sizes. The Cluster bus binary protocol is not
 publicly documented since it is not intended for external software devices
-to talk with Redis Cluster nodes using this protocol. However you can
+to talk with Valkey Cluster nodes using this protocol. However you can
 obtain more details about the Cluster bus protocol by reading the
-`cluster.h` and `cluster.c` files in the Redis Cluster source code.
+`cluster.h` and `cluster.c` files in the Valkey Cluster source code.
 
 ### Cluster topology
 
-Redis Cluster is a full mesh where every node is connected with every other node using a TCP connection.
+Valkey Cluster is a full mesh where every node is connected with every other node using a TCP connection.
 
 In a cluster of N nodes, every node has N-1 outgoing TCP connections, and N-1 incoming connections.
 
@@ -334,7 +334,7 @@ These TCP connections are kept alive all the time and are not created on demand.
 When a node expects a pong reply in response to a ping in the cluster bus, before waiting long enough to mark the node as unreachable, it will try to
 refresh the connection with the node by reconnecting from scratch.
 
-While Redis Cluster nodes form a full mesh, **nodes use a gossip protocol and
+While Valkey Cluster nodes form a full mesh, **nodes use a gossip protocol and
 a configuration update mechanism in order to avoid exchanging too many
 messages between nodes during normal conditions**, so the number of messages
 exchanged is not exponential.
@@ -358,13 +358,13 @@ the cluster. Nodes will send `MEET` messages to other nodes **only if** the syst
 
 This means that as long as we join nodes in any connected graph, they'll eventually form a fully connected graph automatically. This means that the cluster is able to auto-discover other nodes, but only if there is a trusted relationship that was forced by the system administrator.
 
-This mechanism makes the cluster more robust but prevents different Redis clusters from accidentally mixing after change of IP addresses or other network related events.
+This mechanism makes the cluster more robust but prevents different Valkey clusters from accidentally mixing after change of IP addresses or other network related events.
 
 ## Redirection and resharding
 
 ### MOVED Redirection
 
-A Redis client is free to send queries to every node in the cluster, including
+A Valkey client is free to send queries to every node in the cluster, including
 replica nodes. The node will analyze the query, and if it is acceptable
 (that is, only a single key is mentioned in the query, or the multiple keys
 mentioned are all to the same hash slot) it will lookup what
@@ -389,7 +389,7 @@ another node. The same happens if the contacted node had no updated information.
 
 So while from the point of view of the cluster nodes are identified by
 IDs we try to simplify our interface with the client just exposing a map
-between hash slots and Redis nodes identified by endpoint:port pairs.
+between hash slots and Valkey nodes identified by endpoint:port pairs.
 
 The client is not required to, but should try to memorize that hash slot
 3999 is served by 127.0.0.1:6381. This way once a new command needs to
@@ -408,11 +408,11 @@ the cluster efficient, with clients directly addressing the right nodes
 without redirections, proxies or other single point of failure entities.
 
 A client **must be also able to handle -ASK redirections** that are described
-later in this document, otherwise it is not a complete Redis Cluster client.
+later in this document, otherwise it is not a complete Valkey Cluster client.
 
 ### Live reconfiguration
 
-Redis Cluster supports the ability to add and remove nodes while the cluster
+Valkey Cluster supports the ability to add and remove nodes while the cluster
 is running. Adding or removing a node is abstracted into the same
 operation: moving a hash slot from one node to another. This means
 that the same basic mechanism can be used in order to rebalance the cluster, add
@@ -424,12 +424,12 @@ or remove nodes, and so forth.
 
 The core of the implementation is the ability to move hash slots around.
 From a practical point of view a hash slot is just a set of keys, so
-what Redis Cluster really does during *resharding* is to move keys from
+what Valkey Cluster really does during *resharding* is to move keys from
 an instance to another instance. Moving a hash slot means moving all the keys
 that happen to hash into this hash slot.
 
 To understand how this works we need to show the `CLUSTER` subcommands
-that are used to manipulate the slots translation table in a Redis Cluster node.
+that are used to manipulate the slots translation table in a Valkey Cluster node.
 
 The following subcommands are available (among others not useful in this case):
 
@@ -442,7 +442,7 @@ The following subcommands are available (among others not useful in this case):
 * `CLUSTER SETSLOT` slot IMPORTING node
 
 The first four commands, `ADDSLOTS`, `DELSLOTS`, `ADDSLOTSRANGE` and `DELSLOTSRANGE`, are simply used to assign
-(or remove) slots to a Redis node. Assigning a slot means to tell a given
+(or remove) slots to a Valkey node. Assigning a slot means to tell a given
 master node that it will be in charge of storing and serving content for
 the specified hash slot.
 
@@ -473,7 +473,7 @@ by the client, the query is redirected to the real hash slot owner via
 a `-MOVED` redirection error, as would happen normally.
 
 Let's make this clearer with an example of hash slot migration.
-Assume that we have two Redis master nodes, called A and B.
+Assume that we have two Valkey master nodes, called A and B.
 We want to move hash slot 8 from A to B, so we issue commands like this:
 
 * We send B: CLUSTER SETSLOT 8 IMPORTING A
@@ -488,7 +488,7 @@ is that:
 
 This way we no longer create new keys in "A".
 In the meantime, `redis-cli` used during reshardings
-and Redis Cluster configuration will migrate existing keys in
+and Valkey Cluster configuration will migrate existing keys in
 hash slot 8 from A to B.
 This is performed using the following command:
 
@@ -507,11 +507,11 @@ the key, and once an OK code is received, the old key from its own dataset
 will be deleted. From the point of view of an external client a key exists
 either in A or B at any given time.
 
-In Redis Cluster there is no need to specify a database other than 0, but
+In Valkey Cluster there is no need to specify a database other than 0, but
 `MIGRATE` is a general command that can be used for other tasks not
-involving Redis Cluster.
+involving Valkey Cluster.
 `MIGRATE` is optimized to be as fast as possible even when moving complex
-keys such as long lists, but in Redis Cluster reconfiguring the
+keys such as long lists, but in Valkey Cluster reconfiguring the
 cluster where big keys are present is not considered a wise procedure if
 there are latency constraints in the application using the database.
 
@@ -559,7 +559,7 @@ command documentation.
 
 ### Client connections and redirection handling
 
-To be efficient, Redis Cluster clients maintain a map of the current slot
+To be efficient, Valkey Cluster clients maintain a map of the current slot
 configuration. However, this configuration is not *required* to be up to date.
 When contacting the wrong node results in a redirection, the client
 can update its internal slot map accordingly.
@@ -651,7 +651,7 @@ Normally replica nodes will redirect clients to the authoritative master for
 the hash slot involved in a given command, however clients can use replicas
 in order to scale reads using the `READONLY` command.
 
-`READONLY` tells a Redis Cluster replica node that the client is ok reading
+`READONLY` tells a Valkey Cluster replica node that the client is ok reading
 possibly stale data and is not interested in running write queries.
 
 When the connection is in readonly mode, the cluster will send a redirection
@@ -670,7 +670,7 @@ The readonly state of the connection can be cleared using the `READWRITE` comman
 
 ### Heartbeat and gossip messages
 
-Redis Cluster nodes continuously exchange ping and pong packets. Those two kinds of packets have the same structure, and both carry important configuration information. The only actual difference is the message type field. We'll refer to the sum of ping and pong packets as *heartbeat packets*.
+Valkey Cluster nodes continuously exchange ping and pong packets. Those two kinds of packets have the same structure, and both carry important configuration information. The only actual difference is the message type field. We'll refer to the sum of ping and pong packets as *heartbeat packets*.
 
 Usually nodes send ping packets that will trigger the receivers to reply with pong packets. However this is not necessarily true. It is possible for nodes to just send pong packets to send information to other nodes about their configuration, without triggering a reply. This is useful, for example, in order to broadcast a new configuration as soon as possible.
 
@@ -683,7 +683,7 @@ The number of messages globally exchanged can be sizable if `NODE_TIMEOUT` is se
 For example in a 100 node cluster with a node timeout set to 60 seconds, every node will try to send 99 pings every 30 seconds, with a total amount of pings of 3.3 per second. Multiplied by 100 nodes, this is 330 pings per second in the total cluster.
 
 There are ways to lower the number of messages, however there have been no
-reported issues with the bandwidth currently used by Redis Cluster failure
+reported issues with the bandwidth currently used by Valkey Cluster failure
 detection, so for now the obvious and direct design is used. Note that even
 in the above example, the 330 packets per second exchanged are evenly
 divided among 100 different nodes, so the traffic each node receives
@@ -695,12 +695,12 @@ Ping and pong packets contain a header that is common to all types of packets (f
 
 The common header has the following information:
 
-* Node ID, a 160 bit pseudorandom string that is assigned the first time a node is created and remains the same for all the life of a Redis Cluster node.
-* The `currentEpoch` and `configEpoch` fields of the sending node that are used to mount the distributed algorithms used by Redis Cluster (this is explained in detail in the next sections). If the node is a replica the `configEpoch` is the last known `configEpoch` of its master.
+* Node ID, a 160 bit pseudorandom string that is assigned the first time a node is created and remains the same for all the life of a Valkey Cluster node.
+* The `currentEpoch` and `configEpoch` fields of the sending node that are used to mount the distributed algorithms used by Valkey Cluster (this is explained in detail in the next sections). If the node is a replica the `configEpoch` is the last known `configEpoch` of its master.
 * The node flags, indicating if the node is a replica, a master, and other single-bit node information.
 * A bitmap of the hash slots served by the sending node, or if the node is a replica, a bitmap of the slots served by its master.
-* The sender TCP base port that is the port used by Redis to accept client commands.
-* The cluster port that is the port used by Redis for node-to-node communication.
+* The sender TCP base port that is the port used by Valkey to accept client commands.
+* The cluster port that is the port used by Valkey for node-to-node communication.
 * The state of the cluster from the point of view of the sender (down or ok).
 * The master node ID of the sending node, if it is a replica.
 
@@ -716,7 +716,7 @@ Gossip sections allow receiving nodes to get information about the state of othe
 
 ### Failure detection
 
-Redis Cluster failure detection is used to recognize when a master or replica node is no longer reachable by the majority of nodes and then respond by promoting a replica to the role of master. When replica promotion is not possible the cluster is put in an error state to stop receiving queries from clients.
+Valkey Cluster failure detection is used to recognize when a master or replica node is no longer reachable by the majority of nodes and then respond by promoting a replica to the role of master. When replica promotion is not possible the cluster is put in an error state to stop receiving queries from clients.
 
 As already mentioned, every node takes a list of flags associated with other known nodes. There are two flags that are used for failure detection that are called `PFAIL` and `FAIL`. `PFAIL` means *Possible failure*, and is a non-acknowledged failure type. `FAIL` means that a node is failing and that this condition was confirmed by a majority of masters within a fixed amount of time.
 
@@ -724,7 +724,7 @@ As already mentioned, every node takes a list of flags associated with other kno
 
 A node flags another node with the `PFAIL` flag when the node is not reachable for more than `NODE_TIMEOUT` time. Both master and replica nodes can flag another node as `PFAIL`, regardless of its type.
 
-The concept of non-reachability for a Redis Cluster node is that we have an **active ping** (a ping that we sent for which we have yet to get a reply) pending for longer than `NODE_TIMEOUT`. For this mechanism to work the `NODE_TIMEOUT` must be large compared to the network round trip time. In order to add reliability during normal operations, nodes will try to reconnect with other nodes in the cluster as soon as half of the `NODE_TIMEOUT` has elapsed without a reply to a ping. This mechanism ensures that connections are kept alive so broken connections usually won't result in false failure reports between nodes.
+The concept of non-reachability for a Valkey Cluster node is that we have an **active ping** (a ping that we sent for which we have yet to get a reply) pending for longer than `NODE_TIMEOUT`. For this mechanism to work the `NODE_TIMEOUT` must be large compared to the network round trip time. In order to add reliability during normal operations, nodes will try to reconnect with other nodes in the cluster as soon as half of the `NODE_TIMEOUT` has elapsed without a reply to a ping. This mechanism ensures that connections are kept alive so broken connections usually won't result in false failure reports between nodes.
 
 **FAIL flag:**
 
@@ -756,23 +756,23 @@ It is useful to note that while the `PFAIL` -> `FAIL` transition uses a form of 
 1. Nodes collect views of other nodes over some time period, so even if the majority of master nodes need to "agree", actually this is just state that we collected from different nodes at different times and we are not sure, nor we require, that at a given moment the majority of masters agreed. However we discard failure reports which are old, so the failure was signaled by the majority of masters within a window of time.
 2. While every node detecting the `FAIL` condition will force that condition on other nodes in the cluster using the `FAIL` message, there is no way to ensure the message will reach all the nodes. For instance a node may detect the `FAIL` condition and because of a partition will not be able to reach any other node.
 
-However the Redis Cluster failure detection has a liveness requirement: eventually all the nodes should agree about the state of a given node. There are two cases that can originate from split brain conditions. Either some minority of nodes believe the node is in `FAIL` state, or a minority of nodes believe the node is not in `FAIL` state. In both the cases eventually the cluster will have a single view of the state of a given node:
+However the Valkey Cluster failure detection has a liveness requirement: eventually all the nodes should agree about the state of a given node. There are two cases that can originate from split brain conditions. Either some minority of nodes believe the node is in `FAIL` state, or a minority of nodes believe the node is not in `FAIL` state. In both the cases eventually the cluster will have a single view of the state of a given node:
 
 **Case 1**: If a majority of masters have flagged a node as `FAIL`, because of failure detection and the *chain effect* it generates, every other node will eventually flag the master as `FAIL`, since in the specified window of time enough failures will be reported.
 
 **Case 2**: When only a minority of masters have flagged a node as `FAIL`, the replica promotion will not happen (as it uses a more formal algorithm that makes sure everybody knows about the promotion eventually) and every node will clear the `FAIL` state as per the `FAIL` state clearing rules above (i.e. no promotion after N times the `NODE_TIMEOUT` has elapsed).
 
-**The `FAIL` flag is only used as a trigger to run the safe part of the algorithm** for the replica promotion. In theory a replica may act independently and start a replica promotion when its master is not reachable, and wait for the masters to refuse to provide the acknowledgment if the master is actually reachable by the majority. However the added complexity of the `PFAIL -> FAIL` state, the weak agreement, and the `FAIL` message forcing the propagation of the state in the shortest amount of time in the reachable part of the cluster, have practical advantages. Because of these mechanisms, usually all the nodes will stop accepting writes at about the same time if the cluster is in an error state. This is a desirable feature from the point of view of applications using Redis Cluster. Also erroneous election attempts initiated by replicas that can't reach its master due to local problems (the master is otherwise reachable by the majority of other master nodes) are avoided.
+**The `FAIL` flag is only used as a trigger to run the safe part of the algorithm** for the replica promotion. In theory a replica may act independently and start a replica promotion when its master is not reachable, and wait for the masters to refuse to provide the acknowledgment if the master is actually reachable by the majority. However the added complexity of the `PFAIL -> FAIL` state, the weak agreement, and the `FAIL` message forcing the propagation of the state in the shortest amount of time in the reachable part of the cluster, have practical advantages. Because of these mechanisms, usually all the nodes will stop accepting writes at about the same time if the cluster is in an error state. This is a desirable feature from the point of view of applications using Valkey Cluster. Also erroneous election attempts initiated by replicas that can't reach its master due to local problems (the master is otherwise reachable by the majority of other master nodes) are avoided.
 
 ## Configuration handling, propagation, and failovers
 
 ### Cluster current epoch
 
-Redis Cluster uses a concept similar to the Raft algorithm "term". In Redis Cluster the term is called epoch instead, and it is used in order to give incremental versioning to events. When multiple nodes provide conflicting information, it becomes possible for another node to understand which state is the most up to date.
+Valkey Cluster uses a concept similar to the Raft algorithm "term". In Valkey Cluster the term is called epoch instead, and it is used in order to give incremental versioning to events. When multiple nodes provide conflicting information, it becomes possible for another node to understand which state is the most up to date.
 
 The `currentEpoch` is a 64 bit unsigned number.
 
-At node creation every Redis Cluster node, both replicas and master nodes, set the `currentEpoch` to 0.
+At node creation every Valkey Cluster node, both replicas and master nodes, set the `currentEpoch` to 0.
 
 Every time a packet is received from another node, if the epoch of the sender (part of the cluster bus messages header) is greater than the local node epoch, the `currentEpoch` is updated to the sender epoch.
 
@@ -900,7 +900,7 @@ has stale information and will send an `UPDATE` message.
 
 ### Hash slots configuration propagation
 
-An important part of Redis Cluster is the mechanism used to propagate the information about which cluster node is serving a given set of hash slots. This is vital to both the startup of a fresh cluster and the ability to upgrade the configuration after a replica was promoted to serve the slots of its failing master.
+An important part of Valkey Cluster is the mechanism used to propagate the information about which cluster node is serving a given set of hash slots. This is vital to both the startup of a fresh cluster and the ability to upgrade the configuration after a replica was promoted to serve the slots of its failing master.
 
 The same mechanism allows nodes partitioned away for an indefinite amount of
 time to rejoin the cluster in a sensible way.
@@ -911,7 +911,7 @@ There are two ways hash slot configurations are propagated:
 2. `UPDATE` messages. Since in every heartbeat packet there is information about the sender `configEpoch` and set of hash slots served, if a receiver of a heartbeat packet finds the sender information is stale, it will send a packet with new information, forcing the stale node to update its info.
 
 The receiver of a heartbeat or `UPDATE` message uses certain simple rules in
-order to update its table mapping hash slots to nodes. When a new Redis Cluster node is created, its local hash slot table is simply initialized to `NULL` entries so that each hash slot is not bound or linked to any node. This looks similar to the following:
+order to update its table mapping hash slots to nodes. When a new Valkey Cluster node is created, its local hash slot table is simply initialized to `NULL` entries so that each hash slot is not bound or linked to any node. This looks similar to the following:
 
 ```
 0 -> NULL
@@ -965,7 +965,7 @@ So after receiving messages from B that claim to serve hash slots 1 and 2 with c
 
 Liveness property: because of the second rule, eventually all nodes in the cluster will agree that the owner of a slot is the one with the greatest `configEpoch` among the nodes advertising it.
 
-This mechanism in Redis Cluster is called **last failover wins**.
+This mechanism in Valkey Cluster is called **last failover wins**.
 
 The same happens during resharding. When a node importing a hash slot completes
 the import operation, its configuration epoch is incremented to make sure the
@@ -995,7 +995,7 @@ happen that A rejoins after a lot of time, in the meantime it may happen that
 hash slots originally served by A are served by multiple nodes, for example
 hash slot 1 may be served by B, and hash slot 2 by C.
 
-So the actual *Redis Cluster node role switch rule* is: **A master node will change its configuration to replicate (be a replica of) the node that stole its last hash slot**.
+So the actual *Valkey Cluster node role switch rule* is: **A master node will change its configuration to replicate (be a replica of) the node that stole its last hash slot**.
 
 During reconfiguration, eventually the number of served hash slots will drop to zero, and the node will reconfigure accordingly. Note that in the base case this just means that the old master will be a replica of the replica that replaced it after a failover. However in the general form the rule covers all possible cases.
 
@@ -1004,7 +1004,7 @@ stole the last hash slot of its former master.
 
 ### Replica migration
 
-Redis Cluster implements a concept called *replica migration* in order to
+Valkey Cluster implements a concept called *replica migration* in order to
 improve the availability of the system. The idea is that in a cluster with
 a master-replica setup, if the map between replicas and masters is fixed
 availability is limited over time if multiple independent failures of single
@@ -1022,7 +1022,7 @@ that can accumulate over time. For example:
 
 If the map between masters and replicas is fixed, the only way to make the cluster
 more resistant to the above scenario is to add replicas to every master, however
-this is costly as it requires more instances of Redis to be executed, more
+this is costly as it requires more instances of Valkey to be executed, more
 memory, and so forth.
 
 An alternative is to create an asymmetry in the cluster, and let the cluster
@@ -1044,7 +1044,7 @@ following:
 ### Replica migration algorithm
 
 The migration algorithm does not use any form of agreement since the replica
-layout in a Redis Cluster is not part of the cluster configuration that needs
+layout in a Valkey Cluster is not part of the cluster configuration that needs
 to be consistent and/or versioned with config epochs. Instead it uses an
 algorithm to avoid mass-migration of replicas when a master is not backed.
 The algorithm guarantees that eventually (once the cluster configuration is
@@ -1125,7 +1125,7 @@ are no issues. It is more important that replicas failing over a master have
 unique configuration epochs.
 
 That said, manual interventions or resharding may change the cluster
-configuration in different ways. The Redis Cluster main liveness property
+configuration in different ways. The Valkey Cluster main liveness property
 requires that slot configurations always converge, so under every circumstance
 we really want all the master nodes to have a different `configEpoch`.
 
@@ -1153,7 +1153,7 @@ operations, in testing, and in cloud environments where a given node can
 be reprovisioned to join a different set of nodes to enlarge or create a new
 cluster.
 
-In Redis Cluster nodes are reset using the `CLUSTER RESET` command. The
+In Valkey Cluster nodes are reset using the `CLUSTER RESET` command. The
 command is provided in two variants:
 
 * `CLUSTER RESET SOFT`
@@ -1188,20 +1188,20 @@ The command does two things:
 1. It removes the node with the specified node ID from the nodes table.
 2. It sets a 60 second ban which prevents a node with the same node ID from being re-added.
 
-The second operation is needed because Redis Cluster uses gossip in order to auto-discover nodes, so removing the node X from node A, could result in node B gossiping about node X to A again. Because of the 60 second ban, the Redis Cluster administration tools have 60 seconds in order to remove the node from all the nodes, preventing the re-addition of the node due to auto discovery.
+The second operation is needed because Valkey Cluster uses gossip in order to auto-discover nodes, so removing the node X from node A, could result in node B gossiping about node X to A again. Because of the 60 second ban, the Valkey Cluster administration tools have 60 seconds in order to remove the node from all the nodes, preventing the re-addition of the node due to auto discovery.
 
 Further information is available in the `CLUSTER FORGET` documentation.
 
 ## Publish/Subscribe
 
-In a Redis Cluster, clients can subscribe to every node, and can also
+In a Valkey Cluster, clients can subscribe to every node, and can also
 publish to every other node. The cluster will make sure that published
 messages are forwarded as needed.
 
 The clients can send SUBSCRIBE to any node and can also send PUBLISH to any node. 
 It will simply broadcast each published message to all other nodes.
 
-Redis 7.0 and later features sharded pub/sub, in which shard channels are assigned to slots by the same algorithm used to assign keys to slots. 
+Valkey 7.0 and later features sharded pub/sub, in which shard channels are assigned to slots by the same algorithm used to assign keys to slots. 
 A shard message must be sent to a node that owns the slot the shard channel is hashed to. 
 The cluster makes sure the published shard messages are forwarded to all nodes in the shard, so clients can subscribe to a shard channel by connecting to either the master responsible for the slot, or to any of its replicas.
 
@@ -1211,7 +1211,7 @@ The cluster makes sure the published shard messages are forwarded to all nodes i
 
     /*
      * Copyright 2001-2010 Georges Menie (www.menie.org)
-     * Copyright 2010 Salvatore Sanfilippo (adapted to Redis coding style)
+     * Copyright 2010 Salvatore Sanfilippo (adapted to Valkey coding style)
      * All rights reserved.
      * Redistribution and use in source and binary forms, with or without
      * modification, are permitted provided that the following conditions are met:

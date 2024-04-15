@@ -54,4 +54,4 @@ values. The following metrics are reported:
 *   `fragmentation`: See `INFO`'s `mem_fragmentation_ratio`
 *   `fragmentation.bytes`: See `INFO`'s `mem_fragmentation_bytes`
 
-**A note about the word slave used in this man page**: If not for Redis compatibility, the Valkey project does not use the word slave. Unfortunately in this command the word slave is part of the protocol, so we'll be able to remove such occurrences only when this API will be naturally deprecated.
+**A note about the word slave used in this man page**: If not for Valkey compatibility, the Valkey project does not use the word slave. Unfortunately in this command the word slave is part of the protocol, so we'll be able to remove such occurrences only when this API will be naturally deprecated.

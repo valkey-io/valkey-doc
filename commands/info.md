@@ -42,7 +42,7 @@ Here is the description of fields.
 
 Here is the meaning of all fields in the **server** section:
 
-*   `redis_version`: Redis version this Valkey server is compatible with
+*   `redis_version`: Valkey version this Valkey server is compatible with
 *   `redis_git_sha1`:  Git SHA1
 *   `redis_git_dirty`: Git dirty flag
 *   `redis_build_id`: The build id

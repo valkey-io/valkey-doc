@@ -1,47 +1,47 @@
 ---
-title: "Redis as an in-memory data structure store quick start guide"
+title: "Valkey as an in-memory data structure store quick start guide"
 linkTitle: "Data structure store"
 weight: 1
-description: Understand how to use basic Redis data types
+description: Understand how to use basic Valkey data types
 ---
 
 This quick start guide shows you how to:
 
-1. Get started with Redis 
-2. Store data under a key in Redis
-3. Retrieve data with a key from Redis
+1. Get started with Valkey 
+2. Store data under a key in Valkey
+3. Retrieve data with a key from Valkey
 4. Scan the keyspace for keys that match a specific pattern
 
 The examples in this article refer to a simple bicycle inventory.
 
 ## Setup
 
-The easiest way to get started with Redis is to use Redis Cloud:
+The easiest way to get started with Valkey is to use Valkey Cloud:
 
-1. Create a [free account](https://redis.com/try-free?utm_source=redisio&utm_medium=referral&utm_campaign=2023-09-try_free&utm_content=cu-redis_cloud_users).
+1. Create a [free account](https://server.com/try-free?utm_source=redisio&utm_medium=referral&utm_campaign=2023-09-try_free&utm_content=cu-redis_cloud_users).
 2. Follow the instructions to create a free database.
    
    <img src="../img/free-cloud-db.png" width="500px">
 
-You can alternatively follow the [installation guides](/docs/install/install-stack/) to install Redis on your local machine.
+You can alternatively follow the [installation guides](/docs/install/install-stack/) to install Valkey on your local machine.
 
 ## Connect
 
-The first step is to connect to Redis. You can find further details about the connection options in this documentation site's [connection section](/docs/connect). The following example shows how to connect to a Redis server that runs on localhost (`-h 127.0.0.1`) and listens on the default port (`-p 6379`): 
+The first step is to connect to Valkey. You can find further details about the connection options in this documentation site's [connection section](/docs/connect). The following example shows how to connect to a Valkey server that runs on localhost (`-h 127.0.0.1`) and listens on the default port (`-p 6379`): 
 
 {{< clients-example search_quickstart connect >}}
 > redis-cli -h 127.0.0.1 -p 6379
 {{< /clients-example>}}
 <br/>
 {{% alert title="Tip" color="warning" %}}
-You can copy and paste the connection details from the Redis Cloud database configuration page. Here is an example connection string of a Cloud database that is hosted in the AWS region `us-east-1` and listens on port 16379: `redis-16379.c283.us-east-1-4.ec2.cloud.redislabs.com:16379`. The connection string has the format `host:port`. You must also copy and paste the username and password of your Cloud database and then either pass the credentials to your client or use the [AUTH command](/commands/auth/) after the connection is established.
+You can copy and paste the connection details from the Valkey Cloud database configuration page. Here is an example connection string of a Cloud database that is hosted in the AWS region `us-east-1` and listens on port 16379: `redis-16379.c283.us-east-1-4.ec2.cloud.redislabs.com:16379`. The connection string has the format `host:port`. You must also copy and paste the username and password of your Cloud database and then either pass the credentials to your client or use the [AUTH command](/commands/auth/) after the connection is established.
 {{% /alert  %}}
 
 ## Store and retrieve data
 
-Redis stands for Remote Dictionary Server. You can use the same data types as in your local programming environment but on the server side within Redis.
+Valkey stands for Remote Dictionary Server. You can use the same data types as in your local programming environment but on the server side within Valkey.
 
-Similar to byte arrays, Redis strings store sequences of bytes, including text, serialized objects, counter values, and binary arrays. The following example shows you how to set and get a string value:
+Similar to byte arrays, Valkey strings store sequences of bytes, including text, serialized objects, counter values, and binary arrays. The following example shows you how to set and get a string value:
 
 {{< clients-example set_and_get >}}
 SET bike:1 "Process 134"
@@ -72,7 +72,7 @@ You can get a complete overview of available data types in this documentation si
 
 ## Scan the keyspace
 
-Each item within Redis has a unique key. All items live within the Redis [keyspace](/docs/manual/keyspace/). You can scan the Redis keyspace via the [SCAN command](/commands/scan/). Here is an example that scans for the first 100 keys that have the prefix `bike:`:
+Each item within Valkey has a unique key. All items live within the Valkey [keyspace](/docs/manual/keyspace/). You can scan the Valkey keyspace via the [SCAN command](/commands/scan/). Here is an example that scans for the first 100 keys that have the prefix `bike:`:
 
 {{< clients-example scan_example >}}
 SCAN 0 MATCH "bike:*" COUNT 100

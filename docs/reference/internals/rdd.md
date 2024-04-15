@@ -1,17 +1,17 @@
 ---
-title: "Redis design draft #2 (historical)"
-linkTitle: "Redis design draft"
+title: "Valkey design draft #2 (historical)"
+linkTitle: "Valkey design draft"
 weight: 2
-description: A design for the RDB format written in the early days of Redis
+description: A design for the RDB format written in the early days of Valkey
 aliases:
   - /topics/rdd
   - /topics/rdd-1
   - /topics/rdd-2
 ---
 
-**Note: this document was written by the creator of Redis, Salvatore Sanfilippo, early in the development of Redis (c. 2013), as part of a series of design drafts. This is preserved for historical interest.**
+**Note: this document was written by the creator of Valkey, Salvatore Sanfilippo, early in the development of Valkey (c. 2013), as part of a series of design drafts. This is preserved for historical interest.**
 
-# Redis Design Draft 2 -- RDB version 7 info fields
+# Valkey Design Draft 2 -- RDB version 7 info fields
 
 * Author: Salvatore Sanfilippo `antirez@gmail.com`
 * GitHub issue [#1048](https://github.com/redis/redis/issues/1048)
@@ -22,24 +22,24 @@ aliases:
 
 ## Overview
 
-The Redis RDB format lacks a simple way to add info fields to an RDB file
+The Valkey RDB format lacks a simple way to add info fields to an RDB file
 without causing a backward compatibility issue even if the added meta data
 is not required in order to load data from the RDB file.
 
 For example thanks to the info fields specified in this document it will
-be possible to add to RDB information like file creation time, Redis version
+be possible to add to RDB information like file creation time, Valkey version
 generating the file, and any other useful information, in a way that not
 every field is required for an RDB version 7 file to be correctly processed.
 
 Also with minimal changes it will be possible to add RDB version 7 support to
-Redis 2.6 without actually supporting the additional fields but just skipping
+Valkey 2.6 without actually supporting the additional fields but just skipping
 them when loading an RDB file.
 
 RDB info fields may have semantic meaning if needed, so that the presence
 of the field may add information about the data set specified in the RDB
 file format, however when an info field is required to be correctly decoded
 in order to understand and load the data set content of the RDB file, the
-RDB file format must be increased so that previous versions of Redis will not
+RDB file format must be increased so that previous versions of Valkey will not
 attempt to load it.
 
 However currently the info fields are designed to only hold additional
@@ -97,7 +97,7 @@ This field represents the unix time at which the RDB file was created.
 The format of the unix time is a 64 bit little endian integer representing
 seconds since 1th January 1970.
 
-### Info field 2 -- Redis version
+### Info field 2 -- Valkey version
 
-This field represents a null-terminated string containing the Redis version
-that generated the file, as displayed in the Redis version INFO field.
+This field represents a null-terminated string containing the Valkey version
+that generated the file, as displayed in the Valkey version INFO field.

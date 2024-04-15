@@ -1,6 +1,6 @@
 {
-    "name": "Redis plugin for ZeroBrane Studio Lua IDE",
-    "description": "Enables support for the Redis Lua API, provides remote script execution and debugging",
+    "name": "Valkey plugin for ZeroBrane Studio Lua IDE",
+    "description": "Enables support for the Valkey Lua API, provides remote script execution and debugging",
     "twitter": [
         "zerobrane"
     ]

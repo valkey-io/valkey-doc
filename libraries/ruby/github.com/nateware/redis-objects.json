@@ -1,6 +1,6 @@
 {
-    "name": "Redis-objects",
-    "description": "Map Redis types directly to Ruby objects.",
+    "name": "Valkey-objects",
+    "description": "Map Valkey types directly to Ruby objects.",
     "twitter": [
         "nateware"
     ]

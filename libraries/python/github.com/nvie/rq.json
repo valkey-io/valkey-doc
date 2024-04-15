@@ -1,6 +1,6 @@
 {
     "name": "Rq",
-    "description": "Minimalistic Python task queue. Supports only Redis.",
+    "description": "Minimalistic Python task queue. Supports only Valkey.",
     "twitter": [
         "nvie"
     ]

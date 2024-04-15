@@ -1,5 +1,5 @@
 ---
-title: Connect to Redis
+title: Connect to Valkey
 linkTitle: Connect
 description: Learn how to use user interfaces and client libraries
 weight: 35
@@ -7,21 +7,21 @@ aliases:
   - /docs/ui
 ---
 
-You can connect to Redis in the following ways:
+You can connect to Valkey in the following ways:
 
 * With the `redis-cli` command line tool
 * Via a client library for your programming language
 
-## Redis command line interface
+## Valkey command line interface
 
-The [Redis command line interface](/docs/connect/cli) (also known as `redis-cli`) is a terminal program that sends commands to and reads replies from the Redis server. It has the following two main modes: 
+The [Valkey command line interface](/docs/connect/cli) (also known as `redis-cli`) is a terminal program that sends commands to and reads replies from the Valkey server. It has the following two main modes: 
 
-1. An interactive Read Eval Print Loop (REPL) mode where the user types Redis commands and receives replies.
+1. An interactive Read Eval Print Loop (REPL) mode where the user types Valkey commands and receives replies.
 2. A command mode where `redis-cli` is executed with additional arguments, and the reply is printed to the standard output.
 
 ## Client libraries
 
-It's easy to connect your application to a Redis database. The official client libraries cover the following languages:
+It's easy to connect your application to a Valkey database. The official client libraries cover the following languages:
 
 * [C#/.NET](/docs/connect/clients/dotnet)
 * [Go](/docs/connect/clients/go)

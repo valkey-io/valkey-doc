@@ -1,6 +1,6 @@
 {
     "name": "Ost",
-    "description": "Redis based queues and workers.",
+    "description": "Valkey based queues and workers.",
     "twitter": [
         "soveran"
     ]

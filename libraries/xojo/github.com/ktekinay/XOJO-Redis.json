@@ -1,7 +1,7 @@
 {
-    "name": "Redis Server",
+    "name": "Valkey Server",
     "description": "Cross platform GUI to spin up and control redis-server, included in the project",
-    "homepage": "https://github.com/ktekinay/XOJO-Redis/releases/",
+    "homepage": "https://github.com/ktekinay/XOJO-Valkey/releases/",
     "twitter": [
         "KemTekinay"
     ]

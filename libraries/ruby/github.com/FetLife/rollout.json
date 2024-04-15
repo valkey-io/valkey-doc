@@ -1,6 +1,6 @@
 {
     "name": "Rollout",
-    "description": "Conditionally roll out features with Redis.",
+    "description": "Conditionally roll out features with Valkey.",
     "twitter": [
         "jamesgolick"
     ]

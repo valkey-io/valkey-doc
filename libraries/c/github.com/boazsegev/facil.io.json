@@ -1,6 +1,6 @@
 {
     "name": "facil.io",
-    "description": "facil.io includes an asynchronous Redis client as well as a RESP parser/formatter that can be used independently. It's MIT licensed and doesn't use hiredis.",
+    "description": "facil.io includes an asynchronous Valkey client as well as a RESP parser/formatter that can be used independently. It's MIT licensed and doesn't use hiredis.",
     "homepage": "http://facil.io/",
     "twitter": [
         "bowildmusic"

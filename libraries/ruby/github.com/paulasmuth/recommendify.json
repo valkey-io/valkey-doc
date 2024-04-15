@@ -1,6 +1,6 @@
 {
     "name": "Recommendify",
-    "description": "Ruby/Redis based recommendation engine (collaborative filtering).",
+    "description": "Ruby/Valkey based recommendation engine (collaborative filtering).",
     "twitter": [
         "paulasmuth"
     ]

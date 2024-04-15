@@ -57,7 +57,7 @@ What happens is that the command performing multiple pushes is executed, and *on
     Client A:   BLPOP foo 0
     Client B:   LPUSH foo a b c
 
-If the above condition happens using a Redis 2.6 server or greater, Client **A** will be served with the `c` element, because after the `LPUSH` command the list contains `c,b,a`, so taking an element from the left means to return `c`.
+If the above condition happens using a Valkey 2.6 server or greater, Client **A** will be served with the `c` element, because after the `LPUSH` command the list contains `c,b,a`, so taking an element from the left means to return `c`.
 
 Note that for the same reason a Lua script or a `MULTI/EXEC` block may push elements into a list and afterward **delete the list**. In this case the blocked clients will not be served at all and will continue to be blocked as long as no data is present on the list after the execution of a single command, transaction, or script.
 

@@ -1,17 +1,17 @@
 ﻿---
-title: "Redis Strings"
+title: "Valkey Strings"
 linkTitle: "Strings"
 weight: 10
 description: >
-    Introduction to Redis strings
+    Introduction to Valkey strings
 ---
 
-Redis strings store sequences of bytes, including text, serialized objects, and binary arrays.
+Valkey strings store sequences of bytes, including text, serialized objects, and binary arrays.
 As such, strings are the simplest type of value you can associate with
-a Redis key.
+a Valkey key.
 They're often used for caching, but they support additional functionality that lets you implement counters and perform bitwise operations, too.
 
-Since Redis keys are strings, when we use the string type as a value too,
+Since Valkey keys are strings, when we use the string type as a value too,
 we are mapping a string to another string. The string data type is useful
 for a number of use cases, like caching HTML fragments or pages.
 
@@ -44,7 +44,7 @@ or the opposite, that it only succeed if the key already exists:
 There are a number of other commands for operating on strings. For example
 the `GETSET` command sets a key to a new value, returning the old value as the
 result. You can use this command, for example, if you have a
-system that increments a Redis key using `INCR`
+system that increments a Valkey key using `INCR`
 every time your web site receives a new visitor. You may want to collect this
 information once every hour, without losing a single increment.
 You can `GETSET` the key, assigning it the new value of "0" and reading the
@@ -63,10 +63,10 @@ the `MSET` and `MGET` commands:
     3) "Vanth"
 {{< /clients-example >}}
 
-When `MGET` is used, Redis returns an array of values.
+When `MGET` is used, Valkey returns an array of values.
 
 ### Strings as counters
-Even if strings are the basic values of Redis, there are interesting operations
+Even if strings are the basic values of Valkey, there are interesting operations
 you can perform with them. For instance, one is atomic increment:
 
 {{< clients-example set_tutorial incr >}}
@@ -95,7 +95,7 @@ clients are not executing a command at the same time.
 
 ## Limits
 
-By default, a single Redis string can be a maximum of 512 MB.
+By default, a single Valkey string can be a maximum of 512 MB.
 
 ## Basic commands
 
@@ -125,9 +125,9 @@ These random-access string commands may cause performance issues when dealing wi
 
 ## Alternatives
 
-If you're storing structured data as a serialized string, you may also want to consider Redis [hashes](/docs/data-types/hashes).
+If you're storing structured data as a serialized string, you may also want to consider Valkey [hashes](/docs/data-types/hashes).
 
 ## Learn more
 
-* [Redis Strings Explained](https://www.youtube.com/watch?v=7CUt4yWeRQE) is a short, comprehensive video explainer on Redis strings.
-* [Redis University's RU101](https://university.redis.com/courses/ru101/) covers Redis strings in detail.
+* [Valkey Strings Explained](https://www.youtube.com/watch?v=7CUt4yWeRQE) is a short, comprehensive video explainer on Valkey strings.
+* [Valkey University's RU101](https://university.server.com/courses/ru101/) covers Valkey strings in detail.

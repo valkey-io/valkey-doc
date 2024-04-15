@@ -1,12 +1,12 @@
 ﻿---
-title: "Redis hashes"
+title: "Valkey hashes"
 linkTitle: "Hashes"
 weight: 40
 description: >
-    Introduction to Redis hashes
+    Introduction to Valkey hashes
 ---
 
-Redis hashes are record types structured as collections of field-value pairs.
+Valkey hashes are record types structured as collections of field-value pairs.
 You can use hashes to represent basic objects and to store groupings of counters, among other things.
 
 {{< clients-example hash_tutorial set_get_all >}}
@@ -52,7 +52,7 @@ as well, like `HINCRBY`:
 (integer) 4972
 {{< /clients-example >}}
 
-You can find the [full list of hash commands in the documentation](https://redis.io/commands#hash).
+You can find the [full list of hash commands in the documentation](https://server.io/commands#hash).
 
 It is worth noting that small hashes (i.e., a few elements with small values) are
 encoded in special way in memory that make them very memory efficient.
@@ -64,7 +64,7 @@ encoded in special way in memory that make them very memory efficient.
 * `HMGET` returns the values at one or more given fields.
 * `HINCRBY` increments the value at a given field by the integer provided.
 
-See the [complete list of hash commands](https://redis.io/commands/?group=hash).
+See the [complete list of hash commands](https://server.io/commands/?group=hash).
 
 
 ## Examples
@@ -91,16 +91,16 @@ See the [complete list of hash commands](https://redis.io/commands/?group=hash).
 
 ## Performance
 
-Most Redis hash commands are O(1).
+Most Valkey hash commands are O(1).
 
 A few commands - such as `HKEYS`, `HVALS`, and `HGETALL` - are O(n), where _n_ is the number of field-value pairs.
 
 ## Limits
 
 Every hash can store up to 4,294,967,295 (2^32 - 1) field-value pairs.
-In practice, your hashes are limited only by the overall memory on the VMs hosting your Redis deployment.
+In practice, your hashes are limited only by the overall memory on the VMs hosting your Valkey deployment.
 
 ## Learn more
 
-* [Redis Hashes Explained](https://www.youtube.com/watch?v=-KdITaRkQ-U) is a short, comprehensive video explainer covering Redis hashes.
-* [Redis University's RU101](https://university.redis.com/courses/ru101/) covers Redis hashes in detail.
+* [Valkey Hashes Explained](https://www.youtube.com/watch?v=-KdITaRkQ-U) is a short, comprehensive video explainer covering Valkey hashes.
+* [Valkey University's RU101](https://university.server.com/courses/ru101/) covers Valkey hashes in detail.

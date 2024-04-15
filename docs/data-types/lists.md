@@ -1,13 +1,13 @@
 ﻿---
-title: "Redis lists"
+title: "Valkey lists"
 linkTitle: "Lists"
 weight: 20
 description: >
-    Introduction to Redis lists
+    Introduction to Valkey lists
 ---
 
-Redis lists are linked lists of string values.
-Redis lists are frequently used to:
+Valkey lists are linked lists of string values.
+Valkey lists are frequently used to:
 
 * Implement stacks and queues.
 * Build queue management for background worker systems.
@@ -30,7 +30,7 @@ For example:
 * `BLMOVE` atomically moves elements from a source list to a target list.
   If the source list is empty, the command will block until a new element becomes available.
 
-See the [complete series of list commands](https://redis.io/commands/?group=list).
+See the [complete series of list commands](https://server.io/commands/?group=list).
 
 ## Examples
 
@@ -102,7 +102,7 @@ elements: 10,20,1,2,3 is a list. But the properties of a List implemented using
 an Array are very different from the properties of a List implemented using a
 *Linked List*.
 
-Redis lists are implemented via Linked Lists. This means that even if you have
+Valkey lists are implemented via Linked Lists. This means that even if you have
 millions of elements inside a list, the operation of adding a new element in
 the head or in the tail of the list is performed *in constant time*. The speed of adding a
 new element with the `LPUSH` command to the head of a list with ten
@@ -114,16 +114,16 @@ implemented with an Array (constant time indexed access) and not so fast in
 lists implemented by linked lists (where the operation requires an amount of
 work proportional to the index of the accessed element).
 
-Redis Lists are implemented with linked lists because for a database system it
+Valkey Lists are implemented with linked lists because for a database system it
 is crucial to be able to add elements to a very long list in a very fast way.
-Another strong advantage, as you'll see in a moment, is that Redis Lists can be
+Another strong advantage, as you'll see in a moment, is that Valkey Lists can be
 taken at constant length in constant time.
 
 When fast access to the middle of a large collection of elements is important,
 there is a different data structure that can be used, called sorted sets.
 Sorted sets are covered in the [Sorted sets](/docs/data-types/sorted-sets) tutorial page.
 
-### First steps with Redis Lists
+### First steps with Valkey Lists
 
 The `LPUSH` command adds a new element into a list, on the
 left (at the head), while the `RPUSH` command adds a new
@@ -144,7 +144,7 @@ element into a list, on the right (at the tail). Finally the
 {{< /clients-example >}}
 
 Note that `LRANGE` takes two indexes, the first and the last
-element of the range to return. Both the indexes can be negative, telling Redis
+element of the range to return. Both the indexes can be negative, telling Valkey
 to start counting from the end: so -1 is the last element, -2 is the
 penultimate element of the list, and so forth.
 
@@ -166,7 +166,7 @@ multiple elements into a list in a single call:
 5) "bike:3"
 {{< /clients-example >}}
 
-An important operation defined on Redis lists is the ability to *pop elements*.
+An important operation defined on Valkey lists is the ability to *pop elements*.
 Popping elements is the operation of both retrieving the element from the list,
 and eliminating it from the list, at the same time. You can pop elements
 from left and right, similarly to how you can push elements in both sides
@@ -187,7 +187,7 @@ pop:
 (nil)
 {{< /clients-example >}}
 
-Redis returned a NULL value to signal that there are no elements in the
+Valkey returned a NULL value to signal that there are no elements in the
 list.
 
 ### Common use cases for lists
@@ -196,14 +196,14 @@ Lists are useful for a number of tasks, two very representative use cases
 are the following:
 
 * Remember the latest updates posted by users into a social network.
-* Communication between processes, using a consumer-producer pattern where the producer pushes items into a list, and a consumer (usually a *worker*) consumes those items and executes actions. Redis has special list commands to make this use case both more reliable and efficient.
+* Communication between processes, using a consumer-producer pattern where the producer pushes items into a list, and a consumer (usually a *worker*) consumes those items and executes actions. Valkey has special list commands to make this use case both more reliable and efficient.
 
 For example both the popular Ruby libraries [resque](https://github.com/resque/resque) and
-[sidekiq](https://github.com/mperham/sidekiq) use Redis lists under the hood in order to
+[sidekiq](https://github.com/mperham/sidekiq) use Valkey lists under the hood in order to
 implement background jobs.
 
 The popular Twitter social network [takes the latest tweets](http://www.infoq.com/presentations/Real-Time-Delivery-Twitter)
-posted by users into Redis lists.
+posted by users into Valkey lists.
 
 To describe a common use case step by step, imagine your home page shows the latest
 photos published in a photo sharing social network and you want to speedup access.
@@ -216,7 +216,7 @@ photos published in a photo sharing social network and you want to speedup acces
 In many use cases we just want to use lists to store the *latest items*,
 whatever they are: social network updates, logs, or anything else.
 
-Redis allows us to use lists as a capped collection, only remembering the latest
+Valkey allows us to use lists as a capped collection, only remembering the latest
 N items and discarding all the oldest items using the `LTRIM` command.
 
 The `LTRIM` command is similar to `LRANGE`, but **instead of displaying the
@@ -237,7 +237,7 @@ OK
 3) "bike:3"
 {{< /clients-example >}}
 
-The above `LTRIM` command tells Redis to keep just list elements from index
+The above `LTRIM` command tells Valkey to keep just list elements from index
 0 to 2, everything else will be discarded. This allows for a very simple but
 useful pattern: doing a List push operation + a List trim operation together 
 to add a new element and discard elements exceeding a limit. Using 
@@ -281,10 +281,10 @@ to process, so `RPOP` just returns NULL. In this case a consumer is forced to wa
 some time and retry again with `RPOP`. This is called *polling*, and is not
 a good idea in this context because it has several drawbacks:
 
-1. Forces Redis and clients to process useless commands (all the requests when the list is empty will get no actual work done, they'll just return NULL).
-2. Adds a delay to the processing of items, since after a worker receives a NULL, it waits some time. To make the delay smaller, we could wait less between calls to `RPOP`, with the effect of amplifying problem number 1, i.e. more useless calls to Redis.
+1. Forces Valkey and clients to process useless commands (all the requests when the list is empty will get no actual work done, they'll just return NULL).
+2. Adds a delay to the processing of items, since after a worker receives a NULL, it waits some time. To make the delay smaller, we could wait less between calls to `RPOP`, with the effect of amplifying problem number 1, i.e. more useless calls to Valkey.
 
-So Redis implements commands called `BRPOP` and `BLPOP` which are versions
+So Valkey implements commands called `BRPOP` and `BLPOP` which are versions
 of `RPOP` and `LPOP` able to block if the list is empty: they'll return to
 the caller only when a new element is added to the list, or when a user-specified
 timeout is reached.
@@ -329,11 +329,11 @@ suggest that you read more on the following:
 
 So far in our examples we never had to create empty lists before pushing
 elements, or removing empty lists when they no longer have elements inside.
-It is Redis' responsibility to delete keys when lists are left empty, or to create
+It is Valkey' responsibility to delete keys when lists are left empty, or to create
 an empty list if the key does not exist and we are trying to add elements
 to it, for example, with `LPUSH`.
 
-This is not specific to lists, it applies to all the Redis data types
+This is not specific to lists, it applies to all the Valkey data types
 composed of multiple elements -- Streams, Sets, Sorted Sets and Hashes.
 
 Basically we can summarize the behavior with three rules:
@@ -395,7 +395,7 @@ Example of rule 3:
 
 ## Limits
 
-The max length of a Redis list is 2^32 - 1 (4,294,967,295) elements.
+The max length of a Valkey list is 2^32 - 1 (4,294,967,295) elements.
 
 
 ## Performance
@@ -407,9 +407,9 @@ Exercise caution when running these commands, mainly when operating on large lis
 
 ## Alternatives
 
-Consider [Redis streams](/docs/data-types/streams) as an alternative to lists when you need to store and process an indeterminate series of events.
+Consider [Valkey streams](/docs/data-types/streams) as an alternative to lists when you need to store and process an indeterminate series of events.
 
 ## Learn more
 
-* [Redis Lists Explained](https://www.youtube.com/watch?v=PB5SeOkkxQc) is a short, comprehensive video explainer on Redis lists.
-* [Redis University's RU101](https://university.redis.com/courses/ru101/) covers Redis lists in detail.
+* [Valkey Lists Explained](https://www.youtube.com/watch?v=PB5SeOkkxQc) is a short, comprehensive video explainer on Valkey lists.
+* [Valkey University's RU101](https://university.server.com/courses/ru101/) covers Valkey lists in detail.

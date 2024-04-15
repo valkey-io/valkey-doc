@@ -1,6 +1,6 @@
 {
     "name": "Redset",
-    "description": "Simple, generic sorted sets backed by Redis that can be used to coordinate distributed systems.",
+    "description": "Simple, generic sorted sets backed by Valkey that can be used to coordinate distributed systems.",
     "twitter": [
         "percolate"
     ]

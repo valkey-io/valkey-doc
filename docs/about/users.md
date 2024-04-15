@@ -1,14 +1,14 @@
 ---
-title: "Who's using Redis?"
-linkTitle: "Who's using Redis?"
+title: "Who's using Valkey?"
+linkTitle: "Who's using Valkey?"
 weight: 2
 description: >
-    Select list of organizations running Redis in production
+    Select list of organizations running Valkey in production
 aliases:
     - /topics/whos-using-redis
 ---
 
-A list of well known companies using Redis:
+A list of well known companies using Valkey:
 
 * [Twitter](https://www.infoq.com/presentations/Real-Time-Delivery-Twitter)
 * [GitHub](https://github.com/blog/530-how-we-made-github-fast)
@@ -16,4 +16,4 @@ A list of well known companies using Redis:
 * [Craigslist](https://blog.zawodny.com/2011/02/26/redis-sharding-at-craigslist/)
 * [StackOverflow](https://meta.stackoverflow.com/questions/69164/does-stackoverflow-use-caching-and-if-so-how/69172)
 
-And **many others**! [techstacks.io](https://techstacks.io) maintains a list of [popular sites using Redis](https://techstacks.io/tech/redis).
+And **many others**! [techstacks.io](https://techstacks.io) maintains a list of [popular sites using Valkey](https://techstacks.io/tech/redis).

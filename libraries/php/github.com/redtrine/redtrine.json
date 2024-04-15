@@ -1,6 +1,6 @@
 {
     "name": "Redtrine",
-    "description": "Redis-based advanced PHP data structures",
+    "description": "Valkey-based advanced PHP data structures",
     "twitter": [
         "redtrine"
     ]

@@ -1,6 +1,6 @@
 {
-    "name": "Redis-sync",
-    "description": "A node.js Redis replication toolkit",
+    "name": "Valkey-sync",
+    "description": "A node.js Valkey replication toolkit",
     "twitter": [
         "pconstr"
     ]

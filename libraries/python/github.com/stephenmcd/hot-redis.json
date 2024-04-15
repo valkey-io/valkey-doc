@@ -1,6 +1,6 @@
 {
-    "name": "HOT Redis",
-    "description": "Higher Order Types for Redis in Python",
+    "name": "HOT Valkey",
+    "description": "Higher Order Types for Valkey in Python",
     "twitter": [
         "stephenmcd"
     ]

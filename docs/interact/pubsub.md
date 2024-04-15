@@ -1,8 +1,8 @@
 ---
-title: Redis Pub/Sub
+title: Valkey Pub/Sub
 linkTitle: "Pub/sub"
 weight: 40
-description: How to use pub/sub channels in Redis
+description: How to use pub/sub channels in Valkey
 aliases:
   - /topics/pubsub
   - /docs/manual/pub-sub
@@ -20,7 +20,7 @@ For instance, to subscribe to channels "channel11" and "ch:00" the client issues
 SUBSCRIBE channel11 ch:00
 ```
 
-Messages sent by other clients to these channels will be pushed by Redis to all the subscribed clients.
+Messages sent by other clients to these channels will be pushed by Valkey to all the subscribed clients.
 Subscribers receive the messages in the order that the messages are published.
 
 A client subscribed to one or more channels shouldn't issue commands, although it can `SUBSCRIBE` and `UNSUBSCRIBE` to and from other channels.
@@ -43,12 +43,12 @@ Please note that when using `redis-cli`, in subscribed mode commands such as `UN
 
 ## Delivery semantics
 
-Redis' Pub/Sub exhibits _at-most-once_ message delivery semantics.
+Valkey' Pub/Sub exhibits _at-most-once_ message delivery semantics.
 As the name suggests, it means that a message will be delivered once if at all.
-Once the message is sent by the Redis server, there's no chance of it being sent again.
+Once the message is sent by the Valkey server, there's no chance of it being sent again.
 If the subscriber is unable to handle the message (for example, due to an error or a network disconnect) the message is forever lost.
 
-If your application requires stronger delivery guarantees, you may want to learn about [Redis Streams](/docs/data-types/streams-tutorial).
+If your application requires stronger delivery guarantees, you may want to learn about [Valkey Streams](/docs/data-types/streams-tutorial).
 Messages in streams are persisted, and support both _at-most-once_ as well as _at-least-once_ delivery semantics.
 
 ## Format of pushed messages
@@ -62,7 +62,7 @@ The first element is the kind of message:
 
 * `unsubscribe`: means that we successfully unsubscribed from the channel given as second element in the reply.
   The third argument represents the number of channels we are currently subscribed to.
-  When the last argument is zero, we are no longer subscribed to any channel, and the client can issue any kind of Redis command as we are outside the Pub/Sub state.
+  When the last argument is zero, we are no longer subscribed to any channel, and the client can issue any kind of Valkey command as we are outside the Pub/Sub state.
 
 * `message`: it is a message received as a result of a `PUBLISH` command issued by another client.
   The second element is the name of the originating channel, and the third argument is the actual message payload.
@@ -132,7 +132,7 @@ first
 
 ## Pattern-matching subscriptions
 
-The Redis Pub/Sub implementation supports pattern matching.
+The Valkey Pub/Sub implementation supports pattern matching.
 Clients may subscribe to glob-style patterns to receive all the messages sent to channel names matching a given pattern.
 
 For instance:
@@ -178,7 +178,7 @@ So the client will exit the Pub/Sub state only when this count drops to zero as 
 
 ## Sharded Pub/Sub
 
-From Redis 7.0, sharded Pub/Sub is introduced in which shard channels are assigned to slots by the same algorithm used to assign keys to slots. 
+From Valkey 7.0, sharded Pub/Sub is introduced in which shard channels are assigned to slots by the same algorithm used to assign keys to slots. 
 A shard message must be sent to a node that owns the slot the shard channel is hashed to. 
 The cluster makes sure the published shard messages are forwarded to all nodes in the shard, so clients can subscribe to a shard channel by connecting to either the master responsible for the slot, or to any of its replicas.
 `SSUBSCRIBE`, `SUNSUBSCRIBE` and `SPUBLISH` are used to implement sharded Pub/Sub.
@@ -190,7 +190,7 @@ This allows users to horizontally scale the Pub/Sub usage by adding more shards.
  
 ## Programming example
 
-Pieter Noordhuis provided a great example using EventMachine and Redis to create [a multi user high performance web chat](https://gist.github.com/pietern/348262).
+Pieter Noordhuis provided a great example using EventMachine and Valkey to create [a multi user high performance web chat](https://gist.github.com/pietern/348262).
 
 ## Client library implementation hints
 

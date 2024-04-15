@@ -556,7 +556,7 @@ Lua
 lua-api
 lua-debugging
 lua-replicate-commands
-Lua-to-Redis
+Lua-to-Valkey
 Lua's
 lubs
 Lucraft
@@ -785,11 +785,11 @@ redis-macOS-demo
 redis-om-python
 redis-om-python.
 redis-py
-Redis-rb
+Valkey-rb
 redis-rb-cluster
 redis-server
 redis-stable
-Redis-to-Lua
+Valkey-to-Lua
 RedisCallReply
 RedisConf
 Redises

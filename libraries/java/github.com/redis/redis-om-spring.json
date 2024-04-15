@@ -1,5 +1,5 @@
 {
-    "name": "Redis OM for Spring",
-    "description": "Object mapping, and more, for Redis and Spring.",
+    "name": "Valkey OM for Spring",
+    "description": "Object mapping, and more, for Valkey and Spring.",
     "recommended": true
 }

@@ -1,6 +1,6 @@
 {
     "name": "Sider",
-    "description": "Python persistent object library based on Redis.",
+    "description": "Python persistent object library based on Valkey.",
     "twitter": [
         "hongminhee"
     ]

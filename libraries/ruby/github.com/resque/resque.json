@@ -1,6 +1,6 @@
 {
     "name": "Resque",
-    "description": "Resque is a Redis-backed Ruby library for creating background jobs, placing them on multiple queues, and processing them later.",
+    "description": "Resque is a Valkey-backed Ruby library for creating background jobs, placing them on multiple queues, and processing them later.",
     "twitter": [
         "defunkt"
     ]

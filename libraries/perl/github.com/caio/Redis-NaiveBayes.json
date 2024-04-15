@@ -1,6 +1,6 @@
 {
-    "name": "Redis-NaiveBayes",
-    "description": "A generic Redis-backed NaiveBayes implementation",
+    "name": "Valkey-NaiveBayes",
+    "description": "A generic Valkey-backed NaiveBayes implementation",
     "twitter": [
         "caio"
     ]

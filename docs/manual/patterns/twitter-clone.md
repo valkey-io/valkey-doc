@@ -1,23 +1,23 @@
 ---
-title: "Redis patterns example"
+title: "Valkey patterns example"
 linkTitle: "Patterns example"
-description: Learn several Redis patterns by building a Twitter clone
+description: Learn several Valkey patterns by building a Twitter clone
 weight: 20
 aliases: [
     /docs/reference/patterns/twitter-clone
 ]
 ---
 
-This article describes the design and implementation of a [very simple Twitter clone](https://github.com/antirez/retwis) written using PHP with Redis as the only database. The programming community has traditionally considered key-value stores as a special purpose database that couldn't be used as a drop-in replacement for a relational database for the development of web applications. This article will try to show that Redis data structures on top of a key-value layer are an effective data model to implement many kinds of applications.
+This article describes the design and implementation of a [very simple Twitter clone](https://github.com/antirez/retwis) written using PHP with Valkey as the only database. The programming community has traditionally considered key-value stores as a special purpose database that couldn't be used as a drop-in replacement for a relational database for the development of web applications. This article will try to show that Valkey data structures on top of a key-value layer are an effective data model to implement many kinds of applications.
 
-Note: the original version of this article was written in 2009 when Redis was
-released. It was not exactly clear at that time that the Redis data model was
+Note: the original version of this article was written in 2009 when Valkey was
+released. It was not exactly clear at that time that the Valkey data model was
 suitable to write entire applications. Now after 5 years there are many cases of
-applications using Redis as their main store, so the goal of the article today
-is to be a tutorial for Redis newcomers. You'll learn how to design a simple
-data layout using Redis, and how to apply different data structures.
+applications using Valkey as their main store, so the goal of the article today
+is to be a tutorial for Valkey newcomers. You'll learn how to design a simple
+data layout using Valkey, and how to apply different data structures.
 
-Our Twitter clone, called [Retwis](https://github.com/antirez/retwis), is structurally simple, has very good performance, and can be distributed among any number of web and Redis servers with little efforts. [View the Retwis source code](https://github.com/antirez/retwis).
+Our Twitter clone, called [Retwis](https://github.com/antirez/retwis), is structurally simple, has very good performance, and can be distributed among any number of web and Valkey servers with little efforts. [View the Retwis source code](https://github.com/antirez/retwis).
 
 I used PHP for the example because of its universal readability. The same (or better) results can be obtained using Ruby, Python, Erlang, and so on.
 A few clones exist (however not all the clones use the same data layout as the
@@ -33,11 +33,11 @@ The essence of a key-value store is the ability to store some data, called a _va
 
     SET foo bar
 
-Redis stores data permanently, so if I later ask "_What is the value stored in key foo?_" Redis will reply with *bar*:
+Valkey stores data permanently, so if I later ask "_What is the value stored in key foo?_" Valkey will reply with *bar*:
 
     GET foo => bar
 
-Other common operations provided by key-value stores are `DEL`, to delete a given key and its associated value, SET-if-not-exists (called `SETNX` on Redis), to assign a value to a key only if the key does not already exist, and `INCR`, to atomically increment a number stored in a given key:
+Other common operations provided by key-value stores are `DEL`, to delete a given key and its associated value, SET-if-not-exists (called `SETNX` on Valkey), to assign a value to a key only if the key does not already exist, and `INCR`, to atomically increment a number stored in a given key:
 
     SET foo 10
     INCR foo => 11
@@ -47,7 +47,7 @@ Other common operations provided by key-value stores are `DEL`, to delete a give
 Atomic operations
 ---
 
-There is something special about `INCR`. You may wonder why Redis provides such an operation if we can do it ourselves with a bit of code? After all, it is as simple as:
+There is something special about `INCR`. You may wonder why Valkey provides such an operation if we can do it ourselves with a bit of code? After all, it is as simple as:
 
     x = GET foo
     x = x + 1
@@ -62,14 +62,14 @@ The problem is that incrementing this way will work as long as there is only one
     SET foo x (foo is now 11)
     SET foo y (foo is now 11)
 
-Something is wrong! We incremented the value two times, but instead of going from 10 to 12, our key holds 11. This is because the increment done with `GET / increment / SET` *is not an atomic operation*. Instead the INCR provided by Redis, Memcached, ..., are atomic implementations, and the server will take care of protecting the key during the time needed to complete the increment in order to prevent simultaneous accesses.
+Something is wrong! We incremented the value two times, but instead of going from 10 to 12, our key holds 11. This is because the increment done with `GET / increment / SET` *is not an atomic operation*. Instead the INCR provided by Valkey, Memcached, ..., are atomic implementations, and the server will take care of protecting the key during the time needed to complete the increment in order to prevent simultaneous accesses.
 
-What makes Redis different from other key-value stores is that it provides other operations similar to INCR that can be used to model complex problems. This is why you can use Redis to write whole web applications without using another database like an SQL database, and without going crazy.
+What makes Valkey different from other key-value stores is that it provides other operations similar to INCR that can be used to model complex problems. This is why you can use Valkey to write whole web applications without using another database like an SQL database, and without going crazy.
 
 Beyond key-value stores: lists
 ---
 
-In this section we will see which Redis features we need to build our Twitter clone. The first thing to know is that Redis values can be more than strings. Redis supports Lists, Sets, Hashes, Sorted Sets, Bitmaps, and HyperLogLog types as values, and there are atomic operations to operate on them so we are safe even with multiple accesses to the same key. Let's start with Lists:
+In this section we will see which Valkey features we need to build our Twitter clone. The first thing to know is that Valkey values can be more than strings. Valkey supports Lists, Sets, Hashes, Sorted Sets, Bitmaps, and HyperLogLog types as values, and there are atomic operations to operate on them so we are safe even with multiple accesses to the same key. Let's start with Lists:
 
     LPUSH mylist a (now mylist holds 'a')
     LPUSH mylist b (now mylist holds 'b','a')
@@ -95,7 +95,7 @@ Sorted Sets, which are kind of a more capable version of Sets, it is better
 to start introducing Sets first (which are a very useful data structure
 per se), and later Sorted Sets.
 
-There are more data types than just Lists. Redis also supports Sets, which are unsorted collections of elements. It is possible to add, remove, and test for existence of members, and perform the intersection between different Sets. Of course it is possible to get the elements of a Set. Some examples will make it more clear. Keep in mind that `SADD` is the _add to set_ operation, `SREM` is the _remove from set_ operation, `SISMEMBER` is the _test if member_ operation, and `SINTER` is the _perform intersection_ operation. Other operations are `SCARD` to get the cardinality (the number of elements) of a Set, and `SMEMBERS` to return all the members of a Set.
+There are more data types than just Lists. Valkey also supports Sets, which are unsorted collections of elements. It is possible to add, remove, and test for existence of members, and perform the intersection between different Sets. Of course it is possible to get the elements of a Set. Some examples will make it more clear. Keep in mind that `SADD` is the _add to set_ operation, `SREM` is the _remove from set_ operation, `SISMEMBER` is the _test if member_ operation, and `SINTER` is the _perform intersection_ operation. Other operations are `SCARD` to get the cardinality (the number of elements) of a Set, and `SMEMBERS` to return all the members of a Set.
 
     SADD myset a
     SADD myset b
@@ -146,14 +146,14 @@ also to retrieve its score if it exists, we use the `ZSCORE` command:
 
 Sorted Sets are a very powerful data structure, you can query elements by
 score range, lexicographically, in reverse order, and so forth.
-To know more [please check the Sorted Set sections in the official Redis commands documentation](https://redis.io/commands/#sorted_set).
+To know more [please check the Sorted Set sections in the official Valkey commands documentation](https://server.io/commands/#sorted_set).
 
 The Hash data type
 ---
 
 This is the last data structure we use in our program, and is extremely easy
 to grasp since there is an equivalent in almost every programming language out
-there: Hashes. Redis Hashes are basically like Ruby or Python hashes, a
+there: Hashes. Valkey Hashes are basically like Ruby or Python hashes, a
 collection of fields associated with values:
 
     HMSET myuser name Salvatore surname Sanfilippo country Italy
@@ -166,7 +166,7 @@ to increment a hash field with `HINCRBY` and so forth.
 Hashes are the ideal data structure to represent *objects*. For example we
 use Hashes in order to represent Users and Updates in our Twitter clone.
 
-Okay, we just exposed the basics of the Redis main data structures,
+Okay, we just exposed the basics of the Valkey main data structures,
 we are ready to start coding!
 
 Prerequisites
@@ -174,12 +174,12 @@ Prerequisites
 
 If you haven't downloaded the [Retwis source code](https://github.com/antirez/retwis) already please grab it now. It contains a few PHP files, and also a copy of [Predis](https://github.com/nrk/predis), the PHP client library we use in this example.
 
-Another thing you probably want is a working Redis server. Just get the source, build with `make`, run with `./redis-server`, and you're ready to go. No configuration is required at all in order to play with or run Retwis on your computer.
+Another thing you probably want is a working Valkey server. Just get the source, build with `make`, run with `./redis-server`, and you're ready to go. No configuration is required at all in order to play with or run Retwis on your computer.
 
 Data layout
 ---
 
-When working with a relational database, a database schema must be designed so that we'd know the tables, indexes, and so on that the database will contain. We don't have tables in Redis, so what do we need to design? We need to identify what keys are needed to represent our objects and what kind of values these keys need to hold.
+When working with a relational database, a database schema must be designed so that we'd know the tables, indexes, and so on that the database will contain. We don't have tables in Valkey, so what do we need to design? We need to identify what keys are needed to represent our objects and what kind of values these keys need to hold.
 
 Let's start with Users. We need to represent users, of course, with their username, userid, password, the set of users following a given user, the set of users a given user follows, and so on. The first question is, how should we identify a user? Like in a relational DB, a good solution is to identify different users with different numbers, so we can associate a unique ID with every user. Every other reference to this user will be done by id. Creating unique IDs is very simple to do by using our atomic `INCR` operation. When we create a new user we can do something like this, assuming the user is called "antirez":
 
@@ -194,7 +194,7 @@ Besides the fields already defined, we need some more stuff in order to fully de
 
     HSET users antirez 1000
 
-This may appear strange at first, but remember that we are only able to access data in a direct way, without secondary indexes. It's not possible to tell Redis to return the key that holds a specific value. This is also *our strength*. This new paradigm is forcing us to organize data so that everything is accessible by _primary key_, speaking in relational DB terms.
+This may appear strange at first, but remember that we are only able to access data in a direct way, without secondary indexes. It's not possible to tell Valkey to return the key that holds a specific value. This is also *our strength*. This new paradigm is forcing us to organize data so that everything is accessible by _primary key_, speaking in relational DB terms.
 
 Followers, following, and updates
 ---
@@ -228,7 +228,7 @@ Basically, we'll implement a write fanout.
 Authentication
 ---
 
-OK, we have more or less everything about the user except for authentication. We'll handle authentication in a simple but robust way: we don't want to use PHP sessions, as our system must be ready to be distributed among different web servers easily, so we'll keep the whole state in our Redis database. All we need is a random **unguessable** string to set as the cookie of an authenticated user, and a key that will contain the user ID of the client holding the string.
+OK, we have more or less everything about the user except for authentication. We'll handle authentication in a simple but robust way: we don't want to use PHP sessions, as our system must be ready to be distributed among different web servers easily, so we'll keep the whole state in our Valkey database. All we need is a random **unguessable** string to set as the cookie of an authenticated user, and a key that will contain the user ID of the client holding the string.
 
 We need two things in order to make this thing work in a robust way.
 First: the current authentication *secret* (the random unguessable string)
@@ -380,7 +380,7 @@ timeline. This is used in order to trim the list to just 1000 elements. The
 global timeline is actually only used in order to show a few posts in the
 home page, there is no need to have the full history of all the posts.
 
-Basically `LTRIM` + `LPUSH` is a way to create a *capped collection* in Redis.
+Basically `LTRIM` + `LPUSH` is a way to create a *capped collection* in Valkey.
 
 Paginating updates
 ---
@@ -417,7 +417,7 @@ Now it should be pretty clear how we can use `LRANGE` in order to get ranges of 
 `showPost` will simply convert and print a Post in HTML while `showUserPosts` gets a range of posts and then passes them to `showPosts`.
 
 *Note: `LRANGE` is not very efficient if the list of posts start to be very
-big, and we want to access elements which are in the middle of the list, since Redis Lists are backed by linked lists. If a system is designed for
+big, and we want to access elements which are in the middle of the list, since Valkey Lists are backed by linked lists. If a system is designed for
 deep pagination of million of items, it is better to resort to Sorted Sets
 instead.*
 
@@ -443,7 +443,7 @@ store?
 
 Retwis does not perform any multi-keys operation, so making it scalable is
 simple: you may use client-side sharding, or something like a sharding proxy
-like Twemproxy, or the upcoming Redis Cluster.
+like Twemproxy, or the upcoming Valkey Cluster.
 
 To know more about those topics please read
 [our documentation about sharding](/topics/partitioning). However, the point here

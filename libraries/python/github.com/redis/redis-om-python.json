@@ -1,5 +1,5 @@
 {
-    "name": "Redis OM for Python",
-    "description": "Object mapping, and more, for Redis and Python.",
+    "name": "Valkey OM for Python",
+    "description": "Object mapping, and more, for Valkey and Python.",
     "recommended": true
 }

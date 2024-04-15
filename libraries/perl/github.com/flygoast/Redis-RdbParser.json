@@ -1,4 +1,4 @@
 {
-    "name": "Redis-RdbParser",
-    "description": "Redis-RdbParser is a streaming parser for Redis RDB database dumps."
+    "name": "Valkey-RdbParser",
+    "description": "Valkey-RdbParser is a streaming parser for Valkey RDB database dumps."
 }

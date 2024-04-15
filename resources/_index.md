@@ -1,7 +1,7 @@
 ---
 title: Resources
 linkTitle: Resources
-description: Open-source and source-available projects for connecting, using, managing, and extending Redis.
+description: Open-source and source-available projects for connecting, using, managing, and extending Valkey.
 type: docs
 ---
 

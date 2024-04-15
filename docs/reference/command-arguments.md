@@ -1,13 +1,13 @@
 ---
-title: "Redis command arguments"
+title: "Valkey command arguments"
 linkTitle: "Command arguments"
 weight: 7
-description: How Redis commands expose their documentation programmatically
+description: How Valkey commands expose their documentation programmatically
 aliases:
     - /topics/command-arguments
 ---
 
-The `COMMAND DOCS` command returns documentation-focused information about available Redis commands.
+The `COMMAND DOCS` command returns documentation-focused information about available Valkey commands.
 The map reply that the command returns includes the _arguments_ key.
 This key stores an array that describes the command's arguments.
 
@@ -38,8 +38,8 @@ Every element in the _arguments_ array is a map with the following fields:
   It is a 0-based index of the specification in the command's [key specifications][tr] that corresponds to the argument.
 * **token**: a constant literal that precedes the argument (user input) itself.
 * **summary:** a short description of the argument.
-* **since:** the debut Redis version of the argument (or for module commands, the module version).
-* **deprecated_since:** the Redis version that deprecated the command (or for module commands, the module version).
+* **since:** the debut Valkey version of the argument (or for module commands, the module version).
+* **deprecated_since:** the Valkey version that deprecated the command (or for module commands, the module version).
 * **flags:** an array of argument flags.
   Possible flags are:
   - **optional**: denotes that the argument is optional (for example, the _GET_ clause of the  `SET` command).

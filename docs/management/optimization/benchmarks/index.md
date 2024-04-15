@@ -1,9 +1,9 @@
 ---
-title: "Redis benchmark"
+title: "Valkey benchmark"
 linkTitle: "Benchmarking"
 weight: 1
 description: >
-    Using the redis-benchmark utility on a Redis server
+    Using the redis-benchmark utility on a Valkey server
 aliases: [
     /topics/benchmarks,
     /docs/reference/optimization/benchmarks,
@@ -11,7 +11,7 @@ aliases: [
 ]
 ---
 
-Redis includes the `redis-benchmark` utility that simulates running commands done
+Valkey includes the `redis-benchmark` utility that simulates running commands done
 by N clients while at the same time sending M total queries. The utility provides
 a default set of tests, or you can supply a custom set of tests.
 
@@ -22,7 +22,7 @@ The following options are supported:
      -h <hostname>      Server hostname (default 127.0.0.1)
      -p <port>          Server port (default 6379)
      -s <socket>        Server socket (overrides host and port)
-     -a <password>      Password for Redis Auth
+     -a <password>      Password for Valkey Auth
      -c <clients>       Number of parallel connections (default 50)
      -n <requests>      Total number of requests (default 100000)
      -d <size>          Data size of SET/GET value in bytes (default 3)
@@ -42,7 +42,7 @@ The following options are supported:
                         names are the same as the ones produced as output.
      -I                 Idle mode. Just open N idle connections and wait.
 
-You need to have a running Redis instance before launching the benchmark.
+You need to have a running Valkey instance before launching the benchmark.
 You can run the benchmarking utility like so:
 
     redis-benchmark -q -n 100000
@@ -61,12 +61,12 @@ This example runs the tests for the `SET` and `LPUSH` commands and uses quiet mo
 
 You can even benchmark a specific command:
 
-    $ redis-benchmark -n 100000 -q script load "redis.call('set','foo','bar')"
-    script load redis.call('set','foo','bar'): 69881.20 requests per second
+    $ redis-benchmark -n 100000 -q script load "server.call('set','foo','bar')"
+    script load server.call('set','foo','bar'): 69881.20 requests per second
 
 ### Selecting the size of the key space
 
-By default, the benchmark runs against a single key. In Redis the difference
+By default, the benchmark runs against a single key. In Valkey the difference
 between such a synthetic benchmark and a real one is not huge since it is an
 in-memory system, however it is possible to stress cache misses and in general
 to simulate a more real-world work load by using a large key space.
@@ -101,9 +101,9 @@ specified with `-c`) sends the next command only when the reply of the previous
 command is received, this means that the server will likely need a read call
 in order to read each command from every client. Also RTT is paid as well.
 
-Redis supports [pipelining](/topics/pipelining), so it is possible to send
+Valkey supports [pipelining](/topics/pipelining), so it is possible to send
 multiple commands at once, a feature often exploited by real world applications.
-Redis pipelining is able to dramatically improve the number of operations per
+Valkey pipelining is able to dramatically improve the number of operations per
 second a server is able do deliver.
 
 Consider this example of running the benchmark using a
@@ -118,20 +118,20 @@ Using pipelining results in a significant increase in performance.
 ### Pitfalls and misconceptions
 
 The first point is obvious: the golden rule of a useful benchmark is to
-only compare apples and apples. You can compare different versions of Redis on the same workload or the same version of Redis, but with
-different options. If you plan to compare Redis to something else, then it is
+only compare apples and apples. You can compare different versions of Valkey on the same workload or the same version of Valkey, but with
+different options. If you plan to compare Valkey to something else, then it is
 important to evaluate the functional and technical differences, and take them
 in account.
 
-+ Redis is a server: all commands involve network or IPC round trips. It is meaningless to compare it to embedded data stores, because the cost of most operations is primarily in network/protocol management.
-+ Redis commands return an acknowledgment for all usual commands. Some other data stores do not. Comparing Redis to stores involving one-way queries is only mildly useful.
-+ Naively iterating on synchronous Redis commands does not benchmark Redis itself, but rather measure your network (or IPC) latency and the client library intrinsic latency. To really test Redis, you need multiple connections (like redis-benchmark) and/or to use pipelining to aggregate several commands and/or multiple threads or processes.
-+ Redis is an in-memory data store with some optional persistence options. If you plan to compare it to transactional servers (MySQL, PostgreSQL, etc ...), then you should consider activating AOF and decide on a suitable fsync policy.
-+ Redis is, mostly, a single-threaded server from the POV of commands execution (actually modern versions of Redis use threads for different things). It is not designed to benefit from multiple CPU cores. People are supposed to launch several Redis instances to scale out on several cores if needed. It is not really fair to compare one single Redis instance to a multi-threaded data store.
++ Valkey is a server: all commands involve network or IPC round trips. It is meaningless to compare it to embedded data stores, because the cost of most operations is primarily in network/protocol management.
++ Valkey commands return an acknowledgment for all usual commands. Some other data stores do not. Comparing Valkey to stores involving one-way queries is only mildly useful.
++ Naively iterating on synchronous Valkey commands does not benchmark Valkey itself, but rather measure your network (or IPC) latency and the client library intrinsic latency. To really test Valkey, you need multiple connections (like redis-benchmark) and/or to use pipelining to aggregate several commands and/or multiple threads or processes.
++ Valkey is an in-memory data store with some optional persistence options. If you plan to compare it to transactional servers (MySQL, PostgreSQL, etc ...), then you should consider activating AOF and decide on a suitable fsync policy.
++ Valkey is, mostly, a single-threaded server from the POV of commands execution (actually modern versions of Valkey use threads for different things). It is not designed to benefit from multiple CPU cores. People are supposed to launch several Valkey instances to scale out on several cores if needed. It is not really fair to compare one single Valkey instance to a multi-threaded data store.
 
 The `redis-benchmark` program is a quick and useful way to get some figures and
-evaluate the performance of a Redis instance on a given hardware. However,
-by default, it does not represent the maximum throughput a Redis instance can
+evaluate the performance of a Valkey instance on a given hardware. However,
+by default, it does not represent the maximum throughput a Valkey instance can
 sustain. Actually, by using pipelining and a fast client (hiredis), it is fairly
 easy to write a program generating more throughput than redis-benchmark. The
 default behavior of redis-benchmark is to achieve throughput by exploiting
@@ -144,7 +144,7 @@ the user with numbers more near to the *worst case* than to the best case.
 
 To run a benchmark using pipelining mode (and achieve higher throughput),
 you need to explicitly use the -P option. Please note that it is still a
-realistic behavior since a lot of Redis based applications actively use
+realistic behavior since a lot of Valkey based applications actively use
 pipelining to improve performance. However you should use a pipeline size that
 is more or less the average pipeline length you'll be able to use in your
 application in order to get realistic numbers.
@@ -154,23 +154,23 @@ with the multiple data stores you want to compare. It is absolutely pointless to
 compare the result of redis-benchmark to the result of another benchmark
 program and extrapolate.
 
-For instance, Redis and memcached in single-threaded mode can be compared on
+For instance, Valkey and memcached in single-threaded mode can be compared on
 GET/SET operations. Both are in-memory data stores, working mostly in the same
 way at the protocol level. Provided their respective benchmark application is
 aggregating queries in the same way (pipelining) and use a similar number of
 connections, the comparison is actually meaningful.
 
-When you're benchmarking a high-performance, in-memory database like Redis,
+When you're benchmarking a high-performance, in-memory database like Valkey,
 it may be difficult to saturate
 the server. Sometimes, the performance bottleneck is on the client side,
 and not the server-side. In that case, the client (i.e., the benchmarking program itself)
 must be fixed, or perhaps scaled out, to reach the maximum throughput.
 
-### Factors impacting Redis performance
+### Factors impacting Valkey performance
 
-There are multiple factors having direct consequences on Redis performance.
+There are multiple factors having direct consequences on Valkey performance.
 We mention them here, since they can alter the result of any benchmarks.
-Please note however, that a typical Redis instance running on a low end,
+Please note however, that a typical Valkey instance running on a low end,
 untuned box usually provides good enough performance for most applications.
 
 + Network bandwidth and latency usually have a direct impact on the performance.
@@ -179,25 +179,25 @@ between the client and server hosts is normal before launching the benchmark.
 Regarding the bandwidth, it is generally useful to estimate
 the throughput in Gbit/s and compare it to the theoretical bandwidth
 of the network. For instance a benchmark setting 4 KB strings
-in Redis at 100000 q/s, would actually consume 3.2 Gbit/s of bandwidth
+in Valkey at 100000 q/s, would actually consume 3.2 Gbit/s of bandwidth
 and probably fit within a 10 Gbit/s link, but not a 1 Gbit/s one. In many real
-world scenarios, Redis throughput is limited by the network well before being
-limited by the CPU. To consolidate several high-throughput Redis instances
+world scenarios, Valkey throughput is limited by the network well before being
+limited by the CPU. To consolidate several high-throughput Valkey instances
 on a single server, it worth considering putting a 10 Gbit/s NIC
 or multiple 1 Gbit/s NICs with TCP/IP bonding.
-+ CPU is another very important factor. Being single-threaded, Redis favors
++ CPU is another very important factor. Being single-threaded, Valkey favors
 fast CPUs with large caches and not many cores. At this game, Intel CPUs are
 currently the winners. It is not uncommon to get only half the performance on
 an AMD Opteron CPU compared to similar Nehalem EP/Westmere EP/Sandy Bridge
-Intel CPUs with Redis. When client and server run on the same box, the CPU is
+Intel CPUs with Valkey. When client and server run on the same box, the CPU is
 the limiting factor with redis-benchmark.
 + Speed of RAM and memory bandwidth seem less critical for global performance
 especially for small objects. For large objects (>10 KB), it may become
 noticeable though. Usually, it is not really cost-effective to buy expensive
-fast memory modules to optimize Redis.
-+ Redis runs slower on a VM compared to running without virtualization using
-the same hardware. If you have the chance to run Redis on a physical machine
-this is preferred. However this does not mean that Redis is slow in
+fast memory modules to optimize Valkey.
++ Valkey runs slower on a VM compared to running without virtualization using
+the same hardware. If you have the chance to run Valkey on a physical machine
+this is preferred. However this does not mean that Valkey is slow in
 virtualized environments, the delivered performances are still very good
 and most of the serious performance issues you may incur in virtualized
 environments are due to over-provisioning, non-local disks with high latency,
@@ -209,7 +209,7 @@ the TCP/IP loopback (on Linux for instance). The default behavior of
 redis-benchmark is to use the TCP/IP loopback.
 + The performance benefit of unix domain sockets compared to TCP/IP loopback
 tends to decrease when pipelining is heavily used (i.e. long pipelines).
-+ When an ethernet network is used to access Redis, aggregating commands using
++ When an ethernet network is used to access Valkey, aggregating commands using
 pipelining is especially efficient when the size of the data is kept under
 the ethernet packet size (about 1500 bytes). Actually, processing 10 bytes,
 100 bytes, or 1000 bytes queries almost result in the same throughput.
@@ -217,7 +217,7 @@ See the graph below.
 
     ![Data size impact](Data_size.png)
 
-+ On multi CPU sockets servers, Redis performance becomes dependent on the
++ On multi CPU sockets servers, Valkey performance becomes dependent on the
 NUMA configuration and process location. The most visible effect is that
 redis-benchmark results seem non-deterministic because client and server
 processes are distributed randomly on the cores. To get deterministic results,
@@ -232,12 +232,12 @@ Please note this benchmark is not meant to compare CPU models between themselves
     ![NUMA chart](NUMA_chart.gif)
 
 + With high-end configurations, the number of client connections is also an
-important factor. Being based on epoll/kqueue, the Redis event loop is quite
-scalable. Redis has already been benchmarked at more than 60000 connections,
+important factor. Being based on epoll/kqueue, the Valkey event loop is quite
+scalable. Valkey has already been benchmarked at more than 60000 connections,
 and was still able to sustain 50000 q/s in these conditions. As a rule of thumb,
 an instance with 30000 connections can only process half the throughput
 achievable with 100 connections. Here is an example showing the throughput of
-a Redis instance per number of connections:
+a Valkey instance per number of connections:
 
     ![connections chart](Connections_chart.png)
 
@@ -247,12 +247,12 @@ is achieved by setting an affinity between Rx/Tx NIC queues and CPU cores,
 and activating RPS (Receive Packet Steering) support. More information in this
 [thread](https://groups.google.com/forum/#!msg/redis-db/gUhc19gnYgc/BruTPCOroiMJ).
 Jumbo frames may also provide a performance boost when large objects are used.
-+ Depending on the platform, Redis can be compiled against different memory
++ Depending on the platform, Valkey can be compiled against different memory
 allocators (libc malloc, jemalloc, tcmalloc), which may have different behaviors
 in term of raw speed, internal and external fragmentation.
-If you did not compile Redis yourself, you can use the INFO command to check
+If you did not compile Valkey yourself, you can use the INFO command to check
 the `mem_allocator` field. Please note most benchmarks do not run long enough to
-generate significant external fragmentation (contrary to production Redis
+generate significant external fragmentation (contrary to production Valkey
 instances).
 
 ### Other things to consider
@@ -272,22 +272,22 @@ for all the CPU cores involved in the benchmark.
 + An important point is to size the system accordingly to the benchmark.
 The system must have enough RAM and must not swap. On Linux, do not forget
 to set the `overcommit_memory` parameter correctly. Please note 32 and 64 bit
-Redis instances do not have the same memory footprint.
+Valkey instances do not have the same memory footprint.
 + If you plan to use RDB or AOF for your benchmark, please check there is no other
 I/O activity in the system. Avoid putting RDB or AOF files on NAS or NFS shares,
 or on any other devices impacting your network bandwidth and/or latency
 (for instance, EBS on Amazon EC2).
-+ Set Redis logging level (loglevel parameter) to warning or notice. Avoid putting
++ Set Valkey logging level (loglevel parameter) to warning or notice. Avoid putting
 the generated log file on a remote filesystem.
 + Avoid using monitoring tools which can alter the result of the benchmark. For
 instance using INFO at regular interval to gather statistics is probably fine,
 but MONITOR will impact the measured performance significantly.
 
-### Other Redis benchmarking tools
+### Other Valkey benchmarking tools
 
-There are several third-party tools that can be used for benchmarking Redis. Refer to each tool's
+There are several third-party tools that can be used for benchmarking Valkey. Refer to each tool's
 documentation for more information about its goals and capabilities.
 
-* [memtier_benchmark](https://github.com/redislabs/memtier_benchmark) from [Redis Ltd.](https://twitter.com/RedisInc) is a NoSQL Redis and Memcache traffic generation and benchmarking tool.
-* [rpc-perf](https://github.com/twitter/rpc-perf) from [Twitter](https://twitter.com/twitter) is a tool for benchmarking RPC services that supports Redis and Memcache.
-* [YCSB](https://github.com/brianfrankcooper/YCSB) from [Yahoo @Yahoo](https://twitter.com/Yahoo) is a benchmarking framework with clients to many databases, including Redis. 
+* [memtier_benchmark](https://github.com/redislabs/memtier_benchmark) from [Valkey Ltd.](https://twitter.com/RedisInc) is a NoSQL Valkey and Memcache traffic generation and benchmarking tool.
+* [rpc-perf](https://github.com/twitter/rpc-perf) from [Twitter](https://twitter.com/twitter) is a tool for benchmarking RPC services that supports Valkey and Memcache.
+* [YCSB](https://github.com/brianfrankcooper/YCSB) from [Yahoo @Yahoo](https://twitter.com/Yahoo) is a benchmarking framework with clients to many databases, including Valkey. 

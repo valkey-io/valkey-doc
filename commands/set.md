@@ -32,7 +32,7 @@ SET anotherkey "will expire in a minute" EX 60
 
 ## Patterns
 
-**Note:** The following pattern is discouraged in favor of [the Redlock algorithm](https://redis.io/topics/distlock) which is only a bit more complex to implement, but offers better guarantees and is fault tolerant.
+**Note:** The following pattern is discouraged in favor of [the Redlock algorithm](https://server.io/topics/distlock) which is only a bit more complex to implement, but offers better guarantees and is fault tolerant.
 
 The command `SET resource-name anystring NX EX max-lock-time` is a simple way to implement a locking system with Valkey.
 
@@ -49,9 +49,9 @@ This avoids that a client will try to release the lock after the expire time del
 
 An example of unlock script would be similar to the following:
 
-    if redis.call("get",KEYS[1]) == ARGV[1]
+    if server.call("get",KEYS[1]) == ARGV[1]
     then
-        return redis.call("del",KEYS[1])
+        return server.call("del",KEYS[1])
     else
         return 0
     end

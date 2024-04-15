@@ -1,6 +1,6 @@
 {
-    "name": "Redis-dump",
-    "description": "Backup and restore your Redis data to and from JSON. Warning: alpha code.",
+    "name": "Valkey-dump",
+    "description": "Backup and restore your Valkey data to and from JSON. Warning: alpha code.",
     "twitter": [
         "solutious"
     ]

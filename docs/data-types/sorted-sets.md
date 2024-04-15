@@ -1,12 +1,12 @@
 ---
-title: "Redis sorted sets"
+title: "Valkey sorted sets"
 linkTitle: "Sorted sets"
 weight: 50
 description: >
-    Introduction to Redis sorted sets
+    Introduction to Valkey sorted sets
 ---
 
-A Redis sorted set is a collection of unique strings (members) ordered by an associated score.
+A Valkey sorted set is a collection of unique strings (members) ordered by an associated score.
 When more than one string has the same score, the strings are ordered lexicographically.
 Some use cases for sorted sets include:
 
@@ -51,8 +51,8 @@ birth year because actually *they are already sorted*.
 
 Implementation note: Sorted sets are implemented via a
 dual-ported data structure containing both a skip list and a hash table, so
-every time we add an element Redis performs an O(log(N)) operation. That's
-good, but when we ask for sorted elements Redis does not have to do any work at
+every time we add an element Valkey performs an O(log(N)) operation. That's
+good, but when we ask for sorted elements Valkey does not have to do any work at
 all, it's already sorted. Note that the `ZRANGE` order is low to high, while the `ZREVRANGE` order is high to low:
 
 {{< clients-example ss_tutorial zrange >}}
@@ -107,7 +107,7 @@ use the `ZRANGEBYSCORE` command to do it:
 4) "Royce"
 {{< /clients-example >}}
 
-We asked Redis to return all the elements with a score between negative
+We asked Valkey to return all the elements with a score between negative
 infinity and 10 (both extremes are included).
 
 To remove an element we'd simply call `ZREM` with the racer's name. 
@@ -143,11 +143,11 @@ the elements sorted in a descending way.
 
 ### Lexicographical scores
 
-In version Redis 2.8, a new feature was introduced that allows
+In version Valkey 2.8, a new feature was introduced that allows
 getting ranges lexicographically, assuming elements in a sorted set are all
 inserted with the same identical score (elements are compared with the C
 `memcmp` function, so it is guaranteed that there is no collation, and every
-Redis instance will reply with the same output).
+Valkey instance will reply with the same output).
 
 The main commands to operate with lexicographical ranges are `ZRANGEBYLEX`,
 `ZREVRANGEBYLEX`, `ZREMRANGEBYLEX` and `ZLEXCOUNT`.
@@ -184,7 +184,7 @@ ordered numerically as well, you can ask for ranges in the 128 bit space,
 and get the element's value discarding the prefix.
 
 If you want to see the feature in the context of a more serious demo,
-check the [Redis autocomplete demo](http://autocomplete.redis.io).
+check the [Valkey autocomplete demo](http://autocomplete.server.io).
 
 Updating the score: leaderboards
 ---
@@ -226,7 +226,7 @@ You'll see that `ZADD` returns 0 when the member already exists (the score is up
 * `ZRANK` returns the rank of the provided member, assuming the sorted is in ascending order.
 * `ZREVRANK` returns the rank of the provided member, assuming the sorted set is in descending order.
  
-See the [complete list of sorted set commands](https://redis.io/commands/?group=sorted-set).
+See the [complete list of sorted set commands](https://server.io/commands/?group=sorted-set).
 
 ## Performance
 
@@ -237,5 +237,5 @@ This command's time complexity is O(log(n) + m), where _m_ is the number of resu
 
 ## Learn more
 
-* [Redis Sorted Sets Explained](https://www.youtube.com/watch?v=MUKlxdBQZ7g) is an entertaining introduction to sorted sets in Redis.
-* [Redis University's RU101](https://university.redis.com/courses/ru101/) explores Redis sorted sets in detail.
+* [Valkey Sorted Sets Explained](https://www.youtube.com/watch?v=MUKlxdBQZ7g) is an entertaining introduction to sorted sets in Valkey.
+* [Valkey University's RU101](https://university.server.com/courses/ru101/) explores Valkey sorted sets in detail.

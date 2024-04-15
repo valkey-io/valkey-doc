@@ -1,6 +1,6 @@
 {
-    "name": "Redis-rdb-tools",
-    "description": "Parse Redis dump.rdb files, Analyze Memory, and Export Data to JSON.",
+    "name": "Valkey-rdb-tools",
+    "description": "Parse Valkey dump.rdb files, Analyze Memory, and Export Data to JSON.",
     "twitter": [
         "srithedabbler"
     ]

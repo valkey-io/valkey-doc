@@ -1,6 +1,6 @@
 {
     "name": "Ohm",
-    "description": "Object-hash mapping library for Redis.",
+    "description": "Object-hash mapping library for Valkey.",
     "twitter": [
         "soveran"
     ]

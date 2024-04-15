@@ -1,6 +1,6 @@
 {
-    "name": "Lua Redis Admin",
-    "description": "Redis client tool, Redis web client, Redis web UI, openresty lor Lua ",
+    "name": "Lua Valkey Admin",
+    "description": "Valkey client tool, Valkey web client, Valkey web UI, openresty lor Lua ",
     "twitter": [
         "nbdanny"
     ]

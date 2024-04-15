@@ -1,6 +1,6 @@
 {
-    "name": "Redis Info",
-    "description": "Redis info string parser for NodeJS",
+    "name": "Valkey Info",
+    "description": "Valkey info string parser for NodeJS",
     "twitter": [
         "fgribreau"
     ]

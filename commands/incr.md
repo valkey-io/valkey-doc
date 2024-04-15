@@ -120,9 +120,9 @@ script that is send using the `EVAL` command (only available since Valkey versio
 
 ```
 local current
-current = redis.call("incr",KEYS[1])
+current = server.call("incr",KEYS[1])
 if current == 1 then
-    redis.call("expire",KEYS[1],1)
+    server.call("expire",KEYS[1],1)
 end
 ```
 

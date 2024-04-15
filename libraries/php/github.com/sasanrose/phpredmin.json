@@ -1,6 +1,6 @@
 {
     "name": "PHPRedMin",
-    "description": "Yet another web interface for Redis with multi-server support",
+    "description": "Yet another web interface for Valkey with multi-server support",
     "twitter": [
         "sasanrose"
     ]

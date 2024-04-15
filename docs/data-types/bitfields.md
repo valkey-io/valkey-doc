@@ -1,15 +1,15 @@
 ---
-title: "Redis bitfields"
+title: "Valkey bitfields"
 linkTitle: "Bitfields"
 weight: 130
 description: >
-    Introduction to Redis bitfields
+    Introduction to Valkey bitfields
 ---
 
-Redis bitfields let you set, increment, and get integer values of arbitrary bit length.
+Valkey bitfields let you set, increment, and get integer values of arbitrary bit length.
 For example, you can operate on anything from unsigned 1-bit integers to signed 63-bit integers.
 
-These values are stored using binary-encoded Redis strings.
+These values are stored using binary-encoded Valkey strings.
 Bitfields support atomic read, write and increment operations, making them a good choice for managing counters and similar numerical values.
 
 

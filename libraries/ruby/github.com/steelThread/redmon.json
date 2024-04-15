@@ -1,6 +1,6 @@
 {
     "name": "Redmon",
-    "description": "A web interface for managing Redis: cli, admin, and live monitoring.",
+    "description": "A web interface for managing Valkey: cli, admin, and live monitoring.",
     "twitter": [
         "steel_thread"
     ]

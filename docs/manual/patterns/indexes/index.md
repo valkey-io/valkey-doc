@@ -3,31 +3,31 @@ title: Secondary indexing
 linkTitle: Secondary indexing
 weight: 1
 description: >
-    Building secondary indexes in Redis
+    Building secondary indexes in Valkey
 aliases: [
     /topics/indexing,
     /docs/reference/patterns/indexes
 ]
 ---
 
-Redis is not exactly a key-value store, since values can be complex data structures. However it has an external key-value shell: at API level data is addressed by the key name. It is fair to say that, natively, Redis only offers *primary key access*. However since Redis is a data structures server, its capabilities can be used for indexing, in order to create secondary indexes of different kinds, including composite (multi-column) indexes.
+Valkey is not exactly a key-value store, since values can be complex data structures. However it has an external key-value shell: at API level data is addressed by the key name. It is fair to say that, natively, Valkey only offers *primary key access*. However since Valkey is a data structures server, its capabilities can be used for indexing, in order to create secondary indexes of different kinds, including composite (multi-column) indexes.
 
-This document explains how it is possible to create indexes in Redis using the following data structures:
+This document explains how it is possible to create indexes in Valkey using the following data structures:
 
 * Sorted sets to create secondary indexes by ID or other numerical fields.
 * Sorted sets with lexicographical ranges for creating more advanced secondary indexes, composite indexes and graph traversal indexes.
 * Sets for creating random indexes.
 * Lists for creating simple iterable indexes and last N items indexes.
 
-Implementing and maintaining indexes with Redis is an advanced topic, so most
+Implementing and maintaining indexes with Valkey is an advanced topic, so most
 users that need to perform complex queries on data should understand if they
 are better served by a relational store. However often, especially in caching
-scenarios, there is the explicit need to store indexed data into Redis in order to speedup common queries which require some form of indexing in order to be executed.
+scenarios, there is the explicit need to store indexed data into Valkey in order to speedup common queries which require some form of indexing in order to be executed.
 
 Simple numerical indexes with sorted sets
 ===
 
-The simplest secondary index you can create with Redis is by using the
+The simplest secondary index you can create with Valkey is by using the
 sorted set data type, which is a data structure representing a set of
 elements ordered by a floating point number which is the *score* of
 each element. Elements are ordered from the smallest to the highest score.
@@ -80,7 +80,7 @@ may want to index some field of an object which is stored elsewhere.
 Instead of using the sorted set value directly to store the data associated
 with the indexed field, it is possible to store just the ID of the object.
 
-For example I may have Redis hashes representing users. Each user is
+For example I may have Valkey hashes representing users. Each user is
 represented by a single key, directly accessible by ID:
 
     HMSET user:1 id 1 username antirez ctime 1444809424 age 38
@@ -136,7 +136,7 @@ is not always true. If you can efficiently represent something
 multi-dimensional in a linear way, they it is often possible to use a simple
 sorted set for indexing.
 
-For example the [Redis geo indexing API](/commands/geoadd) uses a sorted
+For example the [Valkey geo indexing API](/commands/geoadd) uses a sorted
 set to index places by latitude and longitude using a technique called
 [Geo hash](https://en.wikipedia.org/wiki/Geohash). The sorted set score
 represents alternating bits of longitude and latitude, so that we map the
@@ -161,7 +161,7 @@ index.
 Lexicographical indexes
 ===
 
-Redis sorted sets have an interesting property. When elements are added
+Valkey sorted sets have an interesting property. When elements are added
 with the same score, they are sorted lexicographically, comparing the
 strings as binary data with the `memcmp()` function.
 
@@ -176,9 +176,9 @@ There are commands such as `ZRANGE` and `ZLEXCOUNT` that
 are able to query and count ranges in a lexicographically fashion, assuming
 they are used with sorted sets where all the elements have the same score.
 
-This Redis feature is basically equivalent to a `b-tree` data structure which
+This Valkey feature is basically equivalent to a `b-tree` data structure which
 is often used in order to implement indexes with traditional databases.
-As you can guess, because of this, it is possible to use this Redis data
+As you can guess, because of this, it is possible to use this Valkey data
 structure in order to implement pretty fancy indexes.
 
 Before we dive into using lexicographical indexes, let's check how
@@ -239,7 +239,7 @@ we'll just do:
 And so forth for each search query ever encountered. Then when we want to
 complete the user input, we execute a range query using `ZRANGE` with the `BYLEX` argument.
 Imagine the user is typing "bit" inside the search form, and we want to
-offer possible search keywords starting for "bit". We send Redis a command
+offer possible search keywords starting for "bit". We send Valkey a command
 like that:
 
     ZRANGE myindex "[bit" "[bit\xff" BYLEX
@@ -365,7 +365,7 @@ However a problem to solve in this case is collisions. The colon character
 may be part of the key itself, so it must be chosen in order to never
 collide with the key we add.
 
-Since lexicographical ranges in Redis are binary safe you can use any
+Since lexicographical ranges in Valkey are binary safe you can use any
 byte or any sequence of bytes. However if you receive untrusted user
 input, it is better to use some form of escaping in order to guarantee
 that the separator will never happen to be part of the key.
@@ -410,7 +410,7 @@ Storing numbers in decimal may use too much memory. An alternative approach
 is just to store numbers, for example 128 bit integers, directly in their
 binary form. However for this to work, you need to store the numbers in
 *big endian format*, so that the most significant bytes are stored before
-the least significant bytes. This way when Redis compares the strings with
+the least significant bytes. This way when Valkey compares the strings with
 `memcmp()`, it will effectively sort the numbers by their value.
 
 Keep in mind that data stored in binary format is less observable for
@@ -448,9 +448,9 @@ the primary key in order to run queries regardless of the price, like
 *give me all the products in room 44*.
 
 Composite indexes are very powerful, and are used in traditional stores
-in order to optimize complex queries. In Redis they could be useful both
-to implement a very fast in-memory Redis index of something stored into
-a traditional data store, or in order to directly index Redis data.
+in order to optimize complex queries. In Valkey they could be useful both
+to implement a very fast in-memory Valkey index of something stored into
+a traditional data store, or in order to directly index Valkey data.
 
 Updating lexicographical indexes
 ===
@@ -547,7 +547,7 @@ queries involving multiple variables using different data structures.
 For example, multi-dimensional trees such as *k-d trees* or *r-trees* are
 sometimes used. Here we'll describe a different way to index data into
 multiple dimensions, using a representation trick that allows us to perform
-the query in a very efficient way using Redis lexicographical ranges.
+the query in a very efficient way using Valkey lexicographical ranges.
 
 Let's say we have points in the space, which represent our data samples, where `x` and `y` are our coordinates. The max value of both variables is 400.
 
@@ -691,10 +691,10 @@ Turning this into code is simple. Here is a Ruby example:
     spacequery(50,100,100,300,6)
 
 While non immediately trivial this is a very useful indexing strategy that
-in the future may be implemented in Redis in a native way.
+in the future may be implemented in Valkey in a native way.
 For now, the good thing is that the complexity may be easily encapsulated
 inside a library that can be used in order to perform indexing and queries.
-One example of such library is [Redimension](https://github.com/antirez/redimension), a proof of concept Ruby library which indexes N-dimensional data inside Redis using the technique described here.
+One example of such library is [Redimension](https://github.com/antirez/redimension), a proof of concept Ruby library which indexes N-dimensional data inside Valkey using the technique described here.
 
 Multi dimensional indexes with negative or floating point numbers
 ===
@@ -712,7 +712,7 @@ Non range indexes
 ===
 
 So far we checked indexes which are useful to query by range or by single
-item. However other Redis data structures such as Sets or Lists can be used
+item. However other Valkey data structures such as Sets or Lists can be used
 in order to build other kind of indexes. They are very commonly used but
 maybe we don't always realize they are actually a form of indexing.
 
@@ -723,13 +723,13 @@ all I need is to test if a given item exists or not or has a single boolean
 property or not.
 
 Similarly lists can be used in order to index items into a fixed order.
-I can add all my items into a Redis list and rotate the list with
+I can add all my items into a Valkey list and rotate the list with
 `RPOPLPUSH` using the same key name as source and destination. This is useful
 when I want to process a given set of items again and again forever in the
 same order. Think of an RSS feed system that needs to refresh the local copy
 periodically.
 
-Another popular index often used with Redis is a **capped list**, where items
+Another popular index often used with Valkey is a **capped list**, where items
 are added with `LPUSH` and trimmed with `LTRIM`, in order to create a view
 with just the latest N items encountered, in the same order they were
 seen.
@@ -741,8 +741,8 @@ Keeping the index updated may be challenging, in the course of months
 or years it is possible that inconsistencies are added because of software
 bugs, network partitions or other events.
 
-Different strategies could be used. If the index data is outside Redis
+Different strategies could be used. If the index data is outside Valkey
 *read repair* can be a solution, where data is fixed in a lazy way when
-it is requested. When we index data which is stored in Redis itself
+it is requested. When we index data which is stored in Valkey itself
 the `SCAN` family of commands can be used in order to verify, update or
 rebuild the index from scratch, incrementally.

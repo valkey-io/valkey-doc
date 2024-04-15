@@ -1,13 +1,13 @@
 ﻿---
-title: "Redis sets"
+title: "Valkey sets"
 linkTitle: "Sets"
 weight: 30
 description: >
-    Introduction to Redis sets
+    Introduction to Valkey sets
 ---
 
-A Redis set is an unordered collection of unique strings (members).
-You can use Redis sets to efficiently:
+A Valkey set is an unordered collection of unique strings (members).
+You can use Valkey sets to efficiently:
 
 * Track unique items (e.g., track all unique IP addresses accessing a given blog post).
 * Represent relations (e.g., the set of all users with a given role).
@@ -21,7 +21,7 @@ You can use Redis sets to efficiently:
 * `SINTER` returns the set of members that two or more sets have in common (i.e., the intersection).
 * `SCARD` returns the size (a.k.a. cardinality) of a set.
 
-See the [complete list of set commands](https://redis.io/commands/?group=set).
+See the [complete list of set commands](https://server.io/commands/?group=set).
 
 ## Examples
 
@@ -73,11 +73,11 @@ multiple sets, and so forth.
 3) bike:2
 {{< /clients-example >}}
 
-Here I've added three elements to my set and told Redis to return all the
-elements. There is no order guarantee with a set. Redis is free to return the
+Here I've added three elements to my set and told Valkey to return all the
+elements. There is no order guarantee with a set. Valkey is free to return the
 elements in any order at every call.
 
-Redis has commands to test for set membership. These commands can be used on single as well as multiple items:
+Valkey has commands to test for set membership. These commands can be used on single as well as multiple items:
 
 {{< clients-example sets_tutorial smismember >}}
 > SISMEMBER bikes:racing:france bike:1
@@ -100,7 +100,7 @@ to know which bikes are racing in France but not in the USA:
 {{< /clients-example >}}
 
 There are other non trivial operations that are still easy to implement
-using the right Redis commands. For instance we may want a list of all the
+using the right Valkey commands. For instance we may want a list of all the
 bikes racing in France, the USA, and some other races. We can do this using
 the `SINTER` command, which performs the intersection between different
 sets. In addition to intersection you can also perform
@@ -156,7 +156,7 @@ set without removing it using the `SRANDMEMBER` command:
 
 ## Limits
 
-The max size of a Redis set is 2^32 - 1 (4,294,967,295) members.
+The max size of a Valkey set is 2^32 - 1 (4,294,967,295) members.
 
 ## Performance
 
@@ -173,5 +173,5 @@ If you're concerned about memory usage and don't need perfect precision, conside
 
 ## Learn more
 
-* [Redis Sets Explained](https://www.youtube.com/watch?v=PKdCppSNTGQ) and [Redis Sets Elaborated](https://www.youtube.com/watch?v=aRw5ME_5kMY) are two short but thorough video explainers covering Redis sets.
-* [Redis University's RU101](https://university.redis.com/courses/ru101/) explores Redis sets in detail.
+* [Valkey Sets Explained](https://www.youtube.com/watch?v=PKdCppSNTGQ) and [Valkey Sets Elaborated](https://www.youtube.com/watch?v=aRw5ME_5kMY) are two short but thorough video explainers covering Valkey sets.
+* [Valkey University's RU101](https://university.server.com/courses/ru101/) explores Valkey sets in detail.
