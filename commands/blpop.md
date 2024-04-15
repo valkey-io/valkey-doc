@@ -99,7 +99,7 @@ This can be a problem with some application where we want a more reliable messag
 Using blocking list operations it is possible to mount different blocking
 primitives.
 For instance for some application you may need to block waiting for elements
-into a Valkey Set, so that as far as a new element is added to the Set, it is
+into a Set, so that as far as a new element is added to the Set, it is
 possible to retrieve it without resort to polling.
 This would require a blocking version of `SPOP` that is not available, but using
 blocking list operations we can easily accomplish this task.

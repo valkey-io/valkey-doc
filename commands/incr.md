@@ -127,7 +127,7 @@ end
 ```
 
 There is a different way to fix this issue without using scripting, by using
-Valkey lists instead of counters.
+lists instead of counters.
 The implementation is more complex and uses more advanced features but has the
 advantage of remembering the IP addresses of the clients currently performing an
 API call, that may be useful or not depending on the application.

@@ -2,14 +2,14 @@ Removes the specified entries from a stream, and returns the number of entries
 deleted.  This number may be less than the number of IDs passed to the command in
 the case where some of the specified IDs do not exist in the stream.
 
-Normally you may think at a Valkey stream as an append-only data structure,
-however Valkey streams are represented in memory, so we are also able to 
+Normally you may think at a stream as an append-only data structure,
+however streams are represented in memory, so we are also able to 
 delete entries. This may be useful, for instance, in order to comply with
 certain privacy policies.
 
 ## Understanding the low level details of entries deletion
 
-Valkey streams are represented in a way that makes them memory efficient:
+streams are represented in a way that makes them memory efficient:
 a radix tree is used in order to index macro-nodes that pack linearly tens
 of stream entries. Normally what happens when you delete an entry from a stream
 is that the entry is not *really* evicted, it just gets marked as deleted.
