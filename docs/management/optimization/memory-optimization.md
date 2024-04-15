@@ -67,7 +67,7 @@ RDB and AOF files are compatible between 32-bit and 64-bit instances
 ## Bit and byte level operations
 
 Redis 2.2 introduced new bit and byte level operations: `GETRANGE`, `SETRANGE`, `GETBIT` and `SETBIT`.
-Using these commands you can treat the Redis string type as a random access array.
+Using these commands you can treat the String type as a random access array.
 For instance, if you have an application where users are identified by a unique progressive integer number,
 you can use a bitmap to save information about the subscription of users in a mailing list,
 setting the bit for subscribed and clearing it for unsubscribed, or the other way around.

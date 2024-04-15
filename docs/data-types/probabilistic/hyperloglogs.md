@@ -10,7 +10,7 @@ aliases:
 
 HyperLogLog is a probabilistic data structure that estimates the cardinality of a set. As a probabilistic data structure, HyperLogLog trades perfect accuracy for efficient space utilization.
 
-The Redis HyperLogLog implementation uses up to 12 KB and provides a standard error of 0.81%.
+The HyperLogLog implementation uses up to 12 KB and provides a standard error of 0.81%.
 
 Counting unique items usually requires an amount of memory
 proportional to the number of items you want to count, because you need
@@ -24,7 +24,7 @@ constant amount of memory; 12k bytes in the worst case, or a lot less if your
 HyperLogLog (We'll just call them HLL from now) has seen very few elements.
 
 HLLs in Redis, while technically a different data structure, are encoded
-as a Redis string, so you can call `GET` to serialize a HLL, and `SET`
+as a String, so you can call `GET` to serialize a HLL, and `SET`
 to deserialize it back to the server.
 
 Conceptually the HLL API is like using Sets to do the same task. You would
@@ -96,5 +96,5 @@ The HyperLogLog can estimate the cardinality of sets with up to 18,446,744,073,7
 ## Learn more
 
 * [Redis new data structure: the HyperLogLog](http://antirez.com/news/75) has a lot of details about the data structure and its implementation in Redis.
-* [Redis HyperLogLog Explained](https://www.youtube.com/watch?v=MunL8nnwscQ) shows you how to use Redis HyperLogLog data structures to build a traffic heat map.
+* [HyperLogLog Explained](https://www.youtube.com/watch?v=MunL8nnwscQ) shows you how to use HyperLogLog data structures to build a traffic heat map.
 

@@ -1,12 +1,12 @@
 ---
-title: "Redis sorted sets"
+title: "Sorted sets"
 linkTitle: "Sorted sets"
 weight: 50
 description: >
-    Introduction to Redis sorted sets
+    Introduction to Sorted sets
 ---
 
-A Redis sorted set is a collection of unique strings (members) ordered by an associated score.
+A Sorted set is a collection of unique strings (members) ordered by an associated score.
 When more than one string has the same score, the strings are ordered lexicographically.
 Some use cases for sorted sets include:
 
@@ -237,5 +237,5 @@ This command's time complexity is O(log(n) + m), where _m_ is the number of resu
 
 ## Learn more
 
-* [Redis Sorted Sets Explained](https://www.youtube.com/watch?v=MUKlxdBQZ7g) is an entertaining introduction to sorted sets in Redis.
-* [Redis University's RU101](https://university.redis.com/courses/ru101/) explores Redis sorted sets in detail.
+* [Sorted sets Explained](https://www.youtube.com/watch?v=MUKlxdBQZ7g) is an entertaining introduction to sorted sets in Redis.
+* [Redis University's RU101](https://university.redis.com/courses/ru101/) explores Sorted sets in detail.

@@ -86,7 +86,7 @@ client. This is especially true with Pub/Sub clients in case a client is not
 able to process new messages fast enough.
 
 Both conditions will cause the client output buffer to grow and consume
-more and more memory. For this reason by default Redis sets limits to the
+more and more memory. For this reason by default Sets limits to the
 output buffer size for different kind of clients. When the limit is reached
 the client connection is closed and the event logged in the Redis log file.
 

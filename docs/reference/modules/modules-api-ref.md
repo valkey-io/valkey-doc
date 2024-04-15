@@ -948,7 +948,7 @@ The function must be called as the first function of a command implementation
 that wants to use automatic memory.
 
 When enabled, automatic memory management tracks and automatically frees
-keys, call replies and Redis string objects once the command returns. In most
+keys, call replies and String objects once the command returns. In most
 cases this eliminates the need of calling the following functions:
 
 1. [`RedisModule_CloseKey()`](#RedisModule_CloseKey)
@@ -4170,7 +4170,7 @@ use:
     }
 
 Because the key and value will be always in the above order, while instead
-the single key-value pairs, can appear in any position into a Redis hash.
+the single key-value pairs, can appear in any position into a Hash.
 
 A list of ordered elements would be implemented with:
 
@@ -7132,7 +7132,7 @@ cannot be used.
 The config also declares a type for the value that is validated by Redis and
 provided to the module. The config system provides the following types:
 
-* Redis String: Binary safe string data.
+* String: Binary safe string data.
 * Enum: One of a finite number of string tokens, provided during registration.
 * Numeric: 64 bit signed integer, which also supports min and max values.
 * Bool: Yes or no value.

@@ -145,7 +145,7 @@ To ensure the correct execution of Redis Functions, both in standalone and clust
 
 Any input to the function that isn't the name of a key is a regular input argument.
 
-Now, let's pretend that our application stores some of its data in Redis Hashes.
+Now, let's pretend that our application stores some of its data in Hashes.
 We want an `HSET`-like way to set and update fields in said Hashes and store the last modification time in a new field named `_last_modified_`.
 We can implement a function to do all that.
 

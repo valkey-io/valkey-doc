@@ -2,7 +2,7 @@
 title: "String internals"
 linkTitle: "String internals"
 weight: 1
-description: Guide to the original implementation of Redis strings
+description: Guide to the original implementation of Strings
 aliases:
   - /topics/internals-sds
 ---
@@ -10,11 +10,11 @@ aliases:
 **Note: this document was written by the creator of Redis, Salvatore Sanfilippo, early in the development of Redis (c. 2010). Virtual Memory has been deprecated since Redis 2.6, so this documentation
 is here only for historical interest.**
 
-The implementation of Redis strings is contained in `sds.c` (`sds` stands for
+The implementation of Strings is contained in `sds.c` (`sds` stands for
 Simple Dynamic Strings). The implementation is available as a standalone library
 at [https://github.com/antirez/sds](https://github.com/antirez/sds).
 
-The C structure `sdshdr` declared in `sds.h` represents a Redis string:
+The C structure `sdshdr` declared in `sds.h` represents a String:
 
     struct sdshdr {
         long len;
@@ -25,20 +25,20 @@ The C structure `sdshdr` declared in `sds.h` represents a Redis string:
 The `buf` character array stores the actual string.
 
 The `len` field stores the length of `buf`. This makes obtaining the length
-of a Redis string an O(1) operation.
+of a String an O(1) operation.
 
 The `free` field stores the number of additional bytes available for use.
 
 Together the `len` and `free` field can be thought of as holding the metadata of the `buf` character array.
 
-Creating Redis Strings
+Creating Strings
 ---
 
 A new data type named `sds` is defined in `sds.h` to be a synonym for a character pointer:
 
     typedef char *sds;
 
-`sdsnewlen` function defined in `sds.c` creates a new Redis String:
+`sdsnewlen` function defined in `sds.c` creates a new String:
 
     sds sdsnewlen(const void *init, size_t initlen) {
         struct sdshdr *sh;
@@ -59,11 +59,11 @@ A new data type named `sds` is defined in `sds.h` to be a synonym for a characte
         return (char*)sh->buf;
     }
 
-Remember a Redis string is a variable of type `struct sdshdr`. But `sdsnewlen` returns a character pointer!!
+Remember a String is a variable of type `struct sdshdr`. But `sdsnewlen` returns a character pointer!!
 
 That's a trick and needs some explanation.
 
-Suppose I create a Redis string using `sdsnewlen` like below:
+Suppose I create a String using `sdsnewlen` like below:
 
     sdsnewlen("redis", 5);
 
@@ -72,7 +72,7 @@ fields as well as for the `buf` character array.
 
     sh = zmalloc(sizeof(struct sdshdr)+initlen+1); // initlen is length of init argument.
 
-After `sdsnewlen` successfully creates a Redis string the result is something like:
+After `sdsnewlen` successfully creates a String the result is something like:
 
     -----------
     |5|0|redis|
@@ -82,7 +82,7 @@ After `sdsnewlen` successfully creates a Redis string the result is something li
 
 `sdsnewlen` returns `sh->buf` to the caller.
 
-What do you do if you need to free the Redis string pointed by `sh`?
+What do you do if you need to free the String pointed by `sh`?
 
 You want the pointer `sh` but you only have the pointer `sh->buf`.
 
@@ -102,4 +102,4 @@ Look at `sdslen` function and see this trick at work:
 
 Knowing this trick you could easily go through the rest of the functions in `sds.c`.
 
-The Redis string implementation is hidden behind an interface that accepts only character pointers. The users of Redis strings need not care about how it's implemented and can treat Redis strings as a character pointer.
+The String implementation is hidden behind an interface that accepts only character pointers. The users of Strings need not care about how it's implemented and can treat Strings as a character pointer.

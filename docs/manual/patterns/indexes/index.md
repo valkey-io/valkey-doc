@@ -80,7 +80,7 @@ may want to index some field of an object which is stored elsewhere.
 Instead of using the sorted set value directly to store the data associated
 with the indexed field, it is possible to store just the ID of the object.
 
-For example I may have Redis hashes representing users. Each user is
+For example I may have Hashes representing users. Each user is
 represented by a single key, directly accessible by ID:
 
     HMSET user:1 id 1 username antirez ctime 1444809424 age 38
@@ -161,7 +161,7 @@ index.
 Lexicographical indexes
 ===
 
-Redis sorted sets have an interesting property. When elements are added
+Sorted sets have an interesting property. When elements are added
 with the same score, they are sorted lexicographically, comparing the
 strings as binary data with the `memcmp()` function.
 
@@ -723,7 +723,7 @@ all I need is to test if a given item exists or not or has a single boolean
 property or not.
 
 Similarly lists can be used in order to index items into a fixed order.
-I can add all my items into a Redis list and rotate the list with
+I can add all my items into a List and rotate the list with
 `RPOPLPUSH` using the same key name as source and destination. This is useful
 when I want to process a given set of items again and again forever in the
 same order. Think of an RSS feed system that needs to refresh the local copy
