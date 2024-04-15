@@ -54,11 +54,11 @@ For more information, see:
 
 ### Sorted sets
 
-[Sorted sets](/docs/data-types/sorted-sets) are collections of unique strings that maintain order by each string's associated score.
+[Sorted Sets](/docs/data-types/sorted-sets) are collections of unique strings that maintain order by each string's associated score.
 For more information, see:
 
-* [Overview of Sorted sets](/docs/data-types/sorted-sets)
-* [Sorted set command reference](/commands/?group=sorted-set)
+* [Overview of Sorted Sets](/docs/data-types/sorted-sets)
+* [Sorted Set command reference](/commands/?group=sorted-set)
 
 ### Streams
 

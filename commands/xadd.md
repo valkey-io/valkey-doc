@@ -52,7 +52,7 @@ When a user specified an explicit ID to `XADD`, the minimum valid ID is
 `0-1`, and the user *must* specify an ID which is greater than any other
 ID currently inside the stream, otherwise the command will fail and return an error. Usually
 resorting to specific IDs is useful only if you have another system generating
-unique IDs (for instance an SQL table) and you really want the stream
+unique IDs (for instance an SQL table) and you really want the Stream
 IDs to match the one of this other system.
 
 ## Capped streams

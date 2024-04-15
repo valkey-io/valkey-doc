@@ -161,7 +161,7 @@ index.
 Lexicographical indexes
 ===
 
-Sorted sets have an interesting property. When elements are added
+Sorted Sets have an interesting property. When elements are added
 with the same score, they are sorted lexicographically, comparing the
 strings as binary data with the `memcmp()` function.
 

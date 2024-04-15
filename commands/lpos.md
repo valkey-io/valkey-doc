@@ -1,4 +1,4 @@
-The command returns the index of matching elements inside a list.
+The command returns the index of matching elements inside a List.
 By default, when no options are given, it will scan the list from head to tail,
 looking for the first match of "element". If the element is found, its index (the zero-based position in the list) is returned. Otherwise, if no match is found, `nil` is returned.
 
