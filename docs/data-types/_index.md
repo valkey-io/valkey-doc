@@ -20,86 +20,86 @@ If you'd like to try a comprehensive tutorial for each data structure, see their
 
 ### Strings 
 
-[Redis strings](/docs/data-types/strings) are the most basic Redis data type, representing a sequence of bytes.
+[Strings](/docs/data-types/strings) are the most basic Redis data type, representing a sequence of bytes.
 For more information, see:
 
-* [Overview of Redis strings](/docs/data-types/strings/)
-* [Redis string command reference](/commands/?group=string)
+* [Overview of Strings](/docs/data-types/strings/)
+* [String command reference](/commands/?group=string)
 
 ### Lists
 
-[Redis lists](/docs/data-types/lists) are lists of strings sorted by insertion order.
+[Lists](/docs/data-types/lists) are lists of strings sorted by insertion order.
 For more information, see:
 
-* [Overview of Redis lists](/docs/data-types/lists/)
-* [Redis list command reference](/commands/?group=list)
+* [Overview of Lists](/docs/data-types/lists/)
+* [List command reference](/commands/?group=list)
 
 ### Sets
 
-[Redis sets](/docs/data-types/sets) are unordered collections of unique strings that act like the sets from your favorite programming language (for example, [Java HashSets](https://docs.oracle.com/javase/7/docs/api/java/util/HashSet.html), [Python sets](https://docs.python.org/3.10/library/stdtypes.html#set-types-set-frozenset), and so on).
-With a Redis set, you can add, remove, and test for existence in O(1) time (in other words, regardless of the number of set elements).
+[Sets](/docs/data-types/sets) are unordered collections of unique strings that act like the sets from your favorite programming language (for example, [Java HashSets](https://docs.oracle.com/javase/7/docs/api/java/util/HashSet.html), [Python sets](https://docs.python.org/3.10/library/stdtypes.html#set-types-set-frozenset), and so on).
+With a Set, you can add, remove, and test for existence in O(1) time (in other words, regardless of the number of set elements).
 For more information, see:
 
-* [Overview of Redis sets](/docs/data-types/sets/)
-* [Redis set command reference](/commands/?group=set)
+* [Overview of Sets](/docs/data-types/sets/)
+* [Set command reference](/commands/?group=set)
 
 ### Hashes
 
-[Redis hashes](/docs/data-types/hashes) are record types modeled as collections of field-value pairs.
-As such, Redis hashes resemble [Python dictionaries](https://docs.python.org/3/tutorial/datastructures.html#dictionaries), [Java HashMaps](https://docs.oracle.com/javase/8/docs/api/java/util/HashMap.html), and [Ruby hashes](https://ruby-doc.org/core-3.1.2/Hash.html).
+[Hashes](/docs/data-types/hashes) are record types modeled as collections of field-value pairs.
+As such, Hashes resemble [Python dictionaries](https://docs.python.org/3/tutorial/datastructures.html#dictionaries), [Java HashMaps](https://docs.oracle.com/javase/8/docs/api/java/util/HashMap.html), and [Ruby hashes](https://ruby-doc.org/core-3.1.2/Hash.html).
 For more information, see:
 
-* [Overview of Redis hashes](/docs/data-types/hashes/)
-* [Redis hashes command reference](/commands/?group=hash)
+* [Overview of Hashes](/docs/data-types/hashes/)
+* [Hashes command reference](/commands/?group=hash)
 
 ### Sorted sets
 
-[Redis sorted sets](/docs/data-types/sorted-sets) are collections of unique strings that maintain order by each string's associated score.
+[Sorted Sets](/docs/data-types/sorted-sets) are collections of unique strings that maintain order by each string's associated score.
 For more information, see:
 
-* [Overview of Redis sorted sets](/docs/data-types/sorted-sets)
-* [Redis sorted set command reference](/commands/?group=sorted-set)
+* [Overview of Sorted Sets](/docs/data-types/sorted-sets)
+* [Sorted Set command reference](/commands/?group=sorted-set)
 
 ### Streams
 
-A [Redis stream](/docs/data-types/streams) is a data structure that acts like an append-only log.
+A [Stream](/docs/data-types/streams) is a data structure that acts like an append-only log.
 Streams help record events in the order they occur and then syndicate them for processing.
 For more information, see:
 
-* [Overview of Redis Streams](/docs/data-types/streams)
-* [Redis Streams command reference](/commands/?group=stream)
+* [Overview of Streams](/docs/data-types/streams)
+* [Streams command reference](/commands/?group=stream)
 
 ### Geospatial indexes
 
-[Redis geospatial indexes](/docs/data-types/geospatial) are useful for finding locations within a given geographic radius or bounding box.
+[Geospatial indexes](/docs/data-types/geospatial) are useful for finding locations within a given geographic radius or bounding box.
 For more information, see:
 
-* [Overview of Redis geospatial indexes](/docs/data-types/geospatial/)
-* [Redis geospatial indexes command reference](/commands/?group=geo)
+* [Overview of Geospatial indexes](/docs/data-types/geospatial/)
+* [Geospatial indexes command reference](/commands/?group=geo)
 
 ### Bitmaps
 
-[Redis bitmaps](/docs/data-types/bitmaps/) let you perform bitwise operations on strings. 
+[Bitmaps](/docs/data-types/bitmaps/) let you perform bitwise operations on strings. 
 For more information, see:
 
-* [Overview of Redis bitmaps](/docs/data-types/bitmaps/)
-* [Redis bitmap command reference](/commands/?group=bitmap)
+* [Overview of Bitmaps](/docs/data-types/bitmaps/)
+* [Bitmap command reference](/commands/?group=bitmap)
 
 ### Bitfields
 
-[Redis bitfields](/docs/data-types/bitfields/) efficiently encode multiple counters in a string value.
+[Bitfields](/docs/data-types/bitfields/) efficiently encode multiple counters in a string value.
 Bitfields provide atomic get, set, and increment operations and support different overflow policies.
 For more information, see:
 
-* [Overview of Redis bitfields](/docs/data-types/bitfields/)
+* [Overview of Bitfields](/docs/data-types/bitfields/)
 * The `BITFIELD` command.
 
 ### HyperLogLog
 
-The [Redis HyperLogLog](/docs/data-types/hyperloglogs) data structures provide probabilistic estimates of the cardinality (i.e., number of elements) of large sets. For more information, see:
+The [HyperLogLog](/docs/data-types/hyperloglogs) data structures provide probabilistic estimates of the cardinality (i.e., number of elements) of large sets. For more information, see:
 
-* [Overview of Redis HyperLogLog](/docs/data-types/hyperloglogs)
-* [Redis HyperLogLog command reference](/commands/?group=hyperloglog)
+* [Overview of HyperLogLog](/docs/data-types/hyperloglogs)
+* [HyperLogLog command reference](/commands/?group=hyperloglog)
 
 ## Extensions
 

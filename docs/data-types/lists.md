@@ -1,13 +1,13 @@
 ﻿---
-title: "Redis lists"
+title: "Lists"
 linkTitle: "Lists"
 weight: 20
 description: >
-    Introduction to Redis lists
+    Introduction to Lists
 ---
 
-Redis lists are linked lists of string values.
-Redis lists are frequently used to:
+Lists are linked lists of string values.
+Lists are frequently used to:
 
 * Implement stacks and queues.
 * Build queue management for background worker systems.
@@ -102,7 +102,7 @@ elements: 10,20,1,2,3 is a list. But the properties of a List implemented using
 an Array are very different from the properties of a List implemented using a
 *Linked List*.
 
-Redis lists are implemented via Linked Lists. This means that even if you have
+Lists are implemented via Linked Lists. This means that even if you have
 millions of elements inside a list, the operation of adding a new element in
 the head or in the tail of the list is performed *in constant time*. The speed of adding a
 new element with the `LPUSH` command to the head of a list with ten
@@ -114,16 +114,16 @@ implemented with an Array (constant time indexed access) and not so fast in
 lists implemented by linked lists (where the operation requires an amount of
 work proportional to the index of the accessed element).
 
-Redis Lists are implemented with linked lists because for a database system it
+Lists are implemented with linked lists because for a database system it
 is crucial to be able to add elements to a very long list in a very fast way.
-Another strong advantage, as you'll see in a moment, is that Redis Lists can be
+Another strong advantage, as you'll see in a moment, is that Lists can be
 taken at constant length in constant time.
 
 When fast access to the middle of a large collection of elements is important,
 there is a different data structure that can be used, called sorted sets.
 Sorted sets are covered in the [Sorted sets](/docs/data-types/sorted-sets) tutorial page.
 
-### First steps with Redis Lists
+### First steps with Lists
 
 The `LPUSH` command adds a new element into a list, on the
 left (at the head), while the `RPUSH` command adds a new
@@ -166,7 +166,7 @@ multiple elements into a list in a single call:
 5) "bike:3"
 {{< /clients-example >}}
 
-An important operation defined on Redis lists is the ability to *pop elements*.
+An important operation defined on Lists is the ability to *pop elements*.
 Popping elements is the operation of both retrieving the element from the list,
 and eliminating it from the list, at the same time. You can pop elements
 from left and right, similarly to how you can push elements in both sides
@@ -199,11 +199,11 @@ are the following:
 * Communication between processes, using a consumer-producer pattern where the producer pushes items into a list, and a consumer (usually a *worker*) consumes those items and executes actions. Redis has special list commands to make this use case both more reliable and efficient.
 
 For example both the popular Ruby libraries [resque](https://github.com/resque/resque) and
-[sidekiq](https://github.com/mperham/sidekiq) use Redis lists under the hood in order to
+[sidekiq](https://github.com/mperham/sidekiq) use Lists under the hood in order to
 implement background jobs.
 
 The popular Twitter social network [takes the latest tweets](http://www.infoq.com/presentations/Real-Time-Delivery-Twitter)
-posted by users into Redis lists.
+posted by users into Lists.
 
 To describe a common use case step by step, imagine your home page shows the latest
 photos published in a photo sharing social network and you want to speedup access.
@@ -395,7 +395,7 @@ Example of rule 3:
 
 ## Limits
 
-The max length of a Redis list is 2^32 - 1 (4,294,967,295) elements.
+The max length of a List is 2^32 - 1 (4,294,967,295) elements.
 
 
 ## Performance
@@ -407,9 +407,9 @@ Exercise caution when running these commands, mainly when operating on large lis
 
 ## Alternatives
 
-Consider [Redis streams](/docs/data-types/streams) as an alternative to lists when you need to store and process an indeterminate series of events.
+Consider [Streams](/docs/data-types/streams) as an alternative to lists when you need to store and process an indeterminate series of events.
 
 ## Learn more
 
-* [Redis Lists Explained](https://www.youtube.com/watch?v=PB5SeOkkxQc) is a short, comprehensive video explainer on Redis lists.
-* [Redis University's RU101](https://university.redis.com/courses/ru101/) covers Redis lists in detail.
+* [Lists Explained](https://www.youtube.com/watch?v=PB5SeOkkxQc) is a short, comprehensive video explainer on Lists.
+* [Redis University's RU101](https://university.redis.com/courses/ru101/) covers Lists in detail.

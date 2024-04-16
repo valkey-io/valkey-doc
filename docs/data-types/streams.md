@@ -1,18 +1,18 @@
 ---
-title: "Redis Streams"
+title: "Streams"
 linkTitle: "Streams"
 weight: 60
 description: >
-    Introduction to Redis streams
+    Introduction to Streams
 aliases:
     - /topics/streams-intro
     - /docs/manual/data-types/streams    
     - /docs/data-types/streams-tutorial/ 
 ---
 
-A Redis stream is a data structure that acts like an append-only log but also implements several operations to overcome some of the limits of a typical append-only log. These include random access in O(1) time and complex consumption strategies, such as consumer groups.
+A Stream is a data structure that acts like an append-only log but also implements several operations to overcome some of the limits of a typical append-only log. These include random access in O(1) time and complex consumption strategies, such as consumer groups.
 You can use streams to record and simultaneously syndicate events in real time.
-Examples of Redis stream use cases include:
+Examples of Stream use cases include:
 
 * Event sourcing (e.g., tracking user actions, clicks, etc.)
 * Sensor monitoring (e.g., readings from devices in the field) 
@@ -21,7 +21,7 @@ Examples of Redis stream use cases include:
 Redis generates a unique ID for each stream entry.
 You can use these IDs to retrieve their associated entries later or to read and process all subsequent entries in the stream. Note that because these IDs are related to time, the ones shown here may vary and will be different from the IDs you see in your own Redis instance.
 
-Redis streams support several trimming strategies (to prevent streams from growing unbounded) and more than one consumption strategy (see `XREAD`, `XREADGROUP`, and `XRANGE`).
+Streams support several trimming strategies (to prevent streams from growing unbounded) and more than one consumption strategy (see `XREAD`, `XREADGROUP`, and `XRANGE`).
 
 ## Basic commands
 * `XADD` adds a new entry to a stream.
@@ -80,7 +80,7 @@ Accessing any single entry is O(n), where _n_ is the length of the ID.
 Since stream IDs are typically short and of a fixed length, this effectively reduces to a constant time lookup.
 For details on why, note that streams are implemented as [radix trees](https://en.wikipedia.org/wiki/Radix_tree).
 
-Simply put, Redis streams provide highly efficient inserts and reads.
+Simply put, Streams provide highly efficient inserts and reads.
 See each command's time complexity for the details.
 
 
@@ -88,7 +88,7 @@ See each command's time complexity for the details.
 
 Streams are an append-only data structure. The fundamental write command, called `XADD`, appends a new entry to the specified stream.
 
-Each stream entry consists of one or more field-value pairs, somewhat like a dictionary or a Redis hash:
+Each stream entry consists of one or more field-value pairs, somewhat like a dictionary or a Hash:
 
 {{< clients-example stream_tutorial xadd_2 >}}
 > XADD race:france * rider Castilla speed 29.9 position 1 location_id 2
@@ -114,7 +114,7 @@ The entry ID returned by the `XADD` command, and identifying univocally each ent
 
 The milliseconds time part is actually the local time in the local Redis node generating the stream ID, however if the current milliseconds time happens to be smaller than the previous entry time, then the previous entry time is used instead, so if a clock jumps backward the monotonically incrementing ID property still holds. The sequence number is used for entries created in the same millisecond. Since the sequence number is 64 bit wide, in practical terms there is no limit to the number of entries that can be generated within the same millisecond.
 
-The format of such IDs may look strange at first, and the gentle reader may wonder why the time is part of the ID. The reason is that Redis streams support range queries by ID. Because the ID is related to the time the entry is generated, this gives the ability to query for time ranges basically for free. We will see this soon while covering the `XRANGE` command.
+The format of such IDs may look strange at first, and the gentle reader may wonder why the time is part of the ID. The reason is that Streams support range queries by ID. Because the ID is related to the time the entry is generated, this gives the ability to query for time ranges basically for free. We will see this soon while covering the `XRANGE` command.
 
 If for some reason the user needs incremental IDs that are not related to time but are actually associated to another external system ID, as previously mentioned, the `XADD` command can take an explicit ID instead of the `*` wildcard ID that triggers auto-generation, like in the following examples:
 
@@ -145,9 +145,9 @@ Now we are finally able to append entries in our stream via `XADD`. However, whi
 
 However, this is just one potential access mode. We could also see a stream in quite a different way: not as a messaging system, but as a *time series store*. In this case, maybe it's also useful to get the new messages appended, but another natural query mode is to get messages by ranges of time, or alternatively to iterate the messages using a cursor to incrementally check all the history. This is definitely another useful access mode.
 
-Finally, if we see a stream from the point of view of consumers, we may want to access the stream in yet another way, that is, as a stream of messages that can be partitioned to multiple consumers that are processing such messages, so that groups of consumers can only see a subset of the messages arriving in a single stream. In this way, it is possible to scale the message processing across different consumers, without single consumers having to process all the messages: each consumer will just get different messages to process. This is basically what Kafka (TM) does with consumer groups. Reading messages via consumer groups is yet another interesting mode of reading from a Redis Stream.
+Finally, if we see a stream from the point of view of consumers, we may want to access the stream in yet another way, that is, as a stream of messages that can be partitioned to multiple consumers that are processing such messages, so that groups of consumers can only see a subset of the messages arriving in a single stream. In this way, it is possible to scale the message processing across different consumers, without single consumers having to process all the messages: each consumer will just get different messages to process. This is basically what Kafka (TM) does with consumer groups. Reading messages via consumer groups is yet another interesting mode of reading from a Stream.
 
-Redis Streams support all three of the query modes described above via different commands. The next sections will show them all, starting from the simplest and most direct to use: range queries.
+Streams support all three of the query modes described above via different commands. The next sections will show them all, starting from the simplest and most direct to use: range queries.
 
 ### Querying by range: XRANGE and XREVRANGE
 
@@ -379,7 +379,7 @@ In a way, a consumer group can be imagined as some *amount of state* about a str
 +----------------------------------------+
 ```
 
-If you see this from this point of view, it is very simple to understand what a consumer group can do, how it is able to just provide consumers with their history of pending messages, and how consumers asking for new messages will just be served with message IDs greater than `last_delivered_id`. At the same time, if you look at the consumer group as an auxiliary data structure for Redis streams, it is obvious that a single stream can have multiple consumer groups, that have a different set of consumers. Actually, it is even possible for the same stream to have clients reading without consumer groups via `XREAD`, and clients reading via `XREADGROUP` in different consumer groups.
+If you see this from this point of view, it is very simple to understand what a consumer group can do, how it is able to just provide consumers with their history of pending messages, and how consumers asking for new messages will just be served with message IDs greater than `last_delivered_id`. At the same time, if you look at the consumer group as an auxiliary data structure for Streams, it is obvious that a single stream can have multiple consumer groups, that have a different set of consumers. Actually, it is even possible for the same stream to have clients reading without consumer groups via `XREAD`, and clients reading via `XREADGROUP` in different consumer groups.
 
 Now it's time to zoom in to see the fundamental consumer group commands. They are the following:
 
@@ -629,7 +629,7 @@ The message was successfully claimed by Alice, who can now process the message a
 
 It is clear from the example above that as a side effect of successfully claiming a given message, the `XCLAIM` command also returns it. However this is not mandatory. The **JUSTID** option can be used in order to return just the IDs of the message successfully claimed. This is useful if you want to reduce the bandwidth used between the client and the server (and also the performance of the command) and you are not interested in the message because your consumer is implemented in a way that it will rescan the history of pending messages from time to time.
 
-Claiming may also be implemented by a separate process: one that just checks the list of pending messages, and assigns idle messages to consumers that appear to be active. Active consumers can be obtained using one of the observability features of Redis streams. This is the topic of the next section.
+Claiming may also be implemented by a separate process: one that just checks the list of pending messages, and assigns idle messages to consumers that appear to be active. Active consumers can be obtained using one of the observability features of Streams. This is the topic of the next section.
 
 ## Automatic claiming
 
@@ -672,11 +672,11 @@ That doesn't mean that there are no new idle pending messages, so the process co
 
 The counter that you observe in the `XPENDING` output is the number of deliveries of each message. The counter is incremented in two ways: when a message is successfully claimed via `XCLAIM` or when an `XREADGROUP` call is used in order to access the history of pending messages.
 
-When there are failures, it is normal that messages will be delivered multiple times, but eventually they usually get processed and acknowledged. However there might be a problem processing some specific message, because it is corrupted or crafted in a way that triggers a bug in the processing code. In such a case what happens is that consumers will continuously fail to process this particular message. Because we have the counter of the delivery attempts, we can use that counter to detect messages that for some reason are not processable. So once the deliveries counter reaches a given large number that you chose, it is probably wiser to put such messages in another stream and send a notification to the system administrator. This is basically the way that Redis Streams implements the *dead letter* concept.
+When there are failures, it is normal that messages will be delivered multiple times, but eventually they usually get processed and acknowledged. However there might be a problem processing some specific message, because it is corrupted or crafted in a way that triggers a bug in the processing code. In such a case what happens is that consumers will continuously fail to process this particular message. Because we have the counter of the delivery attempts, we can use that counter to detect messages that for some reason are not processable. So once the deliveries counter reaches a given large number that you chose, it is probably wiser to put such messages in another stream and send a notification to the system administrator. This is basically the way that Streams implements the *dead letter* concept.
 
 ## Streams observability
 
-Messaging systems that lack observability are very hard to work with. Not knowing who is consuming messages, what messages are pending, the set of consumer groups active in a given stream, makes everything opaque. For this reason, Redis Streams and consumer groups have different ways to observe what is happening. We already covered `XPENDING`, which allows us to inspect the list of messages that are under processing at a given moment, together with their idle time and number of deliveries.
+Messaging systems that lack observability are very hard to work with. Not knowing who is consuming messages, what messages are pending, the set of consumer groups active in a given stream, makes everything opaque. For this reason, Streams and consumer groups have different ways to observe what is happening. We already covered `XPENDING`, which allows us to inspect the list of messages that are under processing at a given moment, together with their idle time and number of deliveries.
 
 However we may want to do more than that, and the `XINFO` command is an observability interface that can be used with sub-commands in order to get information about streams or consumer groups.
 
@@ -761,11 +761,11 @@ In case you do not remember the syntax of the command, just ask the command itse
 
 ## Differences with Kafka (TM) partitions
 
-Consumer groups in Redis streams may resemble in some way Kafka (TM) partitioning-based consumer groups, however note that Redis streams are, in practical terms, very different. The partitions are only *logical* and the messages are just put into a single Redis key, so the way the different clients are served is based on who is ready to process new messages, and not from which partition clients are reading. For instance, if the consumer C3 at some point fails permanently, Redis will continue to serve C1 and C2 all the new messages arriving, as if now there are only two *logical* partitions.
+Consumer groups in Streams may resemble in some way Kafka (TM) partitioning-based consumer groups, however note that Streams are, in practical terms, very different. The partitions are only *logical* and the messages are just put into a single Redis key, so the way the different clients are served is based on who is ready to process new messages, and not from which partition clients are reading. For instance, if the consumer C3 at some point fails permanently, Redis will continue to serve C1 and C2 all the new messages arriving, as if now there are only two *logical* partitions.
 
 Similarly, if a given consumer is much faster at processing messages than the other consumers, this consumer will receive proportionally more messages in the same unit of time. This is possible since Redis tracks all the unacknowledged messages explicitly, and remembers who received which message and the ID of the first message never delivered to any consumer.
 
-However, this also means that in Redis if you really want to partition messages in the same stream into multiple Redis instances, you have to use multiple keys and some sharding system such as Redis Cluster or some other application-specific sharding system. A single Redis stream is not automatically partitioned to multiple instances.
+However, this also means that in Redis if you really want to partition messages in the same stream into multiple Redis instances, you have to use multiple keys and some sharding system such as Redis Cluster or some other application-specific sharding system. A single Stream is not automatically partitioned to multiple instances.
 
 We could say that schematically the following is true:
 
@@ -777,7 +777,7 @@ So basically Kafka partitions are more similar to using N different Redis keys, 
 
 ## Capped Streams
 
-Many applications do not want to collect data into a stream forever. Sometimes it is useful to have at maximum a given number of items inside a stream, other times once a given size is reached, it is useful to move data from Redis to a storage which is not in memory and not as fast but suited to store the history for, potentially, decades to come. Redis streams have some support for this. One is the **MAXLEN** option of the `XADD` command. This option is very simple to use:
+Many applications do not want to collect data into a stream forever. Sometimes it is useful to have at maximum a given number of items inside a stream, other times once a given size is reached, it is useful to move data from Redis to a storage which is not in memory and not as fast but suited to store the history for, potentially, decades to come. Streams have some support for this. One is the **MAXLEN** option of the `XADD` command. This option is very simple to use:
 
 {{< clients-example stream_tutorial maxlen >}}
 > XADD race:italy MAXLEN 2 * rider Jones
@@ -847,13 +847,13 @@ So we have `-`, `+`, `$`, `>` and `*`, and all have a different meaning, and mos
 
 A Stream, like any other Redis data structure, is asynchronously replicated to replicas and persisted into AOF and RDB files. However what may not be so obvious is that also the consumer groups full state is propagated to AOF, RDB and replicas, so if a message is pending in the master, also the replica will have the same information. Similarly, after a restart, the AOF will restore the consumer groups' state.
 
-However note that Redis streams and consumer groups are persisted and replicated using the Redis default replication, so:
+However note that Streams and consumer groups are persisted and replicated using the Redis default replication, so:
 
 * AOF must be used with a strong fsync policy if persistence of messages is important in your application.
 * By default the asynchronous replication will not guarantee that `XADD` commands or consumer groups state changes are replicated: after a failover something can be missing depending on the ability of replicas to receive the data from the master.
 * The `WAIT` command may be used in order to force the propagation of the changes to a set of replicas. However note that while this makes it very unlikely that data is lost, the Redis failover process as operated by Sentinel or Redis Cluster performs only a *best effort* check to failover to the replica which is the most updated, and under certain specific failure conditions may promote a replica that lacks some data.
 
-So when designing an application using Redis streams and consumer groups, make sure to understand the semantical properties your application should have during failures, and configure things accordingly, evaluating whether it is safe enough for your use case.
+So when designing an application using Streams and consumer groups, make sure to understand the semantical properties your application should have during failures, and configure things accordingly, evaluating whether it is safe enough for your use case.
 
 ## Removing single items from a stream
 
@@ -929,6 +929,6 @@ A few remarks:
 
 ## Learn more
 
-* The [Redis Streams Tutorial](/docs/data-types/streams-tutorial) explains Redis streams with many examples.
-* [Redis Streams Explained](https://www.youtube.com/watch?v=Z8qcpXyMAiA) is an entertaining introduction to streams in Redis.
-* [Redis University's RU202](https://university.redis.com/courses/ru202/) is a free, online course dedicated to Redis Streams.
+* The [Streams Tutorial](/docs/data-types/streams-tutorial) explains Streams with many examples.
+* [Streams Explained](https://www.youtube.com/watch?v=Z8qcpXyMAiA) is an entertaining introduction to streams in Redis.
+* [Redis University's RU202](https://university.redis.com/courses/ru202/) is a free, online course dedicated to Streams.

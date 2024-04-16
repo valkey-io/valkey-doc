@@ -4,7 +4,7 @@ This command has an option to block if items are not available, in a similar
 fashion to `BRPOP` or `BZPOPMIN` and others.
 
 Please note that before reading this page, if you are new to streams,
-we recommend to read [our introduction to Valkey Streams](/topics/streams-intro).
+we recommend to read [our introduction to Streams](/topics/streams-intro).
 
 ## Non-blocking usage
 
@@ -197,6 +197,6 @@ are not removed from the stream when clients are served, so every
 client waiting will be served as soon as an `XADD` command provides
 data to the stream.
 
-Reading the [Valkey Streams introduction](/topics/streams-intro) is highly
+Reading the [Streams introduction](/topics/streams-intro) is highly
 suggested in order to understand more about the streams overall behavior
 and semantics.

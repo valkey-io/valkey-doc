@@ -1,12 +1,12 @@
 ﻿---
-title: "Redis hashes"
+title: "Hashes"
 linkTitle: "Hashes"
 weight: 40
 description: >
-    Introduction to Redis hashes
+    Introduction to Hashes
 ---
 
-Redis hashes are record types structured as collections of field-value pairs.
+Hashes are record types structured as collections of field-value pairs.
 You can use hashes to represent basic objects and to store groupings of counters, among other things.
 
 {{< clients-example hash_tutorial set_get_all >}}
@@ -91,7 +91,7 @@ See the [complete list of hash commands](https://redis.io/commands/?group=hash).
 
 ## Performance
 
-Most Redis hash commands are O(1).
+Most Hash commands are O(1).
 
 A few commands - such as `HKEYS`, `HVALS`, and `HGETALL` - are O(n), where _n_ is the number of field-value pairs.
 
@@ -102,5 +102,5 @@ In practice, your hashes are limited only by the overall memory on the VMs hosti
 
 ## Learn more
 
-* [Redis Hashes Explained](https://www.youtube.com/watch?v=-KdITaRkQ-U) is a short, comprehensive video explainer covering Redis hashes.
-* [Redis University's RU101](https://university.redis.com/courses/ru101/) covers Redis hashes in detail.
+* [Hashes Explained](https://www.youtube.com/watch?v=-KdITaRkQ-U) is a short, comprehensive video explainer covering Hashes.
+* [Redis University's RU101](https://university.redis.com/courses/ru101/) covers Hashes in detail.

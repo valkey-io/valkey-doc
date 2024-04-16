@@ -48,7 +48,7 @@ As the name suggests, it means that a message will be delivered once if at all.
 Once the message is sent by the Redis server, there's no chance of it being sent again.
 If the subscriber is unable to handle the message (for example, due to an error or a network disconnect) the message is forever lost.
 
-If your application requires stronger delivery guarantees, you may want to learn about [Redis Streams](/docs/data-types/streams-tutorial).
+If your application requires stronger delivery guarantees, you may want to learn about [Streams](/docs/data-types/streams-tutorial).
 Messages in streams are persisted, and support both _at-most-once_ as well as _at-least-once_ delivery semantics.
 
 ## Format of pushed messages

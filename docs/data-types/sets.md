@@ -1,13 +1,13 @@
 ﻿---
-title: "Redis sets"
+title: "Sets"
 linkTitle: "Sets"
 weight: 30
 description: >
-    Introduction to Redis sets
+    Introduction to Sets
 ---
 
-A Redis set is an unordered collection of unique strings (members).
-You can use Redis sets to efficiently:
+A Set is an unordered collection of unique strings (members).
+You can use Sets to efficiently:
 
 * Track unique items (e.g., track all unique IP addresses accessing a given blog post).
 * Represent relations (e.g., the set of all users with a given role).
@@ -156,7 +156,7 @@ set without removing it using the `SRANDMEMBER` command:
 
 ## Limits
 
-The max size of a Redis set is 2^32 - 1 (4,294,967,295) members.
+The max size of a Set is 2^32 - 1 (4,294,967,295) members.
 
 ## Performance
 
@@ -173,5 +173,5 @@ If you're concerned about memory usage and don't need perfect precision, conside
 
 ## Learn more
 
-* [Redis Sets Explained](https://www.youtube.com/watch?v=PKdCppSNTGQ) and [Redis Sets Elaborated](https://www.youtube.com/watch?v=aRw5ME_5kMY) are two short but thorough video explainers covering Redis sets.
-* [Redis University's RU101](https://university.redis.com/courses/ru101/) explores Redis sets in detail.
+* [Sets Explained](https://www.youtube.com/watch?v=PKdCppSNTGQ) and [Sets Elaborated](https://www.youtube.com/watch?v=aRw5ME_5kMY) are two short but thorough video explainers covering Sets.
+* [Redis University's RU101](https://university.redis.com/courses/ru101/) explores Sets in detail.

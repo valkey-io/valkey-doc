@@ -166,8 +166,8 @@ of XRANGE:
 
 ## Additional information about streams
 
-For further information about Valkey streams please check our
-[introduction to Valkey Streams document](/topics/streams-intro).
+For further information about streams please check our
+[introduction to Streams document](/topics/streams-intro).
 
 @examples
 

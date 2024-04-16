@@ -14,7 +14,7 @@ directly.
 
 By using these capabilities in order to build new abstractions on top of existing
 Redis data structures, or by using strings DMA in order to encode modules
-data structures into Redis strings, it is possible to create modules that
+data structures into Strings, it is possible to create modules that
 *feel like* they are exporting new data types. However, for more complex
 problems, this is not enough, and the implementation of new data structures
 inside the module is needed.

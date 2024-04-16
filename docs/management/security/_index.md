@@ -158,7 +158,7 @@ While it would be a strange use case, the application should avoid composing the
 
 ## Code security
 
-In a classical Valkey setup, clients are allowed full access to the command set,
+In a classical setup, clients are allowed full access to the command set,
 but accessing the instance should never result in the ability to control the
 system where Valkey is running.
 

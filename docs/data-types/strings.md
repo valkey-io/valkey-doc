@@ -1,12 +1,12 @@
 ﻿---
-title: "Redis Strings"
+title: "Strings"
 linkTitle: "Strings"
 weight: 10
 description: >
-    Introduction to Redis strings
+    Introduction to Strings
 ---
 
-Redis strings store sequences of bytes, including text, serialized objects, and binary arrays.
+Strings store sequences of bytes, including text, serialized objects, and binary arrays.
 As such, strings are the simplest type of value you can associate with
 a Redis key.
 They're often used for caching, but they support additional functionality that lets you implement counters and perform bitwise operations, too.
@@ -95,7 +95,7 @@ clients are not executing a command at the same time.
 
 ## Limits
 
-By default, a single Redis string can be a maximum of 512 MB.
+By default, a single String can be a maximum of 512 MB.
 
 ## Basic commands
 
@@ -129,5 +129,5 @@ If you're storing structured data as a serialized string, you may also want to c
 
 ## Learn more
 
-* [Redis Strings Explained](https://www.youtube.com/watch?v=7CUt4yWeRQE) is a short, comprehensive video explainer on Redis strings.
-* [Redis University's RU101](https://university.redis.com/courses/ru101/) covers Redis strings in detail.
+* [Strings Explained](https://www.youtube.com/watch?v=7CUt4yWeRQE) is a short, comprehensive video explainer on Strings.
+* [Redis University's RU101](https://university.redis.com/courses/ru101/) covers Strings in detail.

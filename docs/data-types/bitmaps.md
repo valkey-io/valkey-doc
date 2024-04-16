@@ -1,9 +1,9 @@
 ---
-title: "Redis bitmaps"
+title: "Bitmaps"
 linkTitle: "Bitmaps"
 weight: 120
 description: >
-    Introduction to Redis bitmaps
+    Introduction to Bitmaps
 ---
 
 Bitmaps are not an actual data type, but a set of bit-oriented operations
@@ -109,5 +109,5 @@ the Nth bit to address inside the key with `bit-number MOD M`.
 
 ## Learn more
 
-* [Redis Bitmaps Explained](https://www.youtube.com/watch?v=oj8LdJQjhJo) teaches you how to use bitmaps for map exploration in an online game. 
-* [Redis University's RU101](https://university.redis.com/courses/ru101/) covers Redis bitmaps in detail.
+* [Bitmaps Explained](https://www.youtube.com/watch?v=oj8LdJQjhJo) teaches you how to use bitmaps for map exploration in an online game. 
+* [Redis University's RU101](https://university.redis.com/courses/ru101/) covers Bitmaps in detail.

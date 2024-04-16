@@ -6,7 +6,7 @@ description: >
     Introduction to the Redis Geospatial data type
 ---
 
-Redis geospatial indexes let you store coordinates and search for them.
+Geospatial indexes let you store coordinates and search for them.
 This data structure is useful for finding nearby points within a given radius or bounding box.
 
 ## Basic commands
@@ -45,4 +45,4 @@ Find all locations within a 5 kilometer radius of a given location, and return t
 ## Learn more
 
 * [Redis Geospatial Explained](https://www.youtube.com/watch?v=qftiVQraxmI) introduces geospatial indexes by showing you how to build a map of local park attractions.
-* [Redis University's RU101](https://university.redis.com/courses/ru101/) covers Redis geospatial indexes in detail.
+* [Redis University's RU101](https://university.redis.com/courses/ru101/) covers Geospatial indexes in detail.

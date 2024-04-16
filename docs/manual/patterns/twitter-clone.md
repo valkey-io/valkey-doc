@@ -153,7 +153,7 @@ The Hash data type
 
 This is the last data structure we use in our program, and is extremely easy
 to grasp since there is an equivalent in almost every programming language out
-there: Hashes. Redis Hashes are basically like Ruby or Python hashes, a
+there: Hashes. Hashes are basically like Ruby or Python hashes, a
 collection of fields associated with values:
 
     HMSET myuser name Salvatore surname Sanfilippo country Italy
@@ -417,7 +417,7 @@ Now it should be pretty clear how we can use `LRANGE` in order to get ranges of 
 `showPost` will simply convert and print a Post in HTML while `showUserPosts` gets a range of posts and then passes them to `showPosts`.
 
 *Note: `LRANGE` is not very efficient if the list of posts start to be very
-big, and we want to access elements which are in the middle of the list, since Redis Lists are backed by linked lists. If a system is designed for
+big, and we want to access elements which are in the middle of the list, since Lists are backed by linked lists. If a system is designed for
 deep pagination of million of items, it is better to resort to Sorted Sets
 instead.*
 
