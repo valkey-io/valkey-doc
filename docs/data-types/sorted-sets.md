@@ -234,8 +234,3 @@ Most sorted set operations are O(log(n)), where _n_ is the number of members.
 
 Exercise some caution when running the `ZRANGE` command with large returns values (e.g., in the tens of thousands or more).
 This command's time complexity is O(log(n) + m), where _m_ is the number of results returned. 
-
-## Learn more
-
-* [Sorted Sets Explained](https://www.youtube.com/watch?v=MUKlxdBQZ7g) is an entertaining introduction to sorted sets in Redis.
-* [Redis University's RU101](https://university.redis.com/courses/ru101/) explores Sorted Sets in detail.

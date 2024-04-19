@@ -165,8 +165,3 @@ This means that they're highly efficient.
 However, for large sets with hundreds of thousands of members or more, you should exercise caution when running the `SMEMBERS` command.
 This command is O(n) and returns the entire set in a single response. 
 As an alternative, consider the `SSCAN`, which lets you retrieve all members of a set iteratively.
-
-## Learn more
-
-* [Sets Explained](https://www.youtube.com/watch?v=PKdCppSNTGQ) and [Sets Elaborated](https://www.youtube.com/watch?v=aRw5ME_5kMY) are two short but thorough video explainers covering Sets.
-* [Redis University's RU101](https://university.redis.com/courses/ru101/) explores Sets in detail.

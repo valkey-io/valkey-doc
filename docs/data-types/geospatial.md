@@ -41,8 +41,3 @@ Find all locations within a 5 kilometer radius of a given location, and return t
 3) 1) "station:3"
    2) "2.2441"
 {{< /clients-example >}}
-
-## Learn more
-
-* [Redis Geospatial Explained](https://www.youtube.com/watch?v=qftiVQraxmI) introduces geospatial indexes by showing you how to build a map of local park attractions.
-* [Redis University's RU101](https://university.redis.com/courses/ru101/) covers Geospatial indexes in detail.

@@ -930,5 +930,3 @@ A few remarks:
 ## Learn more
 
 * The [Streams Tutorial](/docs/data-types/streams-tutorial) explains Streams with many examples.
-* [Streams Explained](https://www.youtube.com/watch?v=Z8qcpXyMAiA) is an entertaining introduction to streams in Redis.
-* [Redis University's RU202](https://university.redis.com/courses/ru202/) is a free, online course dedicated to Streams.

@@ -408,8 +408,3 @@ Exercise caution when running these commands, mainly when operating on large lis
 ## Alternatives
 
 Consider [Streams](/docs/data-types/streams) as an alternative to lists when you need to store and process an indeterminate series of events.
-
-## Learn more
-
-* [Lists Explained](https://www.youtube.com/watch?v=PB5SeOkkxQc) is a short, comprehensive video explainer on Lists.
-* [Redis University's RU101](https://university.redis.com/courses/ru101/) covers Lists in detail.

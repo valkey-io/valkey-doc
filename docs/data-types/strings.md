@@ -126,8 +126,3 @@ These random-access string commands may cause performance issues when dealing wi
 ## Alternatives
 
 If you're storing structured data as a serialized string, you may also want to consider Redis [hashes](/docs/data-types/hashes).
-
-## Learn more
-
-* [Strings Explained](https://www.youtube.com/watch?v=7CUt4yWeRQE) is a short, comprehensive video explainer on Strings.
-* [Redis University's RU101](https://university.redis.com/courses/ru101/) covers Strings in detail.
