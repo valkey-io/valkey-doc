@@ -166,11 +166,6 @@ However, for large sets with hundreds of thousands of members or more, you shoul
 This command is O(n) and returns the entire set in a single response. 
 As an alternative, consider the `SSCAN`, which lets you retrieve all members of a set iteratively.
 
-## Alternatives
-
-Sets membership checks on large datasets (or on streaming data) can use a lot of memory.
-If you're concerned about memory usage and don't need perfect precision, consider a [Bloom filter or Cuckoo filter](/docs/stack/bloom) as an alternative to a set.
-
 ## Learn more
 
 * [Sets Explained](https://www.youtube.com/watch?v=PKdCppSNTGQ) and [Sets Elaborated](https://www.youtube.com/watch?v=aRw5ME_5kMY) are two short but thorough video explainers covering Sets.
