@@ -645,7 +645,7 @@ As already stated, `SENTINEL SET` can be used to set all the configuration param
 
 Note that there is no equivalent GET command since `SENTINEL MASTER` provides all the configuration parameters in a simple to parse format (as a field/value pairs array).
 
-Starting with Redis OSS 6.2, Sentinel also allows getting and setting global configuration parameters which were only supported in the configuration file prior to that.
+Starting with Valkey OSS 6.2, Sentinel also allows getting and setting global configuration parameters which were only supported in the configuration file prior to that.
 
 * **SENTINEL CONFIG GET `<name>`** Get the current value of a global Sentinel configuration parameter. The specified name may be a wildcard, similar to the Valkey `CONFIG GET` command.
 * **SENTINEL CONFIG SET `<name>` `<value>`** Set the value of a global Sentinel configuration parameter.
@@ -791,7 +791,7 @@ used for the asynchronous replication protocol.
 
 ## Valkey Access Control List authentication
 
-Starting with Redis OSS 6, user authentication and permission is managed with the [Access Control List (ACL)](/topics/acl).
+Starting with Valkey OSS 6, user authentication and permission is managed with the [Access Control List (ACL)](/topics/acl).
 
 In order for Sentinels to connect to Valkey server instances when they are
 configured with ACL, the Sentinel configuration must include the
@@ -806,7 +806,7 @@ Where `<username>` and `<password>` are the username and password for accessing 
 
 ### Valkey password-only authentication
 
-Until Redis OSS 6, authentication is achieved using the following configuration directives:
+Until Valkey OSS 6, authentication is achieved using the following configuration directives:
 
 * `requirepass` in the master, in order to set the authentication password, and to make sure the instance will not process requests for non authenticated clients.
 * `masterauth` in the replicas in order for the replicas to authenticate with the master in order to correctly replicate data from it.
@@ -835,7 +835,7 @@ configured with `requirepass`, the Sentinel configuration must include the
 Configuring Sentinel instances with authentication
 ---
 
-Sentinel instances themselves can be secured by requiring clients to authenticate via the `AUTH` command. Starting with Redis OSS 6.2, the [Access Control List (ACL)](/topics/acl) is available, whereas previous versions (starting with Redis OSS 5.0.1) support password-only authentication.
+Sentinel instances themselves can be secured by requiring clients to authenticate via the `AUTH` command. Starting with Valkey OSS 6.2, the [Access Control List (ACL)](/topics/acl) is available, whereas previous versions (starting with Valkey OSS 5.0.1) support password-only authentication.
 
 Note that Sentinel's authentication configuration should be **applied to each of the instances** in your deployment, and **all instances should use the same configuration**. Furthermore, ACL and password-only authentication should not be used together.
 
@@ -1163,7 +1163,7 @@ replication and the discarding nature of the "virtual" merge function of the sys
 1. Use synchronous replication (and a proper consensus algorithm to run a replicated state machine).
 2. Use an eventually consistent system where different versions of the same object can be merged.
 
-Valkey (like it's predecessor Redis OSS) is currently not able to use any of the above systems, and using them is currently outside the development goals. However, there are proxies implementing solution "2" on top of Redis OSS stores such as SoundCloud [Roshi](https://github.com/soundcloud/roshi), or Netflix [Dynomite](https://github.com/Netflix/dynomite).
+Valkey (like it's predecessor Valkey OSS) is currently not able to use any of the above systems, and using them is currently outside the development goals. However, there are proxies implementing solution "2" on top of Valkey OSS stores such as SoundCloud [Roshi](https://github.com/soundcloud/roshi), or Netflix [Dynomite](https://github.com/Netflix/dynomite).
 
 Sentinel persistent state
 ---
@@ -1225,4 +1225,4 @@ API that many kernels offer. However it is not still clear if this is a good
 solution since the current system avoids issues in case the process is just
 suspended or not executed by the scheduler for a long time.
 
-**A note about the word slave used in this man page**: Starting with Redis OSS 5, if not for backward compatibility, the Redis project no longer uses the word slave. Unfortunately in this command the word slave is part of the protocol, so we'll be able to remove such occurrences only when this API will be naturally deprecated.
+**A note about the word slave used in this man page**: Starting with Valkey OSS 5, if not for backward compatibility, the Valkey project no longer uses the word slave. Unfortunately in this command the word slave is part of the protocol, so we'll be able to remove such occurrences only when this API will be naturally deprecated.

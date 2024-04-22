@@ -1,5 +1,5 @@
 ---
-title: "Redis CPU profiling"
+title: "Valkey CPU profiling"
 linkTitle: "CPU profiling"
 weight: 1
 description: >
@@ -12,12 +12,12 @@ aliases: [
 
 ## Filling the performance checklist
 
-Redis is developed with a great emphasis on performance. We do our best with
+Valkey is developed with a great emphasis on performance. We do our best with
 every release to make sure you'll experience a very stable and fast product. 
 
-Nevertheless, if you're finding room to improve the efficiency of Redis or
+Nevertheless, if you're finding room to improve the efficiency of Valkey or
 are pursuing a performance regression investigation you will need a concise
-methodical way of monitoring and analyzing Redis performance. 
+methodical way of monitoring and analyzing Valkey performance. 
 
 To do so you can rely on different methodologies (some more suited than other 
 depending on the class of issues/analysis we intend to make). A curated list
@@ -38,15 +38,15 @@ timers, paging/swapping, etc., this guide is not for you**.
 
 ### Build Prerequisites
 
-For a proper On-CPU analysis, Redis (and any dynamically loaded library like
-Redis Modules) requires stack traces to be available to tracers, which you may
+For a proper On-CPU analysis, Valkey (and any dynamically loaded library like
+Valkey Modules) requires stack traces to be available to tracers, which you may
 need to fix first. 
 
-By default, Redis is compiled with the `-O2` switch (which we intent to keep
+By default, Valkey is compiled with the `-O2` switch (which we intent to keep
 during profiling). This means that compiler optimizations are enabled. Many
 compilers omit the frame pointer as a runtime optimization (saving a register),
-thus breaking frame pointer-based stack walking. This makes the Redis
-executable faster, but at the same time it makes Redis (like any other program)
+thus breaking frame pointer-based stack walking. This makes the Valkey
+executable faster, but at the same time it makes Valkey (like any other program)
 harder to trace, potentially wrongfully pinpointing on-CPU time to the last
 available frame pointer of a call stack that can get a lot deeper (but
 impossible to trace).
@@ -192,7 +192,7 @@ called, you can rely upon call counts analysis using BCC's `funccount` tool:
     Detaching...
 
 
-The above output shows that, while tracing, the Redis's call() function was
+The above output shows that, while tracing, the Valkey's call() function was
 called 334 times, handleClientsWithPendingWrites() 388 times, etc.
 
 ## Hardware event counting with Performance Monitoring Counters (PMCs)
