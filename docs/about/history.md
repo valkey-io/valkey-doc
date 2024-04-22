@@ -19,17 +19,17 @@ announced it on [Hacker News][hn] on Feb 25, 2009. [GitHub][gh] and
 Early works of Salvatore Sanfilippo
 -----------------------------------
 
-At the time, Salvatore “antirez”, was already known for inventing the [Idle
-scan][idle-scan-wp] port scanning technique (see the [original email from
+At the time, Salvatore “antirez” was already known for inventing the [Idle
+scan][idle-scan-wp] port scanning technique (see also the [original email from
 1998][idle-scan-email] and the [nmap book][idle-scan-nmap]), the [Hping][hping]
 TCP/IP packet generator and analyzer, the [Jim] TCL interpreter and the
-[LLOOGG][lloogg] real-time log analyzer, created an in-memory database to
+[LLOOGG][lloogg] real-time log analyzer. He created an in-memory database to
 improve LLOOGG. The first version version was called [LLOOGG Memory DB][lmdb]
 and was written in TCL.
 
+[idle-scan-wp]: https://en.wikipedia.org/wiki/Idle_scan
 [idle-scan-email]: https://seclists.org/bugtraq/1998/Dec/79
 [idle-scan-nmap]: https://nmap.org/book/idlescan.html
-[idle-scan-wp]: https://seclists.org/bugtraq/1998/Dec/79
 [hping]: https://en.wikipedia.org/wiki/Hping
 [jim]: https://jim.tcl-lang.org/index.html/doc/www/www/about/
 [lloogg]: https://github.com/antirez/lloogg/blob/master/README.md
