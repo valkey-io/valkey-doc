@@ -3,7 +3,7 @@ title: "Valkey benchmark"
 linkTitle: "Benchmarking"
 weight: 1
 description: >
-    Using the redis-benchmark utility on a Valkey server
+    Using the valkey-benchmark utility on a Valkey server
 aliases: [
     /topics/benchmarks,
     /docs/reference/optimization/benchmarks,
@@ -11,13 +11,13 @@ aliases: [
 ]
 ---
 
-Valkey includes the `redis-benchmark` utility that simulates running commands done
+Valkey includes the `valkey-benchmark` utility that simulates running commands done
 by N clients while at the same time sending M total queries. The utility provides
 a default set of tests, or you can supply a custom set of tests.
 
 The following options are supported:
 
-    Usage: redis-benchmark [-h <host>] [-p <port>] [-c <clients>] [-n <requests]> [-k <boolean>]
+    Usage: valkey-benchmark [-h <host>] [-p <port>] [-c <clients>] [-n <requests]> [-k <boolean>]
 
      -h <hostname>      Server hostname (default 127.0.0.1)
      -p <port>          Server port (default 6379)
@@ -45,15 +45,15 @@ The following options are supported:
 You need to have a running Valkey instance before launching the benchmark.
 You can run the benchmarking utility like so:
 
-    redis-benchmark -q -n 100000
+    valkey-benchmark -q -n 100000
 
 ### Running only a subset of the tests
 
-You don't need to run all the default tests every time you execute `redis-benchmark`.
+You don't need to run all the default tests every time you execute `valkey-benchmark`.
 For example, to select only a subset of tests, use the `-t` option
 as in the following example:
 
-    $ redis-benchmark -t set,lpush -n 100000 -q
+    $ valkey-benchmark -t set,lpush -n 100000 -q
     SET: 74239.05 requests per second
     LPUSH: 79239.30 requests per second
 
@@ -61,7 +61,7 @@ This example runs the tests for the `SET` and `LPUSH` commands and uses quiet mo
 
 You can even benchmark a specific command:
 
-    $ redis-benchmark -n 100000 -q script load "redis.call('set','foo','bar')"
+    $ valkey-benchmark -n 100000 -q script load "redis.call('set','foo','bar')"
     script load redis.call('set','foo','bar'): 69881.20 requests per second
 
 ### Selecting the size of the key space
@@ -78,7 +78,7 @@ one million SET operations, using a random key for every operation out of
     $ valkey-cli flushall
     OK
 
-    $ redis-benchmark -t set -r 100000 -n 1000000
+    $ valkey-benchmark -t set -r 100000 -n 1000000
     ====== SET ======
       1000000 requests completed in 13.86 seconds
       50 parallel clients
@@ -109,7 +109,7 @@ second a server is able do deliver.
 Consider this example of running the benchmark using a
 pipelining of 16 commands:
 
-    $ redis-benchmark -n 1000000 -t set,get -P 16 -q
+    $ valkey-benchmark -n 1000000 -t set,get -P 16 -q
     SET: 403063.28 requests per second
     GET: 508388.41 requests per second
 
@@ -125,20 +125,20 @@ in account.
 
 + Valkey is a server: all commands involve network or IPC round trips. It is meaningless to compare it to embedded data stores, because the cost of most operations is primarily in network/protocol management.
 + Valkey commands return an acknowledgment for all usual commands. Some other data stores do not. Comparing Valkey to stores involving one-way queries is only mildly useful.
-+ Naively iterating on synchronous Valkey commands does not benchmark Valkey itself, but rather measure your network (or IPC) latency and the client library intrinsic latency. To really test Valkey, you need multiple connections (like redis-benchmark) and/or to use pipelining to aggregate several commands and/or multiple threads or processes.
++ Naively iterating on synchronous Valkey commands does not benchmark Valkey itself, but rather measure your network (or IPC) latency and the client library intrinsic latency. To really test Valkey, you need multiple connections (like valkey-benchmark) and/or to use pipelining to aggregate several commands and/or multiple threads or processes.
 + Valkey is an in-memory data store with some optional persistence options. If you plan to compare it to transactional servers (MySQL, PostgreSQL, etc ...), then you should consider activating AOF and decide on a suitable fsync policy.
 + Valkey is, mostly, a single-threaded server from the POV of commands execution (actually modern versions of Valkey use threads for different things). It is not designed to benefit from multiple CPU cores. People are supposed to launch several Valkey instances to scale out on several cores if needed. It is not really fair to compare one single Valkey instance to a multi-threaded data store.
 
-The `redis-benchmark` program is a quick and useful way to get some figures and
+The `valkey-benchmark` program is a quick and useful way to get some figures and
 evaluate the performance of a Valkey instance on a given hardware. However,
 by default, it does not represent the maximum throughput a Valkey instance can
 sustain. Actually, by using pipelining and a fast client (hiredis), it is fairly
-easy to write a program generating more throughput than redis-benchmark. The
-default behavior of redis-benchmark is to achieve throughput by exploiting
+easy to write a program generating more throughput than valkey-benchmark. The
+default behavior of valkey-benchmark is to achieve throughput by exploiting
 concurrency only (i.e. it creates several connections to the server).
 It does not use pipelining or any parallelism at all (one pending query per
 connection at most, and no multi-threading), if not explicitly enabled via
-the `-P` parameter. So in some way using `redis-benchmark` and, triggering, for
+the `-P` parameter. So in some way using `valkey-benchmark` and, triggering, for
 example, a `BGSAVE` operation in the background at the same time, will provide
 the user with numbers more near to the *worst case* than to the best case.
 
@@ -151,7 +151,7 @@ application in order to get realistic numbers.
 
 The benchmark should apply the same operations, and work in the same way
 with the multiple data stores you want to compare. It is absolutely pointless to
-compare the result of redis-benchmark to the result of another benchmark
+compare the result of valkey-benchmark to the result of another benchmark
 program and extrapolate.
 
 For instance, Valkey and memcached in single-threaded mode can be compared on
@@ -190,7 +190,7 @@ fast CPUs with large caches and not many cores. At this game, Intel CPUs are
 currently the winners. It is not uncommon to get only half the performance on
 an AMD Opteron CPU compared to similar Nehalem EP/Westmere EP/Sandy Bridge
 Intel CPUs with Valkey. When client and server run on the same box, the CPU is
-the limiting factor with redis-benchmark.
+the limiting factor with valkey-benchmark.
 + Speed of RAM and memory bandwidth seem less critical for global performance
 especially for small objects. For large objects (>10 KB), it may become
 noticeable though. Usually, it is not really cost-effective to buy expensive
@@ -206,7 +206,7 @@ or old hypervisor software that have slow `fork` syscall implementation.
 the TCP/IP loopback and unix domain sockets can be used. Depending on the
 platform, unix domain sockets can achieve around 50% more throughput than
 the TCP/IP loopback (on Linux for instance). The default behavior of
-redis-benchmark is to use the TCP/IP loopback.
+valkey-benchmark is to use the TCP/IP loopback.
 + The performance benefit of unix domain sockets compared to TCP/IP loopback
 tends to decrease when pipelining is heavily used (i.e. long pipelines).
 + When an ethernet network is used to access Valkey, aggregating commands using
@@ -219,7 +219,7 @@ See the graph below.
 
 + On multi CPU sockets servers, Valkey performance becomes dependent on the
 NUMA configuration and process location. The most visible effect is that
-redis-benchmark results seem non-deterministic because client and server
+valkey-benchmark results seem non-deterministic because client and server
 processes are distributed randomly on the cores. To get deterministic results,
 it is required to use process placement tools (on Linux: taskset or numactl).
 The most efficient combination is always to put the client and server on two
