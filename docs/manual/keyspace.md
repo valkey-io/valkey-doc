@@ -3,12 +3,12 @@ title: "Keyspace"
 linkTitle: "Keyspace"
 weight: 1
 description: >
-    Managing keys in Redis: Key expiration, scanning, altering and querying the key space
+    Managing keys in Valkey: Key expiration, scanning, altering and querying the key space
 aliases:
   - /docs/manual/the-redis-keyspace    
 ---
 
-Redis keys are binary safe; this means that you can use any binary sequence as a
+Valkey keys are binary safe; this means that you can use any binary sequence as a
 key, from a string like "foo" to the content of a JPEG file.
 The empty string is also a valid key.
 
@@ -68,13 +68,13 @@ of value stored at the specified key:
 
 ## Key expiration
 
-Before moving on, we should look at an important Redis feature that works regardless of the type of value you're storing: key expiration. Key expiration lets you set a timeout for a key, also known as a "time to live", or "TTL". When the time to live elapses, the key is automatically destroyed. 
+Before moving on, we should look at an important Valkey feature that works regardless of the type of value you're storing: key expiration. Key expiration lets you set a timeout for a key, also known as a "time to live", or "TTL". When the time to live elapses, the key is automatically destroyed. 
 
 A few important notes about key expiration:
 
 * They can be set both using seconds or milliseconds precision.
 * However the expire time resolution is always 1 millisecond.
-* Information about expires are replicated and persisted on disk, the time virtually passes when your Redis server remains stopped (this means that Redis saves the date at which a key will expire).
+* Information about expires are replicated and persisted on disk, the time virtually passes when your Valkey server remains stopped (this means that Valkey saves the date at which a key will expire).
 
 Use the `EXPIRE` command to set a key's expiration:
 
@@ -92,7 +92,7 @@ delayed more than 5 seconds. In the example above we used `EXPIRE` in
 order to set the expire (it can also be used in order to set a different
 expire to a key already having one, like `PERSIST` can be used in order
 to remove the expire and make the key persistent forever). However we
-can also create keys with expires using other Redis commands. For example
+can also create keys with expires using other Valkey commands. For example
 using `SET` options:
 
     > set key 100 ex 10
@@ -110,7 +110,7 @@ the `PTTL` commands, and the full list of `SET` options.
 ## Navigating the keyspace
 
 ### Scan
-To incrementally  iterate over the keys in a Redis database in an efficient manner, you can use the `SCAN` command.
+To incrementally  iterate over the keys in a Valkey database in an efficient manner, you can use the `SCAN` command.
 
 Since `SCAN` allows for incremental iteration, returning only a small number of elements per call, it can be used in production without the downside of commands like `KEYS` or `SMEMBERS` that may block the server for a long time (even several seconds) when called against big collections of keys or elements.
 
@@ -119,7 +119,7 @@ The `SCAN` family of commands only offer limited guarantees about the returned e
 
 ### Keys
 
-Another way to iterate over the keyspace is to use the `KEYS` command, but this approach should be used with care, since `KEYS` will block the Redis server until all keys are returned.
+Another way to iterate over the keyspace is to use the `KEYS` command, but this approach should be used with care, since `KEYS` will block the Valkey server until all keys are returned.
 
 **Warning**: consider `KEYS` as a command that should only be used in production
 environments with extreme care.
