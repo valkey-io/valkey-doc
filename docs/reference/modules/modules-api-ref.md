@@ -3,7 +3,7 @@ title: "Modules API reference"
 linkTitle: "API reference"
 weight: 1
 description: >
-    Reference for the Redis Modules API
+    Reference for the Valkey Modules API
 aliases:
     - /topics/modules-api-ref
 ---
@@ -27,7 +27,7 @@ aliases:
 * [Key API for Sorted Set iterator](#section-key-api-for-sorted-set-iterator)
 * [Key API for Hash type](#section-key-api-for-hash-type)
 * [Key API for Stream type](#section-key-api-for-stream-type)
-* [Calling Redis commands from modules](#section-calling-redis-commands-from-modules)
+* [Calling Valkey commands from modules](#section-calling-redis-commands-from-modules)
 * [Modules data types](#section-modules-data-types)
 * [RDB loading and saving functions](#section-rdb-loading-and-saving-functions)
 * [Key digest API (DEBUG DIGEST interface for modules types)](#section-key-digest-api-debug-digest-interface-for-modules-types)
@@ -60,8 +60,8 @@ aliases:
 
 ## Heap allocation raw functions
 
-Memory allocated with these functions are taken into account by Redis key
-eviction algorithms and are reported in Redis memory usage information.
+Memory allocated with these functions are taken into account by Valkey key
+eviction algorithms and are reported in Valkey memory usage information.
 
 <span id="RedisModule_Alloc"></span>
 
@@ -72,8 +72,8 @@ eviction algorithms and are reported in Redis memory usage information.
 **Available since:** 4.0.0
 
 Use like `malloc()`. Memory allocated with this function is reported in
-Redis INFO memory, used for keys eviction according to maxmemory settings
-and in general is taken into account as memory allocated by Redis.
+Valkey INFO memory, used for keys eviction according to maxmemory settings
+and in general is taken into account as memory allocated by Valkey.
 You should avoid using `malloc()`.
 This function panics if unable to allocate enough memory.
 
@@ -97,8 +97,8 @@ of panicking.
 **Available since:** 4.0.0
 
 Use like `calloc()`. Memory allocated with this function is reported in
-Redis INFO memory, used for keys eviction according to maxmemory settings
-and in general is taken into account as memory allocated by Redis.
+Valkey INFO memory, used for keys eviction according to maxmemory settings
+and in general is taken into account as memory allocated by Valkey.
 You should avoid using `calloc()` directly.
 
 <span id="RedisModule_Realloc"></span>
@@ -158,7 +158,7 @@ The function returns NULL if `bytes` is 0.
 
 ## Commands API
 
-These functions are used to implement custom Redis commands.
+These functions are used to implement custom Valkey commands.
 
 For examples, see [https://valkey.io/topics/modules-intro](https://valkey.io/topics/modules-intro).
 
@@ -248,7 +248,7 @@ The supported flags are:
 * `REDISMODULE_CMD_CHANNEL_PATTERN`: Instead of acting on a specific channel, will act on any 
                                    channel specified by the pattern. This is the same access
                                    used by the PSUBSCRIBE and PUNSUBSCRIBE commands available 
-                                   in Redis. Not intended to be used with PUBLISH permissions.
+                                   in Valkey. Not intended to be used with PUBLISH permissions.
 
 The following is an example of how it could be used:
 
@@ -276,7 +276,7 @@ it allows the ACLs to be checked before the command is executed.
 
 **Available since:** 4.0.0
 
-Register a new command in the Redis server, that will be handled by
+Register a new command in the Valkey server, that will be handled by
 calling the function pointer 'cmdfunc' using the RedisModule calling
 convention.
 
@@ -334,7 +334,7 @@ example "write deny-oom". The set of flags are:
 * **"getkeys-api"**: The command implements the interface to return
                      the arguments that are keys. Used when start/stop/step
                      is not enough because of the command syntax.
-* **"no-cluster"**: The command should not register in Redis Cluster
+* **"no-cluster"**: The command should not register in Valkey Cluster
                     since is not designed to work with it because, for
                     example, is unable to report the position of the
                     keys, programmatically creates key names, or any
@@ -353,7 +353,7 @@ example "write deny-oom". The set of flags are:
                          the arguments that are channels.
 
 The last three parameters specify which arguments of the new command are
-Redis keys. See [https://redis.io/commands/command](https://redis.io/commands/command) for more information.
+Valkey keys. See [https://redis.io/commands/command](https://redis.io/commands/command) for more information.
 
 * `firstkey`: One-based index of the first argument that's a key.
               Position 0 is always the command name itself.
@@ -371,7 +371,7 @@ NOTE: The scheme described above serves a limited purpose and can
 only be used to find keys that exist at constant indices.
 For non-trivial key arguments, you may pass 0,0,0 and use
 [`RedisModule_SetCommandInfo`](#RedisModule_SetCommandInfo) to set key specs using a more advanced scheme and use
-[`RedisModule_SetCommandACLCategories`](#RedisModule_SetCommandACLCategories) to set Redis ACL categories of the commands.
+[`RedisModule_SetCommandACLCategories`](#RedisModule_SetCommandACLCategories) to set Valkey ACL categories of the commands.
 
 <span id="RedisModule_GetCommand"></span>
 
@@ -511,7 +511,7 @@ All fields except `version` are optional. Explanation of the fields:
 
 - `arity`: Number of arguments, including the command name itself. A positive
   number specifies an exact number of arguments and a negative number
-  specifies a minimum number of arguments, so use -N to say >= N. Redis
+  specifies a minimum number of arguments, so use -N to say >= N. Valkey
   validates a call before passing it to a module, so this can replace an
   arity check inside the module command implementation. A value of 0 (or an
   omitted arity field) is equivalent to -2 if the command has sub commands
@@ -528,7 +528,7 @@ All fields except `version` are optional. Explanation of the fields:
 
     Key-specs cause the triplet (firstkey, lastkey, keystep) given in
     RedisModule_CreateCommand to be recomputed, but it is still useful to provide
-    these three parameters in RedisModule_CreateCommand, to better support old Redis
+    these three parameters in RedisModule_CreateCommand, to better support old Valkey
     versions where RedisModule_SetCommandInfo is not available.
 
     Note that key-specs don't fully replace the "getkeys-api" (see
@@ -861,21 +861,21 @@ previously defined ( meaning [`RedisModule_BlockedClientMeasureTimeStart`](#Redi
 
 **Available since:** 7.0.0
 
-This API allows modules to let Redis process background tasks, and some
+This API allows modules to let Valkey process background tasks, and some
 commands during long blocking execution of a module command.
 The module can call this API periodically.
 The flags is a bit mask of these:
 
 - `REDISMODULE_YIELD_FLAG_NONE`: No special flags, can perform some background
                                  operations, but not process client commands.
-- `REDISMODULE_YIELD_FLAG_CLIENTS`: Redis can also process client commands.
+- `REDISMODULE_YIELD_FLAG_CLIENTS`: Valkey can also process client commands.
 
 The `busy_reply` argument is optional, and can be used to control the verbose
 error string after the `-BUSY` error code.
 
-When the `REDISMODULE_YIELD_FLAG_CLIENTS` is used, Redis will only start
+When the `REDISMODULE_YIELD_FLAG_CLIENTS` is used, Valkey will only start
 processing client commands after the time defined by the
-`busy-reply-threshold` config, in which case Redis will start rejecting most
+`busy-reply-threshold` config, in which case Valkey will start rejecting most
 commands with `-BUSY` error, but allow the ones marked with the `allow-busy`
 flag to be executed.
 This API can also be used in thread safe context (while locked), and during
@@ -909,7 +909,7 @@ and that redis could be serving reads during replication instead of blocking wit
 
 `REDISMODULE_OPTIONS_ALLOW_NESTED_KEYSPACE_NOTIFICATIONS`:
 Declare that the module wants to get nested key-space notifications.
-By default, Redis will not fire key-space notifications that happened inside
+By default, Valkey will not fire key-space notifications that happened inside
 a key-space notification callback. This flag allows to change this behavior
 and fire nested key-space notifications. Notice: if enabled, the module
 should protected itself from infinite recursion.
@@ -1113,7 +1113,7 @@ The passed context `ctx` may be NULL if necessary. See the
 
 **Available since:** 4.0.0
 
-Free a module string object obtained with one of the Redis modules API calls
+Free a module string object obtained with one of the Valkey modules API calls
 that return new string objects.
 
 It is possible to call this function even when automatic memory management
@@ -1332,11 +1332,11 @@ no concurrent access to the string is guaranteed. Using it for an argv
 string in a module command before the string is potentially available
 to other threads is generally safe.
 
-Currently, Redis may also automatically trim retained strings when a
+Currently, Valkey may also automatically trim retained strings when a
 module command returns. However, doing this explicitly should still be
 a preferred option:
 
-1. Future versions of Redis may abandon auto-trimming.
+1. Future versions of Valkey may abandon auto-trimming.
 2. Auto-trimming as currently implemented is *not thread safe*.
    A background thread manipulating a recently retained string may end up
    in a race condition with the auto-trim, which could result with
@@ -1753,7 +1753,7 @@ The function always returns `REDISMODULE_OK`.
 
 **Available since:** 4.0.0
 
-Reply exactly what a Redis command returned us with [`RedisModule_Call()`](#RedisModule_Call).
+Reply exactly what a Valkey command returned us with [`RedisModule_Call()`](#RedisModule_Call).
 This function is useful when we use [`RedisModule_Call()`](#RedisModule_Call) in order to
 execute some command, as we want to reply to the client exactly the
 same reply we obtained by the command.
@@ -1863,8 +1863,8 @@ Otherwise, by default, the command will be propagated in both channels.
 #### Note about calling this function from a thread safe context:
 
 Normally when you call this function from the callback implementing a
-module command, or any other callback provided by the Redis Module API,
-Redis will accumulate all the calls to this function in the context of
+module command, or any other callback provided by the Valkey Module API,
+Valkey will accumulate all the calls to this function in the context of
 the callback, and will propagate all the commands wrapped in a MULTI/EXEC
 transaction. However when calling this function from a threaded safe context
 that can live an undefined amount of time, and can be locked/unlocked in
@@ -2067,7 +2067,7 @@ Return the currently selected DB.
 
 Return the current context's flags. The flags provide information on the
 current request context (whether the client is a Lua script or in a MULTI),
-and about the Redis instance in general, i.e replication and persistence.
+and about the Valkey instance in general, i.e replication and persistence.
 
 It is possible to call this function even with a NULL context, however
 in this case the following flags will not be reported:
@@ -2083,15 +2083,15 @@ Available flags and their meaning:
  * `REDISMODULE_CTX_FLAGS_REPLICATED`: The command was sent over the replication
    link by the MASTER
 
- * `REDISMODULE_CTX_FLAGS_MASTER`: The Redis instance is a master
+ * `REDISMODULE_CTX_FLAGS_MASTER`: The Valkey instance is a master
 
- * `REDISMODULE_CTX_FLAGS_SLAVE`: The Redis instance is a slave
+ * `REDISMODULE_CTX_FLAGS_SLAVE`: The Valkey instance is a slave
 
- * `REDISMODULE_CTX_FLAGS_READONLY`: The Redis instance is read-only
+ * `REDISMODULE_CTX_FLAGS_READONLY`: The Valkey instance is read-only
 
- * `REDISMODULE_CTX_FLAGS_CLUSTER`: The Redis instance is in cluster mode
+ * `REDISMODULE_CTX_FLAGS_CLUSTER`: The Valkey instance is in cluster mode
 
- * `REDISMODULE_CTX_FLAGS_AOF`: The Redis instance has AOF enabled
+ * `REDISMODULE_CTX_FLAGS_AOF`: The Valkey instance has AOF enabled
 
  * `REDISMODULE_CTX_FLAGS_RDB`: The instance has RDB enabled
 
@@ -2100,7 +2100,7 @@ Available flags and their meaning:
  * `REDISMODULE_CTX_FLAGS_EVICT`:  Maxmemory is set and has an eviction
    policy that may delete keys
 
- * `REDISMODULE_CTX_FLAGS_OOM`: Redis is out of memory according to the
+ * `REDISMODULE_CTX_FLAGS_OOM`: Valkey is out of memory according to the
    maxmemory setting.
 
  * `REDISMODULE_CTX_FLAGS_OOM_WARNING`: Less than 25% of memory remains before
@@ -2126,13 +2126,13 @@ Available flags and their meaning:
  * `REDISMODULE_CTX_FLAGS_MULTI_DIRTY`: The next EXEC will fail due to dirty
                                       CAS (touched keys).
 
- * `REDISMODULE_CTX_FLAGS_IS_CHILD`: Redis is currently running inside
+ * `REDISMODULE_CTX_FLAGS_IS_CHILD`: Valkey is currently running inside
                                    background child process.
 
  * `REDISMODULE_CTX_FLAGS_RESP3`: Indicate the that client attached to this
                                 context is using RESP3.
 
- * `REDISMODULE_CTX_FLAGS_SERVER_STARTUP`: The Redis instance is starting
+ * `REDISMODULE_CTX_FLAGS_SERVER_STARTUP`: The Valkey instance is starting
 
 <span id="RedisModule_AvoidReplicaTraffic"></span>
 
@@ -2143,7 +2143,7 @@ Available flags and their meaning:
 **Available since:** 6.0.0
 
 Returns true if a client sent the CLIENT PAUSE command to the server or
-if Redis Cluster does a manual failover, pausing the clients.
+if Valkey Cluster does a manual failover, pausing the clients.
 This is needed when we have a master with replicas, and want to write,
 without adding further data to the replication channel, that the replicas
 replication offset, match the one of the master. When this happens, it is
@@ -2174,7 +2174,7 @@ Change the currently selected DB. Returns an error if the id
 is out of range.
 
 Note that the client will retain the currently selected DB even after
-the Redis command implemented by the module calling this function
+the Valkey command implemented by the module calling this function
 returns.
 
 If the module command wishes to change something in a different DB and
@@ -2205,7 +2205,7 @@ calling [`RedisModule_CloseKey`](#RedisModule_CloseKey) on the opened key.
 
 **Available since:** 4.0.0
 
-Return a handle representing a Redis key, so that it is possible
+Return a handle representing a Valkey key, so that it is possible
 to call other APIs with the key handle as argument to perform
 operations on the key.
 
@@ -2994,7 +2994,7 @@ set to `REDISMODULE_HASH_NONE` if no special behavior is needed.
                               strings instead of RedisModuleString objects.
     REDISMODULE_HASH_COUNT_ALL: Include the number of inserted fields in the
                                 returned number, in addition to the number of
-                                updated and deleted fields. (Added in Redis
+                                updated and deleted fields. (Added in Valkey
                                 6.2.)
 
 Unless NX is specified, the command overwrites the old field value with
@@ -3379,9 +3379,9 @@ returned and `errno` is set as follows:
 
 <span id="section-calling-redis-commands-from-modules"></span>
 
-## Calling Redis commands from modules
+## Calling Valkey commands from modules
 
-[`RedisModule_Call()`](#RedisModule_Call) sends a command to Redis. The remaining functions handle the reply.
+[`RedisModule_Call()`](#RedisModule_Call) sends a command to Valkey. The remaining functions handle the reply.
 
 <span id="RedisModule_FreeCallReply"></span>
 
@@ -3589,7 +3589,7 @@ so the caller will be able to release the private data.
 If the execution was aborted successfully, it is promised that the unblock handler will not be called.
 That said, it is possible that the abort operation will successes but the operation will still continue.
 This can happened if, for example, a module implements some blocking command and does not respect the
-disconnect callback. For pure Redis commands this can not happened.
+disconnect callback. For pure Valkey commands this can not happened.
 
 <span id="RedisModule_CallReplyStringPtr"></span>
 
@@ -3635,9 +3635,9 @@ Modifies the user that [`RedisModule_Call`](#RedisModule_Call) will use (e.g. fo
 
 **Available since:** 4.0.0
 
-Exported API to call any Redis command from modules.
+Exported API to call any Valkey command from modules.
 
-* **cmdname**: The Redis command to call.
+* **cmdname**: The Valkey command to call.
 * **fmt**: A format specifier string for the command's arguments. Each
   of the arguments should be specified by a valid type specification. The
   format specifier can also contain the modifiers `!`, `A`, `3` and `R` which
@@ -3649,7 +3649,7 @@ Exported API to call any Redis command from modules.
     * `l` -- The argument is a `long long` integer.
     * `s` -- The argument is a RedisModuleString.
     * `v` -- The argument(s) is a vector of RedisModuleString.
-    * `!` -- Sends the Redis command and its arguments to replicas and AOF.
+    * `!` -- Sends the Valkey command and its arguments to replicas and AOF.
     * `A` -- Suppress AOF propagation, send only to replicas (requires `!`).
     * `R` -- Suppress replicas propagation, send only to AOF (requires `!`).
     * `3` -- Return a RESP3 reply. This will change the command reply.
@@ -3667,7 +3667,7 @@ Exported API to call any Redis command from modules.
              the command to run as the determined user, so that any future user
              dependent activity, such as ACL checks within scripts will proceed as
              expected.
-             Otherwise, the command will run as the Redis unrestricted user.
+             Otherwise, the command will run as the Valkey unrestricted user.
     * `S` -- Run the command in a script mode, this means that it will raise
              an error if a command which are not allowed inside a script
              (flagged with the `deny-script` flag) is invoked (like SHUTDOWN).
@@ -3690,7 +3690,7 @@ Exported API to call any Redis command from modules.
              The module can use this reply object to set a handler which will be called when
              the command gets unblocked using RedisModule_CallReplyPromiseSetUnblockHandler.
              The handler must be set immediately after the command invocation (without releasing
-             the Redis lock in between). If the handler is not set, the blocking command will
+             the Valkey lock in between). If the handler is not set, the blocking command will
              still continue its execution but the reply will be ignored (fire and forget),
              notice that this is dangerous in case of role change, as explained below.
              The module can use RedisModule_CallReplyPromiseAbort to abort the command invocation
@@ -3698,21 +3698,21 @@ Exported API to call any Redis command from modules.
              details). It is also the module's responsibility to abort the execution on role change, either by using
              server event (to get notified when the instance becomes a replica) or relying on the disconnect
              callback of the original client. Failing to do so can result in a write operation on a replica.
-             Unlike other call replies, promise call reply **must** be freed while the Redis GIL is locked.
+             Unlike other call replies, promise call reply **must** be freed while the Valkey GIL is locked.
              Notice that on unblocking, the only promise is that the unblock handler will be called,
              If the blocking RedisModule_Call caused the module to also block some real client (using RedisModule_BlockClient),
              it is the module responsibility to unblock this client on the unblock handler.
              On the unblock handler it is only allowed to perform the following:
-             * Calling additional Redis commands using RedisModule_Call
+             * Calling additional Valkey commands using RedisModule_Call
              * Open keys using RedisModule_OpenKey
              * Replicate data to the replica or AOF
 
-             Specifically, it is not allowed to call any Redis module API which are client related such as:
+             Specifically, it is not allowed to call any Valkey module API which are client related such as:
              * RedisModule_Reply* API's
              * RedisModule_BlockClient
              * RedisModule_GetCurrentUserName
 
-* **...**: The actual arguments to the Redis command.
+* **...**: The actual arguments to the Valkey command.
 
 On success a `RedisModuleCallReply` object is returned, otherwise
 NULL is returned and errno is set to the following values:
@@ -3757,7 +3757,7 @@ that returned the reply object.
 
 When String DMA or using existing data structures is not enough, it is
 possible to create new data types from scratch and export them to
-Redis. The module must provide a set of callbacks for handling the
+Valkey. The module must provide a set of callbacks for handling the
 new values exported (for example in order to provide RDB saving/loading,
 AOF rewrite, and so forth). In this section we define this API.
 
@@ -3776,7 +3776,7 @@ Register a new data type exported by the module. The parameters are the
 following. Please for in depth documentation check the modules API
 documentation, especially [https://valkey.io/topics/modules-native-types](https://valkey.io/topics/modules-native-types).
 
-* **name**: A 9 characters data type name that MUST be unique in the Redis
+* **name**: A 9 characters data type name that MUST be unique in the Valkey
   Modules ecosystem. Be creative... and there will be no collisions. Use
   the charset A-Z a-z 9-0, plus the two "-_" characters. A good
   idea is to use, for example `<typename>-<vendor>`. For example
@@ -3880,7 +3880,7 @@ happens to be pretty lame as well.
 If [`RedisModule_CreateDataType()`](#RedisModule_CreateDataType) is called outside of `RedisModule_OnLoad()` function,
 there is already a module registering a type with the same name,
 or if the module name or encver is invalid, NULL is returned.
-Otherwise the new type is registered into Redis, and a reference of
+Otherwise the new type is registered into Valkey, and a reference of
 type `RedisModuleType` is returned: the caller of the function should store
 this reference into a global variable to make future use of it in the
 modules type API, since a single module may register multiple types.
@@ -4146,11 +4146,11 @@ Add a new element to the digest. This function can be called multiple times
 one element after the other, for all the elements that constitute a given
 data structure. The function call must be followed by the call to
 [`RedisModule_DigestEndSequence`](#RedisModule_DigestEndSequence) eventually, when all the elements that are
-always in a given order are added. See the Redis Modules data types
-documentation for more info. However this is a quick example that uses Redis
+always in a given order are added. See the Valkey Modules data types
+documentation for more info. However this is a quick example that uses Valkey
 data types as an example.
 
-To add a sequence of unordered elements (for example in the case of a Redis
+To add a sequence of unordered elements (for example in the case of a Valkey
 Set), the pattern to use is:
 
     foreach element {
@@ -4215,13 +4215,13 @@ from string 'str' and return a newly allocated value, or NULL if decoding failed
 
 This call basically reuses the '`rdb_load`' callback which module data types
 implement in order to allow a module to arbitrarily serialize/de-serialize
-keys, similar to how the Redis 'DUMP' and 'RESTORE' commands are implemented.
+keys, similar to how the Valkey 'DUMP' and 'RESTORE' commands are implemented.
 
 Modules should generally use the `REDISMODULE_OPTIONS_HANDLE_IO_ERRORS` flag and
 make sure the de-serialization code properly checks and handles IO errors
 (freeing allocated buffers and returning a NULL).
 
-If this is NOT done, Redis will handle corrupted (or just truncated) serialized
+If this is NOT done, Valkey will handle corrupted (or just truncated) serialized
 data by producing an error message and terminating the process.
 
 <span id="RedisModule_LoadDataTypeFromString"></span>
@@ -4251,7 +4251,7 @@ as a newly allocated `RedisModuleString`.
 
 This call basically reuses the '`rdb_save`' callback which module data types
 implement in order to allow a module to arbitrarily serialize/de-serialize
-keys, similar to how the Redis 'DUMP' and 'RESTORE' commands are implemented.
+keys, similar to how the Valkey 'DUMP' and 'RESTORE' commands are implemented.
 
 <span id="RedisModule_GetKeyNameFromDigest"></span>
 
@@ -4292,7 +4292,7 @@ Emits a command into the AOF during the AOF rewriting process. This function
 is only called in the context of the `aof_rewrite` method of data types exported
 by a module. The command works exactly like [`RedisModule_Call()`](#RedisModule_Call) in the way
 the parameters are passed, but it does not return anything as the error
-handling is performed by Redis itself.
+handling is performed by Valkey itself.
 
 <span id="section-io-context-handling"></span>
 
@@ -4355,7 +4355,7 @@ There is no guarantee that this info is always available, so this may return -1.
 
 **Available since:** 4.0.0
 
-Produces a log message to the standard Redis log, the format accepts
+Produces a log message to the standard Valkey log, the format accepts
 printf-alike specifiers, while level is a string describing the log
 level to use when emitting the log, and must be one of the following:
 
@@ -4398,13 +4398,13 @@ critical reason.
 
 **Available since:** 6.0.0
 
-Redis-like assert function.
+Valkey-like assert function.
 
 The macro `RedisModule_Assert(expression)` is recommended, rather than
 calling this function directly.
 
 A failed assertion will shut down the server and produce logging information
-that looks identical to information generated by Redis itself.
+that looks identical to information generated by Valkey itself.
 
 <span id="RedisModule_LatencyAddSample"></span>
 
@@ -4583,10 +4583,10 @@ Set private data on a blocked client
 **Available since:** 6.0.0
 
 This call is similar to [`RedisModule_BlockClient()`](#RedisModule_BlockClient), however in this case we
-don't just block the client, but also ask Redis to unblock it automatically
+don't just block the client, but also ask Valkey to unblock it automatically
 once certain keys become "ready", that is, contain more data.
 
-Basically this is similar to what a typical Redis command usually does,
+Basically this is similar to what a typical Valkey command usually does,
 like BLPOP or BZPOPMAX: the client blocks if it cannot be served ASAP,
 and later when the key receives new data (a list push for instance), the
 client is unblocked and served.
@@ -4625,7 +4625,7 @@ we pass the private data directly when blocking the client: it will
 be accessible later in the reply callback. Normally when blocking with
 [`RedisModule_BlockClient()`](#RedisModule_BlockClient) the private data to reply to the client is
 passed when calling [`RedisModule_UnblockClient()`](#RedisModule_UnblockClient) but here the unblocking
-is performed by Redis itself, so we need to have some private data before
+is performed by Valkey itself, so we need to have some private data before
 hand. The private data is used to store any information about the specific
 unblocking operation that you are implementing. Such information will be
 freed using the `free_privdata` callback provided by the user.
@@ -4815,7 +4815,7 @@ while it was blocked.
 
 **Available since:** 4.0.0
 
-Return a context which can be used inside threads to make Redis context
+Return a context which can be used inside threads to make Valkey context
 calls with certain modules APIs. If 'bc' is not NULL then the module will
 be bound to a blocked client, and it will be possible to use the
 `RedisModule_Reply*` family of functions to accumulate a reply for when the
@@ -4958,7 +4958,7 @@ The subscriber signature is:
 
 `type` is the event type bit, that must match the mask given at registration
 time. The event string is the actual command being executed, and key is the
-relevant Redis key.
+relevant Valkey key.
 
 Notification callback gets executed with a redis context that can not be
 used to send anything to the client, and has the db number where the event
@@ -4968,11 +4968,11 @@ Notice that it is not necessary to enable notifications in redis.conf for
 module notifications to work.
 
 Warning: the notification callbacks are performed in a synchronous manner,
-so notification callbacks must to be fast, or they would slow Redis down.
+so notification callbacks must to be fast, or they would slow Valkey down.
 If you need to take long actions, use threads to offload them.
 
 Moreover, the fact that the notification is executed synchronously means
-that the notification code will be executed in the middle on Redis logic
+that the notification code will be executed in the middle on Valkey logic
 (commands logic, eviction, expire). Changing the key space while the logic
 runs is dangerous and discouraged. In order to react to key space events with
 write actions, please refer to [`RedisModule_AddPostNotificationJob`](#RedisModule_AddPostNotificationJob).
@@ -4992,7 +4992,7 @@ See [https://valkey.io/topics/notifications](https://valkey.io/topics/notificati
 
 When running inside a key space notification callback, it is dangerous and highly discouraged to perform any write
 operation (See [`RedisModule_SubscribeToKeyspaceEvents`](#RedisModule_SubscribeToKeyspaceEvents)). In order to still perform write actions in this scenario,
-Redis provides [`RedisModule_AddPostNotificationJob`](#RedisModule_AddPostNotificationJob) API. The API allows to register a job callback which Redis will call
+Valkey provides [`RedisModule_AddPostNotificationJob`](#RedisModule_AddPostNotificationJob) API. The API allows to register a job callback which Valkey will call
 when the following condition are promised to be fulfilled:
 1. It is safe to perform any write operation.
 2. The job will be called atomically along side the key space notification.
@@ -5001,7 +5001,7 @@ Notice, one job might trigger key space notifications that will trigger more job
 This raises a concerns of entering an infinite loops, we consider infinite loops
 as a logical bug that need to be fixed in the module, an attempt to protect against
 infinite loops by halting the execution could result in violation of the feature correctness
-and so Redis will make no attempt to protect the module from infinite loops.
+and so Valkey will make no attempt to protect the module from infinite loops.
 
 '`free_pd`' can be NULL and in such case will not be used.
 
@@ -5083,8 +5083,8 @@ known cluster node, `REDISMODULE_ERR` is returned.
 Return an array of string pointers, each string pointer points to a cluster
 node ID of exactly `REDISMODULE_NODE_ID_LEN` bytes (without any null term).
 The number of returned node IDs is stored into `*numnodes`.
-However if this function is called by a module not running an a Redis
-instance with Redis Cluster enabled, NULL is returned instead.
+However if this function is called by a module not running an a Valkey
+instance with Valkey Cluster enabled, NULL is returned instead.
 
 The IDs returned can be used with [`RedisModule_GetClusterNodeInfo()`](#RedisModule_GetClusterNodeInfo) in order
 to get more information about single node.
@@ -5177,10 +5177,10 @@ The list of flags reported is the following:
 
 **Available since:** 5.0.0
 
-Set Redis Cluster flags in order to change the normal behavior of
-Redis Cluster, especially with the goal of disabling certain functions.
+Set Valkey Cluster flags in order to change the normal behavior of
+Valkey Cluster, especially with the goal of disabling certain functions.
 This is useful for modules that use the Cluster API in order to create
-a different distributed system, but still want to use the Redis Cluster
+a different distributed system, but still want to use the Valkey Cluster
 message bus. Flags that can be set:
 
 * `CLUSTER_MODULE_FLAG_NO_FAILOVER`
@@ -5188,11 +5188,11 @@ message bus. Flags that can be set:
 
 With the following effects:
 
-* `NO_FAILOVER`: prevent Redis Cluster slaves from failing over a dead master.
+* `NO_FAILOVER`: prevent Valkey Cluster slaves from failing over a dead master.
                Also disables the replica migration feature.
 
 * `NO_REDIRECTION`: Every node will accept any key, without trying to perform
-                  partitioning according to the Redis Cluster algorithm.
+                  partitioning according to the Valkey Cluster algorithm.
                   Slots information will still be propagated across the
                   cluster, but without effect.
 
@@ -5206,7 +5206,7 @@ the actual event loop will just have a single timer that is used to awake the
 module timers subsystem in order to process the next event.
 
 All the timers are stored into a radix tree, ordered by expire time, when
-the main Redis event loop timer callback is called, we try to process all
+the main Valkey event loop timer callback is called, we try to process all
 the timers already expired one after the other. Then we re-enter the event
 loop registering a timer that will expire when the next to process module
 timer will expire.
@@ -5298,7 +5298,7 @@ Add a pipe / socket event to the event loop.
 On success `REDISMODULE_OK` is returned, otherwise
 `REDISMODULE_ERR` is returned and errno is set to the following values:
 
-* ERANGE: `fd` is negative or higher than `maxclients` Redis config.
+* ERANGE: `fd` is negative or higher than `maxclients` Valkey config.
 * EINVAL: `callback` is NULL or `mask` value is invalid.
 
 `errno` might take other values in case of an internal error.
@@ -5331,7 +5331,7 @@ Delete a pipe / socket event from the event loop.
 On success `REDISMODULE_OK` is returned, otherwise
 `REDISMODULE_ERR` is returned and errno is set to the following values:
 
-* ERANGE: `fd` is negative or higher than `maxclients` Redis config.
+* ERANGE: `fd` is negative or higher than `maxclients` Valkey config.
 * EINVAL: `mask` value is invalid.
 
 <span id="RedisModule_EventLoopAddOneShot"></span>
@@ -5343,7 +5343,7 @@ On success `REDISMODULE_OK` is returned, otherwise
 
 **Available since:** 7.0.0
 
-This function can be called from other threads to trigger callback on Redis
+This function can be called from other threads to trigger callback on Valkey
 main thread. On success `REDISMODULE_OK` is returned. If `func` is NULL
 `REDISMODULE_ERR` is returned and errno is set to EINVAL.
 
@@ -5351,7 +5351,7 @@ main thread. On success `REDISMODULE_OK` is returned. If `func` is NULL
 
 ## Modules ACL API
 
-Implements a hook into the authentication and authorization within Redis.
+Implements a hook into the authentication and authorization within Valkey.
 
 <span id="RedisModule_CreateModuleUser"></span>
 
@@ -5361,7 +5361,7 @@ Implements a hook into the authentication and authorization within Redis.
 
 **Available since:** 6.0.0
 
-Creates a Redis ACL user that the module can use to authenticate a client.
+Creates a Valkey ACL user that the module can use to authenticate a client.
 After obtaining the user, the module should set what such user can do
 using the `RedisModule_SetUserACL()` function. Once configured, the user
 can be used in order to authenticate a connection, with the specified
@@ -5373,7 +5373,7 @@ Note that:
 * Users created here are not checked for duplicated name, so it's up to
   the module calling this function to take care of not creating users
   with the same name.
-* The created user can be used to authenticate multiple Redis connections.
+* The created user can be used to authenticate multiple Valkey connections.
 
 The caller can later free the user using the function
 [`RedisModule_FreeModuleUser()`](#RedisModule_FreeModuleUser). When this function is called, if there are
@@ -6359,11 +6359,11 @@ And the function registerAPI() is:
 
 Register a new command filter function.
 
-Command filtering makes it possible for modules to extend Redis by plugging
+Command filtering makes it possible for modules to extend Valkey by plugging
 into the execution flow of all commands.
 
-A registered filter gets called before Redis executes *any* command.  This
-includes both core Redis commands and commands registered by any module.  The
+A registered filter gets called before Valkey executes *any* command.  This
+includes both core Valkey commands and commands registered by any module.  The
 filter applies in all execution paths including:
 
 1. Invocation by a client.
@@ -6374,21 +6374,21 @@ filter applies in all execution paths including:
 The filter executes in a special filter context, which is different and more
 limited than a `RedisModuleCtx`.  Because the filter affects any command, it
 must be implemented in a very efficient way to reduce the performance impact
-on Redis.  All Redis Module API calls that require a valid context (such as
+on Valkey.  All Valkey Module API calls that require a valid context (such as
 [`RedisModule_Call()`](#RedisModule_Call), [`RedisModule_OpenKey()`](#RedisModule_OpenKey), etc.) are not supported in a
 filter context.
 
 The `RedisModuleCommandFilterCtx` can be used to inspect or modify the
-executed command and its arguments.  As the filter executes before Redis
+executed command and its arguments.  As the filter executes before Valkey
 begins processing the command, any change will affect the way the command is
-processed.  For example, a module can override Redis commands this way:
+processed.  For example, a module can override Valkey commands this way:
 
 1. Register a `MODULE.SET` command which implements an extended version of
-   the Redis `SET` command.
+   the Valkey `SET` command.
 2. Register a command filter which detects invocation of `SET` on a specific
    pattern of keys.  Once detected, the filter will replace the first
    argument from `SET` to `MODULE.SET`.
-3. When filter execution is complete, Redis considers the new command name
+3. When filter execution is complete, Valkey considers the new command name
    and therefore executes the module's own command.
 
 Note that in the above use case, if `MODULE.SET` itself uses
@@ -6453,7 +6453,7 @@ the command itself, and the rest are user-provided args.
 **Available since:** 5.0.5
 
 Modify the filtered command by inserting a new argument at the specified
-position.  The specified `RedisModuleString` argument may be used by Redis
+position.  The specified `RedisModuleString` argument may be used by Valkey
 after the filter context is destroyed, so it must not be auto-memory
 allocated, freed or used elsewhere.
 
@@ -6468,7 +6468,7 @@ allocated, freed or used elsewhere.
 **Available since:** 5.0.5
 
 Modify the filtered command by replacing an existing argument with a new one.
-The specified `RedisModuleString` argument may be used by Redis after the
+The specified `RedisModuleString` argument may be used by Valkey after the
 filter context is destroyed, so it must not be auto-memory allocated, freed
 or used elsewhere.
 
@@ -6550,7 +6550,7 @@ it does not include the allocation size of the keys and values.
 **Available since:** 6.0.0
 
 Return the a number between 0 to 1 indicating the amount of memory
-currently used, relative to the Redis "maxmemory" configuration.
+currently used, relative to the Valkey "maxmemory" configuration.
 
 * 0 - No memory limit configured.
 * Between 0 and 1 - The percentage of the memory used normalized in 0-1 range.
@@ -6643,7 +6643,7 @@ The function will return 1 if there are more elements to scan and
 
 It is also possible to restart an existing cursor using [`RedisModule_ScanCursorRestart`](#RedisModule_ScanCursorRestart).
 
-IMPORTANT: This API is very similar to the Redis SCAN command from the
+IMPORTANT: This API is very similar to the Valkey SCAN command from the
 point of view of the guarantees it provides. This means that the API
 may report duplicated keys, but guarantees to report at least one time
 every key that was there from the start to the end of the scanning process.
@@ -6652,7 +6652,7 @@ NOTE: If you do database changes within the callback, you should be aware
 that the internal state of the database may change. For instance it is safe
 to delete or modify the current key, but may not be safe to delete any
 other key.
-Moreover playing with the Redis keyspace while iterating may have the
+Moreover playing with the Valkey keyspace while iterating may have the
 effect of returning more duplicates. A safe pattern is to store the keys
 names you want to modify elsewhere, and perform the actions on the keys
 later when the iteration is complete. However this can cost a lot of
@@ -6734,7 +6734,7 @@ the key you are iterating is not safe.
 Create a background child process with the current frozen snapshot of the
 main process where you can do some processing in the background without
 affecting / freezing the traffic and no need for threads and GIL locking.
-Note that Redis allows for only one concurrent fork.
+Note that Valkey allows for only one concurrent fork.
 When the child wants to exit, it should call [`RedisModule_ExitFromChild`](#RedisModule_ExitFromChild).
 If the parent wants to kill the child it should call [`RedisModule_KillForkChild`](#RedisModule_KillForkChild)
 The done handler callback will be executed on the parent process when the
@@ -6808,7 +6808,7 @@ The callback must be of this type:
                                     uint64_t subevent,
                                     void *data);
 
-The 'ctx' is a normal Redis module context that the callback can use in
+The 'ctx' is a normal Valkey module context that the callback can use in
 order to call other modules APIs. The 'eid' is the event itself, this
 is only useful in the case the module subscribed to multiple events: using
 the 'id' field of this structure it is possible to check if the event
@@ -6931,15 +6931,15 @@ Here is a list of events you can use as 'eid' and related sub events:
     * `REDISMODULE_SUBEVENT_REPLICA_CHANGE_OFFLINE`
 
     No additional information is available so far: future versions
-    of Redis will have an API in order to enumerate the replicas
+    of Valkey will have an API in order to enumerate the replicas
     connected and their state.
 
 * `RedisModuleEvent_CronLoop`
 
-    This event is called every time Redis calls the serverCron()
+    This event is called every time Valkey calls the serverCron()
     function in order to do certain bookkeeping. Modules that are
     required to do operations from time to time may use this callback.
-    Normally Redis calls this function 10 times per second, but
+    Normally Valkey calls this function 10 times per second, but
     this changes depending on the "hz" configuration.
     No sub events are available.
 
@@ -7114,11 +7114,11 @@ subevent is not supported and non-zero otherwise.
 
 **Available since:** 7.0.0
 
-Create a string config that Redis users can interact with via the Redis config file,
+Create a string config that Valkey users can interact with via the Valkey config file,
 `CONFIG SET`, `CONFIG GET`, and `CONFIG REWRITE` commands.
 
 The actual config value is owned by the module, and the `getfn`, `setfn` and optional
-`applyfn` callbacks that are provided to Redis in order to access or manipulate the
+`applyfn` callbacks that are provided to Valkey in order to access or manipulate the
 value. The `getfn` callback retrieves the value from the module, while the `setfn`
 callback provides a value to be stored into the module config.
 The optional `applyfn` callback is called after a `CONFIG SET` command modified one or
@@ -7129,7 +7129,7 @@ command, they will be deduplicated if their `applyfn` function and `privdata` po
 are identical, and the callback will only be run once.
 Both the `setfn` and `applyfn` can return an error if the provided value is invalid or
 cannot be used.
-The config also declares a type for the value that is validated by Redis and
+The config also declares a type for the value that is validated by Valkey and
 provided to the module. The config system provides the following types:
 
 * String: Binary safe string data.
@@ -7231,7 +7231,7 @@ Create a bool config that server clients can interact with via the
 Create an enum config that server clients can interact with via the 
 `CONFIG SET`, `CONFIG GET`, and `CONFIG REWRITE` commands. 
 Enum configs are a set of string tokens to corresponding integer values, where 
-the string value is exposed to Redis clients but the value passed Redis and the
+the string value is exposed to Valkey clients but the value passed Valkey and the
 module is the integer value. These values are defined in `enum_values`, an array
 of null-terminated c strings, and `int_vals`, an array of enum values who has an
 index partner in `enum_values`.
@@ -7570,7 +7570,7 @@ as follows:
 * ENOENT: Specified command does not exist.
 * EINVAL: Invalid command arity specified.
 
-NOTE: The returned array is not a Redis Module object so it does not
+NOTE: The returned array is not a Valkey Module object so it does not
 get automatically freed even when auto-memory is used. The caller
 must explicitly call [`RedisModule_Free()`](#RedisModule_Free) to free it, same as the `out_flags` pointer if
 used.
@@ -7718,7 +7718,7 @@ NOTE: It is only possible to defrag strings that have a single reference.
 Typically this means strings retained with [`RedisModule_RetainString`](#RedisModule_RetainString) or [`RedisModule_HoldString`](#RedisModule_HoldString)
 may not be defragmentable. One exception is command argvs which, if retained
 by the module, will end up with a single reference (because the reference
-on the Redis side is dropped as soon as the command callback returns).
+on the Valkey side is dropped as soon as the command callback returns).
 
 <span id="RedisModule_GetKeyNameFromDefragCtx"></span>
 

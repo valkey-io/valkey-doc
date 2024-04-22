@@ -2,36 +2,36 @@
 title: "Sentinel client spec"
 linkTitle: "Sentinel clients"
 weight: 2
-description: How to build clients for Redis Sentinel
+description: How to build clients for Valkey Sentinel
 aliases:
   - /topics/sentinel-clients
 ---
 
-Redis Sentinel is a monitoring solution for Redis instances that handles
-automatic failover of Redis masters and service discovery (who is the current
+Valkey Sentinel is a monitoring solution for Valkey instances that handles
+automatic failover of Valkey masters and service discovery (who is the current
 master for a given group of instances?). Since Sentinel is both responsible
 for reconfiguring instances during failovers, and providing configurations to
-clients connecting to Redis masters or replicas, clients are required to have
-explicit support for Redis Sentinel.
+clients connecting to Valkey masters or replicas, clients are required to have
+explicit support for Valkey Sentinel.
 
-This document is targeted at Redis clients developers that want to support Sentinel in their clients implementation with the following goals:
+This document is targeted at Valkey clients developers that want to support Sentinel in their clients implementation with the following goals:
 
 * Automatic configuration of clients via Sentinel.
-* Improved safety of Redis Sentinel automatic failover.
+* Improved safety of Valkey Sentinel automatic failover.
 
-For details about how Redis Sentinel works, please check the [Redis Documentation](/topics/sentinel), as this document only contains information needed for Redis client developers, and it is expected that readers are familiar with the way Redis Sentinel works.
+For details about how Valkey Sentinel works, please check the [Valkey Documentation](/topics/sentinel), as this document only contains information needed for Valkey client developers, and it is expected that readers are familiar with the way Valkey Sentinel works.
 
-## Redis service discovery via Sentinel
+## Valkey service discovery via Sentinel
 
-Redis Sentinel identifies every master with a name like "stats" or "cache".
+Valkey Sentinel identifies every master with a name like "stats" or "cache".
 Every name actually identifies a *group of instances*, composed of a master
 and a variable number of replicas.
 
-The address of the Redis master that is used for a specific purpose inside a network may change after events like an automatic failover, a manually triggered failover (for instance in order to upgrade a Redis instance), and other reasons.
+The address of the Valkey master that is used for a specific purpose inside a network may change after events like an automatic failover, a manually triggered failover (for instance in order to upgrade a Valkey instance), and other reasons.
 
-Normally Redis clients have some kind of hard-coded configuration that specifies the address of a Redis master instance within a network as IP address and port number. However if the master address changes, manual intervention in every client is needed.
+Normally Valkey clients have some kind of hard-coded configuration that specifies the address of a Valkey master instance within a network as IP address and port number. However if the master address changes, manual intervention in every client is needed.
 
-A Redis client supporting Sentinel can automatically discover the address of a Redis master from the master name using Redis Sentinel. So instead of a hard coded IP address and port, a client supporting Sentinel should optionally be able to take as input:
+A Valkey client supporting Sentinel can automatically discover the address of a Valkey master from the master name using Valkey Sentinel. So instead of a hard coded IP address and port, a client supporting Sentinel should optionally be able to take as input:
 
 * A list of ip:port pairs pointing to known Sentinel instances.
 * The name of the service, like "cache" or "timelines".
@@ -61,7 +61,7 @@ The result from this call can be one of the following two replies:
 * An ip:port pair.
 * A null reply. This means Sentinel does not know this master.
 
-If an ip:port pair is received, this address should be used to connect to the Redis master. Otherwise if a null reply is received, the client should try the next Sentinel in the list.
+If an ip:port pair is received, this address should be used to connect to the Valkey master. Otherwise if a null reply is received, the client should try the next Sentinel in the list.
 
 Step 3: call the ROLE command in the target instance
 ---
@@ -77,17 +77,17 @@ If the instance is not a master as expected, the client should wait a short amou
 Handling reconnections
 ===
 
-Once the service name is resolved into the master address and a connection is established with the Redis master instance, every time a reconnection is needed, the client should resolve again the address using Sentinels restarting from Step 1. For instance Sentinel should contacted again the following cases:
+Once the service name is resolved into the master address and a connection is established with the Valkey master instance, every time a reconnection is needed, the client should resolve again the address using Sentinels restarting from Step 1. For instance Sentinel should contacted again the following cases:
 
 * If the client reconnects after a timeout or socket error.
 * If the client reconnects because it was explicitly closed or reconnected by the user.
 
-In the above cases and any other case where the client lost the connection with the Redis server, the client should resolve the master address again.
+In the above cases and any other case where the client lost the connection with the Valkey server, the client should resolve the master address again.
 
 Sentinel failover disconnection
 ===
 
-Starting with Redis OSS 2.8.12, when Redis Sentinel changes the configuration of
+Starting with Redis OSS 2.8.12, when Valkey Sentinel changes the configuration of
 an instance, for example promoting a replica to a master, demoting a master to
 replicate to the new master after a failover, or simply changing the master
 address of a stale replica instance, it sends a `CLIENT KILL type normal`
@@ -95,7 +95,7 @@ command to the instance in order to make sure all the clients are disconnected
 from the reconfigured instance. This will force clients to resolve the master
 address again.
 
-If the client will contact a Sentinel with yet not updated information, the verification of the Redis instance role via the `ROLE` command will fail, allowing the client to detect that the contacted Sentinel provided stale information, and will try again.
+If the client will contact a Sentinel with yet not updated information, the verification of the Valkey instance role via the `ROLE` command will fail, allowing the client to detect that the contacted Sentinel provided stale information, and will try again.
 
 Note: it is possible that a stale master returns online at the same time a client contacts a stale Sentinel instance, so the client may connect with a stale master, and yet the ROLE output will match. However when the master is back again Sentinel will try to demote it to replica, triggering a new disconnection. The same reasoning applies to connecting to stale replicas that will get reconfigured to replicate with a different master.
 
@@ -126,7 +126,7 @@ Error reporting
 
 The client should correctly return the information to the user in case of errors. Specifically:
 
-* If no Sentinel can be contacted (so that the client was never able to get the reply to `SENTINEL get-master-addr-by-name`), an error that clearly states that Redis Sentinel is unreachable should be returned.
+* If no Sentinel can be contacted (so that the client was never able to get the reply to `SENTINEL get-master-addr-by-name`), an error that clearly states that Valkey Sentinel is unreachable should be returned.
 * If all the Sentinels in the pool replied with a null reply, the user should be informed with an error that Sentinels don't know this master name.
 
 Sentinels list automatic refresh
@@ -144,12 +144,12 @@ Subscribe to Sentinel events to improve responsiveness
 
 The [Sentinel documentation](/topics/sentinel) shows how clients can connect to
 Sentinel instances using Pub/Sub in order to subscribe to changes in the
-Redis instances configurations.
+Valkey instances configurations.
 
 This mechanism can be used in order to speedup the reconfiguration of clients,
 that is, clients may listen to Pub/Sub in order to know when a configuration
 change happened in order to run the three steps protocol explained in this
-document in order to resolve the new Redis master (or replica) address.
+document in order to resolve the new Valkey master (or replica) address.
 
 However update messages received via Pub/Sub should not substitute the
 above procedure, since there is no guarantee that a client is able to
@@ -158,4 +158,4 @@ receive all the update messages.
 Additional information
 ===
 
-For additional information or to discuss specific aspects of this guidelines, please drop a message to the [Redis Google Group](https://groups.google.com/group/redis-db).
+For additional information or to discuss specific aspects of this guidelines, please drop a message to the [Valkey Google Group](https://groups.google.com/group/redis-db).

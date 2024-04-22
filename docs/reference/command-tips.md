@@ -1,5 +1,5 @@
 ---
-title: "Redis command tips"
+title: "Valkey command tips"
 linkTitle: "Command tips"
 weight: 1
 description: Get additional information about a command
@@ -8,8 +8,8 @@ aliases:
 ---
 
 Command tips are an array of strings.
-These provide Redis clients with additional information about the command.
-The information can instruct Redis Cluster clients as to how the command should be executed and its output processed in a clustered deployment.
+These provide Valkey clients with additional information about the command.
+The information can instruct Valkey Cluster clients as to how the command should be executed and its output processed in a clustered deployment.
 
 Unlike the command's flags (see the 3rd element of `COMMAND`'s reply), which are strictly internal to the server's operation, tips don't serve any purpose other than being reported to clients.
 

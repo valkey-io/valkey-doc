@@ -1,37 +1,37 @@
 ---
-title: "Redis modules API"
+title: "Valkey modules API"
 linkTitle: "Modules API"
 weight: 2
 description: >
-    Introduction to writing Redis modules
+    Introduction to writing Valkey modules
 aliases:
     - /topics/modules-intro
 ---
 
 The modules documentation is composed of the following pages:
 
-* Introduction to Redis modules (this file). An overview about Redis Modules system and API. It's a good idea to start your reading here.
+* Introduction to Valkey modules (this file). An overview about Valkey Modules system and API. It's a good idea to start your reading here.
 * [Implementing native data types](/topics/modules-native-types) covers the implementation of native data types into modules.
-* [Blocking operations](/topics/modules-blocking-ops) shows how to write blocking commands that will not reply immediately, but will block the client, without blocking the Redis server, and will provide a reply whenever will be possible.
-* [Redis modules API reference](/topics/modules-api-ref) is generated from module.c top comments of RedisModule functions. It is a good reference in order to understand how each function works.
+* [Blocking operations](/topics/modules-blocking-ops) shows how to write blocking commands that will not reply immediately, but will block the client, without blocking the Valkey server, and will provide a reply whenever will be possible.
+* [Valkey modules API reference](/topics/modules-api-ref) is generated from module.c top comments of RedisModule functions. It is a good reference in order to understand how each function works.
 
-Redis modules make it possible to extend Redis functionality using external
-modules, rapidly implementing new Redis commands with features
+Valkey modules make it possible to extend Valkey functionality using external
+modules, rapidly implementing new Valkey commands with features
 similar to what can be done inside the core itself.
 
-Redis modules are dynamic libraries that can be loaded into Redis at
-startup, or using the `MODULE LOAD` command. Redis exports a C API, in the
+Valkey modules are dynamic libraries that can be loaded into Valkey at
+startup, or using the `MODULE LOAD` command. Valkey exports a C API, in the
 form of a single C header file called `redismodule.h`. Modules are meant
 to be written in C, however it will be possible to use C++ or other languages
 that have C binding functionalities.
 
-Modules are designed in order to be loaded into different versions of Redis,
+Modules are designed in order to be loaded into different versions of Valkey,
 so a given module does not need to be designed, or recompiled, in order to
-run with a specific version of Redis. For this reason, the module will
-register to the Redis core using a specific API version. The current API
+run with a specific version of Valkey. For this reason, the module will
+register to the Valkey core using a specific API version. The current API
 version is "1".
 
-This document is about an alpha version of Redis modules. API, functionalities
+This document is about an alpha version of Valkey modules. API, functionalities
 and other details may change in the future.
 
 ## Loading modules
@@ -55,10 +55,10 @@ following command:
     MODULE UNLOAD mymodule
 
 Note that `mymodule` above is not the filename without the `.so` suffix, but
-instead, the name the module used to register itself into the Redis core.
+instead, the name the module used to register itself into the Valkey core.
 The name can be obtained using `MODULE LIST`. However it is good practice
 that the filename of the dynamic library is the same as the name the module
-uses to register itself into the Redis core.
+uses to register itself into the Valkey core.
 
 ## The simplest module you can write
 
@@ -88,7 +88,7 @@ simple module that implements a command that outputs a random number.
 The example module has two functions. One implements a command called
 HELLOWORLD.RAND. This function is specific of that module. However the
 other function called `RedisModule_OnLoad()` must be present in each
-Redis module. It is the entry point for the module to be initialized,
+Valkey module. It is the entry point for the module to be initialized,
 register its commands, and potentially other private data structures
 it uses.
 
@@ -98,7 +98,7 @@ like in the case of `HELLOWORLD.RAND`. This way it is less likely to
 have collisions.
 
 Note that if different modules have colliding commands, they'll not be
-able to work in Redis at the same time, since the function
+able to work in Valkey at the same time, since the function
 `RedisModule_CreateCommand` will fail in one of the modules, so the module
 loading will abort returning an error condition.
 
@@ -111,7 +111,7 @@ The following is the function prototype:
     int RedisModule_Init(RedisModuleCtx *ctx, const char *modulename,
                          int module_version, int api_version);
 
-The `Init` function announces the Redis core that the module has a given
+The `Init` function announces the Valkey core that the module has a given
 name, its version (that is reported by `MODULE LIST`), and that is willing
 to use a specific version of the API.
 
@@ -120,16 +120,16 @@ similar errors, the function will return `REDISMODULE_ERR`, and the module
 `OnLoad` function should return ASAP with an error.
 
 Before the `Init` function is called, no other API function can be called,
-otherwise the module will segfault and the Redis instance will crash.
+otherwise the module will segfault and the Valkey instance will crash.
 
 The second function called, `RedisModule_CreateCommand`, is used in order
-to register commands into the Redis core. The following is the prototype:
+to register commands into the Valkey core. The following is the prototype:
 
     int RedisModule_CreateCommand(RedisModuleCtx *ctx, const char *name,
                                   RedisModuleCmdFunc cmdfunc, const char *strflags,
                                   int firstkey, int lastkey, int keystep);
 
-As you can see, most Redis modules API calls all take as first argument
+As you can see, most Valkey modules API calls all take as first argument
 the `context` of the module, so that they have a reference to the module
 calling it, to the command and client executing a given command, and so forth.
 
@@ -154,12 +154,12 @@ Zooming into the example command implementation, we can find another call:
     int RedisModule_ReplyWithLongLong(RedisModuleCtx *ctx, long long integer);
 
 This function returns an integer to the client that invoked the command,
-exactly like other Redis commands do, like for example `INCR` or `SCARD`.
+exactly like other Valkey commands do, like for example `INCR` or `SCARD`.
 
 ## Module cleanup
 
 In most cases, there is no need for special cleanup.
-When a module is unloaded, Redis will automatically unregister commands and
+When a module is unloaded, Valkey will automatically unregister commands and
 unsubscribe from notifications.
 However in the case where a module contains some persistent memory or
 configuration, a module may include an optional `RedisModule_OnUnload`
@@ -174,16 +174,16 @@ The `OnUnload` function may prevent module unloading by returning
 `REDISMODULE_ERR`.
 Otherwise, `REDISMODULE_OK` should be returned.
 
-## Setup and dependencies of a Redis module
+## Setup and dependencies of a Valkey module
 
-Redis modules don't depend on Redis or some other library, nor they
+Valkey modules don't depend on Valkey or some other library, nor they
 need to be compiled with a specific `redismodule.h` file. In order
 to create a new module, just copy a recent version of `redismodule.h`
 in your source tree, link all the libraries you want, and create
 a dynamic library having the `RedisModule_OnLoad()` function symbol
 exported.
 
-The module will be able to load into different versions of Redis.
+The module will be able to load into different versions of Valkey.
 
 A module can be designed to support both newer and older Redis OSS versions where certain API functions are not available in all versions.
 If an API function is not implemented in the currently running Redis OSS version, the function pointer is set to NULL.
@@ -196,7 +196,7 @@ This allows the module to check if a function exists before using it:
 In recent versions of `redismodule.h`, a convenience macro `RMAPI_FUNC_SUPPORTED(funcname)` is defined.
 Using the macro or just comparing with NULL is a matter of personal preference.
 
-# Passing configuration parameters to Redis modules
+# Passing configuration parameters to Valkey modules
 
 When the module is loaded with the `MODULE LOAD` command, or using the
 `loadmodule` directive in the `redis.conf` file, the user is able to pass
@@ -264,31 +264,31 @@ Similarly in order to parse a string as a number:
         /* Do something with 'myval' */
     }
 
-## Accessing Redis keys from modules
+## Accessing Valkey keys from modules
 
-Most Redis modules, in order to be useful, have to interact with the Redis
+Most Valkey modules, in order to be useful, have to interact with the Valkey
 data space (this is not always true, for example an ID generator may
-never touch Redis keys). Redis modules have two different APIs in order to
-access the Redis data space, one is a low level API that provides very
-fast access and a set of functions to manipulate Redis data structures.
-The other API is more high level, and allows to call Redis commands and
-fetch the result, similarly to how Lua scripts access Redis.
+never touch Valkey keys). Valkey modules have two different APIs in order to
+access the Valkey data space, one is a low level API that provides very
+fast access and a set of functions to manipulate Valkey data structures.
+The other API is more high level, and allows to call Valkey commands and
+fetch the result, similarly to how Lua scripts access Valkey.
 
-The high level API is also useful in order to access Redis functionalities
+The high level API is also useful in order to access Valkey functionalities
 that are not available as APIs.
 
 In general modules developers should prefer the low level API, because commands
 implemented using the low level API run at a speed comparable to the speed
-of native Redis commands. However there are definitely use cases for the
+of native Valkey commands. However there are definitely use cases for the
 higher level API. For example often the bottleneck could be processing the
 data and not accessing it.
 
 Also note that sometimes using the low level API is not harder compared to
 the higher level one.
 
-## Calling Redis commands
+## Calling Valkey commands
 
-The high level API to access Redis is the sum of the `RedisModule_Call()`
+The high level API to access Valkey is the sum of the `RedisModule_Call()`
 function, together with the functions needed in order to access the
 reply object returned by `Call()`.
 
@@ -296,7 +296,7 @@ reply object returned by `Call()`.
 that is used to specify what kind of objects you are passing as arguments
 to the function.
 
-Redis commands are invoked just using a command name and a list of arguments.
+Valkey commands are invoked just using a command name and a list of arguments.
 However when calling commands, the arguments may originate from different
 kind of strings: null-terminated C strings, RedisModuleString objects as
 received from the `argv` parameter in the command implementation, binary
@@ -323,7 +323,7 @@ This is the full list of format specifiers:
 
 * **c** -- Null terminated C string pointer.
 * **b** -- C buffer, two arguments needed: C string pointer and `size_t` length.
-* **s** -- RedisModuleString as received in `argv` or by other Redis module APIs returning a RedisModuleString object.
+* **s** -- RedisModuleString as received in `argv` or by other Valkey module APIs returning a RedisModuleString object.
 * **l** -- Long long integer.
 * **v** -- Array of RedisModuleString objects.
 * **!** -- This modifier just tells the function to replicate the command to replicas and AOF. It is ignored from the point of view of arguments parsing.
@@ -344,7 +344,7 @@ keys are about non local hash slots. In this case `errno` is set to `EPERM`.
 `RedisModule_CallReply*` family of functions.
 
 In order to obtain the type or reply (corresponding to one of the data types
-supported by the Redis protocol), the function `RedisModule_CallReplyType()`
+supported by the Valkey protocol), the function `RedisModule_CallReplyType()`
 is used:
 
     reply = RedisModule_Call(ctx,"INCRBY","sc",argv[1],"10");
@@ -421,11 +421,11 @@ If you use automatic memory management (explained later in this document)
 you don't need to free replies (but you still could if you wish to release
 memory ASAP).
 
-## Returning values from Redis commands
+## Returning values from Valkey commands
 
-Like normal Redis commands, new commands implemented via modules must be
+Like normal Valkey commands, new commands implemented via modules must be
 able to return values to the caller. The API exports a set of functions for
-this goal, in order to return the usual types of the Redis protocol, and
+this goal, in order to return the usual types of the Valkey protocol, and
 arrays of such types as elements. Also errors can be returned with any
 error string and code (the error code is the initial uppercase letters in
 the error message, like the "BUSY" string in the "BUSY the sever is busy" error
@@ -480,7 +480,7 @@ sub array elements.
 ## Returning arrays with dynamic length
 
 Sometimes it is not possible to know beforehand the number of items of
-an array. As an example, think of a Redis module implementing a FACTOR
+an array. As an example, think of a Valkey module implementing a FACTOR
 command that given a number outputs the prime factors. Instead of
 factorializing the number, storing the prime factors into an array, and
 later produce the command reply, a better solution is to start an array
@@ -549,7 +549,7 @@ is of the expected type, or if it's empty.
 ## Low level access to keys
 
 Low level access to keys allow to perform operations on value objects associated
-to keys directly, with a speed similar to what Redis uses internally to
+to keys directly, with a speed similar to what Valkey uses internally to
 implement the built-in commands.
 
 Once a key is opened, a key pointer is returned that will be used with all the
@@ -586,7 +586,7 @@ Once you are done using a key, you can close it with:
     RedisModule_CloseKey(key);
 
 Note that if automatic memory management is enabled, you are not forced to
-close keys. When the module function returns, Redis will take care to close
+close keys. When the module function returns, Valkey will take care to close
 all the keys which are still open.
 
 ## Getting the key type
@@ -604,7 +604,7 @@ It returns one of the following values:
     REDISMODULE_KEYTYPE_SET
     REDISMODULE_KEYTYPE_ZSET
 
-The above are just the usual Redis key types, with the addition of an empty
+The above are just the usual Valkey key types, with the addition of an empty
 type, that signals the key pointer is associated with an empty key that
 does not yet exists.
 
@@ -659,7 +659,7 @@ no expire, a new expire is set. If the key already have an expire, it is
 replaced with the new value.
 
 If the key has an expire, and the special value `REDISMODULE_NO_EXPIRE` is
-used as a new expire, the expire is removed, similarly to the Redis
+used as a new expire, the expire is removed, similarly to the Valkey
 `PERSIST` command. In case the key was already persistent, no operation is
 performed.
 
@@ -676,12 +676,12 @@ If the key does not exist, 0 is returned by the function:
 
 ## String type API
 
-Setting a new string value, like the Redis `SET` command does, is performed
+Setting a new string value, like the Valkey `SET` command does, is performed
 using:
 
     int RedisModule_StringSet(RedisModuleKey *key, RedisModuleString *str);
 
-The function works exactly like the Redis `SET` command itself, that is, if
+The function works exactly like the Valkey `SET` command itself, that is, if
 there is a prior value (of any type) it will be deleted.
 
 Accessing existing string values is performed using DMA (direct memory
@@ -769,8 +769,8 @@ Work in progress.
 
 ## Replicating commands
 
-If you want to use module commands exactly like normal Redis commands, in the
-context of replicated Redis instances, or using the AOF file for persistence,
+If you want to use module commands exactly like normal Valkey commands, in the
+context of replicated Valkey instances, or using the AOF file for persistence,
 it is important for module commands to handle their replication in a consistent
 way.
 
@@ -796,7 +796,7 @@ When you use the above API, you should not use any other replication function
 since they are not guaranteed to mix well.
 
 However this is not the only option. It's also possible to exactly tell
-Redis what commands to replicate as the effect of the command execution, using
+Valkey what commands to replicate as the effect of the command execution, using
 an API similar to `RedisModule_Call()` but that instead of calling the command
 sends it to the AOF / replicas stream. Example:
 
@@ -816,11 +816,11 @@ the commands emitted with `Replicate()` will follow.
 ## Automatic memory management
 
 Normally when writing programs in the C language, programmers need to manage
-memory manually. This is why the Redis modules API has functions to release
+memory manually. This is why the Valkey modules API has functions to release
 strings, close open keys, free replies, and so forth.
 
 However given that commands are executed in a contained environment and
-with a set of strict APIs, Redis is able to provide automatic memory management
+with a set of strict APIs, Valkey is able to provide automatic memory management
 to modules, at the cost of some performance (most of the time, a very low
 cost).
 
@@ -846,8 +846,8 @@ benefit.
 ## Allocating memory into modules
 
 Normal C programs use `malloc()` and `free()` in order to allocate and
-release memory dynamically. While in Redis modules the use of malloc is
-not technically forbidden, it is a lot better to use the Redis Modules
+release memory dynamically. While in Valkey modules the use of malloc is
+not technically forbidden, it is a lot better to use the Valkey Modules
 specific functions, that are exact replacements for `malloc`, `free`,
 `realloc` and `strdup`. These functions are:
 
@@ -858,11 +858,11 @@ specific functions, that are exact replacements for `malloc`, `free`,
     char *RedisModule_Strdup(const char *str);
 
 They work exactly like their `libc` equivalent calls, however they use
-the same allocator Redis uses, and the memory allocated using these
+the same allocator Valkey uses, and the memory allocated using these
 functions is reported by the `INFO` command in the memory section, is
 accounted when enforcing the `maxmemory` policy, and in general is
-a first citizen of the Redis executable. On the contrary, the method
-allocated inside modules with libc `malloc()` is transparent to Redis.
+a first citizen of the Valkey executable. On the contrary, the method
+allocated inside modules with libc `malloc()` is transparent to Valkey.
 
 Another reason to use the modules functions in order to allocate memory
 is that, when creating native data types inside modules, the RDB loading
@@ -877,7 +877,7 @@ Sometimes in commands implementations, it is required to perform many
 small allocations that will be not retained at the end of the command
 execution, but are just functional to execute the command itself.
 
-This work can be more easily accomplished using the Redis pool allocator:
+This work can be more easily accomplished using the Valkey pool allocator:
 
     void *RedisModule_PoolAlloc(RedisModuleCtx *ctx, size_t bytes);
 
@@ -890,7 +890,7 @@ is automatically released when the command returns.
 So in general short living allocations are a good candidates for the pool
 allocator.
 
-## Writing commands compatible with Redis Cluster
+## Writing commands compatible with Valkey Cluster
 
 Documentation missing, please check the following functions inside `module.c`:
 

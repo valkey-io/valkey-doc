@@ -2,13 +2,13 @@
 title: "Event library"
 linkTitle: "Event library"
 weight: 1
-description: What's an event library, and how was the original Redis event library implemented?
+description: What's an event library, and how was the original Valkey event library implemented?
 aliases:
   - /topics/internals-eventlib
   - /topics/internals-rediseventlib
 ---
 
-**Note: this document was written by the creator of Redis, Salvatore Sanfilippo, early in the development of Redis (c. 2010), and does not necessarily reflect the latest Redis implementation.**
+**Note: this document was written by the creator of Valkey, Salvatore Sanfilippo, early in the development of Valkey (c. 2010), and does not necessarily reflect the latest Valkey implementation.**
 
 ## Why is an Event Library needed at all?
 
@@ -32,19 +32,19 @@ A: They use the operating system's polling facility along with timers.
 Q: So are there any open source event libraries that do what you just described? <br/>
 A: Yes. `libevent` and `libev` are two such event libraries that I can recall off the top of my head.
 
-Q: Does Redis use such open source event libraries for handling socket I/O?<br/>
-A: No. For various [reasons](http://groups.google.com/group/redis-db/browse_thread/thread/b52814e9ef15b8d0/) Redis uses its own event library.
+Q: Does Valkey use such open source event libraries for handling socket I/O?<br/>
+A: No. For various [reasons](http://groups.google.com/group/redis-db/browse_thread/thread/b52814e9ef15b8d0/) Valkey uses its own event library.
 
-## The Redis event library
+## The Valkey event library
 
-Redis implements its own event library. The event library is implemented in `ae.c`.
+Valkey implements its own event library. The event library is implemented in `ae.c`.
 
-The best way to understand how the Redis event library works is to understand how Redis uses it.
+The best way to understand how the Valkey event library works is to understand how Valkey uses it.
 
 Event Loop Initialization
 ---
 
-`initServer` function defined in `redis.c` initializes the numerous fields of the `redisServer` structure variable. One such field is the Redis event loop `el`:
+`initServer` function defined in `redis.c` initializes the numerous fields of the `redisServer` structure variable. One such field is the Valkey event loop `el`:
 
     aeEventLoop *el
 
@@ -86,7 +86,7 @@ Next is `ae.c:aeCreateTimeEvent`. But before that `initServer` call `anet.c:anet
 
     aeCreateTimeEvent(server.el /*eventLoop*/, 1 /*milliseconds*/, serverCron /*proc*/, NULL /*clientData*/, NULL /*finalizerProc*/);
 
-`redis.c:serverCron` performs many operations that helps keep Redis running properly.
+`redis.c:serverCron` performs many operations that helps keep Valkey running properly.
 
 `aeCreateFileEvent`
 ---
@@ -102,7 +102,7 @@ Following is an explanation of what precisely `aeCreateFileEvent` does when call
   * `AE_READABLE`: Signifies that `server.fd` has to be watched for `EPOLLIN` event.
   * `acceptHandler`: The function that has to be executed when the event being watched for is ready. This function pointer is stored in `eventLoop->events[server.fd]->rfileProc`.
 
-This completes the initialization of Redis event loop.
+This completes the initialization of Valkey event loop.
 
 Event Loop Processing
 ---

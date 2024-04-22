@@ -2,7 +2,7 @@
 title: Key eviction
 linkTitle: Eviction
 weight: 6
-description: Overview of Redis key eviction policies (LRU, LFU, etc.)
+description: Overview of Valkey key eviction policies (LRU, LFU, etc.)
 aliases: [
     /topics/lru_cache,
     /topics/lru_cache.md,
@@ -10,17 +10,17 @@ aliases: [
 ]
 ---
 
-When Redis is used as a cache, it is often convenient to let it automatically
+When Valkey is used as a cache, it is often convenient to let it automatically
 evict old data as you add new data. This behavior is well known in the
 developer community, since it is the default behavior for the popular
 *memcached* system.
 
-This page covers the more general topic of the Redis `maxmemory` directive used to limit the memory usage to a fixed amount. It also extensively covers the LRU eviction algorithm used by Redis, which is actually an approximation of
+This page covers the more general topic of the Valkey `maxmemory` directive used to limit the memory usage to a fixed amount. It also extensively covers the LRU eviction algorithm used by Valkey, which is actually an approximation of
 the exact LRU.
 
 ## `Maxmemory` configuration directive
 
-The `maxmemory` configuration directive configures Redis
+The `maxmemory` configuration directive configures Valkey
 to use a specified amount of memory for the data set. You can
 set the configuration directive using the `redis.conf` file, or later using
 the `CONFIG SET` command at runtime.
@@ -35,13 +35,13 @@ default behavior for 64 bit systems, while 32 bit systems use an implicit
 memory limit of 3GB.
 
 When the specified amount of memory is reached, how **eviction policies** are configured determines the default behavior.
-Redis can return errors for commands that could result in more memory
+Valkey can return errors for commands that could result in more memory
 being used, or it can evict some old data to return back to the
 specified limit every time new data is added.
 
 ## Eviction policies
 
-The exact behavior Redis follows when the `maxmemory` limit is reached is
+The exact behavior Valkey follows when the `maxmemory` limit is reached is
 configured using the `maxmemory-policy` configuration directive.
 
 The following policies are available:
@@ -60,7 +60,7 @@ The policies **volatile-lru**, **volatile-lfu**, **volatile-random**, and **vola
 Picking the right eviction policy is important depending on the access pattern
 of your application, however you can reconfigure the policy at runtime while
 the application is running, and monitor the number of cache misses and hits
-using the Redis `INFO` output to tune your setup.
+using the Valkey `INFO` output to tune your setup.
 
 In general as a rule of thumb:
 
@@ -68,9 +68,9 @@ In general as a rule of thumb:
 
 * Use the **allkeys-random** if you have a cyclic access where all the keys are scanned continuously, or when you expect the distribution to be uniform.
 
-* Use the **volatile-ttl** if you want to be able to provide hints to Redis about what are good candidate for expiration by using different TTL values when you create your cache objects.
+* Use the **volatile-ttl** if you want to be able to provide hints to Valkey about what are good candidate for expiration by using different TTL values when you create your cache objects.
 
-The **volatile-lru** and **volatile-random** policies are mainly useful when you want to use a single instance for both caching and to have a set of persistent keys. However it is usually a better idea to run two Redis instances to solve such a problem.
+The **volatile-lru** and **volatile-random** policies are mainly useful when you want to use a single instance for both caching and to have a set of persistent keys. However it is usually a better idea to run two Valkey instances to solve such a problem.
 
 It is also worth noting that setting an `expire` value to a key costs memory, so using a policy like **allkeys-lru** is more memory efficient since there is no need for an `expire` configuration for the key to be evicted under memory pressure.
 
@@ -79,7 +79,7 @@ It is also worth noting that setting an `expire` value to a key costs memory, so
 It is important to understand that the eviction process works like this:
 
 * A client runs a new command, resulting in more data added.
-* Redis checks the memory usage, and if it is greater than the `maxmemory` limit , it evicts keys according to the policy.
+* Valkey checks the memory usage, and if it is greater than the `maxmemory` limit , it evicts keys according to the policy.
 * A new command is executed, and so forth.
 
 So we continuously cross the boundaries of the memory limit, by going over it, and then by evicting keys to return back under the limits.
@@ -88,7 +88,7 @@ If a command results in a lot of memory being used (like a big set intersection 
 
 ## Approximated LRU algorithm
 
-Redis LRU algorithm is not an exact implementation. This means that Redis is
+Valkey LRU algorithm is not an exact implementation. This means that Valkey is
 not able to pick the *best candidate* for eviction, that is, the key that
 was accessed the furthest in the past. Instead it will try to run an approximation
 of the LRU algorithm, by sampling a small number of keys, and evicting the
@@ -98,18 +98,18 @@ However, since Redis OSS 3.0 the algorithm was improved to also take a pool of g
 candidates for eviction. This improved the performance of the algorithm, making
 it able to approximate more closely the behavior of a real LRU algorithm.
 
-What is important about the Redis LRU algorithm is that you **are able to tune** the precision of the algorithm by changing the number of samples to check for every eviction. This parameter is controlled by the following configuration directive:
+What is important about the Valkey LRU algorithm is that you **are able to tune** the precision of the algorithm by changing the number of samples to check for every eviction. This parameter is controlled by the following configuration directive:
 
     maxmemory-samples 5
 
-The reason Redis does not use a true LRU implementation is because it
+The reason Valkey does not use a true LRU implementation is because it
 costs more memory. However, the approximation is virtually equivalent for an
-application using Redis. This figure compares
-the LRU approximation used by Redis with true LRU.
+application using Valkey. This figure compares
+the LRU approximation used by Valkey with true LRU.
 
 ![LRU comparison](lru_comparison.png)
 
-The test to generate the above graphs filled a Redis server with a given number of keys. The keys were accessed from the first to the last. The first keys are the best candidates for eviction using an LRU algorithm. Later more 50% of keys are added, in order to force half of the old keys to be evicted.
+The test to generate the above graphs filled a Valkey server with a given number of keys. The keys were accessed from the first to the last. The first keys are the best candidates for eviction using an LRU algorithm. Later more 50% of keys are added, in order to force half of the old keys to be evicted.
 
 You can see three kind of dots in the graphs, forming three distinct bands.
 
@@ -117,7 +117,7 @@ You can see three kind of dots in the graphs, forming three distinct bands.
 * The gray band are objects that were not evicted.
 * The green band are objects that were added.
 
-In a theoretical LRU implementation we expect that, among the old keys, the first half will be expired. The Redis LRU algorithm will instead only *probabilistically* expire the older keys.
+In a theoretical LRU implementation we expect that, among the old keys, the first half will be expired. The Valkey LRU algorithm will instead only *probabilistically* expire the older keys.
 
 As you can see Redis OSS 3.0 does a better job with 5 samples compared to Redis OSS 2.8, however most objects that are among the latest accessed are still retained by Redis OSS 2.8. Using a sample size of 10 in Redis OSS 3.0 the approximation is very close to the theoretical performance of Redis OSS 3.0.
 
@@ -125,7 +125,7 @@ Note that LRU is just a model to predict how likely a given key will be accessed
 resembles the power law, most of the accesses will be in the set of keys
 the LRU approximated algorithm can handle well.
 
-In simulations we found that using a power law access pattern, the difference between true LRU and Redis approximation were minimal or non-existent.
+In simulations we found that using a power law access pattern, the difference between true LRU and Valkey approximation were minimal or non-existent.
 
 However you can raise the sample size to 10 at the cost of some additional CPU
 usage to closely approximate true LRU, and check if this makes a
@@ -137,7 +137,7 @@ the `CONFIG SET maxmemory-samples <count>` command, is very simple.
 ## The new LFU mode
 
 Starting with Redis OSS 4.0, the [Least Frequently Used eviction mode](http://antirez.com/news/109) is available. This mode may work better (provide a better
-hits/misses ratio) in certain cases. In LFU mode, Redis will try to track
+hits/misses ratio) in certain cases. In LFU mode, Valkey will try to track
 the frequency of access of items, so the ones used rarely are evicted. This means
 the keys used often have a higher chance of remaining in memory.
 
@@ -153,7 +153,7 @@ That information is sampled similarly to what happens for LRU (as explained in t
 However unlike LRU, LFU has certain tunable parameters: for example, how fast
 should a frequent item lower in rank if it gets no longer accessed? It is also possible to tune the Morris counters range to better adapt the algorithm to specific use cases.
 
-By default Redis is configured to:
+By default Valkey is configured to:
 
 * Saturate the counter at, around, one million requests.
 * Decay the counter every one minute.

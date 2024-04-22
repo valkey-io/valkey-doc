@@ -1,13 +1,13 @@
 ---
-title: "Redis command arguments"
+title: "Valkey command arguments"
 linkTitle: "Command arguments"
 weight: 7
-description: How Redis commands expose their documentation programmatically
+description: How Valkey commands expose their documentation programmatically
 aliases:
     - /topics/command-arguments
 ---
 
-The `COMMAND DOCS` command returns documentation-focused information about available Redis commands.
+The `COMMAND DOCS` command returns documentation-focused information about available Valkey commands.
 The map reply that the command returns includes the _arguments_ key.
 This key stores an array that describes the command's arguments.
 
