@@ -160,7 +160,7 @@ The function returns NULL if `bytes` is 0.
 
 These functions are used to implement custom Redis commands.
 
-For examples, see [https://redis.io/topics/modules-intro](https://redis.io/topics/modules-intro).
+For examples, see [https://valkey.io/topics/modules-intro](https://valkey.io/topics/modules-intro).
 
 <span id="RedisModule_IsKeysPositionRequest"></span>
 
@@ -319,7 +319,7 @@ example "write deny-oom". The set of flags are:
                    from the same input arguments and key values.
                    Starting from Redis 7.0 this flag has been deprecated.
                    Declaring a command as "random" can be done using
-                   command tips, see https://redis.io/topics/command-tips.
+                   command tips, see https://valkey.io/topics/command-tips.
 * **"allow-stale"**: The command is allowed to run on slaves that don't
                      serve stale data. Don't use if you don't know what
                      this means.
@@ -507,7 +507,7 @@ All fields except `version` are optional. Explanation of the fields:
     both strings set to NULL.
 
 - `tips`: A string of space-separated tips regarding this command, meant for
-  clients and proxies. See [https://redis.io/topics/command-tips](https://redis.io/topics/command-tips).
+  clients and proxies. See [https://valkey.io/topics/command-tips](https://valkey.io/topics/command-tips).
 
 - `arity`: Number of arguments, including the command name itself. A positive
   number specifies an exact number of arguments and a negative number
@@ -3081,7 +3081,7 @@ The returned `RedisModuleString` objects should be released with
 
 ## Key API for Stream type
 
-For an introduction to streams, see [https://redis.io/topics/streams-intro](https://redis.io/topics/streams-intro).
+For an introduction to streams, see [https://valkey.io/topics/streams-intro](https://valkey.io/topics/streams-intro).
 
 The type `RedisModuleStreamID`, which is used in stream functions, is a struct
 with two 64-bit fields and is defined as
@@ -3737,7 +3737,7 @@ Example code fragment:
        // Do something with myval.
      }
 
-This API is documented here: [https://redis.io/topics/modules-intro](https://redis.io/topics/modules-intro)
+This API is documented here: [https://valkey.io/topics/modules-intro](https://valkey.io/topics/modules-intro)
 
 <span id="RedisModule_CallReplyProto"></span>
 
@@ -3774,7 +3774,7 @@ AOF rewrite, and so forth). In this section we define this API.
 
 Register a new data type exported by the module. The parameters are the
 following. Please for in depth documentation check the modules API
-documentation, especially [https://redis.io/topics/modules-native-types](https://redis.io/topics/modules-native-types).
+documentation, especially [https://valkey.io/topics/modules-native-types](https://valkey.io/topics/modules-native-types).
 
 * **name**: A 9 characters data type name that MUST be unique in the Redis
   Modules ecosystem. Be creative... and there will be no collisions. Use
@@ -4423,7 +4423,7 @@ latency-monitor-threshold.
 ## Blocking clients from modules
 
 For a guide about blocking commands in modules, see
-[https://redis.io/topics/modules-blocking-ops](https://redis.io/topics/modules-blocking-ops).
+[https://valkey.io/topics/modules-blocking-ops](https://valkey.io/topics/modules-blocking-ops).
 
 <span id="RedisModule_RegisterAuthCallback"></span>
 
@@ -4977,7 +4977,7 @@ that the notification code will be executed in the middle on Redis logic
 runs is dangerous and discouraged. In order to react to key space events with
 write actions, please refer to [`RedisModule_AddPostNotificationJob`](#RedisModule_AddPostNotificationJob).
 
-See [https://redis.io/topics/notifications](https://redis.io/topics/notifications) for more information.
+See [https://valkey.io/topics/notifications](https://valkey.io/topics/notifications) for more information.
 
 <span id="RedisModule_AddPostNotificationJob"></span>
 
