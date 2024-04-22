@@ -174,7 +174,7 @@ Prerequisites
 
 If you haven't downloaded the [Retwis source code](https://github.com/antirez/retwis) already please grab it now. It contains a few PHP files, and also a copy of [Predis](https://github.com/nrk/predis), the PHP client library we use in this example.
 
-Another thing you probably want is a working Valkey server. Just get the source, build with `make`, run with `./redis-server`, and you're ready to go. No configuration is required at all in order to play with or run Retwis on your computer.
+Another thing you probably want is a working Valkey server. Just get the source, build with `make`, run with `./valkey-server`, and you're ready to go. No configuration is required at all in order to play with or run Retwis on your computer.
 
 Data layout
 ---

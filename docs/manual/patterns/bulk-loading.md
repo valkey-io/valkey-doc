@@ -44,13 +44,13 @@ as fast as possible. In the past the way to do this was to use the
 
 However this is not a very reliable way to perform mass import because netcat
 does not really know when all the data was transferred and can't check for
-errors. In 2.6 or later versions of Valkey the `redis-cli` utility
+errors. In 2.6 or later versions of Valkey the `valkey-cli` utility
 supports a new mode called **pipe mode** that was designed in order to perform
 bulk loading.
 
 Using the pipe mode the command to run looks like the following:
 
-    cat data.txt | redis-cli --pipe
+    cat data.txt | valkey-cli --pipe
 
 That will produce an output similar to this:
 
@@ -58,7 +58,7 @@ That will produce an output similar to this:
     Last reply received from server.
     errors: 0, replies: 1000000
 
-The redis-cli utility will also make sure to only redirect errors received
+The valkey-cli utility will also make sure to only redirect errors received
 from the Valkey instance to the standard output.
 
 ### Generating Valkey Protocol
@@ -115,23 +115,23 @@ in the above example, with this program:
         STDOUT.write(gen_redis_proto("SET","Key#{n}","Value#{n}"))
     }
 
-We can run the program directly in pipe to redis-cli in order to perform our
+We can run the program directly in pipe to valkey-cli in order to perform our
 first mass import session.
 
-    $ ruby proto.rb | redis-cli --pipe
+    $ ruby proto.rb | valkey-cli --pipe
     All data transferred. Waiting for the last reply...
     Last reply received from server.
     errors: 0, replies: 1000
 
 ### How the pipe mode works under the hood
 
-The magic needed inside the pipe mode of redis-cli is to be as fast as netcat
+The magic needed inside the pipe mode of valkey-cli is to be as fast as netcat
 and still be able to understand when the last reply was sent by the server
 at the same time.
 
 This is obtained in the following way:
 
-+ redis-cli --pipe tries to send data as fast as possible to the server.
++ valkey-cli --pipe tries to send data as fast as possible to the server.
 + At the same time it reads data when available, trying to parse it.
 + Once there is no more data to read from stdin, it sends a special **ECHO**
 command with a random 20 byte string: we are sure this is the latest command
