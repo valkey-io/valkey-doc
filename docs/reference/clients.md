@@ -172,7 +172,7 @@ The Redis `CLIENT` command allows you to inspect the state of every connected cl
 `CLIENT LIST` is used in order to obtain a list of connected clients and their state:
 
 ```
-redis 127.0.0.1:6379> client list
+127.0.0.1:6379> client list
 addr=127.0.0.1:52555 fd=5 name= age=855 idle=0 flags=N db=0 sub=0 psub=0 multi=-1 qbuf=0 qbuf-free=32768 obl=0 oll=0 omem=0 events=r cmd=client
 addr=127.0.0.1:52787 fd=6 name= age=6 idle=5 flags=N db=0 sub=0 psub=0 multi=-1 qbuf=0 qbuf-free=0 obl=0 oll=0 omem=0 events=r cmd=ping
 ```
