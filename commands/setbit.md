@@ -127,7 +127,7 @@ local ms, me = s % 8, (e + 1) % 8
 if me > 0 then
   local t = math.max(e - me + 1, s)
   for i = e, t, -1 do
-    redis.call('SETBIT', k, i, v)
+    server.call('SETBIT', k, i, v)
   end
   e = t
 end
@@ -136,7 +136,7 @@ end
 if ms > 0 then
   local t = math.min(s - ms + 7, e)
   for i = s, t, 1 do
-    redis.call('SETBIT', k, i, v)
+    server.call('SETBIT', k, i, v)
   end
   s = t + 1
 end
@@ -149,7 +149,7 @@ if rl > 0 then
   if 0 == v then
     b = '\0'
   end
-  redis.call('SETRANGE', k, rs, string.rep(b, rl))
+  server.call('SETRANGE', k, rs, string.rep(b, rl))
 end
 ```
 

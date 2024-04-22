@@ -49,9 +49,9 @@ This avoids that a client will try to release the lock after the expire time del
 
 An example of unlock script would be similar to the following:
 
-    if redis.call("get",KEYS[1]) == ARGV[1]
+    if server.call("get",KEYS[1]) == ARGV[1]
     then
-        return redis.call("del",KEYS[1])
+        return server.call("del",KEYS[1])
     else
         return 0
     end

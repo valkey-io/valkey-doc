@@ -21,7 +21,7 @@ For more information please refer to the [Valkey Programmability](/topics/progra
 The following example will create a library named `mylib` with a single function, `myfunc`, that returns the first argument it gets.
 
 ```
-valkey> FUNCTION LOAD "#!lua name=mylib \n redis.register_function('myfunc', function(keys, args) return args[1] end)"
+valkey> FUNCTION LOAD "#!lua name=mylib \n server.register_function('myfunc', function(keys, args) return args[1] end)"
 "mylib"
 valkey> FCALL myfunc 0 hello
 "hello"
