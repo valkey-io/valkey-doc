@@ -995,7 +995,7 @@ The command moves all the keys of a running instance (deleting the keys from
 the source instance) to the specified pre-existing Valkey Cluster. 
 
 {{% alert title="Note" color="info" %}} 
-Starting with Valkey 5, if not for backward compatibility, the Valkey project no longer uses the word slave. Unfortunately in this command the word slave is part of the protocol, so we'll be able to remove such occurrences only when this API will be naturally deprecated.
+If not for backward compatibility, the Valkey project no longer uses the word slave. Unfortunately in this command the word slave is part of the protocol, so we'll be able to remove such occurrences only when this API will be naturally deprecated.
 {{% /alert %}} 
 
 ## Learn more
