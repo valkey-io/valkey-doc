@@ -22,11 +22,11 @@ the exact LRU.
 
 The `maxmemory` configuration directive configures Valkey
 to use a specified amount of memory for the data set. You can
-set the configuration directive using the `redis.conf` file, or later using
+set the configuration directive using the `valkey.conf` file, or later using
 the `CONFIG SET` command at runtime.
 
 For example, to configure a memory limit of 100 megabytes, you can use the
-following directive inside the `redis.conf` file:
+following directive inside the `valkey.conf` file:
 
     maxmemory 100mb
 
@@ -160,7 +160,7 @@ By default Valkey is configured to:
 
 Those should be reasonable values and were tested experimentally, but the user may want to play with these configuration settings to pick optimal values.
 
-Instructions about how to tune these parameters can be found inside the example `redis.conf` file in the source distribution. Briefly, they are:
+Instructions about how to tune these parameters can be found inside the example `valkey.conf` file in the source distribution. Briefly, they are:
 
 ```
 lfu-log-factor 10
@@ -185,4 +185,4 @@ The counter *logarithm factor* changes how many hits are needed to saturate the 
 +--------+------------+------------+------------+------------+------------+
 ```
 
-So basically the factor is a trade off between better distinguishing items with low accesses VS distinguishing items with high accesses. More information is available in the example `redis.conf` file.
+So basically the factor is a trade off between better distinguishing items with low accesses VS distinguishing items with high accesses. More information is available in the example `valkey.conf` file.

@@ -292,7 +292,7 @@ The `CLUSTER NODES` command can be sent to any node in the cluster and provides 
 The following is sample output of the `CLUSTER NODES` command sent to a master
 node in a small cluster of three nodes.
 
-    $ redis-cli cluster nodes
+    $ valkey-cli cluster nodes
     d1861060fe6a534d42d8a19aeb36600e18785e04 127.0.0.1:6379 myself - 0 1318428930 1 connected 0-1364
     3886e65cc906bfd9b1f7e7bde468726a052d1dae 127.0.0.1:6380 master - 1318428930 1318428931 2 connected 1365-2729
     d289c575dcbc4bdd2931585fd4339089e461a27d 127.0.0.1:6381 master - 1318428931 1318428931 3 connected 2730-4095
@@ -307,13 +307,13 @@ incoming connections from other Valkey Cluster nodes. This port will be derived 
 Example 1:
 
 If a Valkey node is listening for client connections on port 6379, 
-and you do not add cluster-port parameter in redis.conf,
+and you do not add cluster-port parameter in valkey.conf,
 the Cluster bus port 16379 will be opened.
 
 Example 2:
 
 If a Valkey node is listening for client connections on port 6379, 
-and you set cluster-port 20000 in redis.conf,
+and you set cluster-port 20000 in valkey.conf,
 the Cluster bus port 20000 will be opened.
 
 Node-to-node communication happens exclusively using the Cluster bus and
@@ -487,7 +487,7 @@ is that:
 * All queries about non-existing keys in A are processed by "B", because "A" will redirect clients to "B".
 
 This way we no longer create new keys in "A".
-In the meantime, `redis-cli` used during reshardings
+In the meantime, `valkey-cli` used during reshardings
 and Valkey Cluster configuration will migrate existing keys in
 hash slot 8 from A to B.
 This is performed using the following command:
@@ -495,7 +495,7 @@ This is performed using the following command:
     CLUSTER GETKEYSINSLOT slot count
 
 The above command will return `count` keys in the specified hash slot.
-For keys returned, `redis-cli` sends node "A" a `MIGRATE` command, that
+For keys returned, `valkey-cli` sends node "A" a `MIGRATE` command, that
 will migrate the specified keys from A to B in an atomic way (both instances
 are locked for the time (usually very small time) needed to migrate keys so
 there are no race conditions). This is how `MIGRATE` works:
@@ -935,7 +935,7 @@ So if we receive a heartbeat from node A claiming to serve hash slots 1 and 2 wi
 16383 -> NULL
 ```
 
-When a new cluster is created, a system administrator needs to manually assign (using the `CLUSTER ADDSLOTS` command, via the redis-cli command line tool, or by any other means) the slots served by each master node only to the node itself, and the information will rapidly propagate across the cluster.
+When a new cluster is created, a system administrator needs to manually assign (using the `CLUSTER ADDSLOTS` command, via the valkey-cli command line tool, or by any other means) the slots served by each master node only to the node itself, and the information will rapidly propagate across the cluster.
 
 However this rule is not enough. We know that hash slot mapping can change
 during two events:
@@ -1141,7 +1141,7 @@ If there are any set of nodes with the same `configEpoch`, all the nodes but the
 
 This mechanism also guarantees that after a fresh cluster is created, all
 nodes start with a different `configEpoch` (even if this is not actually
-used) since `redis-cli` makes sure to use `CLUSTER SET-CONFIG-EPOCH` at startup.
+used) since `valkey-cli` makes sure to use `CLUSTER SET-CONFIG-EPOCH` at startup.
 However if for some reason a node is left misconfigured, it will update
 its configuration to a different configuration epoch automatically.
 

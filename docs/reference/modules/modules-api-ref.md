@@ -4964,7 +4964,7 @@ Notification callback gets executed with a redis context that can not be
 used to send anything to the client, and has the db number where the event
 occurred as its selected db number.
 
-Notice that it is not necessary to enable notifications in redis.conf for
+Notice that it is not necessary to enable notifications in valkey.conf for
 module notifications to work.
 
 Warning: the notification callbacks are performed in a synchronous manner,
@@ -7511,7 +7511,7 @@ Example for 6.0.7 the return value will be 0x00060007.
 **Available since:** 6.2.0
 
 
-Return the current redis-server runtime value of `REDISMODULE_TYPE_METHOD_VERSION`.
+Return the current valkey-server runtime value of `REDISMODULE_TYPE_METHOD_VERSION`.
 You can use that when calling [`RedisModule_CreateDataType`](#RedisModule_CreateDataType) to know which fields of
 `RedisModuleTypeMethods` are gonna be supported and which will be ignored.
 

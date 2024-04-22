@@ -90,7 +90,7 @@ The Swap File
 
 The next step in order to understand how the VM subsystem works is understanding how objects are stored inside the swap file. The good news is that's not some kind of special format, we just use the same format used to store the objects in .rdb files, that are the usual dump files produced by Valkey using the `SAVE` command.
 
-The swap file is composed of a given number of pages, where every page size is a given number of bytes. This parameters can be changed in redis.conf, since different Valkey instances may work better with different values: it depends on the actual data you store inside it. The following are the default values:
+The swap file is composed of a given number of pages, where every page size is a given number of bytes. This parameters can be changed in valkey.conf, since different Valkey instances may work better with different values: it depends on the actual data you store inside it. The following are the default values:
 
     vm-page-size 32
     vm-pages 134217728

@@ -47,7 +47,7 @@ However, Valkey does the following two things when serving clients:
 In Redis OSS 2.4 there was a hard-coded limit for the maximum number of clients
 that could be handled simultaneously.
 
-In Redis OSS 2.6 and newer, this limit is configurable using the `maxclients` directive in `redis.conf`. The default is 10,000 clients.
+In Redis OSS 2.6 and newer, this limit is configurable using the `maxclients` directive in `valkey.conf`. The default is 10,000 clients.
 
 However, Valkey checks with the kernel what the maximum number of file
 descriptors that we are able to open is (the *soft limit* is checked). If the
@@ -60,7 +60,7 @@ limit.
 When `maxclients` is set to a number greater than Valkey can support, a message is logged at startup:
 
 ```
-$ ./redis-server --maxclients 100000
+$ ./valkey-server --maxclients 100000
 [41422] 23 Jan 11:28:33.179 # Unable to set the max number of files limit to 100032 (Invalid argument), setting the max clients configuration to 10112.
 ```
 
@@ -101,7 +101,7 @@ Different kind of clients have different default limits:
 * **Pub/Sub clients** have a default hard limit of 32 megabytes and a soft limit of 8 megabytes per 60 seconds.
 * **Replicas** have a default hard limit of 256 megabytes and a soft limit of 64 megabyte per 60 seconds.
 
-It is possible to change the limit at runtime using the `CONFIG SET` command or in a permanent way using the Valkey configuration file `redis.conf`. See the example `redis.conf` in the Valkey distribution for more information about how to set the limit.
+It is possible to change the limit at runtime using the `CONFIG SET` command or in a permanent way using the Valkey configuration file `valkey.conf`. See the example `valkey.conf` in the Valkey distribution for more information about how to set the limit.
 
 ## Query Buffer Hard Limit
 
@@ -123,7 +123,7 @@ The aggregation takes into account all the memory used by the client connections
 
 Note that replica and master connections aren't affected by the client eviction mechanism. Therefore, such connections are never evicted.
 
-`maxmemory-clients` can be set permanently in the configuration file (`redis.conf`) or via the `CONFIG SET` command.
+`maxmemory-clients` can be set permanently in the configuration file (`valkey.conf`) or via the `CONFIG SET` command.
 This setting can either be 0 (meaning no limit), a size in bytes (possibly with `mb`/`gb` suffix),
 or a percentage of `maxmemory` by using the `%` suffix (e.g. setting it to `10%` would mean 10% of the `maxmemory` configuration).
 
@@ -142,7 +142,7 @@ And you can revert that with:
 
 `CLIENT NO-EVICT` `off`
 
-For more information and an example refer to the `maxmemory-clients` section in the default `redis.conf` file.
+For more information and an example refer to the `maxmemory-clients` section in the default `valkey.conf` file.
 
 Client eviction is available from Redis OSS 7.0.
 
@@ -154,7 +154,7 @@ if the client is idle for many seconds: the connection will remain open forever.
 However if you don't like this behavior, you can configure a timeout, so that
 if the client is idle for more than the specified number of seconds, the client connection will be closed.
 
-You can configure this limit via `redis.conf` or simply using `CONFIG SET timeout <value>`.
+You can configure this limit via `valkey.conf` or simply using `CONFIG SET timeout <value>`.
 
 Note that the timeout only applies to normal clients and it **does not apply to Pub/Sub clients**, since a Pub/Sub connection is a *push style* connection so a client that is idle is the norm.
 

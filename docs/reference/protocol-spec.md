@@ -472,11 +472,11 @@ Example:
 (The raw RESP encoding is split into multiple lines for readability).
 
 Some client libraries may ignore the difference between this type and the string type and return a native string in both cases.
-However, interactive clients, such as command line interfaces (e.g., [`redis-cli`](/docs/manual/cli)), can use this type and know that their output should be presented to the human user as is and without quoting the string.
+However, interactive clients, such as command line interfaces (e.g., [`valkey-cli`](/docs/manual/cli)), can use this type and know that their output should be presented to the human user as is and without quoting the string.
 
 For example, the Valkey command `INFO` outputs a report that includes newlines.
-When using RESP3, `redis-cli` displays it correctly because it is sent as a Verbatim String reply (with its three bytes being "txt").
-When using RESP2, however, the `redis-cli` is hard-coded to look for the `INFO` command to ensure its correct display to the user.
+When using RESP3, `valkey-cli` displays it correctly because it is sent as a Verbatim String reply (with its three bytes being "txt").
+When using RESP2, however, the `valkey-cli` is hard-coded to look for the `INFO` command to ensure its correct display to the user.
 
 <a name="map-reply"></a>
 
@@ -639,7 +639,7 @@ For more information, see [Pipelining](/topics/pipelining).
 
 ## Inline commands
 Sometimes you may need to send a command to the Valkey server but only have `telnet` available.
-While the Valkey protocol is simple to implement, it is not ideal for interactive sessions, and `redis-cli` may not always be available.
+While the Valkey protocol is simple to implement, it is not ideal for interactive sessions, and `valkey-cli` may not always be available.
 For this reason, Valkey also accepts commands in the _inline command_ format.
 
 The following example demonstrates a server/client exchange using an inline command (the server chat starts with `S:`, the client chat with `C:`):

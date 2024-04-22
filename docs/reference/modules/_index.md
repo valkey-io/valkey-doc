@@ -37,7 +37,7 @@ and other details may change in the future.
 ## Loading modules
 
 In order to test the module you are developing, you can load the module
-using the following `redis.conf` configuration directive:
+using the following `valkey.conf` configuration directive:
 
     loadmodule /path/to/mymodule.so
 
@@ -199,7 +199,7 @@ Using the macro or just comparing with NULL is a matter of personal preference.
 # Passing configuration parameters to Valkey modules
 
 When the module is loaded with the `MODULE LOAD` command, or using the
-`loadmodule` directive in the `redis.conf` file, the user is able to pass
+`loadmodule` directive in the `valkey.conf` file, the user is able to pass
 configuration parameters to the module by adding arguments after the module
 file name:
 
