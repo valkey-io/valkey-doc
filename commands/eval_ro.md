@@ -10,9 +10,9 @@ For more information about `EVAL` scripts please refer to [Introduction to Eval 
 > SET mykey "Hello"
 OK
 
-> EVAL_RO "return redis.call('GET', KEYS[1])" 1 mykey
+> EVAL_RO "return server.call('GET', KEYS[1])" 1 mykey
 "Hello"
 
-> EVAL_RO "return redis.call('DEL', KEYS[1])" 1 mykey
+> EVAL_RO "return server.call('DEL', KEYS[1])" 1 mykey
 (error) ERR Error running script (call to b0d697da25b13e49157b2c214a4033546aba2104): @user_script:1: @user_script: 1: Write commands are not allowed from read-only scripts.
 ```

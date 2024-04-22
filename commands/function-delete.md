@@ -8,7 +8,7 @@ For more information please refer to [Introduction to Valkey Functions](/topics/
 @examples
 
 ```
-valkey> FUNCTION LOAD "#!lua name=mylib \n redis.register_function('myfunc', function(keys, args) return 'hello' end)"
+valkey> FUNCTION LOAD "#!lua name=mylib \n server.register_function('myfunc', function(keys, args) return 'hello' end)"
 "mylib"
 valkey> FCALL myfunc 0
 "hello"

@@ -3,7 +3,7 @@ which the key will expire is specified in milliseconds instead of seconds.
 
 ## Options
 
-The `PEXPIREAT` command supports a set of options since Redis 7.0:
+The `PEXPIREAT` command supports a set of options since Redis OSS 7.0:
 
 * `NX` -- Set expiry only when the key has no expiry
 * `XX` -- Set expiry only when the key has an existing expiry

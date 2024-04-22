@@ -19,7 +19,7 @@ A few remarks:
 Limitations
 ---
 It is possible to write a module or Lua script that propagate writes to the AOF but not the replication stream.
-(For modules, this is done using the `fmt` argument to `RedisModule_Call` or `RedisModule_Replicate`; For Lua scripts, this is achieved using `redis.set_repl`.)
+(For modules, this is done using the `fmt` argument to `RedisModule_Call` or `RedisModule_Replicate`; For Lua scripts, this is achieved using `server.set_repl`.)
 
 These features are incompatible with the `WAITAOF` command as it is currently implemented, and using them in combination may result in incorrect behavior.
 

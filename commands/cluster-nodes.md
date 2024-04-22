@@ -105,4 +105,4 @@ Note that:
 1. Migration and importing slots are only added to the node flagged as `myself`. This information is local to a node, for its own slots.
 2. Importing and migrating slots are provided as **additional info**. If the node has a given hash slot assigned, it will be also a plain number in the list of hash slots, so clients that don't have a clue about hash slots migrations can just skip this special fields.
 
-**A note about the word slave used in this man page and command name**: If not for Redis compatibility, the Valkey project dones not use the word slave. Unfortunately in this command the word slave is part of the protocol, so we'll be able to remove such occurrences only when this API will be naturally deprecated.
+**A note about the word slave used in this man page and command name**: If not for Redis OSS compatibility, the Valkey project dones not use the word slave. Unfortunately in this command the word slave is part of the protocol, so we'll be able to remove such occurrences only when this API will be naturally deprecated.
