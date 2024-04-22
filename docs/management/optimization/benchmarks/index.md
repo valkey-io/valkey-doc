@@ -75,7 +75,7 @@ This is obtained by using the `-r` switch. For instance if I want to run
 one million SET operations, using a random key for every operation out of
 100k possible keys, I'll use the following command line:
 
-    $ redis-cli flushall
+    $ valkey-cli flushall
     OK
 
     $ redis-benchmark -t set -r 100000 -n 1000000
@@ -91,7 +91,7 @@ one million SET operations, using a random key for every operation out of
     100.00% `<=` 3 milliseconds
     72144.87 requests per second
 
-    $ redis-cli dbsize
+    $ valkey-cli dbsize
     (integer) 99993
 
 ### Using pipelining

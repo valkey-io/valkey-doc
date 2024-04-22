@@ -227,7 +227,7 @@ Even if `B` is writable, C will not see `B` writes and will instead have identic
 If your master has a password via `requirepass`, it's trivial to configure the
 replica to use that password in all sync operations.
 
-To do it on a running instance, use `redis-cli` and type:
+To do it on a running instance, use `valkey-cli` and type:
 
     config set masterauth <password>
 

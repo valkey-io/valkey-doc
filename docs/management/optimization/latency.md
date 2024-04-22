@@ -28,7 +28,7 @@ return here to read the full documentation.
 1. Make sure you are not running slow commands that are blocking the server. Use the Valkey [Slow Log feature](/commands/slowlog) to check this.
 2. For EC2 users, make sure you use HVM based modern EC2 instances, like m3.medium. Otherwise fork() is too slow.
 3. Transparent huge pages must be disabled from your kernel. Use `echo never > /sys/kernel/mm/transparent_hugepage/enabled` to disable them, and restart your Valkey process.
-4. If you are using a virtual machine, it is possible that you have an intrinsic latency that has nothing to do with Valkey. Check the minimum latency you can expect from your runtime environment using `./redis-cli --intrinsic-latency 100`. Note: you need to run this command in *the server* not in the client.
+4. If you are using a virtual machine, it is possible that you have an intrinsic latency that has nothing to do with Valkey. Check the minimum latency you can expect from your runtime environment using `./valkey-cli --intrinsic-latency 100`. Note: you need to run this command in *the server* not in the client.
 5. Enable and use the [Latency monitor](/topics/latency-monitor) feature of Valkey in order to get a human readable description of the latency events and causes in your Valkey instance.
 
 In general, use the following table for durability VS latency/performance tradeoffs, ordered from stronger safety to better latency.
@@ -46,10 +46,10 @@ Measuring latency
 
 If you are experiencing latency problems, you probably know how to measure
 it in the context of your application, or maybe your latency problem is very
-evident even macroscopically. However redis-cli can be used to measure the
+evident even macroscopically. However valkey-cli can be used to measure the
 latency of a Valkey server in milliseconds, just try:
 
-    redis-cli --latency -h `host` -p `port`
+    valkey-cli --latency -h `host` -p `port`
 
 Using the internal Valkey latency monitoring subsystem
 ---
@@ -88,7 +88,7 @@ latency spikes. 100 seconds is usually appropriate, however you may want
 to perform a few runs at different times. Please note that the test is CPU
 intensive and will likely saturate a single core in your system.
 
-    $ ./redis-cli --intrinsic-latency 100
+    $ ./valkey-cli --intrinsic-latency 100
     Max latency so far: 1 microseconds.
     Max latency so far: 16 microseconds.
     Max latency so far: 50 microseconds.
@@ -96,7 +96,7 @@ intensive and will likely saturate a single core in your system.
     Max latency so far: 83 microseconds.
     Max latency so far: 115 microseconds.
 
-Note: redis-cli in this special case needs to **run in the server** where you run or plan to run Valkey, not in the client. In this special mode redis-cli does not connect to a Valkey server at all: it will just try to measure the largest time the kernel does not provide CPU time to run to the redis-cli process itself.
+Note: valkey-cli in this special case needs to **run in the server** where you run or plan to run Valkey, not in the client. In this special mode valkey-cli does not connect to a Valkey server at all: it will just try to measure the largest time the kernel does not provide CPU time to run to the valkey-cli process itself.
 
 In the above example, the intrinsic latency of the system is just 0.115
 milliseconds (or 115 microseconds), which is a good news, however keep in mind
@@ -107,7 +107,7 @@ Virtualized environments will not show so good numbers, especially with high
 load or if there are noisy neighbors. The following is a run on a Linode 4096
 instance running Valkey and Apache:
 
-    $ ./redis-cli --intrinsic-latency 100
+    $ ./valkey-cli --intrinsic-latency 100
     Max latency so far: 573 microseconds.
     Max latency so far: 695 microseconds.
     Max latency so far: 919 microseconds.
@@ -307,7 +307,7 @@ this is the case.
 The first thing to do is to checking the amount of Valkey memory that is swapped
 on disk. In order to do so you need to obtain the Valkey instance pid:
 
-    $ redis-cli info | grep process_id
+    $ valkey-cli info | grep process_id
     process_id:5454
 
 Now enter the /proc file system directory for this process:

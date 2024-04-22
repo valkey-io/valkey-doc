@@ -68,7 +68,7 @@ Follow these steps to avoid downtime.
 
 * Wait for the replication initial synchronization to complete. Check the replica's log file.
 
-* Using `INFO`, ensure the master and replica have the same number of keys. Use `redis-cli` to check that the replica is working as expected and is replying to your commands.
+* Using `INFO`, ensure the master and replica have the same number of keys. Use `valkey-cli` to check that the replica is working as expected and is replying to your commands.
 
 * Allow writes to the replica using `CONFIG SET slave-read-only no`.
 
