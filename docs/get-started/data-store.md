@@ -16,14 +16,7 @@ The examples in this article refer to a simple bicycle inventory.
 
 ## Setup
 
-The easiest way to get started with Redis is to use Redis Cloud:
-
-1. Create a [free account](https://redis.com/try-free?utm_source=redisio&utm_medium=referral&utm_campaign=2023-09-try_free&utm_content=cu-redis_cloud_users).
-2. Follow the instructions to create a free database.
-   
-   <img src="../img/free-cloud-db.png" width="500px">
-
-You can alternatively follow the [installation guides](/docs/install/install-stack/) to install Redis on your local machine.
+See the [installation guides](/docs/install/install-redis/) to install Redis on your local machine.
 
 ## Connect
 
@@ -32,10 +25,6 @@ The first step is to connect to Redis. You can find further details about the co
 {{< clients-example search_quickstart connect >}}
 > redis-cli -h 127.0.0.1 -p 6379
 {{< /clients-example>}}
-<br/>
-{{% alert title="Tip" color="warning" %}}
-You can copy and paste the connection details from the Redis Cloud database configuration page. Here is an example connection string of a Cloud database that is hosted in the AWS region `us-east-1` and listens on port 16379: `redis-16379.c283.us-east-1-4.ec2.cloud.redislabs.com:16379`. The connection string has the format `host:port`. You must also copy and paste the username and password of your Cloud database and then either pass the credentials to your client or use the [AUTH command](/commands/auth/) after the connection is established.
-{{% /alert  %}}
 
 ## Store and retrieve data
 

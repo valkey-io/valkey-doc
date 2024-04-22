@@ -99,8 +99,3 @@ A few commands - such as `HKEYS`, `HVALS`, and `HGETALL` - are O(n), where _n_ i
 
 Every hash can store up to 4,294,967,295 (2^32 - 1) field-value pairs.
 In practice, your hashes are limited only by the overall memory on the VMs hosting your Redis deployment.
-
-## Learn more
-
-* [Hashes Explained](https://www.youtube.com/watch?v=-KdITaRkQ-U) is a short, comprehensive video explainer covering Hashes.
-* [Redis University's RU101](https://university.redis.com/courses/ru101/) covers Hashes in detail.

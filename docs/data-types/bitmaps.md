@@ -106,8 +106,3 @@ the Nth bit to address inside the key with `bit-number MOD M`.
 
 `SETBIT` and `GETBIT` are O(1).
 `BITOP` is O(n), where _n_ is the length of the longest string in the comparison.
-
-## Learn more
-
-* [Bitmaps Explained](https://www.youtube.com/watch?v=oj8LdJQjhJo) teaches you how to use bitmaps for map exploration in an online game. 
-* [Redis University's RU101](https://university.redis.com/courses/ru101/) covers Bitmaps in detail.

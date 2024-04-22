@@ -96,5 +96,3 @@ The HyperLogLog can estimate the cardinality of sets with up to 18,446,744,073,7
 ## Learn more
 
 * [Redis new data structure: the HyperLogLog](http://antirez.com/news/75) has a lot of details about the data structure and its implementation in Redis.
-* [HyperLogLog Explained](https://www.youtube.com/watch?v=MunL8nnwscQ) shows you how to use HyperLogLog data structures to build a traffic heat map.
-
