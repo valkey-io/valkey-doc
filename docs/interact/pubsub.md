@@ -178,7 +178,7 @@ So the client will exit the Pub/Sub state only when this count drops to zero as 
 
 ## Sharded Pub/Sub
 
-From Redis 7.0, sharded Pub/Sub is introduced in which shard channels are assigned to slots by the same algorithm used to assign keys to slots. 
+From Redis OSS 7.0, sharded Pub/Sub is introduced in which shard channels are assigned to slots by the same algorithm used to assign keys to slots. 
 A shard message must be sent to a node that owns the slot the shard channel is hashed to. 
 The cluster makes sure the published shard messages are forwarded to all nodes in the shard, so clients can subscribe to a shard channel by connecting to either the master responsible for the slot, or to any of its replicas.
 `SSUBSCRIBE`, `SUNSUBSCRIBE` and `SPUBLISH` are used to implement sharded Pub/Sub.

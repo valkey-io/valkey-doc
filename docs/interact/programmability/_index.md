@@ -9,7 +9,7 @@ aliases:
     - /docs/manual/programmability/
 ---
 
-Redis provides a programming interface that lets you execute custom scripts on the server itself. In Redis 7 and beyond, you can use [Redis Functions](/docs/manual/programmability/functions-intro) to manage and run your scripts. In Redis 6.2 and below, you use [Lua scripting with the EVAL command](/docs/manual/programmability/eval-intro) to program the server.
+Redis provides a programming interface that lets you execute custom scripts on the server itself. In Redis OSS 7 and beyond, you can use [Redis Functions](/docs/manual/programmability/functions-intro) to manage and run your scripts. In Redis OSS 6.2 and below, you use [Lua scripting with the EVAL command](/docs/manual/programmability/eval-intro) to program the server.
 
 ## Background
 
@@ -34,7 +34,7 @@ Please refer to the [Redis Lua API Reference](/topics/lua-api) page for complete
 
 Redis provides two means for running scripts.
 
-Firstly, and ever since Redis 2.6.0, the `EVAL` command enables running server-side scripts.
+Firstly, and ever since Redis OSS 2.6.0, the `EVAL` command enables running server-side scripts.
 Eval scripts provide a quick and straightforward way to have Redis run your scripts ad-hoc.
 However, using them means that the scripted logic is a part of your application (not an extension of the Redis server).
 Every applicative instance that runs a script must have the script's source code readily available for loading at any time.
@@ -80,11 +80,11 @@ In addition to the benefits provided by all read-only scripts, the read-only scr
 
 #### Read-only script history
 
-Read-only scripts and read-only script commands were introduced in Redis 7.0
+Read-only scripts and read-only script commands were introduced in Redis OSS 7.0
 
-* Before Redis 7.0.1 `PUBLISH`, `SPUBLISH` and `PFCOUNT` were not considered write commands in scripts
-* Before Redis 7.0.1 the `no-writes` [flag](/topics/lua-api#script_flags) did not imply `allow-oom`
-* Before Redis 7.0.1 the `no-writes` flag did not permit the script to run during write pauses.
+* Before Redis OSS 7.0.1 `PUBLISH`, `SPUBLISH` and `PFCOUNT` were not considered write commands in scripts
+* Before Redis OSS 7.0.1 the `no-writes` [flag](/topics/lua-api#script_flags) did not imply `allow-oom`
+* Before Redis OSS 7.0.1 the `no-writes` flag did not permit the script to run during write pauses.
 
 
 The recommended approach is to use the standard scripting commands with the `no-writes` flag unless you need one of the previously mentioned features.

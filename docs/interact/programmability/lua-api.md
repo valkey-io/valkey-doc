@@ -313,9 +313,9 @@ Please refer to the [Data type conversion](#data-type-conversion) for more infor
 **Note:**
 this feature is only available when script effects replication is employed.
 Calling it when using verbatim script replication will result in an error.
-As of Redis version 2.6.0, scripts were replicated verbatim, meaning that the scripts' source code was sent for execution by replicas and stored in the AOF.
+As of Redis OSS version 2.6.0, scripts were replicated verbatim, meaning that the scripts' source code was sent for execution by replicas and stored in the AOF.
 An alternative replication mode added in version 3.2.0 allows replicating only the scripts' effects.
-As of Redis version 7.0, script replication is no longer supported, and the only replication mode available is script effects replication.
+As of Redis OSS version 7.0, script replication is no longer supported, and the only replication mode available is script effects replication.
 
 **Warning:**
 this is an advanced feature. Misuse can cause damage by violating the contract that binds the Redis master, its replicas, and AOF contents to hold the same logical content.
@@ -349,7 +349,7 @@ You can call the `server.set_repl()` function at any time during the script's ex
 A simple example follows:
 
 ```lua
-redis.replicate_commands() -- Enable effects replication in versions lower than Redis v7.0
+redis.replicate_commands() -- Enable effects replication in versions lower than Redis OSS v7.0
 server.call('SET', KEYS[1], ARGV[1])
 server.set_repl(redis.REPL_NONE)
 server.call('SET', KEYS[2], ARGV[2])
@@ -370,7 +370,7 @@ This function switches the script's replication mode from verbatim replication t
 You can use it to override the default verbatim script replication mode used by Redis until version 7.0.
 
 **Note:**
-as of Redis v7.0, verbatim script replication is no longer supported.
+as of Redis OSS v7.0, verbatim script replication is no longer supported.
 The default, and only script replication mode supported, is script effects' replication.
 For more information, please refer to [`Replicating commands instead of scripts`](/topics/eval-intro#replicating-commands-instead-of-scripts)
 
@@ -618,7 +618,7 @@ As you can see, the float value of _3.333_ gets converted to an integer _3_, the
 ### RESP3 to Lua type conversion
 
 [RESP3](https://github.com/redis/redis-specifications/blob/master/protocol/RESP3.md) is a newer version of the [Redis Serialization Protocol](/topics/protocol).
-It is available as an opt-in choice as of Redis v6.0.
+It is available as an opt-in choice as of Redis OSS v6.0.
 
 An executing script may call the [`redis.setresp`](#redis.setresp) function during its execution and switch the protocol version that's used for returning replies from Redis' commands (that can be invoked via [`server.call()`](#server.call) or [`server.pcall()`](#server.pcall)).
 
@@ -634,7 +634,7 @@ Once Redis' replies are in RESP3 protocol, all of the [RESP2 to Lua conversion](
 * [Redis verbatim string reply](https://github.com/redis/redis-specifications/blob/master/protocol/RESP3.md#verbatim-string-type) -> Lua table with a single _verbatim_string_ field containing a Lua table with two fields, _string_ and _format_, representing the verbatim string and its format, respectively.
 
 **Note:**
-the RESP3 [big number](https://github.com/redis/redis-specifications/blob/master/protocol/RESP3.md#big-number-type) and [verbatim strings](https://github.com/redis/redis-specifications/blob/master/protocol/RESP3.md#verbatim-string-type) replies are only supported as of Redis v7.0 and greater. 
+the RESP3 [big number](https://github.com/redis/redis-specifications/blob/master/protocol/RESP3.md#big-number-type) and [verbatim strings](https://github.com/redis/redis-specifications/blob/master/protocol/RESP3.md#verbatim-string-type) replies are only supported as of Redis OSS v7.0 and greater. 
 Also, presently, RESP3's [attributes](https://github.com/redis/redis-specifications/blob/master/protocol/RESP3.md#attribute-type), [streamed strings](https://github.com/redis/redis-specifications/blob/master/protocol/RESP3.md#streamed-strings) and [streamed aggregate data types](https://github.com/redis/redis-specifications/blob/master/protocol/RESP3.md#streamed-aggregate-data-types) are not supported by the Redis Lua API.
 
 ### Lua to RESP3 type conversion
@@ -656,9 +656,9 @@ That means, for example, that returning the RESP3 map type to a RESP2 connection
 ### Using `SELECT` inside scripts
 
 You can call the `SELECT` command from your Lua scripts, like you can with any normal client connection.
-However, one subtle aspect of the behavior changed between Redis versions 2.8.11 and 2.8.12.
-Prior to Redis version 2.8.12, the database selected by the Lua script was *set as the current database* for the client connection that had called it.
-As of Redis version 2.8.12, the database selected by the Lua script only affects the execution context of the script, and does not modify the database that's selected by the client calling the script.
+However, one subtle aspect of the behavior changed between Redis OSS versions 2.8.11 and 2.8.12.
+Prior to Redis OSS version 2.8.12, the database selected by the Lua script was *set as the current database* for the client connection that had called it.
+As of Redis OSS version 2.8.12, the database selected by the Lua script only affects the execution context of the script, and does not modify the database that's selected by the client calling the script.
 This semantic change between patch level releases was required since the old behavior was inherently incompatible with Redis' replication and introduced bugs.
 
 ## Runtime libraries

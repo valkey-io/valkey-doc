@@ -3,13 +3,13 @@ title: "Redis functions"
 linkTitle: "Functions"
 weight: 1
 description: >
-   Scripting with Redis 7 and beyond
+   Scripting with Redis OSS 7 and beyond
 aliases:
     - /topics/functions-intro
     - /docs/manual/programmability/functions-intro/
 ---
 
-Redis Functions is an API for managing code to be executed on the server. This feature, which became available in Redis 7, supersedes the use of [EVAL](/docs/manual/programmability/eval-intro) in prior versions of Redis.
+Redis Functions is an API for managing code to be executed on the server. This feature, which became available in Redis OSS 7, supersedes the use of [EVAL](/docs/manual/programmability/eval-intro) in prior versions of Redis.
 
 ## Prologue (or, what's wrong with Eval Scripts?)
 
@@ -33,7 +33,7 @@ This approach suits many light-weight scripting use cases, but introduces severa
 1. When used naively, `EVAL` promotes an anti-pattern in which scripts the client application renders verbatim scripts instead of responsibly using the [`!KEYS` and `ARGV` Lua APIs](/topics/lua-api#runtime-globals).
 1. Because they are ephemeral, a script can't call another script. This makes sharing and reusing code between scripts nearly impossible, short of client-side preprocessing (see the first point).
 
-To address these needs while avoiding breaking changes to already-established and well-liked ephemeral scripts, Redis v7.0 introduces Redis Functions.
+To address these needs while avoiding breaking changes to already-established and well-liked ephemeral scripts, Redis OSS v7.0 introduces Redis Functions.
 
 ## What are Redis Functions?
 

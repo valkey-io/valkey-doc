@@ -83,10 +83,10 @@ memory condition (if the server is configured to have a memory limit using the `
 * A command may fail *after* `EXEC` is called, for instance since we performed
 an operation against a key with the wrong value (like calling a list operation against a string value).
 
-Starting with Redis 2.6.5, the server will detect an error during the accumulation of commands.
+Starting with Redis OSS 2.6.5, the server will detect an error during the accumulation of commands.
 It will then refuse to execute the transaction returning an error during `EXEC`, discarding the transaction.
 
-> **Note for Redis < 2.6.5:** Prior to Redis 2.6.5 clients needed to detect errors occurring prior to `EXEC` by checking
+> **Note for Redis OSS < 2.6.5:** Prior to Redis OSS 2.6.5 clients needed to detect errors occurring prior to `EXEC` by checking
 the return value of the queued command: if the command replies with QUEUED it was
 queued correctly, otherwise Redis returns an error.
 If there is an error while queueing a command, most clients
@@ -220,7 +220,7 @@ like expiration or eviction. If keys were modified between when they were
 instead.
 
 **NOTE**
-* In Redis versions before 6.0.9, an expired key would not cause a transaction
+* In Redis OSS versions before 6.0.9, an expired key would not cause a transaction
 to be aborted. [More on this](https://github.com/redis/redis/pull/7920)
 * Commands within a transaction won't trigger the `WATCH` condition since they
 are only queued until the `EXEC` is sent.
