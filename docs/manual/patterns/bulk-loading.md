@@ -44,8 +44,8 @@ as fast as possible. In the past the way to do this was to use the
 
 However this is not a very reliable way to perform mass import because netcat
 does not really know when all the data was transferred and can't check for
-errors. In 2.6 or later versions of Valkey the `valkey-cli` utility
-supports a new mode called **pipe mode** that was designed in order to perform
+errors. The `valkey-cli` utility
+supports a **pipe mode** that was designed to perform
 bulk loading.
 
 Using the pipe mode the command to run looks like the following:
