@@ -3,7 +3,7 @@ title: "Valkey configuration"
 linkTitle: "Configuration"
 weight: 2
 description: >
-    Overview of redis.conf, the Valkey configuration file
+    Overview of valkey.conf, the Valkey configuration file
 aliases: [
     /docs/manual/config
     ]
@@ -15,9 +15,9 @@ configuration, however this setup is only recommended for testing and
 development purposes.
 
 The proper way to configure Valkey is by providing a Valkey configuration file,
-usually called `redis.conf`.
+usually called `valkey.conf`.
 
-The `redis.conf` file contains a number of directives that have a very simple
+The `valkey.conf` file contains a number of directives that have a very simple
 format:
 
     keyword argument1 argument2 ... argumentN
@@ -36,7 +36,7 @@ double-quoted strings can additionally include any ASCII symbols encoded using
 backslashed hexadecimal notation "\\xff".
 
 The list of configuration directives, and their meaning and intended usage
-is available in the self documented example redis.conf shipped into the
+is available in the self documented example valkey.conf shipped into the
 Valkey distribution.
 
 * The self documented [valkey.conf for Valkey OSS 7.2](https://raw.githubusercontent.com/valkey/valkey/7.2/valkey.conf).
@@ -55,12 +55,12 @@ as a replica of the instance running at 127.0.0.1 port 6379.
     ./redis-server --port 6380 --replicaof 127.0.0.1 6379
 
 The format of the arguments passed via the command line is exactly the same
-as the one used in the redis.conf file, with the exception that the keyword
+as the one used in the valkey.conf file, with the exception that the keyword
 is prefixed with `--`.
 
 Note that internally this generates an in-memory temporary config file
 (possibly concatenating the config file passed by the user, if any) where
-arguments are translated into the format of redis.conf.
+arguments are translated into the format of valkey.conf.
 
 Changing Valkey configuration while the server is running
 ---
@@ -74,12 +74,12 @@ are supported as expected.
 Please refer to the `CONFIG SET` and `CONFIG GET` pages for more information.
 
 Note that modifying the configuration on the fly **has no effects on the
-redis.conf file** so at the next restart of Valkey the old configuration will
+valkey.conf file** so at the next restart of Valkey the old configuration will
 be used instead.
 
-Make sure to also modify the `redis.conf` file accordingly to the configuration
+Make sure to also modify the `valkey.conf` file accordingly to the configuration
 you set using `CONFIG SET`.
-You can do it manually, or you can use `CONFIG REWRITE`, which will automatically scan your `redis.conf` file and update the fields which don't match the current configuration value.
+You can do it manually, or you can use `CONFIG REWRITE`, which will automatically scan your `valkey.conf` file and update the fields which don't match the current configuration value.
 Fields non existing but set to the default value are not added.
 Comments inside your configuration file are retained.
 

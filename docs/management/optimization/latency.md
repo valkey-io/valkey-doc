@@ -591,7 +591,7 @@ This is how this feature works:
 * If Valkey detects that the server is blocked into some operation that is not returning fast enough, and that may be the source of the latency issue, a low level report about where the server is blocked is dumped on the log file.
 * The user contacts the developers writing a message in the Valkey Google Group, including the watchdog report in the message.
 
-Note that this feature cannot be enabled using the redis.conf file, because it is designed to be enabled only in already running instances and only for debugging purposes.
+Note that this feature cannot be enabled using the valkey.conf file, because it is designed to be enabled only in already running instances and only for debugging purposes.
 
 To enable the feature just use the following:
 

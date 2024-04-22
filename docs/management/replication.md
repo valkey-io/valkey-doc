@@ -44,9 +44,9 @@ about high availability and failover. The rest of this document mainly describes
 * A master can have multiple replicas.
 * Replicas are able to accept connections from other replicas. Aside from connecting a number of replicas to the same master, replicas can also be connected to other replicas in a cascading-like structure. Since Redis 4.0, all the sub-replicas will receive exactly the same replication stream from the master.
 * Valkey replication is non-blocking on the master side. This means that the master will continue to handle queries when one or more replicas perform the initial synchronization or a partial resynchronization.
-* Replication is also largely non-blocking on the replica side. While the replica is performing the initial synchronization, it can handle queries using the old version of the dataset, assuming you configured Valkey to do so in redis.conf.  Otherwise, you can configure Valkey replicas to return an error to clients if the replication stream is down. However, after the initial sync, the old dataset must be deleted and the new one must be loaded. The replica will block incoming connections during this brief window (that can be as long as many seconds for very large datasets). Since Redis 4.0 you can configure Valkey so that the deletion of the old data set happens in a different thread, however loading the new initial dataset will still happen in the main thread and block the replica.
+* Replication is also largely non-blocking on the replica side. While the replica is performing the initial synchronization, it can handle queries using the old version of the dataset, assuming you configured Valkey to do so in valkey.conf.  Otherwise, you can configure Valkey replicas to return an error to clients if the replication stream is down. However, after the initial sync, the old dataset must be deleted and the new one must be loaded. The replica will block incoming connections during this brief window (that can be as long as many seconds for very large datasets). Since Redis 4.0 you can configure Valkey so that the deletion of the old data set happens in a different thread, however loading the new initial dataset will still happen in the main thread and block the replica.
 * Replication can be used both for scalability, to have multiple replicas for read-only queries (for example, slow O(N) operations can be offloaded to replicas), or simply for improving data safety and high availability.
-* You can use replication to avoid the cost of having the master writing the full dataset to disk: a typical technique involves configuring your master `redis.conf` to avoid persisting to disk at all, then connect a replica configured to save from time to time, or with AOF enabled. However, this setup must be handled with care, since a restarting master will start with an empty dataset: if the replica tries to sync with it, the replica will be emptied as well.
+* You can use replication to avoid the cost of having the master writing the full dataset to disk: a typical technique involves configuring your master `valkey.conf` to avoid persisting to disk at all, then connect a replica configured to save from time to time, or with AOF enabled. However, this setup must be handled with care, since a restarting master will start with an empty dataset: if the replica tries to sync with it, the replica will be emptied as well.
 
 ## Safety of replication when master has persistence turned off
 
@@ -164,18 +164,18 @@ master host will start a sync with the replica.
 
 There are also a few parameters for tuning the replication backlog taken
 in memory by the master to perform the partial resynchronization. See the example
-`redis.conf` shipped with the Valkey distribution for more information.
+`valkey.conf` shipped with the Valkey distribution for more information.
 
 Diskless replication can be enabled using the `repl-diskless-sync` configuration
 parameter. The delay to start the transfer to wait for more replicas to
 arrive after the first one is controlled by the `repl-diskless-sync-delay`
-parameter. Please refer to the example `redis.conf` file in the Valkey distribution
+parameter. Please refer to the example `valkey.conf` file in the Valkey distribution
 for more details.
 
 ## Read-only replica
 
 Replicas are read-only by default.
-This behavior is controlled by the `replica-read-only` option in the redis.conf file, and can be enabled and disabled at runtime using `CONFIG SET`.
+This behavior is controlled by the `replica-read-only` option in the valkey.conf file, and can be enabled and disabled at runtime using `CONFIG SET`.
 
 Read-only replicas will reject all write commands, so that it is not possible to write to a replica because of a mistake. This does not mean that the feature is intended to expose a replica instance to the internet or more generally to a network where untrusted clients exist, because administrative commands like `DEBUG` or `CONFIG` are still enabled. The [Security](/topics/security) page describes how to secure a Valkey instance.
 
@@ -262,7 +262,7 @@ There are two configuration parameters for this feature:
 * min-replicas-to-write `<number of replicas>`
 * min-replicas-max-lag `<number of seconds>`
 
-For more information, please check the example `redis.conf` file shipped with the
+For more information, please check the example `valkey.conf` file shipped with the
 Valkey source distribution.
 
 ## How Valkey replication deals with expires on keys
@@ -295,7 +295,7 @@ environments using NAT may be different compared to the logical address of the
 replica instance (the one that clients should use to connect to replicas).
 
 Similarly the replicas will be listed with the listening port configured
-into `redis.conf`, that may be different from the forwarded port in case
+into `valkey.conf`, that may be different from the forwarded port in case
 the port is remapped.
 
 To fix both issues, it is possible to force
@@ -305,7 +305,7 @@ The two configurations directives to use are:
     replica-announce-ip 5.5.5.5
     replica-announce-port 1234
 
-And are documented in the example `redis.conf` of recent Valkey distributions.
+And are documented in the example `valkey.conf` of recent Valkey distributions.
 
 ## The INFO and ROLE command
 

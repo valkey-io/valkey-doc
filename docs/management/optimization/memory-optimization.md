@@ -17,7 +17,7 @@ Hashes, Lists, Sets composed of just integers, and Sorted Sets, when smaller tha
 This is completely transparent from the point of view of the user and API.
 Since this is a CPU / memory tradeoff it is possible to tune the maximum 
 number of elements and maximum element size for special encoded types 
-using the following redis.conf directives (defaults are shown):
+using the following valkey.conf directives (defaults are shown):
 
 ### Valkey <= 6.2
 
@@ -103,7 +103,7 @@ instead just encode them in an O(N) data structure, like a linear
 array with length-prefixed key-value pairs. Since we do this only when N
 is small, the amortized time for `HGET` and `HSET` commands is still O(1): the
 hash will be converted into a real hash table as soon as the number of elements
-it contains grows too large (you can configure the limit in redis.conf).
+it contains grows too large (you can configure the limit in valkey.conf).
 
 This does not only work well from the point of view of time complexity, but
 also from the point of view of constant times since a linear array of key-value pairs happens to play very well with the CPU cache (it has a better
@@ -204,7 +204,7 @@ This is the result against a 64 bit instance of Redis OSS 2.2:
 This is an order of magnitude, I think this makes Valkey more or less the most
 memory efficient plain key value store out there.
 
-*WARNING*: for this to work, make sure that in your redis.conf you have
+*WARNING*: for this to work, make sure that in your valkey.conf you have
 something like this:
 
 ```
