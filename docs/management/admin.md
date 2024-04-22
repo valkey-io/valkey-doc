@@ -77,10 +77,3 @@ Follow these steps to avoid downtime.
 * Once you confirm that the master is no longer receiving any queries (you can check this using the `MONITOR` command), elect the replica to master using the `REPLICAOF NO ONE` command, and then shut down your master.
 
 If you are using [Valkey Sentinel](/topics/sentinel) or [Valkey Cluster](/topics/cluster-tutorial), the simplest way to upgrade to newer versions is to upgrade one replica after the other. Then you can perform a manual failover to promote one of the upgraded replicas to master, and finally promote the last replica.
-
----
-**NOTE** 
-
-Valkey Cluster 4.0 is not compatible with Valkey Cluster 3.2 at cluster bus protocol level, so a mass restart is needed in this case. However, Redis 5 cluster bus is backward compatible with Redis 4.
-
----
