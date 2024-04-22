@@ -130,7 +130,7 @@ There are no strict technological limits here. CRDTs or synchronously replicated
 state machines can model complex data types similar to Redis. However, the
 actual run time behavior of such systems would not be similar to Redis Cluster.
 Redis Cluster was designed in order to cover the exact use cases of the
-non-clustered Redis version.
+non-clustered Valkey deployment.
 
 ## Overview of Redis Cluster main components
 
