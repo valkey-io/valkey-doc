@@ -11,7 +11,7 @@ aliases: [
 
 ## Special encoding of small aggregate data types
 
-Since Redis 2.2 many data types are optimized to use less space up to a certain size.
+Many data types are optimized to use less space up to a certain size.
 Hashes, Lists, Sets composed of just integers, and Sorted Sets, when smaller than a given number of elements, and up to a maximum element size, are encoded in a very memory-efficient way that uses *up to 10 times less memory* (with 5 times less memory used being the average saving).
 
 This is completely transparent from the point of view of the user and API.
@@ -29,7 +29,7 @@ zset-max-ziplist-value 64
 set-max-intset-entries 512
 ```
 
-### Valkey >= 7.0
+### Redis OSS >= 7.0
 
 ```
 hash-max-listpack-entries 512
@@ -39,7 +39,7 @@ zset-max-listpack-value 64
 set-max-intset-entries 512
 ```
 
-### Valkey >= 7.2
+### Valkey and Redis OSS >= 7.2
 
 The following directives are also available:
 
@@ -66,7 +66,7 @@ RDB and AOF files are compatible between 32-bit and 64-bit instances
 
 ## Bit and byte level operations
 
-Redis 2.2 introduced new bit and byte level operations: `GETRANGE`, `SETRANGE`, `GETBIT` and `SETBIT`.
+Valkey has bit and byte level operations: `GETRANGE`, `SETRANGE`, `GETBIT` and `SETBIT`.
 Using these commands you can treat the String type as a random access array.
 For instance, if you have an application where users are identified by a unique progressive integer number,
 you can use a bitmap to save information about the subscription of users in a mailing list,
@@ -196,7 +196,7 @@ r = Redis.new
 end
 ```
 
-This is the result against a 64 bit instance of Redis 2.2:
+This is the result against a 64 bit instance of Redis OSS 2.2:
 
  * USE_OPTIMIZATION set to true: 1.7 MB of used memory
  * USE_OPTIMIZATION set to false; 11 MB of used memory

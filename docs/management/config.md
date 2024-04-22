@@ -39,17 +39,10 @@ The list of configuration directives, and their meaning and intended usage
 is available in the self documented example redis.conf shipped into the
 Valkey distribution.
 
-* The self documented [redis.conf for Redis 7.2](https://raw.githubusercontent.com/redis/redis/7.2/redis.conf).
-* The self documented [redis.conf for Redis 7.0](https://raw.githubusercontent.com/redis/redis/7.0/redis.conf).
-* The self documented [redis.conf for Redis 6.2](https://raw.githubusercontent.com/redis/redis/6.2/redis.conf).
-* The self documented [redis.conf for Redis 6.0](https://raw.githubusercontent.com/redis/redis/6.0/redis.conf).
-* The self documented [redis.conf for Redis 5.0](https://raw.githubusercontent.com/redis/redis/5.0/redis.conf).
-* The self documented [redis.conf for Redis 4.0](https://raw.githubusercontent.com/redis/redis/4.0/redis.conf).
-* The self documented [redis.conf for Redis 3.2](https://raw.githubusercontent.com/redis/redis/3.2/redis.conf).
-* The self documented [redis.conf for Redis 3.0](https://raw.githubusercontent.com/redis/redis/3.0/redis.conf).
-* The self documented [redis.conf for Redis 2.8](https://raw.githubusercontent.com/redis/redis/2.8/redis.conf).
-* The self documented [redis.conf for Redis 2.6](https://raw.githubusercontent.com/redis/redis/2.6/redis.conf).
-* The self documented [redis.conf for Redis 2.4](https://raw.githubusercontent.com/redis/redis/2.4/redis.conf).
+* The self documented [valkey.conf for Valkey OSS 7.2](https://raw.githubusercontent.com/valkey/valkey/7.2/valkey.conf).
+* The self documented [redis.conf for Redis OSS 7.2](https://raw.githubusercontent.com/redis/redis/7.2/redis.conf).
+* The self documented [redis.conf for Redis OSS 7.0](https://raw.githubusercontent.com/redis/redis/7.0/redis.conf).
+* The self documented [redis.conf for Redis OSS 6.2](https://raw.githubusercontent.com/redis/redis/6.2/redis.conf).
 
 Passing arguments via the command line
 ---

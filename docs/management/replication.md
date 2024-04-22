@@ -148,7 +148,7 @@ Normally a full resynchronization requires creating an RDB file on disk,
 then reloading the same RDB from disk to feed the replicas with the data.
 
 With slow disks this can be a very stressing operation for the master.
-Valkey version 2.8.18 is the first version to have support for diskless
+Valkey has support for diskless
 replication. In this setup the child process directly sends the
 RDB over the wire to replicas, without using the disk as intermediate storage.
 
@@ -174,7 +174,7 @@ for more details.
 
 ## Read-only replica
 
-Since Redis 2.6, replicas support a read-only mode that is enabled by default.
+Replicas are read-only by default.
 This behavior is controlled by the `replica-read-only` option in the redis.conf file, and can be enabled and disabled at runtime using `CONFIG SET`.
 
 Read-only replicas will reject all write commands, so that it is not possible to write to a replica because of a mistake. This does not mean that the feature is intended to expose a replica instance to the internet or more generally to a network where untrusted clients exist, because administrative commands like `DEBUG` or `CONFIG` are still enabled. The [Security](/topics/security) page describes how to secure a Valkey instance.
@@ -213,10 +213,10 @@ While writes to a replica will be discarded if the replica and the master resync
 
 Before version 4.0, writable replicas were incapable of expiring keys with a time to live set.
 This means that if you use `EXPIRE` or other commands that set a maximum TTL for a key, the key will leak, and while you may no longer see it while accessing it with read commands, you will see it in the count of keys and it will still use memory.
-Redis 4.0 RC3 and greater versions are able to evict keys with TTL as masters do, with the exceptions of keys written in DB numbers greater than 63 (but by default Valkey instances only have 16 databases).
+Valkey is able to evict keys with TTL as masters do, with the exceptions of keys written in DB numbers greater than 63 (but by default Valkey instances only have 16 databases).
 Note though that even in versions greater than 4.0, using `EXPIRE` on a key that could ever exists on the master can cause inconsistency between the replica and the master.
 
-Also note that since Redis 4.0 replica writes are only local, and are not propagated to sub-replicas attached to the instance. Sub-replicas instead will always receive the replication stream identical to the one sent by the top-level master to the intermediate replicas. So for example in the following setup:
+Also note that replica writes are only local, and are not propagated to sub-replicas attached to the instance. Sub-replicas instead will always receive the replication stream identical to the one sent by the top-level master to the intermediate replicas. So for example in the following setup:
 
     A ---> B ---> C
 
@@ -237,7 +237,7 @@ To set it permanently, add this to your config file:
 
 ## Allow writes only with N attached replicas
 
-Starting with Redis 2.8, you can configure a Valkey master to
+You can configure a Valkey master to
 accept write queries only if at least N replicas are currently connected to the
 master.
 
@@ -298,7 +298,7 @@ Similarly the replicas will be listed with the listening port configured
 into `redis.conf`, that may be different from the forwarded port in case
 the port is remapped.
 
-To fix both issues, it is possible, since Redis 3.2.2, to force
+To fix both issues, it is possible to force
 a replica to announce an arbitrary pair of IP and port to the master.
 The two configurations directives to use are:
 
@@ -319,7 +319,7 @@ replicas and so forth.
 
 ## Partial sync after restarts and failovers
 
-Since Redis 4.0, when an instance is promoted to master after a failover,
+When an instance is promoted to master after a failover,
 it will still be able to perform a partial resynchronization with the replicas
 of the old master. To do so, the replica remembers the old replication ID and
 offset of its former master, so can provide part of the backlog to the connecting
