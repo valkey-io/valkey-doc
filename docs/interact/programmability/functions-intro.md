@@ -104,24 +104,24 @@ The error is expected, as there are no functions in the loaded library. Every li
 A registered function is named and acts as an entry point to the library.
 When the target execution engine handles the `FUNCTION LOAD` command, it registers the library's functions.
 
-The Lua engine compiles and evaluates the library source code when loaded, and expects functions to be registered by calling the `redis.register_function()` API.
+The Lua engine compiles and evaluates the library source code when loaded, and expects functions to be registered by calling the `server.register_function()` API.
 
 The following snippet demonstrates a simple library registering a single function named _knockknock_, returning a string reply:
 
 ```lua
 #!lua name=mylib
-redis.register_function(
+server.register_function(
   'knockknock',
   function() return 'Who\'s there?' end
 )
 ```
 
-In the example above, we provide two arguments about the function to Lua's `redis.register_function()` API: its registered name and a callback.
+In the example above, we provide two arguments about the function to Lua's `server.register_function()` API: its registered name and a callback.
 
 We can load our library and use `FCALL` to call the registered function:
 
 ```
-redis> FUNCTION LOAD "#!lua name=mylib\nredis.register_function('knockknock', function() return 'Who\\'s there?' end)"
+redis> FUNCTION LOAD "#!lua name=mylib\nserver.register_function('knockknock', function() return 'Who\\'s there?' end)"
 mylib
 redis> FCALL knockknock 0
 "Who's there?"
@@ -163,11 +163,11 @@ The following is a possible implementation for our function and its library regi
 
 local function my_hset(keys, args)
   local hash = keys[1]
-  local time = redis.call('TIME')[1]
-  return redis.call('HSET', hash, '_last_modified_', time, unpack(args))
+  local time = server.call('TIME')[1]
+  return server.call('HSET', hash, '_last_modified_', time, unpack(args))
 end
 
-redis.register_function('my_hset', my_hset)
+server.register_function('my_hset', my_hset)
 ```
 
 If we create a new file named _mylib.lua_ that consists of the library's definition, we can load it like so (without stripping the source code of helpful whitespaces):
@@ -215,30 +215,30 @@ The library's source code could look something like the following:
 
 local function my_hset(keys, args)
   local hash = keys[1]
-  local time = redis.call('TIME')[1]
-  return redis.call('HSET', hash, '_last_modified_', time, unpack(args))
+  local time = server.call('TIME')[1]
+  return server.call('HSET', hash, '_last_modified_', time, unpack(args))
 end
 
 local function my_hgetall(keys, args)
   redis.setresp(3)
   local hash = keys[1]
-  local res = redis.call('HGETALL', hash)
+  local res = server.call('HGETALL', hash)
   res['map']['_last_modified_'] = nil
   return res
 end
 
 local function my_hlastmodified(keys, args)
   local hash = keys[1]
-  return redis.call('HGET', hash, '_last_modified_')
+  return server.call('HGET', hash, '_last_modified_')
 end
 
-redis.register_function('my_hset', my_hset)
-redis.register_function('my_hgetall', my_hgetall)
-redis.register_function('my_hlastmodified', my_hlastmodified)
+server.register_function('my_hset', my_hset)
+server.register_function('my_hgetall', my_hgetall)
+server.register_function('my_hlastmodified', my_hlastmodified)
 ```
 
 While all of the above should be straightforward, note that the `my_hgetall` also calls [`redis.setresp(3)`](/topics/lua-api#redis.setresp).
-That means that the function expects [RESP3](https://github.com/redis/redis-specifications/blob/master/protocol/RESP3.md) replies after calling `redis.call()`, which, unlike the default RESP2 protocol, provides dictionary (associative arrays) replies.
+That means that the function expects [RESP3](https://github.com/redis/redis-specifications/blob/master/protocol/RESP3.md) replies after calling `server.call()`, which, unlike the default RESP2 protocol, provides dictionary (associative arrays) replies.
 Doing so allows the function to delete (or set to `nil` as is the case with Lua tables) specific fields from the reply, and in our case, the `_last_modified_` field.
 
 Assuming you've saved the library's implementation in the _mylib.lua_ file, you can replace it with:
@@ -325,8 +325,8 @@ local function my_hset(keys, args)
   end
 
   local hash = keys[1]
-  local time = redis.call('TIME')[1]
-  return redis.call('HSET', hash, '_last_modified_', time, unpack(args))
+  local time = server.call('TIME')[1]
+  return server.call('HSET', hash, '_last_modified_', time, unpack(args))
 end
 
 local function my_hgetall(keys, args)
@@ -337,7 +337,7 @@ local function my_hgetall(keys, args)
 
   redis.setresp(3)
   local hash = keys[1]
-  local res = redis.call('HGETALL', hash)
+  local res = server.call('HGETALL', hash)
   res['map']['_last_modified_'] = nil
   return res
 end
@@ -349,12 +349,12 @@ local function my_hlastmodified(keys, args)
   end
 
   local hash = keys[1]
-  return redis.call('HGET', keys[1], '_last_modified_')
+  return server.call('HGET', keys[1], '_last_modified_')
 end
 
-redis.register_function('my_hset', my_hset)
-redis.register_function('my_hgetall', my_hgetall)
-redis.register_function('my_hlastmodified', my_hlastmodified)
+server.register_function('my_hset', my_hset)
+server.register_function('my_hgetall', my_hgetall)
+server.register_function('my_hlastmodified', my_hlastmodified)
 ```
 
 After you've replaced the library in Redis with the above, you can immediately try out the new error handling mechanism:
@@ -418,18 +418,18 @@ The server will reply with this error in the following cases:
 3. A disk error was detected (Redis is unable to persist so it rejects writes).
 
 In these cases, you can add the `no-writes` flag to the function's registration, disable the safeguard and allow them to run.
-To register a function with flags use the [named arguments](/topics/lua-api#redis.register_function_named_args) variant of `redis.register_function`.
+To register a function with flags use the [named arguments](/topics/lua-api#server.register_function_named_args) variant of `server.register_function`.
 
 The updated registration code snippet from the library looks like this:
 
 ```lua
-redis.register_function('my_hset', my_hset)
-redis.register_function{
+server.register_function('my_hset', my_hset)
+server.register_function{
   function_name='my_hgetall',
   callback=my_hgetall,
   flags={ 'no-writes' }
 }
-redis.register_function{
+server.register_function{
   function_name='my_hlastmodified',
   callback=my_hlastmodified,
   flags={ 'no-writes' }

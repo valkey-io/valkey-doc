@@ -118,49 +118,49 @@ The Redis Lua execution context always provides a singleton instance of an objec
 The _redis_ instance enables the script to interact with the Redis server that's running it.
 Following is the API provided by the _redis_ object instance.
 
-### <a name="redis.call"></a> `redis.call(command [,arg...])`
+### <a name="server.call"></a> `server.call(command [,arg...])`
 
 * Since version: 2.6.0
 * Available in scripts: yes
 * Available in functions: yes
 
-The `redis.call()` function calls a given Redis command and returns its reply.
+The `server.call()` function calls a given Redis command and returns its reply.
 Its inputs are the command and arguments, and once called, it executes the command in Redis and returns the reply.
 
 For example, we can call the `ECHO` command from a script and return its reply like so:
 
 ```lua
-return redis.call('ECHO', 'Echo, echo... eco... o...')
+return server.call('ECHO', 'Echo, echo... eco... o...')
 ```
 
-If and when `redis.call()` triggers a runtime exception, the raw exception is raised back to the user as an error, automatically.
+If and when `server.call()` triggers a runtime exception, the raw exception is raised back to the user as an error, automatically.
 Therefore, attempting to execute the following ephemeral script will fail and generate a runtime exception because `ECHO` accepts exactly one argument:
 
 ```lua
-redis> EVAL "return redis.call('ECHO', 'Echo,', 'echo... ', 'eco... ', 'o...')" 0
+redis> EVAL "return server.call('ECHO', 'Echo,', 'echo... ', 'eco... ', 'o...')" 0
 (error) ERR Wrong number of args calling Redis command from script script: b0345693f4b77517a711221050e76d24ae60b7f7, on @user_script:1.
 ```
 
 Note that the call can fail due to various reasons, see [Execution under low memory conditions](/topics/eval-intro#execution-under-low-memory-conditions) and [Script flags](#script_flags)
 
-To handle Redis runtime errors use `redis.pcall()` instead.
+To handle Redis runtime errors use `server.pcall()` instead.
 
-### <a name="redis.pcall"></a> `redis.pcall(command [,arg...])`
+### <a name="server.pcall"></a> `server.pcall(command [,arg...])`
 
 * Since version: 2.6.0
 * Available in scripts: yes
 * Available in functions: yes
 
 This function enables handling runtime errors raised by the Redis server.
-The `redis.pcall()` function  behaves exactly like [`redis.call()`](#redis.call), except that it:
+The `server.pcall()` function  behaves exactly like [`server.call()`](#server.call), except that it:
 
 * Always returns a reply.
 * Never throws a runtime exception, and returns in its stead a [`redis.error_reply`](#redis.error_reply) in case that a runtime exception is thrown by the server.
 
-The following demonstrates how to use `redis.pcall()` to intercept and handle runtime exceptions from within the context of an ephemeral script.
+The following demonstrates how to use `server.pcall()` to intercept and handle runtime exceptions from within the context of an ephemeral script.
 
 ```lua
-local reply = redis.pcall('ECHO', unpack(ARGV))
+local reply = server.pcall('ECHO', unpack(ARGV))
 if reply['err'] ~= nil then
   -- Handle the error sometime, but for now just log it
   redis.log(redis.LOG_WARNING, reply['err'])
@@ -292,7 +292,7 @@ will produce a line similar to the following in your server's log:
 * Available in scripts: yes
 * Available in functions: yes
 
-This function allows the executing script to switch between [Redis Serialization Protocol (RESP)](/topics/protocol) versions for the replies returned by [`redis.call()`](#redis.call) and [`redis.pcall()`](#redis.pcall).
+This function allows the executing script to switch between [Redis Serialization Protocol (RESP)](/topics/protocol) versions for the replies returned by [`server.call()`](#server.call) and [`server.pcall()`](#server.pcall).
 It expects a single numerical argument as the protocol's version.
 The default protocol version is _2_, but it can be switched to version _3_.
 
@@ -304,7 +304,7 @@ redis.setresp(3)
 
 Please refer to the [Data type conversion](#data-type-conversion) for more information about type conversions.
 
-### <a name="redis.set_repl"></a> `redis.set_repl(x)`
+### <a name="server.set_repl"></a> `server.set_repl(x)`
 
 * Since version: 3.2.0
 * Available in scripts: yes
@@ -334,7 +334,7 @@ Finally, before returning, it deletes the temporary key that stores the intersec
 In this case, only the new set with its five randomly-chosen elements needs to be replicated.
 Replicating the `SUNIONSTORE` command and the `DEL`ition of the temporary key is unnecessary and wasteful.
 
-The `redis.set_repl()` function instructs the server how to treat subsequent write commands in terms of replication.
+The `server.set_repl()` function instructs the server how to treat subsequent write commands in terms of replication.
 It accepts a single input argument that only be one of the following:
 
 * `redis.REPL_ALL`: replicates the effects to the AOF and replicas.
@@ -344,17 +344,17 @@ It accepts a single input argument that only be one of the following:
 * `redis.REPL_NONE`: disables effect replication entirely.
 
 By default, the scripting engine is initialized to the `redis.REPL_ALL` setting when a script begins its execution.
-You can call the `redis.set_repl()` function at any time during the script's execution to switch between the different replication modes.
+You can call the `server.set_repl()` function at any time during the script's execution to switch between the different replication modes.
 
 A simple example follows:
 
 ```lua
 redis.replicate_commands() -- Enable effects replication in versions lower than Redis v7.0
-redis.call('SET', KEYS[1], ARGV[1])
-redis.set_repl(redis.REPL_NONE)
-redis.call('SET', KEYS[2], ARGV[2])
-redis.set_repl(redis.REPL_ALL)
-redis.call('SET', KEYS[3], ARGV[3])
+server.call('SET', KEYS[1], ARGV[1])
+server.set_repl(redis.REPL_NONE)
+server.call('SET', KEYS[2], ARGV[2])
+server.set_repl(redis.REPL_ALL)
+server.call('SET', KEYS[3], ARGV[3])
 ```
 
 If you run this script by calling `EVAL "..." 3 A B C 1 2 3`, the result will be that only the keys _A_ and _C_ are created on the replicas and AOF.
@@ -398,11 +398,11 @@ This function prints its argument in the [Redis Lua debugger](/topics/ldb) conso
 
 This function is used for checking if the current user running the script has [ACL](/topics/acl) permissions to execute the given command with the given arguments.
 
-The return value is a boolean `true` in case the current user has permissions to execute the command (via a call to [redis.call](#redis.call) or [redis.pcall](#redis.pcall)) or `false` in case they don't.
+The return value is a boolean `true` in case the current user has permissions to execute the command (via a call to [server.call](#server.call) or [server.pcall](#server.pcall)) or `false` in case they don't.
 
 The function will raise an error if the passed command or its arguments are invalid.
 
-### <a name="redis.register_function"></a> `redis.register_function`
+### <a name="server.register_function"></a> `server.register_function`
 
 * Since version: 7.0.0
 * Available in scripts: no
@@ -412,18 +412,18 @@ This function is only available from the context of the `FUNCTION LOAD` command.
 When called, it registers a function to the loaded library.
 The function can be called either with positional or named arguments.
 
-#### <a name="redis.register_function_pos_args"></a> positional arguments: `redis.register_function(name, callback)`
+#### <a name="server.register_function_pos_args"></a> positional arguments: `server.register_function(name, callback)`
 
-The first argument to `redis.register_function` is a Lua string representing the function name.
-The second argument to `redis.register_function` is a Lua function.
+The first argument to `server.register_function` is a Lua string representing the function name.
+The second argument to `server.register_function` is a Lua function.
 
 Usage example:
 
 ```
-redis> FUNCTION LOAD "#!lua name=mylib\n redis.register_function('noop', function() end)"
+redis> FUNCTION LOAD "#!lua name=mylib\n server.register_function('noop', function() end)"
 ```
 
-#### <a name="redis.register_function_named_args"></a> Named arguments:  `redis.register_function{function_name=name, callback=callback, flags={flag1, flag2, ..}, description=description}`
+#### <a name="server.register_function_named_args"></a> Named arguments:  `server.register_function{function_name=name, callback=callback, flags={flag1, flag2, ..}, description=description}`
 
 The named arguments variant accepts the following arguments:
 
@@ -437,7 +437,7 @@ Both _function\_name_ and _callback_ are mandatory.
 Usage example:
 
 ```
-redis> FUNCTION LOAD "#!lua name=mylib\n redis.register_function{function_name='noop', callback=function() end, flags={ 'no-writes' }, description='Does nothing'}"
+redis> FUNCTION LOAD "#!lua name=mylib\n server.register_function{function_name='noop', callback=function() end, flags={ 'no-writes' }, description='Does nothing'}"
 ```
 
 #### <a name="script_flags"></a> Script flags
@@ -530,7 +530,7 @@ The reply is a hexadecimal value structured as `0x00MMmmPP`, where:
 
 ## Data type conversion
 
-Unless a runtime exception is raised, `redis.call()` and `redis.pcall()` return the reply from the executed command to the Lua script.
+Unless a runtime exception is raised, `server.call()` and `server.pcall()` return the reply from the executed command to the Lua script.
 Redis' replies from these functions are converted automatically into Lua's native data types.
 
 Similarly, when a Lua script returns a reply with the `return` keyword,
@@ -539,7 +539,7 @@ that reply is automatically converted to Redis' protocol.
 Put differently; there's a one-to-one mapping between Redis' replies and Lua's data types and a one-to-one mapping between Lua's data types and the [Redis Protocol](/topics/protocol) data types.
 The underlying design is such that if a Redis type is converted into a Lua type and converted back into a Redis type, the result is the same as the initial value.
 
-Type conversion from Redis protocol replies (i.e., the replies from `redis.call()` and `redis.pcall()`) to Lua data types depends on the Redis Serialization Protocol version used by the script.
+Type conversion from Redis protocol replies (i.e., the replies from `server.call()` and `server.pcall()`) to Lua data types depends on the Redis Serialization Protocol version used by the script.
 The default protocol version during script executions is RESP2.
 The script may switch the replies' protocol versions by calling the `redis.setresp()` function.
 
@@ -597,11 +597,11 @@ redis> EVAL "return { 1, 2, { 3, 'Hello World!' } }" 0
 3) 1) (integer) 3
    1) "Hello World!"
 
-redis> EVAL "return redis.call('get','foo')" 0
+redis> EVAL "return server.call('get','foo')" 0
 "bar"
 ```
 
-The last example demonstrates receiving and returning the exact return value of `redis.call()` (or `redis.pcall()`) in Lua as it would be returned if the command had been called directly.
+The last example demonstrates receiving and returning the exact return value of `server.call()` (or `server.pcall()`) in Lua as it would be returned if the command had been called directly.
 
 The following example shows how floats and arrays that cont nils and keys are handled:
 
@@ -620,7 +620,7 @@ As you can see, the float value of _3.333_ gets converted to an integer _3_, the
 [RESP3](https://github.com/redis/redis-specifications/blob/master/protocol/RESP3.md) is a newer version of the [Redis Serialization Protocol](/topics/protocol).
 It is available as an opt-in choice as of Redis v6.0.
 
-An executing script may call the [`redis.setresp`](#redis.setresp) function during its execution and switch the protocol version that's used for returning replies from Redis' commands (that can be invoked via [`redis.call()`](#redis.call) or [`redis.pcall()`](#redis.pcall)).
+An executing script may call the [`redis.setresp`](#redis.setresp) function during its execution and switch the protocol version that's used for returning replies from Redis' commands (that can be invoked via [`server.call()`](#server.call) or [`server.pcall()`](#server.pcall)).
 
 Once Redis' replies are in RESP3 protocol, all of the [RESP2 to Lua conversion](#resp2-to-lua-type-conversion) rules apply, with the following additions:
 
@@ -639,7 +639,7 @@ Also, presently, RESP3's [attributes](https://github.com/redis/redis-specificati
 
 ### Lua to RESP3 type conversion
 
-Regardless of the script's choice of protocol version set for replies with the [`redis.setresp()` function] when it calls `redis.call()` or `redis.pcall()`, the user may opt-in to using RESP3 (with the `HELLO 3` command) for the connection.
+Regardless of the script's choice of protocol version set for replies with the [`redis.setresp()` function] when it calls `server.call()` or `server.pcall()`, the user may opt-in to using RESP3 (with the `HELLO 3` command) for the connection.
 Although the default protocol for incoming client connections is RESP2, the script should honor the user's preference and return adequately-typed RESP3 replies, so the following rules apply on top of those specified in the [Lua to RESP2 type conversion](#lua-to-resp2-type-conversion) section when that is the case.
 
 * Lua Boolean -> [RESP3 Boolean reply](https://github.com/redis/redis-specifications/blob/master/protocol/RESP3.md#boolean-reply) (note that this is a change compared to the RESP2, in which returning a Boolean Lua `true` returned the number 1 to the Redis client, and returning a `false` used to return a `null`.

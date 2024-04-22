@@ -108,7 +108,7 @@ While you step Redis will show all the commands executed by the server like in t
 
 ```
 * Stopped at 1, stop reason = step over
--> 1   redis.call('ping')
+-> 1   server.call('ping')
 lua debugger> step
 <redis> ping
 <reply> "+PONG"

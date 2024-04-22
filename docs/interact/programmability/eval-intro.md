@@ -113,18 +113,18 @@ Please refer to the rules that govern [data type conversion](/topics/lua-api#dat
 
 ## Interacting with Redis from a script
 
-It is possible to call Redis commands from a Lua script either via [`redis.call()`](/topics/lua-api#redis.call) or [`redis.pcall()`](/topics/lua-api#redis.pcall).
+It is possible to call Redis commands from a Lua script either via [`server.call()`](/topics/lua-api#server.call) or [`server.pcall()`](/topics/lua-api#server.pcall).
 
 The two are nearly identical.
 Both execute a Redis command along with its provided arguments, if these represent a well-formed command.
 However, the difference between the two functions lies in the manner in which runtime errors (such as syntax errors, for example) are handled.
-Errors raised from calling `redis.call()` function are returned directly to the client that had executed it.
-Conversely, errors encountered when calling the `redis.pcall()` function are returned to the script's execution context instead for possible handling.
+Errors raised from calling `server.call()` function are returned directly to the client that had executed it.
+Conversely, errors encountered when calling the `server.pcall()` function are returned to the script's execution context instead for possible handling.
 
 For example, consider the following:
 
 ```
-> EVAL "return redis.call('SET', KEYS[1], ARGV[1])" 1 foo bar
+> EVAL "return server.call('SET', KEYS[1], ARGV[1])" 1 foo bar
 OK
 ```
 The above script accepts one key name and one value as its input arguments.
@@ -319,7 +319,7 @@ To enforce the deterministic behavior of scripts, Redis does the following:
   Note that a _random command_ does not necessarily mean a command that uses random numbers: any non-deterministic command is considered as a random command (the best example in this regard is the `TIME` command).
 * In Redis version 4.0, commands that may return elements in random order, such as `SMEMBERS` (because Sets are _unordered_), exhibit a different behavior when called from Lua,
 and undergo a silent lexicographical sorting filter before returning data to Lua scripts.
-  So `redis.call("SMEMBERS",KEYS[1])` will always return the Set elements in the same order, while the same command invoked by normal clients may return different results even if the key contains exactly the same elements.
+  So `server.call("SMEMBERS",KEYS[1])` will always return the Set elements in the same order, while the same command invoked by normal clients may return different results even if the key contains exactly the same elements.
   However, starting with Redis 5.0, this ordering is no longer performed because replicating effects circumvents this type of non-determinism.
   In general, even when developing for Redis 4.0, never assume that certain commands in Lua will be ordered, but instead rely on the documentation of the original command you call to see the properties it provides.
 * Lua's pseudo-random number generation function `math.random` is modified and always uses the same seed for every execution.
@@ -340,7 +340,7 @@ RandomPushScript = <<EOF
     local i = tonumber(ARGV[1])
     local res
     while (i > 0) do
-        res = redis.call('LPUSH',KEYS[1],math.random())
+        res = server.call('LPUSH',KEYS[1],math.random())
         i = i-1
     end
     return res
@@ -377,7 +377,7 @@ RandomPushScript = <<EOF
     local res
     math.randomseed(tonumber(ARGV[2]))
     while (i > 0) do
-        res = redis.call('LPUSH',KEYS[1],math.random())
+        res = server.call('LPUSH',KEYS[1],math.random())
         i = i-1
     end
     return res
@@ -405,7 +405,7 @@ The Lua debugger is described in the [Lua scripts debugging](/topics/ldb) sectio
 
 ## Execution under low memory conditions
 
-When memory usage in Redis exceeds the `maxmemory` limit, the first write command encountered in the script that uses additional memory will cause the script to abort (unless [`redis.pcall`](/topics/lua-api#redis.pcall) was used).
+When memory usage in Redis exceeds the `maxmemory` limit, the first write command encountered in the script that uses additional memory will cause the script to abort (unless [`server.pcall`](/topics/lua-api#server.pcall) was used).
 
 However, an exception to the above is when the script's first write command does not use additional memory, as is the case with  (for example, `DEL` and `LREM`).
 In this case, Redis will allow all commands in the script to run to ensure atomicity.
@@ -429,7 +429,7 @@ The way to do that is by using a Shebang statement on the first line of the scri
 
 ```
 #!lua flags=no-writes,allow-stale
-local x = redis.call('get','x')
+local x = server.call('get','x')
 return x
 ```
 
