@@ -52,7 +52,7 @@ using the command line directly. This is very useful for testing purposes.
 The following is an example that starts a new Valkey instance using port 6380
 as a replica of the instance running at 127.0.0.1 port 6379.
 
-    ./redis-server --port 6380 --replicaof 127.0.0.1 6379
+    ./valkey-server --port 6380 --replicaof 127.0.0.1 6379
 
 The format of the arguments passed via the command line is exactly the same
 as the one used in the valkey.conf file, with the exception that the keyword

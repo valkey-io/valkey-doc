@@ -94,11 +94,11 @@ easy way to identify performance-critical code sections (hotspots).
 
 ### Sampling stack traces using perf
 
-To profile both user- and kernel-level stacks of redis-server for a specific
+To profile both user- and kernel-level stacks of valkey-server for a specific
 length of time, for example 60 seconds, at a sampling frequency of 999 samples
 per second:
 
-    $ perf record -g --pid $(pgrep redis-server) -F 999 -- sleep 60
+    $ perf record -g --pid $(pgrep valkey-server) -F 999 -- sleep 60
 
 #### Displaying the recorded profile information using perf report
 
@@ -163,7 +163,7 @@ removed the perf.data and intermediate steps if stack traces analysis is our
 main goal. You can use bcc's profile tool to output folded format directly, for
 flame graph generation:
 
-    $ /usr/share/bcc/tools/profile -F 999 -f --pid $(pgrep redis-server) --duration 60 > redis.folded.stacks
+    $ /usr/share/bcc/tools/profile -F 999 -f --pid $(pgrep valkey-server) --duration 60 > redis.folded.stacks
 
 In that manner, we've remove any preprocessing and can render the on-CPU flame
 graph with a single command:
@@ -178,8 +178,8 @@ A function may consume significant CPU cycles either because its code is slow
 or because it's frequently called. To answer at what rate functions are being
 called, you can rely upon call counts analysis using BCC's `funccount` tool:
 
-    $ /usr/share/bcc/tools/funccount 'redis-server:(call*|*Read*|*Write*)' --pid $(pgrep redis-server) --duration 60
-    Tracing 64 functions for "redis-server:(call*|*Read*|*Write*)"... Hit Ctrl-C to end.
+    $ /usr/share/bcc/tools/funccount 'valkey-server:(call*|*Read*|*Write*)' --pid $(pgrep valkey-server) --duration 60
+    Tracing 64 functions for "valkey-server:(call*|*Read*|*Write*)"... Hit Ctrl-C to end.
 
     FUNC                                    COUNT
     call                                      334
@@ -210,7 +210,7 @@ executed, the number of cycles during which no micro ops were dispatched, the
 number stalled cycles on memory, including a per memory type stalls, for the
 duration of 60s, specifically for redis process: 
 
-    $ perf stat -e "cpu-clock,cpu-cycles,instructions,uops_executed.core,uops_executed.stall_cycles,cache-references,cache-misses,cycle_activity.stalls_total,cycle_activity.stalls_mem_any,cycle_activity.stalls_l3_miss,cycle_activity.stalls_l2_miss,cycle_activity.stalls_l1d_miss" --pid $(pgrep redis-server) -- sleep 60
+    $ perf stat -e "cpu-clock,cpu-cycles,instructions,uops_executed.core,uops_executed.stall_cycles,cache-references,cache-misses,cycle_activity.stalls_total,cycle_activity.stalls_mem_any,cycle_activity.stalls_l3_miss,cycle_activity.stalls_l2_miss,cycle_activity.stalls_l1d_miss" --pid $(pgrep valkey-server) -- sleep 60
 
     Performance counter stats for process id '3038':
 
