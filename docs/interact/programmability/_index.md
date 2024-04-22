@@ -13,7 +13,7 @@ Valkey provides a programming interface that lets you execute custom scripts on 
 
 ## Background
 
-Valkey is, by [definition](https://github.com/redis/redis/blob/unstable/MANIFESTO#L7), a _"domain-specific language for abstract data types"_.
+Valkey is, by [definition](https://github.com/valkey-io/valkey/blob/unstable/MANIFESTO#L7), a _"domain-specific language for abstract data types"_.
 The language that Valkey speaks consists of its [commands](/commands).
 Most the commands specialize at manipulating core [data types](/topics/data-types-intro) in different ways.
 In many cases, these commands provide all the functionality that a developer requires for managing application data in Valkey.
