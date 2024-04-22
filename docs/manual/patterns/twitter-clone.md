@@ -10,11 +10,11 @@ aliases: [
 
 This article describes the design and implementation of a [very simple Twitter clone](https://github.com/antirez/retwis) written using PHP with Valkey as the only database. The programming community has traditionally considered key-value stores as a special purpose database that couldn't be used as a drop-in replacement for a relational database for the development of web applications. This article will try to show that Valkey data structures on top of a key-value layer are an effective data model to implement many kinds of applications.
 
-Note: the original version of this article was written in 2009 when Valkey was
-released. It was not exactly clear at that time that the Valkey data model was
-suitable to write entire applications. Now after 5 years there are many cases of
-applications using Valkey as their main store, so the goal of the article today
-is to be a tutorial for Valkey newcomers. You'll learn how to design a simple
+Note: the original version of this article was written in 2009 when Redis OSS was
+released. It was not exactly clear at that time that the data model was
+suitable to write entire applications. After 5 years there were many cases of
+applications using Redis OSS as their main store, so the goal of the article today
+is to be a tutorial for newcomers. You'll learn how to design a simple
 data layout using Valkey, and how to apply different data structures.
 
 Our Twitter clone, called [Retwis](https://github.com/antirez/retwis), is structurally simple, has very good performance, and can be distributed among any number of web and Valkey servers with little efforts. [View the Retwis source code](https://github.com/antirez/retwis).
