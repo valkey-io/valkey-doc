@@ -81,7 +81,7 @@ command, costing the database more CPU time to process this command.
 Regardless of what schema is used, there is a simple fact: many very large
 applications implement some form of client-side caching, because it is the
 next logical step to having a fast store or a fast cache server. For this
-reason Redis 6 implements direct support for client-side caching, in order
+reason Valkey implements direct support for client-side caching, in order
 to make this pattern much simpler to implement, more accessible, reliable,
 and efficient.
 
@@ -121,11 +121,11 @@ handling the data structures implementing the feature:
 
 ## Two connections mode
 
-Using the new version of the Valkey protocol, RESP3, supported by Redis 6, it is possible to run the data queries and receive the invalidation messages in the same connection. However many client implementations may prefer to implement client-side caching using two separated connections: one for data, and one for invalidation messages. For this reason when a client enables tracking, it can specify to redirect the invalidation messages to another connection by specifying the "client ID" of a different connection. Many data connections can redirect invalidation messages to the same connection, this is useful for clients implementing connection pooling. The two connections model is the only one that is also supported for RESP2 (which lacks the ability to multiplex different kind of information in the same connection).
+Using the new version of the Valkey protocol, RESP3, it is possible to run the data queries and receive the invalidation messages in the same connection. However many client implementations may prefer to implement client-side caching using two separated connections: one for data, and one for invalidation messages. For this reason when a client enables tracking, it can specify to redirect the invalidation messages to another connection by specifying the "client ID" of a different connection. Many data connections can redirect invalidation messages to the same connection, this is useful for clients implementing connection pooling. The two connections model is the only one that is also supported for RESP2 (which lacks the ability to multiplex different kind of information in the same connection).
 
 Here's an example of a complete session using the Valkey protocol in the old RESP2 mode involving the following steps: enabling tracking redirecting to another connection, asking for a key, and getting an invalidation message once the key gets modified.
 
-To start, the client opens a first connection that will be used for invalidations, requests the connection ID, and subscribes via Pub/Sub to the special channel that is used to get invalidation messages when in RESP2 modes (remember that RESP2 is the usual Valkey protocol, and not the more advanced protocol that you can use, optionally, with Redis 6 using the `HELLO` command):
+To start, the client opens a first connection that will be used for invalidations, requests the connection ID, and subscribes via Pub/Sub to the special channel that is used to get invalidation messages when in RESP2 modes (remember that RESP2 is the usual Valkey protocol, and not the more advanced protocol that you can use, optionally, using the `HELLO` command):
 
 ```
 (Connection 1 -- used for invalidations)
