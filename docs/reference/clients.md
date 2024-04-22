@@ -10,7 +10,7 @@ aliases:
 
 This document provides information about how Redis handles clients at the network layer level: connections, timeouts, buffers, and other similar topics are covered here.
 
-The information contained in this document is **only applicable to Redis version 2.6 or greater**.
+The information contained in this document is **only applicable to Redis OSS version 2.6 or greater**.
 
 ## Accepting Client Connections
 
@@ -44,10 +44,10 @@ However, Redis does the following two things when serving clients:
 
 ## Maximum Concurrent Connected Clients
 
-In Redis 2.4 there was a hard-coded limit for the maximum number of clients
+In Redis OSS 2.4 there was a hard-coded limit for the maximum number of clients
 that could be handled simultaneously.
 
-In Redis 2.6 and newer, this limit is configurable using the `maxclients` directive in `redis.conf`. The default is 10,000 clients.
+In Redis OSS 2.6 and newer, this limit is configurable using the `maxclients` directive in `redis.conf`. The default is 10,000 clients.
 
 However, Redis checks with the kernel what the maximum number of file
 descriptors that we are able to open is (the *soft limit* is checked). If the
@@ -144,7 +144,7 @@ And you can revert that with:
 
 For more information and an example refer to the `maxmemory-clients` section in the default `redis.conf` file.
 
-Client eviction is available from Redis 7.0.
+Client eviction is available from Redis OSS 7.0.
 
 ## Client Timeouts
 
@@ -192,7 +192,7 @@ See the [`CLIENT LIST`](https://redis.io/commands/client-list) documentation for
 
 Once you have the list of clients, you can close a client's connection using the `CLIENT KILL` command, specifying the client address as its argument.
 
-The commands `CLIENT SETNAME` and `CLIENT GETNAME` can be used to set and get the connection name. Starting with Redis 4.0, the client name is shown in the
+The commands `CLIENT SETNAME` and `CLIENT GETNAME` can be used to set and get the connection name. Starting with Redis OSS 4.0, the client name is shown in the
 `SLOWLOG` output, to help identify clients that create latency issues.
 
 ## TCP keepalive

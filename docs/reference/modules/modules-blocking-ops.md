@@ -270,4 +270,4 @@ to be called in a safe way from threads, so that the threaded command
 can access the data space and do incremental operations.
 
 There is no ETA for this feature but it may appear in the course of the
-Redis 4.0 release at some point.
+Redis OSS 4.0 release at some point.

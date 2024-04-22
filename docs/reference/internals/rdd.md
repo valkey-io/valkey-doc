@@ -27,12 +27,12 @@ without causing a backward compatibility issue even if the added meta data
 is not required in order to load data from the RDB file.
 
 For example thanks to the info fields specified in this document it will
-be possible to add to RDB information like file creation time, Redis version
+be possible to add to RDB information like file creation time, Redis OSS version
 generating the file, and any other useful information, in a way that not
 every field is required for an RDB version 7 file to be correctly processed.
 
 Also with minimal changes it will be possible to add RDB version 7 support to
-Redis 2.6 without actually supporting the additional fields but just skipping
+Redis OSS 2.6 without actually supporting the additional fields but just skipping
 them when loading an RDB file.
 
 RDB info fields may have semantic meaning if needed, so that the presence
@@ -97,7 +97,7 @@ This field represents the unix time at which the RDB file was created.
 The format of the unix time is a 64 bit little endian integer representing
 seconds since 1th January 1970.
 
-### Info field 2 -- Redis version
+### Info field 2 -- Redis OSS version
 
-This field represents a null-terminated string containing the Redis version
-that generated the file, as displayed in the Redis version INFO field.
+This field represents a null-terminated string containing the Redis OSS version
+that generated the file, as displayed in the Redis OSS version INFO field.

@@ -317,7 +317,7 @@ example "write deny-oom". The set of flags are:
 * **"pubsub"**:    The command publishes things on Pub/Sub channels.
 * **"random"**:    The command may have different outputs even starting
                    from the same input arguments and key values.
-                   Starting from Redis 7.0 this flag has been deprecated.
+                   Starting from Redis OSS 7.0 this flag has been deprecated.
                    Declaring a command as "random" can be done using
                    command tips, see https://valkey.io/topics/command-tips.
 * **"allow-stale"**: The command is allowed to run on slaves that don't
@@ -486,7 +486,7 @@ only be set once for each command and has the following structure:
 
 All fields except `version` are optional. Explanation of the fields:
 
-- `version`: This field enables compatibility with different Redis versions.
+- `version`: This field enables compatibility with different Redis OSS versions.
   Always set this field to `REDISMODULE_COMMAND_INFO_VERSION`.
 
 - `summary`: A short description of the command (optional).
@@ -494,7 +494,7 @@ All fields except `version` are optional. Explanation of the fields:
 - `complexity`: Complexity description (optional).
 
 - `since`: The version where the command was introduced (optional).
-  Note: The version specified should be the module's, not Redis version.
+  Note: The version specified should be the module's, not Redis OSS version.
 
 - `history`: An array of `RedisModuleCommandHistoryEntry` (optional), which is
   a struct with the following fields:
@@ -2568,7 +2568,7 @@ follows:
 - ENOTSUP if the key is of another type than list.
 - EBADF if the key is not opened for writing.
 
-Note: Before Redis 7.0, `errno` was not set by this function.
+Note: Before Redis OSS 7.0, `errno` was not set by this function.
 
 <span id="RedisModule_ListPop"></span>
 
@@ -2589,7 +2589,7 @@ popped from the beginning or the end of the list (`REDISMODULE_LIST_HEAD` or
 - ENOTSUP if the key is empty or of another type than list.
 - EBADF if the key is not opened for writing.
 
-Note: Before Redis 7.0, `errno` was not set by this function.
+Note: Before Redis OSS 7.0, `errno` was not set by this function.
 
 <span id="RedisModule_ListGet"></span>
 
@@ -3014,7 +3014,7 @@ updated (its old value has been replaced by a new value) or deleted. If the
 flag `REDISMODULE_HASH_COUNT_ALL` is set, inserted fields not previously
 existing in the hash are also counted.
 
-If the return value is zero, `errno` is set (since Redis 6.2) as follows:
+If the return value is zero, `errno` is set (since Redis OSS 6.2) as follows:
 
 - EINVAL if any unknown flags are set or if key is NULL.
 - ENOTSUP if the key is associated with a non Hash value.
@@ -3025,8 +3025,8 @@ If the return value is zero, `errno` is set (since Redis 6.2) as follows:
   back due to the NX and XX flags.
 
 NOTICE: The return value semantics of this function are very different
-between Redis 6.2 and older versions. Modules that use it should determine
-the Redis version and handle it accordingly.
+between Redis OSS 6.2 and older versions. Modules that use it should determine
+the Redis OSS version and handle it accordingly.
 
 <span id="RedisModule_HashGet"></span>
 
@@ -7004,7 +7004,7 @@ Here is a list of events you can use as 'eid' and related sub events:
 
 * `RedisModuleEvent_ReplBackup`
 
-    WARNING: Replication Backup events are deprecated since Redis 7.0 and are never fired.
+    WARNING: Replication Backup events are deprecated since Redis OSS 7.0 and are never fired.
     See RedisModuleEvent_ReplAsyncLoad for understanding how Async Replication Loading events
     are now triggered when repl-diskless-load is set to swapdb.
 

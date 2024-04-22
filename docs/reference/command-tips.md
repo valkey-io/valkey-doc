@@ -23,14 +23,14 @@ That means that calls to the command may yield different results with the same a
 That difference could be the result of the command's random nature (e.g., `RANDOMKEY` and `SPOP`); the call's timing (e.g., `TTL`); or generic differences that relate to the server's state (e.g., `INFO` and `CLIENT LIST`).
 
 **Note:**
-Prior to Redis 7.0, this tip was the _random_ command flag.
+Prior to Redis OSS 7.0, this tip was the _random_ command flag.
 
 ## nondeterministic_output_order
 
 The existence of this tip indicates that the command's output is deterministic, but its ordering is random (e.g., `HGETALL` and `SMEMBERS`).
 
 **Note:**
-Prior to Redis 7.0, this tip was the _sort_\__for_\__script_ flag.
+Prior to Redis OSS 7.0, this tip was the _sort_\__for_\__script_ flag.
 
 ## request_policy
 

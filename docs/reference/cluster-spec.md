@@ -23,7 +23,7 @@ Redis Cluster is a distributed implementation of Redis with the following goals 
 * Acceptable degree of write safety: the system tries (in a best-effort way) to retain all the writes originating from clients connected with the majority of the master nodes. Usually there are small windows where acknowledged writes can be lost. Windows to lose acknowledged writes are larger when clients are in a minority partition.
 * Availability: Redis Cluster is able to survive partitions where the majority of the master nodes are reachable and there is at least one reachable replica for every master node that is no longer reachable. Moreover using *replicas migration*, masters no longer replicated by any replica will receive one from a master which is covered by multiple replicas.
 
-What is described in this document is implemented in Redis 3.0 or greater.
+What is described in this document is implemented in Redis OSS 3.0 or greater.
 
 ### Implemented subset
 
@@ -1201,7 +1201,7 @@ messages are forwarded as needed.
 The clients can send SUBSCRIBE to any node and can also send PUBLISH to any node. 
 It will simply broadcast each published message to all other nodes.
 
-Redis 7.0 and later features sharded pub/sub, in which shard channels are assigned to slots by the same algorithm used to assign keys to slots. 
+Redis OSS 7.0 and later features sharded pub/sub, in which shard channels are assigned to slots by the same algorithm used to assign keys to slots. 
 A shard message must be sent to a node that owns the slot the shard channel is hashed to. 
 The cluster makes sure the published shard messages are forwarded to all nodes in the shard, so clients can subscribe to a shard channel by connecting to either the master responsible for the slot, or to any of its replicas.
 

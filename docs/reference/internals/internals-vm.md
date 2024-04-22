@@ -8,10 +8,10 @@ aliases:
   - /topics/virtual-memory
 ---
 
-**Note: this document was written by the creator of Redis, Salvatore Sanfilippo, early in the development of Redis (c. 2010). Virtual Memory has been deprecated since Redis 2.6, so this documentation
+**Note: this document was written by the creator of Redis, Salvatore Sanfilippo, early in the development of Redis (c. 2010). Virtual Memory has been deprecated since Redis OSS 2.6, so this documentation
 is here only for historical interest.**
 
-This document details the internals of the Redis Virtual Memory subsystem prior to Redis 2.6. The intended audience is not the final user but programmers willing to understand or modify the Virtual Memory implementation.
+This document details the internals of the Redis Virtual Memory subsystem prior to Redis OSS 2.6. The intended audience is not the final user but programmers willing to understand or modify the Virtual Memory implementation.
 
 Keys vs Values: what is swapped out?
 ---
@@ -130,7 +130,7 @@ We also need to introduce another important VM parameter, that is, `server.vm_ma
 Blocking VM swapping
 ---
 
-Swapping of object from memory to disk happens in the cron function. This function used to be called every second, while in the recent Redis versions on git it is called every 100 milliseconds (that is, 10 times per second).
+Swapping of object from memory to disk happens in the cron function. This function used to be called every second, while in the recent Redis OSS versions on git it is called every 100 milliseconds (that is, 10 times per second).
 If this function detects we are out of memory, that is, the memory used is greater than the vm-max-memory setting, it starts transferring objects from memory to disk in a loop calling the function `vmSwapOneObect`. This function takes just one argument, if 0 it will swap objects in a blocking way, otherwise if it is 1, I/O threads are used. In the blocking scenario we just call it with zero as argument.
 
 vmSwapOneObject acts performing the following steps:

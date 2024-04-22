@@ -11,7 +11,7 @@ Many of the commands in Redis accept key names as input arguments.
 The 9th element in the reply of `COMMAND` (and `COMMAND INFO`) is an array that consists of the command's key specifications.
 
 A _key specification_ describes a rule for extracting the names of one or more keys from the arguments of a given command.
-Key specifications provide a robust and flexible mechanism, compared to the _first key_, _last key_ and _step_ scheme employed until Redis 7.0.
+Key specifications provide a robust and flexible mechanism, compared to the _first key_, _last key_ and _step_ scheme employed until Redis OSS 7.0.
 Before introducing these specifications, Redis clients had no trivial programmatic means to extract key names for all commands.
 
 Cluster-aware Redis clients had to have the keys' extraction logic hard-coded in the cases of commands such as `EVAL` and `ZUNIONSTORE` that rely on a _numkeys_ argument or `SORT` and its many clauses.

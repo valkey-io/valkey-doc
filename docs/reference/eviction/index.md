@@ -94,7 +94,7 @@ was accessed the furthest in the past. Instead it will try to run an approximati
 of the LRU algorithm, by sampling a small number of keys, and evicting the
 one that is the best (with the oldest access time) among the sampled keys.
 
-However, since Redis 3.0 the algorithm was improved to also take a pool of good
+However, since Redis OSS 3.0 the algorithm was improved to also take a pool of good
 candidates for eviction. This improved the performance of the algorithm, making
 it able to approximate more closely the behavior of a real LRU algorithm.
 
@@ -119,7 +119,7 @@ You can see three kind of dots in the graphs, forming three distinct bands.
 
 In a theoretical LRU implementation we expect that, among the old keys, the first half will be expired. The Redis LRU algorithm will instead only *probabilistically* expire the older keys.
 
-As you can see Redis 3.0 does a better job with 5 samples compared to Redis 2.8, however most objects that are among the latest accessed are still retained by Redis 2.8. Using a sample size of 10 in Redis 3.0 the approximation is very close to the theoretical performance of Redis 3.0.
+As you can see Redis OSS 3.0 does a better job with 5 samples compared to Redis OSS 2.8, however most objects that are among the latest accessed are still retained by Redis OSS 2.8. Using a sample size of 10 in Redis OSS 3.0 the approximation is very close to the theoretical performance of Redis OSS 3.0.
 
 Note that LRU is just a model to predict how likely a given key will be accessed in the future. Moreover, if your data access pattern closely
 resembles the power law, most of the accesses will be in the set of keys
@@ -136,7 +136,7 @@ the `CONFIG SET maxmemory-samples <count>` command, is very simple.
 
 ## The new LFU mode
 
-Starting with Redis 4.0, the [Least Frequently Used eviction mode](http://antirez.com/news/109) is available. This mode may work better (provide a better
+Starting with Redis OSS 4.0, the [Least Frequently Used eviction mode](http://antirez.com/news/109) is available. This mode may work better (provide a better
 hits/misses ratio) in certain cases. In LFU mode, Redis will try to track
 the frequency of access of items, so the ones used rarely are evicted. This means
 the keys used often have a higher chance of remaining in memory.

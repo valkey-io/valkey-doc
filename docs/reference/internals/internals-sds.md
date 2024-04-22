@@ -7,7 +7,7 @@ aliases:
   - /topics/internals-sds
 ---
 
-**Note: this document was written by the creator of Redis, Salvatore Sanfilippo, early in the development of Redis (c. 2010). Virtual Memory has been deprecated since Redis 2.6, so this documentation
+**Note: this document was written by the creator of Redis, Salvatore Sanfilippo, early in the development of Redis (c. 2010). Virtual Memory has been deprecated since Redis OSS 2.6, so this documentation
 is here only for historical interest.**
 
 The implementation of Strings is contained in `sds.c` (`sds` stands for

@@ -9,7 +9,7 @@ aliases:
 
 This document provides information about how Redis reacts to different POSIX signals such as `SIGTERM` and `SIGSEGV`.
 
-The information in this document **only applies to Redis version 2.6 or greater**.
+The information in this document **only applies to Redis OSS version 2.6 or greater**.
 
 ## SIGTERM and SIGINT
 
@@ -37,9 +37,9 @@ This shutdown process includes the following actions:
 
 IF the RDB file can't be saved, the shutdown fails, and the server continues to run in order to ensure no data loss.
 Likewise, if the user just turned on AOF, and the server triggered the first AOF rewrite in order to create the initial AOF file but this file can't be saved, the shutdown fails and the server continues to run.
-Since Redis 2.6.11, no further attempt to shut down will be made unless a new `SIGTERM` is received or the `SHUTDOWN` command is issued.
+Since Redis OSS 2.6.11, no further attempt to shut down will be made unless a new `SIGTERM` is received or the `SHUTDOWN` command is issued.
 
-Since Redis 7.0, the server waits for lagging replicas up to a configurable `shutdown-timeout`, 10 seconds by default, before shutting down.
+Since Redis OSS 7.0, the server waits for lagging replicas up to a configurable `shutdown-timeout`, 10 seconds by default, before shutting down.
 This provides a best effort to minimize the risk of data loss in a situation where no save points are configured and AOF is deactivated.
 Before version 7.0, shutting down a heavily loaded master node in a diskless setup was more likely to result in data loss.
 To minimize the risk of data loss in such setups, trigger a manual `FAILOVER` (or `CLUSTER FAILOVER`) to demote the master to a replica and promote one of the replicas to a new master before shutting down a master node.
@@ -56,7 +56,7 @@ The following signals are handled as a Redis crash:
 Once one of these signals is trapped, Redis stops any current operation and performs the following actions:
 
 * Adds a bug report to the log file. This includes a stack trace, dump of registers, and information about the state of clients.
-* Since Redis 2.8, a fast memory test is performed as a first check of the reliability of the crashing system.
+* Since Redis OSS 2.8, a fast memory test is performed as a first check of the reliability of the crashing system.
 * If the server was daemonized, the PID file is removed.
 * Finally the server unregisters its own signal handler for the received signal and resends the same signal to itself to make sure that the default action is performed, such as dumping the core on the file system.
 
@@ -83,7 +83,7 @@ This error condition will persist until it becomes possible to create an RDB fil
 ## Kill the RDB file without errors
 
 Sometimes the user may want to kill the RDB-saving child process without
-generating an error. Since Redis version 2.6.10, this can be done using the signal `SIGUSR1`. This signal is handled in a special way:
+generating an error. Since Redis OSS version 2.6.10, this can be done using the signal `SIGUSR1`. This signal is handled in a special way:
 it kills the child process like any other signal, but the parent process will
 not detect this as a critical error and will continue to serve write
 requests.

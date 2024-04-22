@@ -8,7 +8,7 @@ aliases:
     - /topics/ARM
 ---
 
-Redis versions 4.0 and above support the ARM processor in general, and
+Redis OSS versions 4.0 and above support the ARM processor in general, and
 the Raspberry Pi specifically, as a main platform. Every new release of Redis is tested on the Pi
 environment, and we update this documentation page with information about supported devices and other useful information. While Redis does run on Android, in the future we look forward to extend our testing efforts to Android
 to also make it an officially supported platform.
@@ -21,20 +21,20 @@ reasons:
 * Modeling data inside Redis can be very useful in order to make in-device decisions for appliances that must respond very quickly or when the remote servers are offline.
 * Redis can be used as a communication system between the processes running in the device.
 * The append-only file storage of Redis is well suited for SSD cards.
-* The stream data structure included in Redis versions 5.0 and higher was specifically designed for time series applications and has a very low memory overhead.
+* The stream data structure included in Redis OSS versions 5.0 and higher was specifically designed for time series applications and has a very low memory overhead.
 
 ## Redis /proc/cpu/alignment requirements
 
 Linux on ARM allows to trap unaligned accesses and fix them inside the kernel
 in order to continue the execution of the offending program instead of
-generating a `SIGBUS`. Redis 4.0 and greater are fixed in order to avoid any kind
+generating a `SIGBUS`. Redis OSS 4.0 and greater are fixed in order to avoid any kind
 of unaligned access, so there is no need to have a specific value for this
 kernel configuration. Even when kernel alignment fixing set as disabled Redis should
 run as expected.
 
 ## Building Redis in the Pi
 
-* Download Redis version 4.0 or higher.
+* Download Redis OSS version 4.0 or higher.
 * Use `make` as usual to create the executable.
 
 There is nothing special in the process. The only difference is that by
@@ -49,7 +49,7 @@ as the `libc` allocator.
 Performance testing of Redis was performed on the Raspberry Pi 3 and Pi 1 model B. The difference between the two Pis in terms of delivered performance is quite big. The benchmarks were performed via the
 loopback interface, since most use cases will probably use Redis from within
 the device and not via the network. The following numbers were obtained using
-Redis 4.0.
+Redis OSS 4.0.
 
 Raspberry Pi 3:
 

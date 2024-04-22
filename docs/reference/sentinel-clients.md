@@ -70,7 +70,7 @@ Once the client discovered the address of the master instance, it should
 attempt a connection with the master, and call the `ROLE` command in order
 to verify the role of the instance is actually a master.
 
-If the `ROLE` commands is not available (it was introduced in Redis 2.8.12), a client may resort to the `INFO replication` command parsing the `role:` field of the output.
+If the `ROLE` commands is not available (it was introduced in Redis OSS 2.8.12), a client may resort to the `INFO replication` command parsing the `role:` field of the output.
 
 If the instance is not a master as expected, the client should wait a short amount of time (a few hundreds of milliseconds) and should try again starting from Step 1.
 
@@ -87,7 +87,7 @@ In the above cases and any other case where the client lost the connection with 
 Sentinel failover disconnection
 ===
 
-Starting with Redis 2.8.12, when Redis Sentinel changes the configuration of
+Starting with Redis OSS 2.8.12, when Redis Sentinel changes the configuration of
 an instance, for example promoting a replica to a master, demoting a master to
 replicate to the new master after a failover, or simply changing the master
 address of a stale replica instance, it sends a `CLIENT KILL type normal`

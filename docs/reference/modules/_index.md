@@ -185,8 +185,8 @@ exported.
 
 The module will be able to load into different versions of Redis.
 
-A module can be designed to support both newer and older Redis versions where certain API functions are not available in all versions.
-If an API function is not implemented in the currently running Redis version, the function pointer is set to NULL.
+A module can be designed to support both newer and older Redis OSS versions where certain API functions are not available in all versions.
+If an API function is not implemented in the currently running Redis OSS version, the function pointer is set to NULL.
 This allows the module to check if a function exists before using it:
 
     if (RedisModule_SetCommandInfo != NULL) {
