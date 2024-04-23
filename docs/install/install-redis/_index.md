@@ -100,13 +100,13 @@ If you have not yet run `make install` after building the Valkey source, you wil
 * Copy the init script that you'll find in the Valkey distribution under the **utils** directory into `/etc/init.d`. We suggest calling it with the name of the port where you are running this instance of Valkey. Make sure the resulting file has `0755` permissions.
     
     ```
-    sudo cp utils/redis_init_script /etc/init.d/redis_6379
+    sudo cp utils/redis_init_script /etc/init.d/valkey_6379
     ```
 
 * Edit the init script.
 
     ```
-    sudo vi /etc/init.d/redis_6379
+    sudo vi /etc/init.d/valkey_6379
     ```
 
 Make sure to set the **REDISPORT** variable to the port you are using.
@@ -126,28 +126,28 @@ Both the pid file path and the configuration file name depend on the port number
 
 * Edit the configuration file, making sure to perform the following changes:
     * Set **daemonize** to yes (by default it is set to no).
-    * Set the **pidfile** to `/var/run/redis_6379.pid`, modifying the port as necessary.
+    * Set the **pidfile** to `/var/run/valkey_6379.pid`, modifying the port as necessary.
     * Change the **port** accordingly. In our example it is not needed as the default port is already `6379`.
     * Set your preferred **loglevel**.
-    * Set the **logfile** to `/var/log/redis_6379.log`.
+    * Set the **logfile** to `/var/log/valkey_6379.log`.
     * Set the **dir** to `/var/valkey/6379` (very important step!).
 * Finally, add the new Valkey init script to all the default runlevels using the following command:
 
     ```
-    sudo update-rc.d redis_6379 defaults
+    sudo update-rc.d valkey_6379 defaults
     ```
 
 You are done! Now you can try running your instance with:
 
 ```
-sudo /etc/init.d/redis_6379 start
+sudo /etc/init.d/valkey_6379 start
 ```
 
 Make sure that everything is working as expected:
 
 1. Try pinging your instance within a `valkey-cli` session using the `PING` command.
 2. Do a test save with `valkey-cli save` and check that a dump file is correctly saved to `/var/valkey/6379/dump.rdb`.
-3. Check that your Valkey instance is logging to the `/var/log/redis_6379.log` file.
+3. Check that your Valkey instance is logging to the `/var/log/valkey_6379.log` file.
 4. If it's a new machine where you can try it without problems, make sure that after a reboot everything is still working.
 
 {{% alert title="Note" color="warning" %}}
