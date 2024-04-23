@@ -3,18 +3,18 @@ title: "Bulk loading"
 linkTitle: "Bulk loading"
 weight: 1
 description: >
-    Writing data in bulk using the Redis protocol
+    Writing data in bulk using the Valkey protocol
 aliases: [
     /topics/mass-insertion,
     /docs/reference/patterns/bulk-loading
 ]
 ---
 
-Bulk loading is the process of loading Redis with a large amount of pre-existing data. Ideally, you want to perform this operation quickly and efficiently. This document describes some strategies for bulk loading data in Redis.
+Bulk loading is the process of loading Valkey with a large amount of pre-existing data. Ideally, you want to perform this operation quickly and efficiently. This document describes some strategies for bulk loading data in Valkey.
 
-## Bulk loading using the Redis protocol
+## Bulk loading using the Valkey protocol
 
-Using a normal Redis client to perform bulk loading is not a good idea
+Using a normal Valkey client to perform bulk loading is not a good idea
 for a few reasons: the naive approach of sending one command after the other
 is slow because you have to pay for the round trip time for every command.
 It is possible to use pipelining, but for bulk loading of many records
@@ -24,19 +24,19 @@ make sure you are inserting as fast as possible.
 Only a small percentage of clients support non-blocking I/O, and not all the
 clients are able to parse the replies in an efficient way in order to maximize
 throughput. For all of these reasons the preferred way to mass import data into
-Redis is to generate a text file containing the Redis protocol, in raw format,
+Valkey is to generate a text file containing the Valkey protocol, in raw format,
 in order to call the commands needed to insert the required data.
 
 For instance if I need to generate a large data set where there are billions
 of keys in the form: `keyN -> ValueN' I will create a file containing the
-following commands in the Redis protocol format:
+following commands in the Valkey protocol format:
 
     SET Key0 Value0
     SET Key1 Value1
     ...
     SET KeyN ValueN
 
-Once this file is created, the remaining action is to feed it to Redis
+Once this file is created, the remaining action is to feed it to Valkey
 as fast as possible. In the past the way to do this was to use the
 `netcat` with the following command:
 
@@ -44,13 +44,13 @@ as fast as possible. In the past the way to do this was to use the
 
 However this is not a very reliable way to perform mass import because netcat
 does not really know when all the data was transferred and can't check for
-errors. In 2.6 or later versions of Redis the `redis-cli` utility
-supports a new mode called **pipe mode** that was designed in order to perform
+errors. The `valkey-cli` utility
+supports a **pipe mode** that was designed to perform
 bulk loading.
 
 Using the pipe mode the command to run looks like the following:
 
-    cat data.txt | redis-cli --pipe
+    cat data.txt | valkey-cli --pipe
 
 That will produce an output similar to this:
 
@@ -58,12 +58,12 @@ That will produce an output similar to this:
     Last reply received from server.
     errors: 0, replies: 1000000
 
-The redis-cli utility will also make sure to only redirect errors received
-from the Redis instance to the standard output.
+The valkey-cli utility will also make sure to only redirect errors received
+from the Valkey instance to the standard output.
 
-### Generating Redis Protocol
+### Generating Valkey Protocol
 
-The Redis protocol is extremely simple to generate and parse, and is
+The Valkey protocol is extremely simple to generate and parse, and is
 [Documented here](/topics/protocol). However in order to generate protocol for
 the goal of bulk loading you don't need to understand every detail of the
 protocol, but just that every command is represented in the following way:
@@ -115,23 +115,23 @@ in the above example, with this program:
         STDOUT.write(gen_redis_proto("SET","Key#{n}","Value#{n}"))
     }
 
-We can run the program directly in pipe to redis-cli in order to perform our
+We can run the program directly in pipe to valkey-cli in order to perform our
 first mass import session.
 
-    $ ruby proto.rb | redis-cli --pipe
+    $ ruby proto.rb | valkey-cli --pipe
     All data transferred. Waiting for the last reply...
     Last reply received from server.
     errors: 0, replies: 1000
 
 ### How the pipe mode works under the hood
 
-The magic needed inside the pipe mode of redis-cli is to be as fast as netcat
+The magic needed inside the pipe mode of valkey-cli is to be as fast as netcat
 and still be able to understand when the last reply was sent by the server
 at the same time.
 
 This is obtained in the following way:
 
-+ redis-cli --pipe tries to send data as fast as possible to the server.
++ valkey-cli --pipe tries to send data as fast as possible to the server.
 + At the same time it reads data when available, trying to parse it.
 + Once there is no more data to read from stdin, it sends a special **ECHO**
 command with a random 20 byte string: we are sure this is the latest command

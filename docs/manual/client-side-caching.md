@@ -1,9 +1,9 @@
 ---
-title: "Client-side caching in Redis"
+title: "Client-side caching in Valkey"
 linkTitle: "Client-side caching"
 weight: 2
 description: >
-    Server-assisted, client-side caching in Redis
+    Server-assisted, client-side caching in Valkey
 aliases:
     - /topics/client-side-caching
 ---
@@ -69,7 +69,7 @@ may continue to serve the old username for user:1234.
 Sometimes, depending on the exact application we are modeling, this isn't a
 big deal, so the client will just use a fixed maximum "time to live" for the
 cached information. Once a given amount of time has elapsed, the information
-will no longer be considered valid. More complex patterns, when using Redis,
+will no longer be considered valid. More complex patterns, when using Valkey,
 leverage the Pub/Sub system in order to send invalidation messages to
 listening clients. This can be made to work but is tricky and costly from
 the point of view of the bandwidth used, because often such patterns involve
@@ -81,13 +81,13 @@ command, costing the database more CPU time to process this command.
 Regardless of what schema is used, there is a simple fact: many very large
 applications implement some form of client-side caching, because it is the
 next logical step to having a fast store or a fast cache server. For this
-reason Redis 6 implements direct support for client-side caching, in order
+reason Valkey implements direct support for client-side caching, in order
 to make this pattern much simpler to implement, more accessible, reliable,
 and efficient.
 
-## The Redis implementation of client-side caching
+## The Valkey implementation of client-side caching
 
-The Redis client-side caching support is called _Tracking_, and has two modes:
+The Valkey client-side caching support is called _Tracking_, and has two modes:
 
 * In the default mode, the server remembers what keys a given client accessed, and sends invalidation messages when the same keys are modified. This costs memory in the server side, but sends invalidation messages only for the set of keys that the client might have in memory.
 * In the _broadcasting_ mode, the server does not attempt to remember what keys a given client accessed, so this mode costs no memory at all in the server side. Instead clients subscribe to key prefixes such as `object:` or `user:`, and receive a notification message every time a key matching a subscribed prefix is touched.
@@ -111,21 +111,21 @@ This is an example of the protocol:
 
 This looks great superficially, but if you imagine 10k connected clients all
 asking for millions of keys over long living connection, the server ends up
-storing too much information. For this reason Redis uses two key ideas in
+storing too much information. For this reason Valkey uses two key ideas in
 order to limit the amount of memory used server-side and the CPU cost of
 handling the data structures implementing the feature:
 
 * The server remembers the list of clients that may have cached a given key in a single global table. This table is called the **Invalidation Table**. The invalidation table can contain a maximum number of entries. If a new key is inserted, the server may evict an older entry by pretending that such key was modified (even if it was not), and sending an invalidation message to the clients. Doing so, it can reclaim the memory used for this key, even if this will force the clients having a local copy of the key to evict it.
-* Inside the invalidation table we don't really need to store pointers to clients' structures, that would force a garbage collection procedure when the client disconnects: instead what we do is just store client IDs (each Redis client has a unique numerical ID). If a client disconnects, the information will be incrementally garbage collected as caching slots are invalidated.
+* Inside the invalidation table we don't really need to store pointers to clients' structures, that would force a garbage collection procedure when the client disconnects: instead what we do is just store client IDs (each Valkey client has a unique numerical ID). If a client disconnects, the information will be incrementally garbage collected as caching slots are invalidated.
 * There is a single keys namespace, not divided by database numbers. So if a client is caching the key `foo` in database 2, and some other client changes the value of the key `foo` in database 3, an invalidation message will still be sent. This way we can ignore database numbers reducing both the memory usage and the implementation complexity.
 
 ## Two connections mode
 
-Using the new version of the Redis protocol, RESP3, supported by Redis 6, it is possible to run the data queries and receive the invalidation messages in the same connection. However many client implementations may prefer to implement client-side caching using two separated connections: one for data, and one for invalidation messages. For this reason when a client enables tracking, it can specify to redirect the invalidation messages to another connection by specifying the "client ID" of a different connection. Many data connections can redirect invalidation messages to the same connection, this is useful for clients implementing connection pooling. The two connections model is the only one that is also supported for RESP2 (which lacks the ability to multiplex different kind of information in the same connection).
+Using the new version of the Valkey protocol, RESP3, it is possible to run the data queries and receive the invalidation messages in the same connection. However many client implementations may prefer to implement client-side caching using two separated connections: one for data, and one for invalidation messages. For this reason when a client enables tracking, it can specify to redirect the invalidation messages to another connection by specifying the "client ID" of a different connection. Many data connections can redirect invalidation messages to the same connection, this is useful for clients implementing connection pooling. The two connections model is the only one that is also supported for RESP2 (which lacks the ability to multiplex different kind of information in the same connection).
 
-Here's an example of a complete session using the Redis protocol in the old RESP2 mode involving the following steps: enabling tracking redirecting to another connection, asking for a key, and getting an invalidation message once the key gets modified.
+Here's an example of a complete session using the Valkey protocol in the old RESP2 mode involving the following steps: enabling tracking redirecting to another connection, asking for a key, and getting an invalidation message once the key gets modified.
 
-To start, the client opens a first connection that will be used for invalidations, requests the connection ID, and subscribes via Pub/Sub to the special channel that is used to get invalidation messages when in RESP2 modes (remember that RESP2 is the usual Redis protocol, and not the more advanced protocol that you can use, optionally, with Redis 6 using the `HELLO` command):
+To start, the client opens a first connection that will be used for invalidations, requests the connection ID, and subscribes via Pub/Sub to the special channel that is used to get invalidation messages when in RESP2 modes (remember that RESP2 is the usual Valkey protocol, and not the more advanced protocol that you can use, optionally, using the `HELLO` command):
 
 ```
 (Connection 1 -- used for invalidations)
@@ -178,7 +178,7 @@ foo
 The client will check if there are cached keys in this caching slot, and will evict the information that is no longer valid.
 
 Note that the third element of the Pub/Sub message is not a single key but
-is a Redis array with just a single element. Since we send an array, if there
+is a Valkey array with just a single element. Since we send an array, if there
 are groups of keys to invalidate, we can do that in a single message.
 In case of a flush (`FLUSHALL` or `FLUSHDB`), a `null` message will be sent.
 
@@ -244,7 +244,7 @@ commands executed by the script will be tracked.
 
 ## Broadcasting mode
 
-So far we described the first client-side caching model that Redis implements.
+So far we described the first client-side caching model that Valkey implements.
 There is another one, called broadcasting, that sees the problem from the
 point of view of a different tradeoff, does not consume any memory on the
 server side, but instead sends more invalidation messages to clients.
@@ -329,7 +329,7 @@ keys that were not served recently.
 * Putting a max TTL on every key is a good idea, even if it has no TTL. This protects against bugs or connection issues that would make the client have old data in the local copy.
 * Limiting the amount of memory used by clients is absolutely needed. There must be a way to evict old keys when new ones are added.
 
-## Limiting the amount of memory used by Redis
+## Limiting the amount of memory used by Valkey
 
-Be sure to configure a suitable value for the maximum number of keys remembered by Redis or alternatively use the BCAST mode that consumes no memory at all on the Redis side. Note that the memory consumed by Redis when BCAST is not used, is proportional both to the number of keys tracked and the number of clients requesting such keys.
+Be sure to configure a suitable value for the maximum number of keys remembered by Valkey or alternatively use the BCAST mode that consumes no memory at all on the Valkey side. Note that the memory consumed by Valkey when BCAST is not used, is proportional both to the number of keys tracked and the number of clients requesting such keys.
 

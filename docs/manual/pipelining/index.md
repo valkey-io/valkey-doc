@@ -1,17 +1,17 @@
 ---
-title: "Redis pipelining"
+title: "Valkey pipelining"
 linkTitle: "Pipelining"
 weight: 2
-description: How to optimize round-trip times by batching Redis commands
+description: How to optimize round-trip times by batching Valkey commands
 aliases:
   - /topics/pipelining
 ---
 
-Redis pipelining is a technique for improving performance by issuing multiple commands at once without waiting for the response to each individual command. Pipelining is supported by most Redis clients. This document describes the problem that pipelining is designed to solve and how pipelining works in Redis.
+Valkey pipelining is a technique for improving performance by issuing multiple commands at once without waiting for the response to each individual command. Pipelining is supported by most Valkey clients. This document describes the problem that pipelining is designed to solve and how pipelining works in Valkey.
 
 ## Request/Response protocols and round-trip time (RTT)
 
-Redis is a TCP server using the client-server model and what is called a *Request/Response* protocol.
+Valkey is a TCP server using the client-server model and what is called a *Request/Response* protocol.
 
 This means that usually a request is accomplished with the following steps:
 
@@ -41,7 +41,7 @@ If the interface used is a loopback interface, the RTT is much shorter, typicall
 
 Fortunately there is a way to improve this use case.
 
-## Redis Pipelining
+## Valkey Pipelining
 
 A Request/Response server can be implemented so that it is able to process new requests even if the client hasn't already read the old responses.
 This way it is possible to send *multiple commands* to the server without waiting for the replies at all, and finally read the replies in a single step.
@@ -49,7 +49,7 @@ This way it is possible to send *multiple commands* to the server without waitin
 This is called pipelining, and is a technique widely in use for many decades.
 For instance many POP3 protocol implementations already support this feature, dramatically speeding up the process of downloading new emails from the server.
 
-Redis has supported pipelining since its early days, so whatever version you are running, you can use pipelining with Redis.
+Valkey has supported pipelining since its early days, so whatever version you are running, you can use pipelining with Valkey.
 This is an example using the raw netcat utility:
 
 ```bash 
@@ -78,7 +78,7 @@ To be explicit, with pipelining the order of operations of our very first exampl
 
 Pipelining is not just a way to reduce the latency cost associated with the
 round trip time, it actually greatly improves the number of operations
-you can perform per second in a given Redis server.
+you can perform per second in a given Valkey server.
 This is because without using pipelining, serving each command is very cheap from
 the point of view of accessing the data structures and producing the reply,
 but it is very costly from the point of view of doing the socket I/O. This
@@ -97,7 +97,7 @@ reaches 10 times the baseline obtained without pipelining, as shown in this figu
 ## A real world code example
 
 
-In the following benchmark we'll use the Redis Ruby client, supporting pipelining, to test the speed improvement due to pipelining:
+In the following benchmark we'll use the Valkey Ruby client, supporting pipelining, to test the speed improvement due to pipelining:
 
 ```ruby
 require 'rubygems'
@@ -143,32 +143,32 @@ As you can see, using pipelining, we improved the transfer by a factor of five.
 
 ## Pipelining vs Scripting
 
-Using [Redis scripting](/commands/eval), available since Redis 2.6, a number of use cases for pipelining can be addressed more efficiently using scripts that perform a lot of the work needed at the server side.
+Using [Valkey scripting](/commands/eval), a number of use cases for pipelining can be addressed more efficiently using scripts that perform a lot of the work needed at the server side.
 A big advantage of scripting is that it is able to both read and write data with minimal latency, making operations like *read, compute, write* very fast (pipelining can't help in this scenario since the client needs the reply of the read command before it can call the write command).
 
 Sometimes the application may also want to send `EVAL` or `EVALSHA` commands in a pipeline. 
-This is entirely possible and Redis explicitly supports it with the [SCRIPT LOAD](https://redis.io/commands/script-load) command (it guarantees that `EVALSHA` can be called without the risk of failing).
+This is entirely possible and Valkey explicitly supports it with the [SCRIPT LOAD](https://redis.io/commands/script-load) command (it guarantees that `EVALSHA` can be called without the risk of failing).
 
 ## Appendix: Why are busy loops slow even on the loopback interface?
 
 Even with all the background covered in this page, you may still wonder why
-a Redis benchmark like the following (in pseudo code), is slow even when
+a Valkey benchmark like the following (in pseudo code), is slow even when
 executed in the loopback interface, when the server and the client are running
 in the same physical machine:
 
 ```sh
 FOR-ONE-SECOND:
-    Redis.SET("foo","bar")
+    Valkey.SET("foo","bar")
 END
 ```
 
-After all, if both the Redis process and the benchmark are running in the same
+After all, if both the Valkey process and the benchmark are running in the same
 box, isn't it just copying messages in memory from one place to another without
 any actual latency or networking involved?
 
 The reason is that processes in a system are not always running, actually it is
 the kernel scheduler that lets the process run. 
-So, for instance, when the benchmark is allowed to run, it reads the reply from the Redis server (related to the last command executed), and writes a new command.
+So, for instance, when the benchmark is allowed to run, it reads the reply from the Valkey server (related to the last command executed), and writes a new command.
 The command is now in the loopback interface buffer, but in order to be read by the server, the kernel should schedule the server process (currently blocked in a system call)
 to run, and so forth.
 So in practical terms the loopback interface still involves network-like latency, because of how the kernel scheduler works.
