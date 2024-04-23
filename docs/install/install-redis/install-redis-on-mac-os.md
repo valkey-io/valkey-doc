@@ -31,10 +31,10 @@ This will install Valkey on your system.
 
 ## Starting and stopping Valkey in the foreground
 
-To test your Valkey installation, you can run the `redis-server` executable from the command line:
+To test your Valkey installation, you can run the `valkey-server` executable from the command line:
 
 {{< highlight bash  >}}
-redis-server
+valkey-server
 {{< / highlight >}}
 
 If successful, you'll see the startup logs for Valkey, and Valkey will be running in the foreground.
@@ -73,10 +73,10 @@ brew services stop redis
 
 ## Connect to Valkey
 
-Once Valkey is running, you can test it by running `redis-cli`:
+Once Valkey is running, you can test it by running `valkey-cli`:
 
 {{< highlight bash  >}}
-redis-cli
+valkey-cli
 {{< / highlight >}}
 
 This will open the Valkey REPL. Try running some commands:

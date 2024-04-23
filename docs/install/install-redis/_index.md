@@ -26,23 +26,23 @@ Refer to [Valkey Administration](/docs/management/admin/) for detailed setup tip
 
 ## Test if you can connect using the CLI
 
-After you have Valkey up and running, you can connect using `redis-cli`.
+After you have Valkey up and running, you can connect using `valkey-cli`.
 
-External programs talk to Valkey using a TCP socket and a Valkey specific protocol. This protocol is implemented in the Valkey client libraries for the different programming languages. However, to make hacking with Valkey simpler, Valkey provides a command line utility that can be used to send commands to Valkey. This program is called **redis-cli**.
+External programs talk to Valkey using a TCP socket and a Valkey specific protocol. This protocol is implemented in the Valkey client libraries for the different programming languages. However, to make hacking with Valkey simpler, Valkey provides a command line utility that can be used to send commands to Valkey. This program is called **valkey-cli**.
 
-The first thing to do to check if Valkey is working properly is sending a **PING** command using redis-cli:
+The first thing to do to check if Valkey is working properly is sending a **PING** command using valkey-cli:
 
 ```
-$ redis-cli ping
+$ valkey-cli ping
 PONG
 ```
 
-Running **redis-cli** followed by a command name and its arguments will send this command to the Valkey instance running on localhost at port 6379. You can change the host and port used by `redis-cli` - just try the `--help` option to check the usage information.
+Running **valkey-cli** followed by a command name and its arguments will send this command to the Valkey instance running on localhost at port 6379. You can change the host and port used by `valkey-cli` - just try the `--help` option to check the usage information.
 
-Another interesting way to run `redis-cli` is without arguments: the program will start in interactive mode. You can type different commands and see their replies.
+Another interesting way to run `valkey-cli` is without arguments: the program will start in interactive mode. You can type different commands and see their replies.
 
 ```
-$ redis-cli
+$ valkey-cli
 127.0.0.1:6379> ping
 PONG
 ```
@@ -56,7 +56,7 @@ By default Valkey binds to **all the interfaces** and has no authentication at a
 3. Use the `requirepass` option to add an additional layer of security so that clients will be required to authenticate using the `AUTH` command.
 4. Use [spiped](http://www.tarsnap.com/spiped.html) or another SSL tunneling software to encrypt traffic between Valkey servers and Valkey clients if your environment requires encryption.
 
-Note that a Valkey instance exposed to the internet without any security [is very simple to exploit](http://antirez.com/news/96), so make sure you understand the above and apply **at least** a firewall layer. After the firewall is in place, try to connect with `redis-cli` from an external host to confirm that the instance is not reachable.
+Note that a Valkey instance exposed to the internet without any security [is very simple to exploit](http://antirez.com/news/96), so make sure you understand the above and apply **at least** a firewall layer. After the firewall is in place, try to connect with `valkey-cli` from an external host to confirm that the instance is not reachable.
 
 ## Use Valkey from your application
 
@@ -70,7 +70,7 @@ You'll find a [full list of clients for different languages in this page](/clien
 You can learn [how Valkey persistence works on this page](/docs/management/persistence/). It is important to understand that, if you start Valkey with the default configuration, Valkey will spontaneously save the dataset only from time to time. For example, after at least five minutes if you have at least 100 changes in your data. If you want your database to persist and be reloaded after a restart make sure to call the **SAVE** command manually every time you want to force a data set snapshot. Alternatively, you can save the data on disk before quitting by using the **SHUTDOWN** command:
 
 ```
-$ redis-cli shutdown
+$ valkey-cli shutdown
 ```
 
 This way, Valkey will save the data on disk before quitting. Reading the [persistence page](/docs/management/persistence/) is strongly suggested to better understand how Valkey persistence works.
@@ -88,7 +88,7 @@ A proper install using an init script is strongly recommended.
 The available packages for supported Linux distributions already include the capability of starting the Valkey server from `/etc/init`.
 {{% /alert  %}}
 
-If you have not yet run `make install` after building the Valkey source, you will need to do so before continuing. By default, `make install` will copy the `redis-server` and `redis-cli` binaries to `/usr/local/bin`.
+If you have not yet run `make install` after building the Valkey source, you will need to do so before continuing. By default, `make install` will copy the `valkey-server` and `valkey-cli` binaries to `/usr/local/bin`.
 
 * Create a directory in which to store your Valkey config files and your data:
 
@@ -115,7 +115,7 @@ Both the pid file path and the configuration file name depend on the port number
 * Copy the template configuration file you'll find in the root directory of the Valkey distribution into `/etc/redis/` using the port number as the name, for instance:
 
     ```
-    sudo cp redis.conf /etc/redis/6379.conf
+    sudo cp valkey.conf /etc/redis/6379.conf
     ```
 
 * Create a directory inside `/var/redis` that will work as both data and working directory for this Valkey instance:
@@ -145,8 +145,8 @@ sudo /etc/init.d/redis_6379 start
 
 Make sure that everything is working as expected:
 
-1. Try pinging your instance within a `redis-cli` session using the `PING` command.
-2. Do a test save with `redis-cli save` and check that a dump file is correctly saved to `/var/redis/6379/dump.rdb`.
+1. Try pinging your instance within a `valkey-cli` session using the `PING` command.
+2. Do a test save with `valkey-cli save` and check that a dump file is correctly saved to `/var/redis/6379/dump.rdb`.
 3. Check that your Valkey instance is logging to the `/var/log/redis_6379.log` file.
 4. If it's a new machine where you can try it without problems, make sure that after a reboot everything is still working.
 
@@ -154,6 +154,6 @@ Make sure that everything is working as expected:
 The above instructions don't include all of the Valkey configuration parameters that you could change. For example, to use AOF persistence instead of RDB persistence, or to set up replication, and so forth.
 {{% /alert  %}}
 
-You should also read the example [redis.conf](/docs/management/config-file/) file, which is heavily annotated to help guide you on making changes. Further details can also be found in the [configuration article on this site](/docs/management/config/).
+You should also read the example [valkey.conf](/docs/management/config-file/) file, which is heavily annotated to help guide you on making changes. Further details can also be found in the [configuration article on this site](/docs/management/config/).
 
 <hr>

@@ -32,7 +32,7 @@ sudo apt-get install redis
 Lastly, start the Valkey server like so:
 
 {{< highlight bash  >}}
-sudo service redis-server start
+sudo service valkey-server start
 {{< / highlight  >}}
 
 ## Connect to Valkey
@@ -40,7 +40,7 @@ sudo service redis-server start
 You can test that your Valkey server is running by connecting with the Valkey CLI:
 
 {{< highlight bash  >}}
-redis-cli 
+valkey-cli 
 127.0.0.1:6379> ping
 PONG
 {{< / highlight >}}

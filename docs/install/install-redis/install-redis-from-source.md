@@ -38,8 +38,8 @@ make BUILD_TLS=yes
 
 If the compile succeeds, you'll find several Valkey binaries in the `src` directory, including:
 
-* **redis-server**: the Valkey Server itself
-* **redis-cli** is the command line interface utility to talk with Valkey.
+* **valkey-server**: the Valkey Server itself
+* **valkey-cli** is the command line interface utility to talk with Valkey.
 
 To install these binaries in `/usr/local/bin`, run:
 
@@ -52,7 +52,7 @@ sudo make install
 Once installed, you can start Valkey by running
 
 {{< highlight bash  >}}
-redis-server
+valkey-server
 {{< / highlight >}}
 
 If successful, you'll see the startup logs for Valkey, and Valkey will be running in the foreground.
