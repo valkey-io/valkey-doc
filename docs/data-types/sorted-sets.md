@@ -183,9 +183,6 @@ endian, when ordered lexicographically (in raw bytes order) are actually
 ordered numerically as well, you can ask for ranges in the 128 bit space,
 and get the element's value discarding the prefix.
 
-If you want to see the feature in the context of a more serious demo,
-check the [Valkey autocomplete demo](http://autocomplete.redis.io).
-
 Updating the score: leaderboards
 ---
 
