@@ -2,20 +2,20 @@
 title: Transactions
 linkTitle: Transactions
 weight: 30
-description: How transactions work in Redis
+description: How transactions work in Valkey
 aliases:
   - /topics/transactions
   - /docs/manual/transactions/
 ---
 
-Redis Transactions allow the execution of a group of commands
+Valkey Transactions allow the execution of a group of commands
 in a single step, they are centered around the commands 
 `MULTI`, `EXEC`, `DISCARD` and `WATCH`.
-Redis Transactions make two important guarantees:
+Valkey Transactions make two important guarantees:
 
 * All the commands in a transaction are serialized and executed
 sequentially. A request sent by another client will never be
-served **in the middle** of the execution of a Redis Transaction.
+served **in the middle** of the execution of a Valkey Transaction.
 This guarantees that the commands are executed as a single
 isolated operation.
 
@@ -25,25 +25,25 @@ if a client loses the connection to the server in the context of a
 transaction before calling the `EXEC` command none of the operations
 are performed, instead if the `EXEC` command is called, all the
 operations are performed. When using the
-[append-only file](/topics/persistence#append-only-file) Redis makes sure
+[append-only file](/topics/persistence#append-only-file) Valkey makes sure
 to use a single write(2) syscall to write the transaction on disk.
-However if the Redis server crashes or is killed by the system administrator
+However if the Valkey server crashes or is killed by the system administrator
 in some hard way it is possible that only a partial number of operations
-are registered. Redis will detect this condition at restart, and will exit with an error.
+are registered. Valkey will detect this condition at restart, and will exit with an error.
 Using the `redis-check-aof` tool it is possible to fix the
 append only file that will remove the partial transaction so that the
 server can start again.
 
-Starting with version 2.2, Redis allows for an extra guarantee to the
+Starting with version 2.2, Valkey allows for an extra guarantee to the
 above two, in the form of optimistic locking in a way very similar to a
 check-and-set (CAS) operation.
 This is documented [later](#cas) on this page.
 
 ## Usage
 
-A Redis Transaction is entered using the `MULTI` command. The command
+A Valkey Transaction is entered using the `MULTI` command. The command
 always replies with `OK`. At this point the user can issue multiple
-commands. Instead of executing these commands, Redis will queue
+commands. Instead of executing these commands, Valkey will queue
 them. All the commands are executed once `EXEC` is called.
 
 Calling `DISCARD` instead will flush the transaction queue and will exit
@@ -67,9 +67,9 @@ As is clear from the session above, `EXEC` returns an
 array of replies, where every element is the reply of a single command
 in the transaction, in the same order the commands were issued.
 
-When a Redis connection is in the context of a `MULTI` request,
+When a Valkey connection is in the context of a `MULTI` request,
 all commands will reply with the string `QUEUED` (sent as a Status Reply
-from the point of view of the Redis protocol). A queued command is
+from the point of view of the Valkey protocol). A queued command is
 simply scheduled for execution when `EXEC` is called.
 
 ## Errors inside a transaction
@@ -83,12 +83,12 @@ memory condition (if the server is configured to have a memory limit using the `
 * A command may fail *after* `EXEC` is called, for instance since we performed
 an operation against a key with the wrong value (like calling a list operation against a string value).
 
-Starting with Redis 2.6.5, the server will detect an error during the accumulation of commands.
+Starting with Redis OSS 2.6.5, the server will detect an error during the accumulation of commands.
 It will then refuse to execute the transaction returning an error during `EXEC`, discarding the transaction.
 
-> **Note for Redis < 2.6.5:** Prior to Redis 2.6.5 clients needed to detect errors occurring prior to `EXEC` by checking
+> **Note for Redis OSS < 2.6.5:** Prior to Redis OSS 2.6.5 clients needed to detect errors occurring prior to `EXEC` by checking
 the return value of the queued command: if the command replies with QUEUED it was
-queued correctly, otherwise Redis returns an error.
+queued correctly, otherwise Valkey returns an error.
 If there is an error while queueing a command, most clients
 will abort and discard the transaction. Otherwise, if the client elected to proceed with the transaction
 the `EXEC` command would execute all commands queued successfully regardless of previous errors.
@@ -120,7 +120,7 @@ the other an error reply. It's up to the client library to find a
 sensible way to provide the error to the user.
 
 It's important to note that
-**even when a command fails, all the other commands in the queue are processed** – Redis will _not_ stop the
+**even when a command fails, all the other commands in the queue are processed** – Valkey will _not_ stop the
 processing of commands.
 
 Another example, again using the wire protocol with `telnet`, shows how
@@ -138,8 +138,8 @@ at all.
 
 ## What about rollbacks?
 
-Redis does not support rollbacks of transactions since supporting rollbacks
-would have a significant impact on the simplicity and performance of Redis.
+Valkey does not support rollbacks of transactions since supporting rollbacks
+would have a significant impact on the simplicity and performance of Valkey.
 
 ## Discarding the command queue
 
@@ -163,7 +163,7 @@ OK
 
 ## Optimistic locking using check-and-set
 
-`WATCH` is used to provide a check-and-set (CAS) behavior to Redis
+`WATCH` is used to provide a check-and-set (CAS) behavior to Valkey
 transactions.
 
 `WATCH`ed keys are monitored in order to detect changes against them. If
@@ -172,7 +172,7 @@ whole transaction aborts, and `EXEC` returns a [Null reply](/topics/protocol#nil
 the transaction failed.
 
 For example, imagine we have the need to atomically increment the value
-of a key by 1 (let's suppose Redis doesn't have `INCR`).
+of a key by 1 (let's suppose Valkey doesn't have `INCR`).
 
 The first try may be the following:
 
@@ -212,15 +212,15 @@ so collisions are unlikely – usually there's no need to repeat the operation.
 ## WATCH explained
 
 So what is `WATCH` really about? It is a command that will
-make the `EXEC` conditional: we are asking Redis to perform
+make the `EXEC` conditional: we are asking Valkey to perform
 the transaction only if none of the `WATCH`ed keys were modified. This includes
-modifications made by the client, like write commands, and by Redis itself,
+modifications made by the client, like write commands, and by Valkey itself,
 like expiration or eviction. If keys were modified between when they were
 `WATCH`ed and when the `EXEC` was received, the entire transaction will be aborted
 instead.
 
 **NOTE**
-* In Redis versions before 6.0.9, an expired key would not cause a transaction
+* In Redis OSS versions before 6.0.9, an expired key would not cause a transaction
 to be aborted. [More on this](https://github.com/redis/redis/pull/7920)
 * Commands within a transaction won't trigger the `WATCH` condition since they
 are only queued until the `EXEC` is sent.
@@ -245,7 +245,7 @@ transactions.
 ### Using WATCH to implement ZPOP
 
 A good example to illustrate how `WATCH` can be used to create new
-atomic operations otherwise not supported by Redis is to implement ZPOP
+atomic operations otherwise not supported by Valkey is to implement ZPOP
 (`ZPOPMIN`, `ZPOPMAX` and their blocking variants have only been added
 in version 5.0), that is a command that pops the element with the lower
 score from a sorted set in an atomic way. This is the simplest
@@ -261,9 +261,9 @@ EXEC
 
 If `EXEC` fails (i.e. returns a [Null reply](/topics/protocol#nil-reply)) we just repeat the operation.
 
-## Redis scripting and transactions
+## Valkey scripting and transactions
 
 Something else to consider for transaction like operations in redis are
 [redis scripts](/commands/eval) which are transactional. Everything
-you can do with a Redis Transaction, you can also do with a script, and
+you can do with a Valkey Transaction, you can also do with a script, and
 usually the script will be both simpler and faster.
