@@ -93,8 +93,8 @@ If you have not yet run `make install` after building the Valkey source, you wil
 * Create a directory in which to store your Valkey config files and your data:
 
     ```
-    sudo mkdir /etc/redis
-    sudo mkdir /var/redis
+    sudo mkdir /etc/valkey
+    sudo mkdir /var/valkey
     ```
 
 * Copy the init script that you'll find in the Valkey distribution under the **utils** directory into `/etc/init.d`. We suggest calling it with the name of the port where you are running this instance of Valkey. Make sure the resulting file has `0755` permissions.
@@ -112,16 +112,16 @@ If you have not yet run `make install` after building the Valkey source, you wil
 Make sure to set the **REDISPORT** variable to the port you are using.
 Both the pid file path and the configuration file name depend on the port number.
 
-* Copy the template configuration file you'll find in the root directory of the Valkey distribution into `/etc/redis/` using the port number as the name, for instance:
+* Copy the template configuration file you'll find in the root directory of the Valkey distribution into `/etc/valkey/` using the port number as the name, for instance:
 
     ```
-    sudo cp valkey.conf /etc/redis/6379.conf
+    sudo cp valkey.conf /etc/valkey/6379.conf
     ```
 
-* Create a directory inside `/var/redis` that will work as both data and working directory for this Valkey instance:
+* Create a directory inside `/var/valkey` that will work as both data and working directory for this Valkey instance:
 
     ```
-    sudo mkdir /var/redis/6379
+    sudo mkdir /var/valkey/6379
     ```
 
 * Edit the configuration file, making sure to perform the following changes:
@@ -130,7 +130,7 @@ Both the pid file path and the configuration file name depend on the port number
     * Change the **port** accordingly. In our example it is not needed as the default port is already `6379`.
     * Set your preferred **loglevel**.
     * Set the **logfile** to `/var/log/redis_6379.log`.
-    * Set the **dir** to `/var/redis/6379` (very important step!).
+    * Set the **dir** to `/var/valkey/6379` (very important step!).
 * Finally, add the new Valkey init script to all the default runlevels using the following command:
 
     ```
@@ -146,7 +146,7 @@ sudo /etc/init.d/redis_6379 start
 Make sure that everything is working as expected:
 
 1. Try pinging your instance within a `valkey-cli` session using the `PING` command.
-2. Do a test save with `valkey-cli save` and check that a dump file is correctly saved to `/var/redis/6379/dump.rdb`.
+2. Do a test save with `valkey-cli save` and check that a dump file is correctly saved to `/var/valkey/6379/dump.rdb`.
 3. Check that your Valkey instance is logging to the `/var/log/redis_6379.log` file.
 4. If it's a new machine where you can try it without problems, make sure that after a reboot everything is still working.
 
