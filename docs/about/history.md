@@ -20,16 +20,13 @@ Early works of Salvatore Sanfilippo
 -----------------------------------
 
 At the time, Salvatore “antirez” was already known for inventing the [Idle
-scan][idle-scan-wp] port scanning technique (see also the [original email from
-1998][idle-scan-email] and the [nmap book][idle-scan-nmap]), the [Hping][hping]
-TCP/IP packet generator and analyzer, the [Jim] TCL interpreter and the
-[LLOOGG][lloogg] real-time log analyzer. He created an in-memory database to
-improve LLOOGG. The first version version was called [LLOOGG Memory DB][lmdb]
-and was written in TCL.
+scan][idle-scan] port scanning technique, the [Hping][hping] TCP/IP packet
+generator and analyzer, the [Jim] TCL interpreter and the [LLOOGG][lloogg]
+real-time log analyzer. To improve it, he created an in-memory database called
+called [LLOOGG Memory DB][lmdb], which was a proof-of-concept of what later
+became Redis and Valkey.
 
-[idle-scan-wp]: https://en.wikipedia.org/wiki/Idle_scan
-[idle-scan-email]: https://seclists.org/bugtraq/1998/Dec/79
-[idle-scan-nmap]: https://nmap.org/book/idlescan.html
+[idle-scan]: https://en.wikipedia.org/wiki/Idle_scan
 [hping]: https://en.wikipedia.org/wiki/Hping
 [jim]: https://jim.tcl-lang.org/index.html/doc/www/www/about/
 [lloogg]: https://github.com/antirez/lloogg/blob/master/README.md
@@ -39,15 +36,15 @@ Early contributions and sponsorships
 ------------------------------------
 
 During 2009, Engine Yard contributed blocking POP (BLPOP) and part of the
-Virtual Memory implementation, Hitmeister contributed part of the Cluster
-implementation and Citrusbyte contributed part of Virtual Memory implementation.
-In 2010, Slicehost (aquired by Rackspace) provided Virtual Machines for testing
-in a virtualized environment and Linode provided virtual machines for testing in
-a virtualized environment. Also thanks to the following people or organizations
-that donated to the Project: Emil Vladev, [Brad Jasper](https://bradjasper.com/)
-and [Mrkris](http://mrkris.com/). The [Shuttleworth
-Foundation](https://en.wikipedia.org/wiki/Shuttleworth_Foundation) donated 5000
-USD to the project in form of a flash grant.
+Virtual Memory implementation (later deleted), Hitmeister contributed part of
+the Cluster implementation and Citrusbyte contributed part of Virtual Memory
+implementation. In 2010, Slicehost (aquired by Rackspace) provided Virtual
+Machines for testing in a virtualized environment and Linode provided virtual
+machines for testing in a virtualized environment. Also thanks to the following
+people or organizations that donated to the Project: Emil Vladev, [Brad
+Jasper](https://bradjasper.com/) and [Mrkris](http://mrkris.com/). The
+[Shuttleworth Foundation](https://en.wikipedia.org/wiki/Shuttleworth_Foundation)
+donated 5000 USD to the project in form of a flash grant.
 
 Pieter Noordhuis and Matt Stancliff provided a significant amount of code and
 ideas to the core and client libraries.
@@ -108,7 +105,7 @@ In 2015, Salvatore left Pivotal for Redis Labs. He writes in his blog post
 
 In 2018, Redis Labs changed the license of some of its modules from AGPL to a
 source-available license. The license prevents competing cloud providers from
-offering these modules to customers and does therefore not fulfil the creteria
+offering these modules to customers and does therefore not fulfill the criteria
 for an open source license.
 
 This was interpreted by some as if Redis is no longer open source. Sanfilippo
@@ -124,11 +121,8 @@ will remain, open source, BSD license”.
 [will-remain-bsd]: https://redis.io/blog/redis-license-bsd-will-remain-bsd/
 [hn-always-bsd]: https://news.ycombinator.com/item?id=17819392
 
-Also in 2018, Redis Labs aquired the trademark rights to the name Redis and the
-logo from Sanfilippo.
-
 In 2020, Salvatore Sanfilippo announced in his blog post [The end of the Redis
-adventure](http://antirez.com/news/133) that he is stepped back as the Redis
+adventure](http://antirez.com/news/133) that he was stepping back as the Redis
 maintainer, handing over the maintenance to Yossi Gottlieb and Oran Agra at
 Redis Labs. The two created a “core team” to maintain the project and invited
 Itamar Haber from Redis Labs, Zhao Zhao from Alibaba and Madelyn Olson from
@@ -140,51 +134,55 @@ involvement and contributions”. This was described in the projects
 [governance-2020]: https://web.archive.org/web/20200709170526/https://redis.io/topics/governance
 [valkey-governance]: https://github.com/valkey-io/valkey/blob/unstable/GOVERNANCE.md
 
-In 2021, the Redis Labs changed its name to Redis.
+In 2021, the Redis Labs changed its name to Redis Ltd. or just Redis. In this
+article, we're using the name Redis Ltd. when referring to the company to avoid
+confusion. By this time, Redis Ltd. had acquired the trademark rights to the
+name Redis and the logo from Sanfilippo.
 
 The end of open source Redis
 ----------------------------
 
-Despite the seemingly community-based core team, Redis (the company) maintained
-a majority in the core team as well as ownership of the Redis trademark. In
-2024, the company changed the license of Redis from the open source BSD license
-to dual source-available licenses. This was announced in a blog post [Redis
-Adopts Dual Source-Available Licensing][redis-source-avail] and the license
-change was [commited to the repository][change-license-pr] the same day.
+In 2024, Redis Ltd. changed the license of Redis from the open source BSD
+license to dual source-available licenses. This was announced in a blog post
+[Redis Adopts Dual Source-Available Licensing][redis-source-avail] and the
+license change was [commited to the repository][change-license-pr] the same day.
 
 [redis-source-avail]: https://redis.io/blog/redis-adopts-dual-source-available-licensing/
 [change-license-pr]: https://github.com/redis/redis/pull/13157
 
-Neither of the licenses Redis Source Available License (RSALv2) nor the Server
-Side Public License (SSPLv1) are open source licenses, as neither meet the
+Neither of the licenses, Redis Source Available License (RSALv2) nor the Server
+Side Public License (SSPLv1), are open source licenses, as neither meet the
 criteria of an open source license.
 
 RSALv2 forbids the use of the software in database products, to prevent their
 competitors from providing database products and services. Such a restriction is
-not in line with The Open Source Definition, criterion #6 “The license must not
-restrict anyone from making use of the program in a specific field of endeavor”
-by the Open Source Initiative, nor “the freedom to run the program as you wish,
-for any purpose (freedom 0)” in the Free Software Foundation's definition of
-Free Software. The SSPL has similar restrictions, explained in the [SSPL article
-on Wikipedia][sspl].
+not in line with [The Open Source Definition][osd], criterion #6 “The license
+must not restrict anyone from making use of the program in a specific field of
+endeavor” by the Open Source Initiative, nor “the freedom to run the program as
+you wish, for any purpose (freedom 0)” in the Free Software Foundation's
+definition of Free Software. The SSPL has similar restrictions, explained in the
+[SSPL article on Wikipedia][sspl].
 
+[osd]: https://opensource.org/osd
 [sspl]: https://en.wikipedia.org/wiki/Server_Side_Public_License
 
 The birth of Valkey
 -------------------
 
-The many contributors, not least from companies providing hosted Redis-derived
-or Redis-compatible databases services as a service, just like Redis (the
-company) does, and which have been using and contributing to Redis (the open
-source software) just as long as Redis (the company) has existed, it was an easy
-decision by many contributors to continue the open source development as usual
-under the BSD license.
+Many contributors, including companies providing hosted Redis-derived or
+Redis-compatible database services, just like Redis Ltd. does, have been using
+and contributing to Redis just as long as Redis Ltd. has existed. It was
+therefore and easy decision for many of them to continue the open source
+development as usual under the BSD license.
 
-As Redis (the company) owns the trademark rights to the name Redis, the open
-source project needed to continue under a different name. A group of six active
+As Redis Ltd. owns the trademark rights to the name Redis, the open source
+project needed to continue under a different name. A group of six active
 contributors (one from each of Alibaba, Amazon, Ericsson, Google, Huawei and
-Tencent) with the support from several other companies launced Valkey as a Linux
-Foundation project. It was announced in a [press release][lf-launch] only eight
-days after Redis' license change.
+Tencent) with the support from several other companies launched Valkey as a
+Linux Foundation project. It was announced in a [press release][lf-press-1] only
+eight days after Redis' license change. Three weeks later, a [second press
+release][lf-press-2] announced seven more comanies joining and the first
+release, Valkey 7.2.5.
 
-[lf-launch]: https://www.linuxfoundation.org/press/linux-foundation-launches-open-source-valkey-community
+[lf-press-1]: https://www.linuxfoundation.org/press/linux-foundation-launches-open-source-valkey-community
+[lf-press-2]: https://www.linuxfoundation.org/press/valkey-community-announces-release-candidate-amid-growing-support-for-open-source-data-store
