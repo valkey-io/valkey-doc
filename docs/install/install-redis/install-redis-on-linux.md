@@ -1,18 +1,18 @@
 ---
-title: "Install Redis on Linux"
+title: "Install Valkey on Linux"
 linkTitle: "Linux"
 weight: 1
 description: >
-    How to install Redis on Linux
+    How to install Valkey on Linux
 aliases:
 - /docs/getting-started/installation/install-redis-on-linux
 ---
 
-Most major Linux distributions provide packages for Redis.
+Most major Linux distributions provide packages for Valkey.
 
 ## Install on Ubuntu/Debian
 
-You can install recent stable versions of Redis from the official `packages.redis.io` APT repository.
+You can install recent stable versions of Valkey from the official `packages.redis.io` APT repository.
 
 {{% alert title="Prerequisites" color="warning" %}}
 If you're running a very minimal distribution (such as a Docker container) you may need to install `lsb-release`, `curl` and `gpg` first:
@@ -35,7 +35,7 @@ sudo apt-get install redis
 
 ## Install from Snapcraft
 
-The [Snapcraft store](https://snapcraft.io/store) provides [Redis packages](https://snapcraft.io/redis) that can be installed on platforms that support snap.
+The [Snapcraft store](https://snapcraft.io/store) provides [Valkey packages](https://snapcraft.io/redis) that can be installed on platforms that support snap.
 Snap is supported and available on most major Linux distributions.
 
 To install via snap, run:
