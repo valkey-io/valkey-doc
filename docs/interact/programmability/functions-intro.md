@@ -220,7 +220,7 @@ local function my_hset(keys, args)
 end
 
 local function my_hgetall(keys, args)
-  redis.setresp(3)
+  server.setresp(3)
   local hash = keys[1]
   local res = server.call('HGETALL', hash)
   res['map']['_last_modified_'] = nil
@@ -237,7 +237,7 @@ server.register_function('my_hgetall', my_hgetall)
 server.register_function('my_hlastmodified', my_hlastmodified)
 ```
 
-While all of the above should be straightforward, note that the `my_hgetall` also calls [`redis.setresp(3)`](/topics/lua-api#redis.setresp).
+While all of the above should be straightforward, note that the `my_hgetall` also calls [`server.setresp(3)`](/topics/lua-api#server.setresp).
 That means that the function expects [RESP3](https://github.com/redis/redis-specifications/blob/master/protocol/RESP3.md) replies after calling `server.call()`, which, unlike the default RESP2 protocol, provides dictionary (associative arrays) replies.
 Doing so allows the function to delete (or set to `nil` as is the case with Lua tables) specific fields from the reply, and in our case, the `_last_modified_` field.
 
@@ -295,7 +295,7 @@ You can see that it is easy to update our library with new capabilities.
 On top of bundling functions together into database-managed software artifacts, libraries also facilitate code sharing.
 We can add to our library an error handling helper function called from other functions.
 The helper function `check_keys()` verifies that the input _keys_ table has a single key.
-Upon success it returns `nil`, otherwise it returns an [error reply](/topics/lua-api#redis.error_reply).
+Upon success it returns `nil`, otherwise it returns an [error reply](/topics/lua-api#server.error_reply).
 
 The updated library's source code would be:
 
@@ -312,8 +312,8 @@ local function check_keys(keys)
   end
 
   if error ~= nil then
-    redis.log(redis.LOG_WARNING, error);
-    return redis.error_reply(error)
+    server.log(redis.LOG_WARNING, error);
+    return server.error_reply(error)
   end
   return nil
 end
@@ -335,7 +335,7 @@ local function my_hgetall(keys, args)
     return error
   end
 
-  redis.setresp(3)
+  server.setresp(3)
   local hash = keys[1]
   local res = server.call('HGETALL', hash)
   res['map']['_last_modified_'] = nil

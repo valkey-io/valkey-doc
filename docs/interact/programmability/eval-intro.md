@@ -247,7 +247,7 @@ There are two conceptual approaches when it comes to script replication:
    While potentially lengthier in terms of network traffic, this replication mode is deterministic by definition and therefore doesn't require special consideration.
 
 Verbatim script replication was the only mode supported until Redis OSS 3.2, in which effects replication was added.
-The _lua-replicate-commands_ configuration directive and [`redis.replicate_commands()`](/topics/lua-api#redis.replicate_commands) Lua API can be used to enable it.
+The _lua-replicate-commands_ configuration directive and [`server.replicate_commands()`](/topics/lua-api#server.replicate_commands) Lua API can be used to enable it.
 
 In Redis OSS 5.0, effects replication became the default mode.
 As of Redis OSS 7.0, verbatim replication is no longer supported.
@@ -275,10 +275,10 @@ This is useful in several ways depending on the use case:
 Unless already enabled by the server's configuration or defaults (before Redis OSS 7.0), you need to issue the following Lua command before the script performs a write:
 
 ```lua
-redis.replicate_commands()
+server.replicate_commands()
 ```
 
-The [`redis.replicate_commands()`](/topics/lua-api#redis.replicate_commands) function returns _true) if script effects replication was enabled;
+The [`server.replicate_commands()`](/topics/lua-api#server.replicate_commands) function returns _true) if script effects replication was enabled;
 otherwise, if the function was called after the script already called a write command,
 it returns _false_, and normal whole script replication is used.
 

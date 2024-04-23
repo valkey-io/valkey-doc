@@ -155,7 +155,7 @@ This function enables handling runtime errors raised by the Valkey server.
 The `server.pcall()` function  behaves exactly like [`server.call()`](#server.call), except that it:
 
 * Always returns a reply.
-* Never throws a runtime exception, and returns in its stead a [`redis.error_reply`](#redis.error_reply) in case that a runtime exception is thrown by the server.
+* Never throws a runtime exception, and returns in its stead a [`server.error_reply`](#server.error_reply) in case that a runtime exception is thrown by the server.
 
 The following demonstrates how to use `server.pcall()` to intercept and handle runtime exceptions from within the context of an ephemeral script.
 
@@ -163,7 +163,7 @@ The following demonstrates how to use `server.pcall()` to intercept and handle r
 local reply = server.pcall('ECHO', unpack(ARGV))
 if reply['err'] ~= nil then
   -- Handle the error sometime, but for now just log it
-  redis.log(redis.LOG_WARNING, reply['err'])
+  server.log(redis.LOG_WARNING, reply['err'])
   reply['err'] = 'ERR Something is wrong, but no worries, everything is under control'
 end
 return reply
@@ -176,7 +176,7 @@ redis> EVAL "..." 0 hello world
 (error) ERR Something is wrong, but no worries, everything is under control
 ```
 
-### <a name="redis.error_reply"></a> `redis.error_reply(x)`
+### <a name="server.error_reply"></a> `server.error_reply(x)`
 
 * Since version: 2.6.0
 * Available in scripts: yes
@@ -190,7 +190,7 @@ The outcome of the following code is that _error1_ and _error2_ are identical fo
 ```lua
 local text = 'ERR My very special error'
 local reply1 = { err = text }
-local reply2 = redis.error_reply(text)
+local reply2 = server.error_reply(text)
 ```
 
 Therefore, both forms are valid as means for returning an error reply from scripts:
@@ -198,18 +198,18 @@ Therefore, both forms are valid as means for returning an error reply from scrip
 ```
 redis> EVAL "return { err = 'ERR My very special table error' }" 0
 (error) ERR My very special table error
-redis> EVAL "return redis.error_reply('ERR My very special reply error')" 0
+redis> EVAL "return server.error_reply('ERR My very special reply error')" 0
 (error) ERR My very special reply error
 ```
 
-For returning Valkey status replies refer to [`redis.status_reply()`](#redis.status_reply).
+For returning Valkey status replies refer to [`server.status_reply()`](#server.status_reply).
 Refer to the [Data type conversion](#data-type-conversion) for returning other response types.
 
 **Note:**
 By convention, Valkey uses the first word of an error string as a unique error code for specific errors or `ERR` for general-purpose errors.
 Scripts are advised to follow this convention, as shown in the example above, but this is not mandatory.
 
-### <a name="redis.status_reply"></a> `redis.status_reply(x)`
+### <a name="server.status_reply"></a> `server.status_reply(x)`
 
 * Since version: 2.6.0
 * Available in scripts: yes
@@ -224,7 +224,7 @@ The outcome of the following code is that _status1_ and _status2_ are identical 
 ```lua
 local text = 'Frosty'
 local status1 = { ok = text }
-local status2 = redis.status_reply(text)
+local status2 = server.status_reply(text)
 ```
 
 Therefore, both forms are valid as means for returning status replies from scripts:
@@ -232,14 +232,14 @@ Therefore, both forms are valid as means for returning status replies from scrip
 ```
 redis> EVAL "return { ok = 'TICK' }" 0
 TICK
-redis> EVAL "return redis.status_reply('TOCK')" 0
+redis> EVAL "return server.status_reply('TOCK')" 0
 TOCK
 ```
 
-For returning Valkey error replies refer to [`redis.error_reply()`](#redis.error_reply).
+For returning Valkey error replies refer to [`server.error_reply()`](#server.error_reply).
 Refer to the [Data type conversion](#data-type-conversion) for returning other response types.
 
-### <a name="redis.sha1hex"></a> `redis.sha1hex(x)`
+### <a name="server.sha1hex"></a> `server.sha1hex(x)`
 
 * Since version: 2.6.0
 * Available in scripts: yes
@@ -250,11 +250,11 @@ This function returns the SHA1 hexadecimal digest of its single string argument.
 You can, for example, obtain the empty string's SHA1 digest:
 
 ```
-redis> EVAL "return redis.sha1hex('')" 0
+redis> EVAL "return server.sha1hex('')" 0
 "da39a3ee5e6b4b0d3255bfef95601890afd80709"
 ```
 
-### <a name="redis.log"></a> `redis.log(level, message)`
+### <a name="server.log"></a> `server.log(level, message)`
 
 * Since version: 2.6.0
 * Available in scripts: yes
@@ -277,7 +277,7 @@ The log only records messages equal or greater in level than the server's `logle
 The following snippet:
 
 ```lua
-redis.log(redis.LOG_WARNING, 'Something is terribly wrong')
+server.log(redis.LOG_WARNING, 'Something is terribly wrong')
 ```
 
 will produce a line similar to the following in your server's log:
@@ -286,7 +286,7 @@ will produce a line similar to the following in your server's log:
 [32343] 22 Mar 15:21:39 # Something is terribly wrong
 ```
 
-### <a name="redis.setresp"></a> `redis.setresp(x)`
+### <a name="server.setresp"></a> `server.setresp(x)`
 
 * Since version: 6.0.0
 * Available in scripts: yes
@@ -299,7 +299,7 @@ The default protocol version is _2_, but it can be switched to version _3_.
 Here's an example of switching to RESP3 replies:
 
 ```lua
-redis.setresp(3)
+server.setresp(3)
 ```
 
 Please refer to the [Data type conversion](#data-type-conversion) for more information about type conversions.
@@ -349,7 +349,7 @@ You can call the `server.set_repl()` function at any time during the script's ex
 A simple example follows:
 
 ```lua
-redis.replicate_commands() -- Enable effects replication in versions lower than Redis OSS v7.0
+server.replicate_commands() -- Enable effects replication in versions lower than Redis OSS v7.0
 server.call('SET', KEYS[1], ARGV[1])
 server.set_repl(redis.REPL_NONE)
 server.call('SET', KEYS[2], ARGV[2])
@@ -359,7 +359,7 @@ server.call('SET', KEYS[3], ARGV[3])
 
 If you run this script by calling `EVAL "..." 3 A B C 1 2 3`, the result will be that only the keys _A_ and _C_ are created on the replicas and AOF.
 
-### <a name="redis.replicate_commands"></a> `redis.replicate_commands()`
+### <a name="server.replicate_commands"></a> `server.replicate_commands()`
 
 * Since version: 3.2.0
 * Until version: 7.0.0
@@ -374,7 +374,7 @@ as of Redis OSS v7.0, verbatim script replication is no longer supported.
 The default, and only script replication mode supported, is script effects' replication.
 For more information, please refer to [`Replicating commands instead of scripts`](/topics/eval-intro#replicating-commands-instead-of-scripts)
 
-### <a name="redis.breakpoint"></a>  `redis.breakpoint()`
+### <a name="server.breakpoint"></a>  `server.breakpoint()`
 
 * Since version: 3.2.0
 * Available in scripts: yes
@@ -382,7 +382,7 @@ For more information, please refer to [`Replicating commands instead of scripts`
 
 This function triggers a breakpoint when using the [Valkey Lua debugger](/topics/ldb).
 
-### <a name="redis.debug"></a> `redis.debug(x)`
+### <a name="server.debug"></a> `server.debug(x)`
 
 * Since version: 3.2.0
 * Available in scripts: yes
@@ -390,7 +390,7 @@ This function triggers a breakpoint when using the [Valkey Lua debugger](/topics
 
 This function prints its argument in the [Valkey Lua debugger](/topics/ldb) console.
 
-### <a name="redis.acl_check_cmd"></a> `redis.acl_check_cmd(command [,arg...])`
+### <a name="server.acl_check_cmd"></a> `server.acl_check_cmd(command [,arg...])`
 
 * Since version: 7.0.0
 * Available in scripts: yes
@@ -541,7 +541,7 @@ The underlying design is such that if a Valkey type is converted into a Lua type
 
 Type conversion from Valkey protocol replies (i.e., the replies from `server.call()` and `server.pcall()`) to Lua data types depends on the Valkey Serialization Protocol version used by the script.
 The default protocol version during script executions is RESP2.
-The script may switch the replies' protocol versions by calling the `redis.setresp()` function.
+The script may switch the replies' protocol versions by calling the `server.setresp()` function.
 
 Type conversion from a script's returned Lua data type depends on the user's choice of protocol (see the `HELLO` command).
 
@@ -549,7 +549,7 @@ The following sections describe the type conversion rules between Lua and Valkey
 
 ### RESP2 to Lua type conversion
 
-The following type conversion rules apply to the execution's context by default as well as after calling `redis.setresp(2)`:
+The following type conversion rules apply to the execution's context by default as well as after calling `server.setresp(2)`:
 
 * [RESP2 integer reply](/topics/protocol#resp-integers) -> Lua number
 * [RESP2 bulk string reply](/topics/protocol#resp-bulk-strings) -> Lua string
@@ -620,7 +620,7 @@ As you can see, the float value of _3.333_ gets converted to an integer _3_, the
 [RESP3](https://github.com/redis/redis-specifications/blob/master/protocol/RESP3.md) is a newer version of the [Valkey Serialization Protocol](/topics/protocol).
 It is available as an opt-in choice as of Redis OSS v6.0.
 
-An executing script may call the [`redis.setresp`](#redis.setresp) function during its execution and switch the protocol version that's used for returning replies from Valkey' commands (that can be invoked via [`server.call()`](#server.call) or [`server.pcall()`](#server.pcall)).
+An executing script may call the [`server.setresp`](#server.setresp) function during its execution and switch the protocol version that's used for returning replies from Valkey' commands (that can be invoked via [`server.call()`](#server.call) or [`server.pcall()`](#server.pcall)).
 
 Once Valkey' replies are in RESP3 protocol, all of the [RESP2 to Lua conversion](#resp2-to-lua-type-conversion) rules apply, with the following additions:
 
@@ -639,7 +639,7 @@ Also, presently, RESP3's [attributes](https://github.com/redis/redis-specificati
 
 ### Lua to RESP3 type conversion
 
-Regardless of the script's choice of protocol version set for replies with the [`redis.setresp()` function] when it calls `server.call()` or `server.pcall()`, the user may opt-in to using RESP3 (with the `HELLO 3` command) for the connection.
+Regardless of the script's choice of protocol version set for replies with the [`server.setresp()` function] when it calls `server.call()` or `server.pcall()`, the user may opt-in to using RESP3 (with the `HELLO 3` command) for the connection.
 Although the default protocol for incoming client connections is RESP2, the script should honor the user's preference and return adequately-typed RESP3 replies, so the following rules apply on top of those specified in the [Lua to RESP2 type conversion](#lua-to-resp2-type-conversion) section when that is the case.
 
 * Lua Boolean -> [RESP3 Boolean reply](https://github.com/redis/redis-specifications/blob/master/protocol/RESP3.md#boolean-reply) (note that this is a change compared to the RESP2, in which returning a Boolean Lua `true` returned the number 1 to the Valkey client, and returning a `false` used to return a `null`.

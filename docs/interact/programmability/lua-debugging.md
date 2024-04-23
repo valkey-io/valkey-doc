@@ -95,8 +95,8 @@ Valkey Lua debugger help:
                      mode dataset changes will be retained.
 
 Debugger functions you can call from Lua scripts:
-redis.debug()        Produce logs in the debugger console.
-redis.breakpoint()   Stop execution as if there was a breakpoint in the
+server.debug()        Produce logs in the debugger console.
+server.breakpoint()   Stop execution as if there was a breakpoint in the
                      next line of code.
 ```
 
@@ -158,11 +158,11 @@ The breakpoint will be added but since this part of the script will never be exe
 Using the `breakpoint` command it is possible to add breakpoints into specific
 lines. However sometimes we want to stop the execution of the program only
 when something special happens. In order to do so, you can use the
-`redis.breakpoint()` function inside your Lua script. When called it simulates
+`server.breakpoint()` function inside your Lua script. When called it simulates
 a breakpoint in the next line that will be executed.
 
 ```
-if counter > 10 then redis.breakpoint() end
+if counter > 10 then server.breakpoint() end
 ```
 This feature is extremely useful when debugging, so that we can avoid
 continuing the script execution manually multiple times until a given condition
@@ -193,7 +193,7 @@ Instead with `abort` you can interrupt the script execution in the middle and st
 
 ## Logging from scripts
 
-The `redis.debug()` command is a powerful debugging facility that can be
+The `server.debug()` command is a powerful debugging facility that can be
 called inside the Valkey Lua script in order to log things into the debug
 console:
 
@@ -201,12 +201,12 @@ console:
 lua debugger> list
 -> 1   local a = {1,2,3}
    2   local b = false
-   3   redis.debug(a,b)
+   3   server.debug(a,b)
 lua debugger> continue
 <debug> line 3: {1; 2; 3}, false
 ```
 
-If the script is executed outside of a debugging session, `redis.debug()` has no effects at all.
+If the script is executed outside of a debugging session, `server.debug()` has no effects at all.
 Note that the function accepts multiple arguments, that are separated by a comma and a space in the output.
 
 Tables and nested tables are displayed correctly in order to make values simple to observe for the programmer debugging the script.
@@ -214,7 +214,7 @@ Tables and nested tables are displayed correctly in order to make values simple 
 ## Inspecting the program state with `print` and `eval`
 
 
-While the `redis.debug()` function can be used in order to print values
+While the `server.debug()` function can be used in order to print values
 directly from within the Lua script, often it is useful to observe the local
 variables of a program while stepping or when stopped into a breakpoint.
 
@@ -229,7 +229,7 @@ The `eval` command executes small pieces of Lua scripts **outside the context of
 However you can use this command in order to test Lua functions.
 
 ```
-lua debugger> e redis.sha1hex('foo')
+lua debugger> e server.sha1hex('foo')
 <retval> "0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33"
 ```
 
