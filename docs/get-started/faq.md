@@ -140,14 +140,6 @@ If you use keys with limited time to live (Valkey expires) this is normal behavi
 
 Because of this, it's common for users with many expired keys to see fewer keys in the replicas. However, logically, the primary and replica will have the same content.
 
-## Where does the name "Valkey" come from?
+## Why did Linux Foundation start the Valkey project?
 
-Valkey is an acronym that stands for **RE**mote **DI**ctionary **S**erver.
-
-## Why did Salvatore Sanfilippo start the Valkey project?
-
-Salvatore originally created Valkey to scale [LLOOGG](https://github.com/antirez/lloogg), a real-time log analysis tool. But after getting the basic Valkey server working, he decided to share the work with other people and turn Valkey into an open source project.
-
-## How is Valkey pronounced?
-
-"Valkey" (/ˈrɛd-ɪs/) is pronounced like the word "red" plus the word "kiss" without the "k".
+Read about [the history of Valkey](/topics/history).
