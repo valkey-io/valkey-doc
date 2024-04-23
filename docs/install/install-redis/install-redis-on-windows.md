@@ -17,30 +17,6 @@ Microsoft provides [detailed instructions for installing WSL](https://docs.micro
 
 ## Install Valkey
 
-Once you're running Ubuntu on Windows, you can follow the steps detailed at [Install on Ubuntu/Debian](/docs/install/install-redis/install-redis-on-linux#install-on-ubuntu-debian) to install recent stable versions of Valkey from the official `packages.redis.io` APT repository.
-Add the repository to the <code>apt</code> index, update it, and then install:
+You can build Valkey from source or use a docker container.
 
-{{< highlight bash  >}}
-curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
-
-echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list
-
-sudo apt-get update
-sudo apt-get install redis
-{{< / highlight  >}}
-
-Lastly, start the Valkey server like so:
-
-{{< highlight bash  >}}
-sudo service valkey-server start
-{{< / highlight  >}}
-
-## Connect to Valkey
-
-You can test that your Valkey server is running by connecting with the Valkey CLI:
-
-{{< highlight bash  >}}
-valkey-cli 
-127.0.0.1:6379> ping
-PONG
-{{< / highlight >}}
+This section needs to be improved. Thanks for your patience.

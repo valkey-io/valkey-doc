@@ -24,7 +24,7 @@ If this command fails, you'll need to [follow the Homebrew installation instruct
 From the terminal, run:
 
 {{< highlight bash  >}}
-brew install redis
+brew install valkey
 {{< / highlight >}}
 
 This will install Valkey on your system.
@@ -46,19 +46,19 @@ To stop Valkey, enter `Ctrl-C`.
 As an alternative to running Valkey in the foreground, you can also use `launchd` to start the process in the background:
 
 {{< highlight bash  >}}
-brew services start redis
+brew services start valkey
 {{< / highlight >}}
 
 This launches Valkey and restarts it at login. You can check the status of a `launchd` managed Valkey by running the following:
 
 {{< highlight bash  >}}
-brew services info redis
+brew services info valkey
 {{< / highlight >}}
 
 If the service is running, you'll see output like the following:
 
 {{< highlight bash  >}}
-redis (homebrew.mxcl.redis)
+valkey (homebrew.mxcl.valkey)
 Running: ✔
 Loaded: ✔
 User: miranda
@@ -68,7 +68,7 @@ PID: 67975
 To stop the service, run:
 
 {{< highlight bash  >}}
-brew services stop redis
+brew services stop valkey
 {{< / highlight >}}
 
 ## Connect to Valkey
@@ -82,10 +82,10 @@ valkey-cli
 This will open the Valkey REPL. Try running some commands:
 
 {{< highlight bash >}}
-127.0.0.1:6379> lpush demos redis-macOS-demo
+127.0.0.1:6379> lpush demos valkey-macOS-demo
 OK
 127.0.0.1:6379> rpop demos
-"redis-macOS-demo"
+"valkey-macOS-demo"
 {{< / highlight >}}
 
 ## Next steps
