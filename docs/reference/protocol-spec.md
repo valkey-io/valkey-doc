@@ -32,8 +32,8 @@ The protocol outlined here is used only for client-server communication.
 {{% /alert %}}
 
 ## RESP versions
-Support for the first version of the RESP protocol was introduced in Valkey 1.2.
-Using RESP with Valkey 1.2 was optional and had mainly served the purpose of working the kinks out of the protocol.
+Support for the first version of the RESP protocol was introduced in Redis OSS 1.2.
+Using RESP with Redis OSS 1.2 was optional and had mainly served the purpose of working the kinks out of the protocol.
 
 In Redis OSS 2.0, the protocol's next version, a.k.a RESP2, became the standard communication method for clients with the Valkey server.
 
