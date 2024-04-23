@@ -4,12 +4,12 @@ linkTitle: "Quick starts"
 hideListLinks: true
 weight: 20
 description: >
-    Redis quick start guides
+    Valkey quick start guides
 aliases:
   - /docs/getting-started/
 ---
 
-Redis can be used as a database, cache, streaming engine, message broker, and more. The following quick start guides will show you how to use Redis for the following specific purposes:
+Valkey can be used as a database, cache, streaming engine, message broker, and more. The following quick start guides will show you how to use Valkey for the following specific purposes:
 
 1. [Data structure store](/docs/get-started/data-store)
 
