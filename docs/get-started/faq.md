@@ -37,7 +37,7 @@ have a lot of memory in 64-bit systems, so in order to run large Valkey servers 
 
 ## Why does Valkey keep its entire dataset in memory?
 
-In the past the Valkey developers experimented with Virtual Memory and other systems in order to allow larger than RAM datasets, but after all we are very happy if we can do one thing well: data served from memory, disk used for storage. So for now there are no plans to create an on disk backend for Valkey. Most of what
+In the past, developers experimented with Virtual Memory and other systems in order to allow larger than RAM datasets, but after all we are very happy if we can do one thing well: data served from memory, disk used for storage. So for now there are no plans to create an on disk backend for Valkey. Most of what
 Valkey is, after all, a direct result of its current design.
 
 If your real problem is not the total RAM needed, but the fact that you need
