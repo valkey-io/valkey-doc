@@ -1,9 +1,9 @@
 ﻿---
-title: "Redis geospatial"
+title: "Valkey geospatial"
 linkTitle: "Geospatial"
 weight: 80
 description: >
-    Introduction to the Redis Geospatial data type
+    Introduction to the Valkey Geospatial data type
 ---
 
 Geospatial indexes let you store coordinates and search for them.

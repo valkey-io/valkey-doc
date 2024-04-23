@@ -18,8 +18,8 @@ Examples of Stream use cases include:
 * Sensor monitoring (e.g., readings from devices in the field) 
 * Notifications (e.g., storing a record of each user's notifications in a separate stream)
 
-Redis generates a unique ID for each stream entry.
-You can use these IDs to retrieve their associated entries later or to read and process all subsequent entries in the stream. Note that because these IDs are related to time, the ones shown here may vary and will be different from the IDs you see in your own Redis instance.
+Valkey generates a unique ID for each stream entry.
+You can use these IDs to retrieve their associated entries later or to read and process all subsequent entries in the stream. Note that because these IDs are related to time, the ones shown here may vary and will be different from the IDs you see in your own Valkey instance.
 
 Streams support several trimming strategies (to prevent streams from growing unbounded) and more than one consumption strategy (see `XREAD`, `XREADGROUP`, and `XRANGE`).
 
@@ -112,7 +112,7 @@ The entry ID returned by the `XADD` command, and identifying univocally each ent
 <millisecondsTime>-<sequenceNumber>
 ```
 
-The milliseconds time part is actually the local time in the local Redis node generating the stream ID, however if the current milliseconds time happens to be smaller than the previous entry time, then the previous entry time is used instead, so if a clock jumps backward the monotonically incrementing ID property still holds. The sequence number is used for entries created in the same millisecond. Since the sequence number is 64 bit wide, in practical terms there is no limit to the number of entries that can be generated within the same millisecond.
+The milliseconds time part is actually the local time in the local Valkey node generating the stream ID, however if the current milliseconds time happens to be smaller than the previous entry time, then the previous entry time is used instead, so if a clock jumps backward the monotonically incrementing ID property still holds. The sequence number is used for entries created in the same millisecond. Since the sequence number is 64 bit wide, in practical terms there is no limit to the number of entries that can be generated within the same millisecond.
 
 The format of such IDs may look strange at first, and the gentle reader may wonder why the time is part of the ID. The reason is that Streams support range queries by ID. Because the ID is related to the time the entry is generated, this gives the ability to query for time ranges basically for free. We will see this soon while covering the `XRANGE` command.
 
@@ -132,7 +132,7 @@ Note that in this case, the minimum ID is 0-1 and that the command will not acce
 (error) ERR The ID specified in XADD is equal or smaller than the target stream top item
 {{< /clients-example >}}
 
-If you're running Redis 7 or later, you can also provide an explicit ID consisting of the milliseconds part only. In this case, the sequence portion of the ID will be automatically generated. To do this, use the syntax below:
+If you're running Redis OSS 7 or later, you can also provide an explicit ID consisting of the milliseconds part only. In this case, the sequence portion of the ID will be automatically generated. To do this, use the syntax below:
 
 {{< clients-example stream_tutorial xadd_7 >}}
 > XADD race:usa 0-* racer Prickett
@@ -141,7 +141,7 @@ If you're running Redis 7 or later, you can also provide an explicit ID consisti
 
 ## Getting data from Streams
 
-Now we are finally able to append entries in our stream via `XADD`. However, while appending data to a stream is quite obvious, the way streams can be queried in order to extract data is not so obvious. If we continue with the analogy of the log file, one obvious way is to mimic what we normally do with the Unix command `tail -f`, that is, we may start to listen in order to get the new messages that are appended to the stream. Note that unlike the blocking list operations of Redis, where a given element will reach a single client which is blocking in a *pop style* operation like `BLPOP`, with streams we want multiple consumers to see the new messages appended to the stream (the same way many `tail -f` processes can see what is added to a log). Using the traditional terminology we want the streams to be able to *fan out* messages to multiple clients.
+Now we are finally able to append entries in our stream via `XADD`. However, while appending data to a stream is quite obvious, the way streams can be queried in order to extract data is not so obvious. If we continue with the analogy of the log file, one obvious way is to mimic what we normally do with the Unix command `tail -f`, that is, we may start to listen in order to get the new messages that are appended to the stream. Note that unlike the blocking list operations of Valkey, where a given element will reach a single client which is blocking in a *pop style* operation like `BLPOP`, with streams we want multiple consumers to see the new messages appended to the stream (the same way many `tail -f` processes can see what is added to a log). Using the traditional terminology we want the streams to be able to *fan out* messages to multiple clients.
 
 However, this is just one potential access mode. We could also see a stream in quite a different way: not as a messaging system, but as a *time series store*. In this case, maybe it's also useful to get the new messages appended, but another natural query mode is to get messages by ranges of time, or alternatively to iterate the messages using a cursor to incrementally check all the history. This is definitely another useful access mode.
 
@@ -284,7 +284,7 @@ Note that the `XREVRANGE` command takes the *start* and *stop* arguments in reve
 
 ## Listening for new items with XREAD
 
-When we do not want to access items by a range in a stream, usually what we want instead is to *subscribe* to new items arriving to the stream. This concept may appear related to Redis Pub/Sub, where you subscribe to a channel, or to Redis blocking lists, where you wait for a key to get new elements to fetch, but there are fundamental differences in the way you consume a stream:
+When we do not want to access items by a range in a stream, usually what we want instead is to *subscribe* to new items arriving to the stream. This concept may appear related to Valkey Pub/Sub, where you subscribe to a channel, or to Valkey blocking lists, where you wait for a key to get new elements to fetch, but there are fundamental differences in the way you consume a stream:
 
 1. A stream can have multiple clients (consumers) waiting for data. Every new item, by default, will be delivered to *every consumer* that is waiting for data in a given stream. This behavior is different than blocking lists, where each consumer will get a different element. However, the ability to *fan out* to multiple consumers is similar to Pub/Sub.
 2. While in Pub/Sub messages are *fire and forget* and are never stored anyway, and while when using blocking lists, when a message is received by the client it is *popped* (effectively removed) from the list, streams work in a fundamentally different way. All the messages are appended in the stream indefinitely (unless the user explicitly asks to delete entries): different consumers will know what is a new message from its point of view by remembering the ID of the last message received.
@@ -352,14 +352,14 @@ In practical terms, if we imagine having three consumers C1, C2, C3, and a strea
 7 -> C1
 ```
 
-In order to achieve this, Redis uses a concept called *consumer groups*. It is very important to understand that Redis consumer groups have nothing to do, from an implementation standpoint, with Kafka (TM) consumer groups. Yet they are similar in functionality, so I decided to keep Kafka's (TM) terminology, as it originally popularized this idea.
+In order to achieve this, Valkey uses a concept called *consumer groups*. It is very important to understand that Valkey consumer groups have nothing to do, from an implementation standpoint, with Kafka (TM) consumer groups. Yet they are similar in functionality, so I decided to keep Kafka's (TM) terminology, as it originally popularized this idea.
 
 A consumer group is like a *pseudo consumer* that gets data from a stream, and actually serves multiple consumers, providing certain guarantees:
 
 1. Each message is served to a different consumer so that it is not possible that the same message will be delivered to multiple consumers.
 2. Consumers are identified, within a consumer group, by a name, which is a case-sensitive string that the clients implementing consumers must choose. This means that even after a disconnect, the stream consumer group retains all the state, since the client will claim again to be the same consumer. However, this also means that it is up to the client to provide a unique identifier.
 3. Each consumer group has the concept of the *first ID never consumed* so that, when a consumer asks for new messages, it can provide just messages that were not previously delivered.
-4. Consuming a message, however, requires an explicit acknowledgment using a specific command. Redis interprets the acknowledgment as: this message was correctly processed so it can be evicted from the consumer group.
+4. Consuming a message, however, requires an explicit acknowledgment using a specific command. Valkey interprets the acknowledgment as: this message was correctly processed so it can be evicted from the consumer group.
 5. A consumer group tracks all the messages that are currently pending, that is, messages that were delivered to some consumer of the consumer group, but are yet to be acknowledged as processed. Thanks to this feature, when accessing the message history of a stream, each consumer *will only see messages that were delivered to it*.
 
 In a way, a consumer group can be imagined as some *amount of state* about a stream:
@@ -474,7 +474,7 @@ Now it's Bob's turn to read something:
             2) "Sam-Bodden"
 {{< /clients-example >}}
 
-Bob asked for a maximum of two messages and is reading via the same group `mygroup`. So what happens is that Redis reports just *new* messages. As you can see the "Castilla" message is not delivered, since it was already delivered to Alice, so Bob gets Royce and Sam-Bodden and so forth.
+Bob asked for a maximum of two messages and is reading via the same group `mygroup`. So what happens is that Valkey reports just *new* messages. As you can see the "Castilla" message is not delivered, since it was already delivered to Alice, so Bob gets Royce and Sam-Bodden and so forth.
 
 This way Alice, Bob, and any other consumer in the group, are able to read different messages from the same stream, to read their history of yet to process messages, or to mark messages as processed. This allows creating different topologies and semantics for consuming messages from a stream.
 
@@ -541,7 +541,7 @@ while true
 end
 ```
 
-As you can see the idea here is to start by consuming the history, that is, our list of pending messages. This is useful because the consumer may have crashed before, so in the event of a restart we want to re-read messages that were delivered to us without getting acknowledged. Note that we might process a message multiple times or one time (at least in the case of consumer failures, but there are also the limits of Redis persistence and replication involved, see the specific section about this topic).
+As you can see the idea here is to start by consuming the history, that is, our list of pending messages. This is useful because the consumer may have crashed before, so in the event of a restart we want to re-read messages that were delivered to us without getting acknowledged. Note that we might process a message multiple times or one time (at least in the case of consumer failures, but there are also the limits of Valkey persistence and replication involved, see the specific section about this topic).
 
 Once the history was consumed, and we get an empty list of messages, we can switch to using the `>` special ID in order to consume new messages.
 
@@ -549,7 +549,7 @@ Once the history was consumed, and we get an empty list of messages, we can swit
 
 The example above allows us to write consumers that participate in the same consumer group, each taking a subset of messages to process, and when recovering from failures re-reading the pending messages that were delivered just to them. However in the real world consumers may permanently fail and never recover. What happens to the pending messages of the consumer that never recovers after stopping for any reason?
 
-Redis consumer groups offer a feature that is used in these situations in order to *claim* the pending messages of a given consumer so that such messages will change ownership and will be re-assigned to a different consumer. The feature is very explicit. A consumer has to inspect the list of pending messages, and will have to claim specific messages using a special command, otherwise the server will leave the messages pending forever and assigned to the old consumer. In this way different applications can choose if to use such a feature or not, and exactly how to use it.
+Valkey consumer groups offer a feature that is used in these situations in order to *claim* the pending messages of a given consumer so that such messages will change ownership and will be re-assigned to a different consumer. The feature is very explicit. A consumer has to inspect the list of pending messages, and will have to claim specific messages using a special command, otherwise the server will leave the messages pending forever and assigned to the old consumer. In this way different applications can choose if to use such a feature or not, and exactly how to use it.
 
 The first step of this process is just a command that provides observability of pending entries in the consumer group and is called `XPENDING`.
 This is a read-only command which is always safe to call and will not change ownership of any message.
@@ -633,9 +633,9 @@ Claiming may also be implemented by a separate process: one that just checks the
 
 ## Automatic claiming
 
-The `XAUTOCLAIM` command, added in Redis 6.2, implements the claiming process that we've described above.
+The `XAUTOCLAIM` command, added in Redis OSS 6.2, implements the claiming process that we've described above.
 `XPENDING` and `XCLAIM` provide the basic building blocks for different types of recovery mechanisms.
-This command optimizes the generic process by having Redis manage it and offers a simple solution for most recovery needs.
+This command optimizes the generic process by having Valkey manage it and offers a simple solution for most recovery needs.
 
 `XAUTOCLAIM` identifies idle pending messages and transfers ownership of them to a consumer.
 The command's signature looks like this:
@@ -761,11 +761,11 @@ In case you do not remember the syntax of the command, just ask the command itse
 
 ## Differences with Kafka (TM) partitions
 
-Consumer groups in Streams may resemble in some way Kafka (TM) partitioning-based consumer groups, however note that Streams are, in practical terms, very different. The partitions are only *logical* and the messages are just put into a single Redis key, so the way the different clients are served is based on who is ready to process new messages, and not from which partition clients are reading. For instance, if the consumer C3 at some point fails permanently, Redis will continue to serve C1 and C2 all the new messages arriving, as if now there are only two *logical* partitions.
+Consumer groups in Streams may resemble in some way Kafka (TM) partitioning-based consumer groups, however note that Streams are, in practical terms, very different. The partitions are only *logical* and the messages are just put into a single Valkey key, so the way the different clients are served is based on who is ready to process new messages, and not from which partition clients are reading. For instance, if the consumer C3 at some point fails permanently, Valkey will continue to serve C1 and C2 all the new messages arriving, as if now there are only two *logical* partitions.
 
-Similarly, if a given consumer is much faster at processing messages than the other consumers, this consumer will receive proportionally more messages in the same unit of time. This is possible since Redis tracks all the unacknowledged messages explicitly, and remembers who received which message and the ID of the first message never delivered to any consumer.
+Similarly, if a given consumer is much faster at processing messages than the other consumers, this consumer will receive proportionally more messages in the same unit of time. This is possible since Valkey tracks all the unacknowledged messages explicitly, and remembers who received which message and the ID of the first message never delivered to any consumer.
 
-However, this also means that in Redis if you really want to partition messages in the same stream into multiple Redis instances, you have to use multiple keys and some sharding system such as Redis Cluster or some other application-specific sharding system. A single Stream is not automatically partitioned to multiple instances.
+However, this also means that in Valkey if you really want to partition messages in the same stream into multiple Valkey instances, you have to use multiple keys and some sharding system such as Valkey Cluster or some other application-specific sharding system. A single Stream is not automatically partitioned to multiple instances.
 
 We could say that schematically the following is true:
 
@@ -773,11 +773,11 @@ We could say that schematically the following is true:
 * If you use N streams with N consumers, so that only a given consumer hits a subset of the N streams, you can scale the above model of 1 stream -> 1 consumer.
 * If you use 1 stream -> N consumers, you are load balancing to N consumers, however in that case, messages about the same logical item may be consumed out of order, because a given consumer may process message 3 faster than another consumer is processing message 4.
 
-So basically Kafka partitions are more similar to using N different Redis keys, while Redis consumer groups are a server-side load balancing system of messages from a given stream to N different consumers.
+So basically Kafka partitions are more similar to using N different Valkey keys, while Valkey consumer groups are a server-side load balancing system of messages from a given stream to N different consumers.
 
 ## Capped Streams
 
-Many applications do not want to collect data into a stream forever. Sometimes it is useful to have at maximum a given number of items inside a stream, other times once a given size is reached, it is useful to move data from Redis to a storage which is not in memory and not as fast but suited to store the history for, potentially, decades to come. Streams have some support for this. One is the **MAXLEN** option of the `XADD` command. This option is very simple to use:
+Many applications do not want to collect data into a stream forever. Sometimes it is useful to have at maximum a given number of items inside a stream, other times once a given size is reached, it is useful to move data from Valkey to a storage which is not in memory and not as fast but suited to store the history for, potentially, decades to come. Streams have some support for this. One is the **MAXLEN** option of the `XADD` command. This option is very simple to use:
 
 {{< clients-example stream_tutorial maxlen >}}
 > XADD race:italy MAXLEN 2 * rider Jones
@@ -825,11 +825,11 @@ However, `XTRIM` is designed to accept different trimming strategies. Another tr
 
 As `XTRIM` is an explicit command, the user is expected to know about the possible shortcomings of different trimming strategies.
 
-Another useful eviction strategy that may be added to `XTRIM` in the future, is to remove by a range of IDs to ease use of `XRANGE` and `XTRIM` to move data from Redis to other storage systems if needed.
+Another useful eviction strategy that may be added to `XTRIM` in the future, is to remove by a range of IDs to ease use of `XRANGE` and `XTRIM` to move data from Valkey to other storage systems if needed.
 
 ## Special IDs in the streams API
 
-You may have noticed that there are several special IDs that can be used in the Redis API. Here is a short recap, so that they can make more sense in the future.
+You may have noticed that there are several special IDs that can be used in the Valkey API. Here is a short recap, so that they can make more sense in the future.
 
 The first two special IDs are `-` and `+`, and are used in range queries with the `XRANGE` command. Those two IDs respectively mean the smallest ID possible (that is basically `0-1`) and the greatest ID possible (that is `18446744073709551615-18446744073709551615`). As you can see it is a lot cleaner to write `-` and `+` instead of those numbers.
 
@@ -845,13 +845,13 @@ So we have `-`, `+`, `$`, `>` and `*`, and all have a different meaning, and mos
 
 ## Persistence, replication and message safety
 
-A Stream, like any other Redis data structure, is asynchronously replicated to replicas and persisted into AOF and RDB files. However what may not be so obvious is that also the consumer groups full state is propagated to AOF, RDB and replicas, so if a message is pending in the master, also the replica will have the same information. Similarly, after a restart, the AOF will restore the consumer groups' state.
+A Stream, like any other Valkey data structure, is asynchronously replicated to replicas and persisted into AOF and RDB files. However what may not be so obvious is that also the consumer groups full state is propagated to AOF, RDB and replicas, so if a message is pending in the master, also the replica will have the same information. Similarly, after a restart, the AOF will restore the consumer groups' state.
 
-However note that Streams and consumer groups are persisted and replicated using the Redis default replication, so:
+However note that Streams and consumer groups are persisted and replicated using the Valkey default replication, so:
 
 * AOF must be used with a strong fsync policy if persistence of messages is important in your application.
 * By default the asynchronous replication will not guarantee that `XADD` commands or consumer groups state changes are replicated: after a failover something can be missing depending on the ability of replicas to receive the data from the master.
-* The `WAIT` command may be used in order to force the propagation of the changes to a set of replicas. However note that while this makes it very unlikely that data is lost, the Redis failover process as operated by Sentinel or Redis Cluster performs only a *best effort* check to failover to the replica which is the most updated, and under certain specific failure conditions may promote a replica that lacks some data.
+* The `WAIT` command may be used in order to force the propagation of the changes to a set of replicas. However note that while this makes it very unlikely that data is lost, the Valkey failover process as operated by Sentinel or Valkey Cluster performs only a *best effort* check to failover to the replica which is the most updated, and under certain specific failure conditions may promote a replica that lacks some data.
 
 So when designing an application using Streams and consumer groups, make sure to understand the semantical properties your application should have during failures, and configure things accordingly, evaluating whether it is safe enough for your use case.
 
@@ -879,25 +879,25 @@ However in the current implementation, memory is not really reclaimed until a ma
 
 ## Zero length streams
 
-A difference between streams and other Redis data structures is that when the other data structures no longer have any elements, as a side effect of calling commands that remove elements, the key itself will be removed. So for instance, a sorted set will be completely removed when a call to `ZREM` will remove the last element in the sorted set. Streams, on the other hand, are allowed to stay at zero elements, both as a result of using a **MAXLEN** option with a count of zero (`XADD` and `XTRIM` commands), or because `XDEL` was called.
+A difference between streams and other Valkey data structures is that when the other data structures no longer have any elements, as a side effect of calling commands that remove elements, the key itself will be removed. So for instance, a sorted set will be completely removed when a call to `ZREM` will remove the last element in the sorted set. Streams, on the other hand, are allowed to stay at zero elements, both as a result of using a **MAXLEN** option with a count of zero (`XADD` and `XTRIM` commands), or because `XDEL` was called.
 
 The reason why such an asymmetry exists is because Streams may have associated consumer groups, and we do not want to lose the state that the consumer groups defined just because there are no longer any items in the stream. Currently the stream is not deleted even when it has no associated consumer groups.
 
 ## Total latency of consuming a message
 
-Non blocking stream commands like `XRANGE` and `XREAD` or `XREADGROUP` without the BLOCK option are served synchronously like any other Redis command, so to discuss latency of such commands is meaningless: it is more interesting to check the time complexity of the commands in the Redis documentation. It should be enough to say that stream commands are at least as fast as sorted set commands when extracting ranges, and that `XADD` is very fast and can easily insert from half a million to one million items per second in an average machine if pipelining is used.
+Non blocking stream commands like `XRANGE` and `XREAD` or `XREADGROUP` without the BLOCK option are served synchronously like any other Valkey command, so to discuss latency of such commands is meaningless: it is more interesting to check the time complexity of the commands in the Valkey documentation. It should be enough to say that stream commands are at least as fast as sorted set commands when extracting ranges, and that `XADD` is very fast and can easily insert from half a million to one million items per second in an average machine if pipelining is used.
 
 However latency becomes an interesting parameter if we want to understand the delay of processing a message, in the context of blocking consumers in a consumer group, from the moment the message is produced via `XADD`, to the moment the message is obtained by the consumer because `XREADGROUP` returned with the message.
 
 ## How serving blocked consumers works
 
-Before providing the results of performed tests, it is interesting to understand what model Redis uses in order to route stream messages (and in general actually how any blocking operation waiting for data is managed).
+Before providing the results of performed tests, it is interesting to understand what model Valkey uses in order to route stream messages (and in general actually how any blocking operation waiting for data is managed).
 
 * The blocked client is referenced in a hash table that maps keys for which there is at least one blocking consumer, to a list of consumers that are waiting for such key. This way, given a key that received data, we can resolve all the clients that are waiting for such data.
 * When a write happens, in this case when the `XADD` command is called, it calls the `signalKeyAsReady()` function. This function will put the key into a list of keys that need to be processed, because such keys may have new data for blocked consumers. Note that such *ready keys* will be processed later, so in the course of the same event loop cycle, it is possible that the key will receive other writes.
 * Finally, before returning into the event loop, the *ready keys* are finally processed. For each key the list of clients waiting for data is scanned, and if applicable, such clients will receive the new data that arrived. In the case of streams the data is the messages in the applicable range requested by the consumer.
 
-As you can see, basically, before returning to the event loop both the client calling `XADD` and the clients blocked to consume messages, will have their reply in the output buffers, so the caller of `XADD` should receive the reply from Redis at about the same time the consumers will receive the new messages.
+As you can see, basically, before returning to the event loop both the client calling `XADD` and the clients blocked to consume messages, will have their reply in the output buffers, so the caller of `XADD` should receive the reply from Valkey at about the same time the consumers will receive the new messages.
 
 This model is *push-based*, since adding data to the consumers buffers will be performed directly by the action of calling `XADD`, so the latency tends to be quite predictable.
 

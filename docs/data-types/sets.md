@@ -73,11 +73,11 @@ multiple sets, and so forth.
 3) bike:2
 {{< /clients-example >}}
 
-Here I've added three elements to my set and told Redis to return all the
-elements. There is no order guarantee with a set. Redis is free to return the
+Here I've added three elements to my set and told Valkey to return all the
+elements. There is no order guarantee with a set. Valkey is free to return the
 elements in any order at every call.
 
-Redis has commands to test for set membership. These commands can be used on single as well as multiple items:
+Valkey has commands to test for set membership. These commands can be used on single as well as multiple items:
 
 {{< clients-example sets_tutorial smismember >}}
 > SISMEMBER bikes:racing:france bike:1
@@ -100,7 +100,7 @@ to know which bikes are racing in France but not in the USA:
 {{< /clients-example >}}
 
 There are other non trivial operations that are still easy to implement
-using the right Redis commands. For instance we may want a list of all the
+using the right Valkey commands. For instance we may want a list of all the
 bikes racing in France, the USA, and some other races. We can do this using
 the `SINTER` command, which performs the intersection between different
 sets. In addition to intersection you can also perform
