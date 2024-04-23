@@ -223,7 +223,7 @@ You'll see that `ZADD` returns 0 when the member already exists (the score is up
 * `ZRANK` returns the rank of the provided member, assuming the sorted is in ascending order.
 * `ZREVRANK` returns the rank of the provided member, assuming the sorted set is in descending order.
  
-See the [complete list of sorted set commands](https://redis.io/commands/?group=sorted-set).
+See the [complete list of sorted set commands](/commands/?group=sorted-set).
 
 ## Performance
 

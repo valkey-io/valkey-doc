@@ -82,7 +82,7 @@ One HyperLogLog is created per page (video/song) per period, and every IP/identi
 * `PFCOUNT` returns an estimate of the number of items in the set.
 * `PFMERGE` combines two or more HyperLogLogs into one.
 
-See the [complete list of HyperLogLog commands](https://redis.io/commands/?group=hyperloglog).
+See the [complete list of HyperLogLog commands](/commands/?group=hyperloglog).
 
 ## Performance
 
