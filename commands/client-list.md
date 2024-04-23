@@ -34,6 +34,11 @@ Here is the meaning of the fields:
 * `user`: the authenticated username of the client
 * `redir`: client id of current client tracking redirection
 * `resp`: client RESP protocol version.
+* `lib-name`: The client library name as set by `CLIENT SETINFO`
+* `lib-version`: The client library version as set by `CLIENT SETINFO`
+* `tot-net-in`: Total network input bytes read from this client. Added in Valkey 8.0
+* `tot-net-out`: Total network output bytes sent to this client. Added in Valkey 8.0
+* `tot-cmds`: Total count of commands this client executed, not including commands executed recursively (like commands in Lua scripts). Added in Valkey 8.0
 
 The client flags can be a combination of:
 
