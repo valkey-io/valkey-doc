@@ -20,7 +20,7 @@ To compile Valkey, first extract the tarball, change to the root directory, and 
 
 ```sh
 tar -xzvf valkey-7.2.5.tar.gz
-cd redis-stable
+cd valkey-7.2.5
 make
 ```
 
