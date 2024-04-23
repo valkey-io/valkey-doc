@@ -43,7 +43,7 @@ Another interesting way to run `redis-cli` is without arguments: the program wil
 
 ```
 $ redis-cli
-redis 127.0.0.1:6379> ping
+127.0.0.1:6379> ping
 PONG
 ```
 
