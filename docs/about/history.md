@@ -181,7 +181,7 @@ contributors (one from each of Alibaba, Amazon, Ericsson, Google, Huawei and
 Tencent) with the support from several other companies launched Valkey as a
 Linux Foundation project. It was announced in a [press release][lf-press-1] only
 eight days after Redis' license change. Three weeks later, a [second press
-release][lf-press-2] announced seven more comanies joining and the first
+release][lf-press-2] announced seven more companies joining and the first
 release, Valkey 7.2.5.
 
 [lf-press-1]: https://www.linuxfoundation.org/press/linux-foundation-launches-open-source-valkey-community
