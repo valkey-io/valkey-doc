@@ -8,8 +8,6 @@ aliases:
   - /docs/getting-started
 ---
 
-You can install [Valkey](https://valkey.io/docs/about/) locally on your machine. Valkey is available on Linux, macOS, and Windows.
-
 Here are the installation instructions:
 
 * [Install Valkey](/docs/install/install-redis)

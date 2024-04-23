@@ -11,8 +11,6 @@ aliases:
 
 This is a an installation guide. You'll learn how to install, run, and experiment with the Valkey server process.
 
-While you can install Valkey on any of the platforms listed below, you might also consider using Valkey Cloud by creating a [free account](https://redis.com/try-free?utm_source=redisio&utm_medium=referral&utm_campaign=2023-09-try_free&utm_content=cu-redis_cloud_users).
-
 ## Install Valkey
 
 See the guide below that best fits your needs:
