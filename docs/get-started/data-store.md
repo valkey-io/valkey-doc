@@ -23,7 +23,7 @@ See the [installation guides](/docs/install/install-redis/) to install Valkey on
 The first step is to connect to Valkey. You can find further details about the connection options in this documentation site's [connection section](/docs/connect). The following example shows how to connect to a Valkey server that runs on localhost (`-h 127.0.0.1`) and listens on the default port (`-p 6379`): 
 
 {{< clients-example search_quickstart connect >}}
-> redis-cli -h 127.0.0.1 -p 6379
+> valkey-cli -h 127.0.0.1 -p 6379
 {{< /clients-example>}}
 
 ## Store and retrieve data

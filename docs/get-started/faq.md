@@ -30,7 +30,7 @@ To give you a few examples (all obtained using 64-bit instances):
 * 1 Million small Keys -> String Value pairs use ~ 85MB of memory.
 * 1 Million Keys -> Hash value, representing an object with 5 fields, use ~ 160 MB of memory.
 
-Testing your use case is trivial. Use the `redis-benchmark` utility to generate random data sets then check the space used with the `INFO memory` command.
+Testing your use case is trivial. Use the `valkey-benchmark` utility to generate random data sets then check the space used with the `INFO memory` command.
 
 64-bit systems will use considerably more memory than 32-bit systems to store the same keys, especially if the keys and values are small. This is because pointers take 8 bytes in 64-bit systems. But of course the advantage is that you can
 have a lot of memory in 64-bit systems, so in order to run large Valkey servers a 64-bit system is more or less required. The alternative is sharding.
