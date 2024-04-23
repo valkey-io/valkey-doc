@@ -1,18 +1,18 @@
 ---
 title: "Java guide"
 linkTitle: "Java"
-description: Connect your Java application to a Redis database
+description: Connect your Java application to a Valkey database
 weight: 3
 aliases:
   - /docs/clients/java/
   - /docs/redis-clients/java/
 ---
 
-Install Redis and the Redis client, then connect your Java application to a Redis database. 
+Install Valkey and the Valkey client, then connect your Java application to a Valkey database.
 
 ## Jedis
 
-[Jedis](https://github.com/redis/jedis) is a Java client for Redis designed for performance and ease of use.
+[Jedis](https://github.com/redis/jedis) is a Java client for Valkey and Redis designed for performance and ease of use.
 
 ### Install
 
@@ -89,9 +89,9 @@ jedis.set("foo", "bar");
 System.out.println(jedis.get("foo")); // prints "bar"
 ```
 
-#### Connect to a Redis cluster
+#### Connect to a Valkey cluster
 
-To connect to a Redis cluster, use `JedisCluster`. 
+To connect to a Valkey cluster, use `JedisCluster`. 
 
 ```java
 import redis.clients.jedis.JedisCluster;
@@ -105,16 +105,16 @@ jedisClusterNodes.add(new HostAndPort("127.0.0.1", 7380));
 JedisCluster jedis = new JedisCluster(jedisClusterNodes);
 ```
 
-#### Connect to your production Redis with TLS
+#### Connect to your production Valkey with TLS
 
-When you deploy your application, use TLS and follow the [Redis security](/docs/management/security/) guidelines.
+When you deploy your application, use TLS and follow the [security](/docs/management/security/) guidelines.
 
 Before connecting your application to the TLS-enabled Redis server, ensure that your certificates and private keys are in the correct format.
 
 To convert user certificate and private key from the PEM format to `pkcs12`, use this command:
 
 ```
-openssl pkcs12 -export -in ./redis_user.crt -inkey ./redis_user_private.key -out redis-user-keystore.p12 -name "redis"
+openssl pkcs12 -export -in ./valkey_user.crt -inkey ./valkey_user_private.key -out valkey-user-keystore.p12 -name "valkey"
 ```
 
 Enter password to protect your `pkcs12` file.
@@ -124,10 +124,10 @@ Convert the server (CA) certificate to the JKS format using the [keytool](https:
 ```
 keytool -importcert -keystore truststore.jks \ 
   -storepass REPLACE_WITH_YOUR_PASSWORD \
-  -file redis_ca.pem
+  -file valkey_ca.pem
 ```
 
-Establish a secure connection with your Redis database using this snippet.
+Establish a secure connection with your Valkey database using this snippet.
 
 ```java
 package org.example;
@@ -143,19 +143,19 @@ import java.security.KeyStore;
 public class Main {
 
     public static void main(String[] args) throws GeneralSecurityException, IOException {
-        HostAndPort address = new HostAndPort("my-redis-instance.cloud.redislabs.com", 6379);
+        HostAndPort address = new HostAndPort("my-valkey.example.com", 6379);
 
         SSLSocketFactory sslFactory = createSslSocketFactory(
                 "./truststore.jks",
                 "secret!", // use the password you specified for keytool command
-                "./redis-user-keystore.p12",
+                "./valkey-user-keystore.p12",
                 "secret!" // use the password you specified for openssl command
         );
 
         JedisClientConfig config = DefaultJedisClientConfig.builder()
                 .ssl(true).sslSocketFactory(sslFactory)
-                .user("default") // use your Redis user. More info https://redis.io/docs/management/security/acl/
-                .password("secret!") // use your Redis password
+                .user("default") // use your Valkey user. More info https://valkey.io/topics/acl
+                .password("secret!") // use your Valkey password
                 .build();
 
         JedisPooled jedis = new JedisPooled(address, config);
@@ -275,9 +275,9 @@ JedisException
 #### General Exceptions
 In general, Jedis can throw the following exceptions while executing commands:
 
-- `JedisConnectionException` - when the connection to Redis is lost or closed unexpectedly. Configure failover to handle this exception automatically with Resilience4J and the built-in Jedis failover mechanism.  
+- `JedisConnectionException` - when the connection to Valkey is lost or closed unexpectedly. Configure failover to handle this exception automatically with Resilience4J and the built-in Jedis failover mechanism.  
 - `JedisAccessControlException` - when the user does not have the permission to execute the command or the user ID and/or password are incorrect.
-- `JedisDataException` - when there is a problem with the data being sent to or received from the Redis server. Usually, the error message will contain more information about the failed command.
+- `JedisDataException` - when there is a problem with the data being sent to or received from the Valkey server. Usually, the error message will contain more information about the failed command.
 - `JedisException` - this exception is a catch-all exception that can be thrown for any other unexpected errors.
 
 Conditions when `JedisException` can be thrown:
@@ -293,9 +293,9 @@ Conditions when `JedisException` can be thrown:
 
 All the Jedis exceptions are runtime exceptions and in most cases irrecoverable, so in general bubble up to the API capturing the error message.
 
-## DNS cache and Redis
+## DNS cache and Valkey
 
-When you connect to Redis with a DNS endpoint, it's recommended to disable the JVM's DNS cache to load-balance requests across servers behind the endpoint.
+When you connect to Valkey with a DNS endpoint, it's recommended to disable the JVM's DNS cache to load-balance requests across servers behind the endpoint.
 
 You can do this in your application's code with the following snippet:
 ```java

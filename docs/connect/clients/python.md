@@ -1,20 +1,20 @@
 ---
 title: "Python guide"
 linkTitle: "Python"
-description: Connect your Python application to a Redis database
+description: Connect your Python application to a Valkey database
 weight: 5
 aliases:
   - /docs/clients/python/
   - /docs/redis-clients/python/
 ---
 
-Install Redis and the Redis client, then connect your Python application to a Redis database. 
+Install Valkey and the Valkey client, then connect your Python application to a Valkey database.
 
 ## redis-py
 
-Get started with the [redis-py](https://github.com/redis/redis-py) client for Redis. 
+Get started with the [redis-py](https://github.com/redis/redis-py) client for Valkey and Redis.
 
-`redis-py` requires a running Redis. See [Getting started](/docs/getting-started/) for Redis installation instructions.
+`redis-py` requires a running Valkey. See [Getting started](/docs/getting-started/) for Valkey installation instructions.
 
 ### Install
 
@@ -24,7 +24,7 @@ To install `redis-py`, enter:
 pip install redis
 ```
 
-For faster performance, install Redis with [`hiredis`](https://github.com/redis/hiredis) support. This provides a compiled response parser, and for most cases requires zero code changes. By default, if `hiredis` >= 1.0 is available, `redis-py` attempts to use it for response parsing.
+For faster performance, install `redis-py` with [`hiredis`](https://github.com/redis/hiredis) support. This provides a compiled response parser, and for most cases requires zero code changes. By default, if `hiredis` >= 1.0 is available, `redis-py` attempts to use it for response parsing.
 
 {{% alert title="Note" %}}
 The Python `distutils` packaging scheme is no longer part of Python 3.12 and greater. If you're having difficulties getting `redis-py` installed in a Python 3.12 environment, consider updating to a recent release of `redis-py`.
@@ -36,7 +36,7 @@ pip install redis[hiredis]
 
 ### Connect
 
-Connect to localhost on port 6379, set a value in Redis, and retrieve it. All responses are returned as bytes in Python. To receive decoded strings, set `decode_responses=True`. For more connection options, see [these examples](https://redis.readthedocs.io/en/stable/examples.html).
+Connect to localhost on port 6379, set a value in Valkey, and retrieve it. All responses are returned as bytes in Python. To receive decoded strings, set `decode_responses=True`. For more connection options, see [these examples](https://redis.readthedocs.io/en/stable/examples.html).
 
 ```python
 r = redis.Redis(host='localhost', port=6379, decode_responses=True)
@@ -57,18 +57,18 @@ Store and retrieve a dict.
 r.hset('user-session:123', mapping={
     'name': 'John',
     "surname": 'Smith',
-    "company": 'Redis',
+    "company": 'Garantia',
     "age": 29
 })
 # True
 
 r.hgetall('user-session:123')
-# {'surname': 'Smith', 'name': 'John', 'company': 'Redis', 'age': '29'}
+# {'surname': 'Smith', 'name': 'John', 'company': 'Garantia', 'age': '29'}
 ```
 
-#### Connect to a Redis cluster
+#### Connect to a Valkey cluster
 
-To connect to a Redis cluster, use `RedisCluster`.
+To connect to a Valkey cluster, use `RedisCluster`.
 
 ```python
 from redis.cluster import RedisCluster
@@ -86,15 +86,15 @@ rc.get('foo')
 ```
 For more information, see [redis-py Clustering](https://redis-py.readthedocs.io/en/stable/clustering.html).
 
-#### Connect to your production Redis with TLS
+#### Connect to your production Valkey with TLS
 
-When you deploy your application, use TLS and follow the [Redis security](/docs/management/security/) guidelines.
+When you deploy your application, use TLS and follow the [security](/docs/management/security/) guidelines.
 
 ```python
 import redis
 
 r = redis.Redis(
-    host="my-redis.cloud.redislabs.com", port=6379,
+    host="my-valkey.example.com", port=6379,
     username="default", # use your Redis user. More info https://redis.io/docs/management/security/acl/
     password="secret", # use your Redis password
     ssl=True,

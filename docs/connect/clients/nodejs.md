@@ -1,19 +1,19 @@
 ---
 title: "Node.js guide"
 linkTitle: "Node.js"
-description: Connect your Node.js application to a Redis database
+description: Connect your Node.js application to a Valkey database
 weight: 4
 aliases:
   - /docs/clients/nodejs/
   - /docs/redis-clients/nodejs/
 ---
 
-Install Redis and the Redis client, then connect your Node.js application to a Redis database. 
+Install Valkey and the client, then connect your Node.js application to a Valkey database. 
 
 ## node-redis
 
-[node-redis](https://github.com/redis/node-redis) is a modern, high-performance Redis client for Node.js.
-`node-redis` requires a running Redis server. See [Getting started](/docs/getting-started/) for Redis installation instructions.
+[node-redis](https://github.com/redis/node-redis) is a modern, high-performance Valkey and Redis client for Node.js.
+`node-redis` requires a running Valkey server. See [Getting started](/docs/getting-started/) for Valkey installation instructions.
 
 ### Install
 
@@ -32,7 +32,7 @@ import { createClient } from 'redis';
 
 const client = createClient();
 
-client.on('error', err => console.log('Redis Client Error', err));
+client.on('error', err => console.log('Valkey Client Error', err));
 
 await client.connect();
 ```
@@ -50,7 +50,7 @@ Store and retrieve a map.
 await client.hSet('user-session:123', {
     name: 'John',
     surname: 'Smith',
-    company: 'Redis',
+    company: 'Garantia',
     age: 29
 })
  */
@@ -65,9 +65,9 @@ createClient({
 ```
 To check if the client is connected and ready to send commands, use `client.isReady`, which returns a Boolean. `client.isOpen` is also available. This returns `true` when the client's underlying socket is open, and `false` when it isn't (for example, when the client is still connecting or reconnecting after a network error).
 
-#### Connect to a Redis cluster
+#### Connect to a Valkey cluster
 
-To connect to a Redis cluster, use `createCluster`.
+To connect to a Valkey cluster, use `createCluster`.
 
 ```js
 import { createCluster } from 'redis';
@@ -84,7 +84,7 @@ const cluster = createCluster({
     ]
 });
 
-cluster.on('error', (err) => console.log('Redis Cluster Error', err));
+cluster.on('error', (err) => console.log('Valkey Cluster Error', err));
 
 await cluster.connect();
 
@@ -95,25 +95,25 @@ console.log(value); // returns 'bar'
 await cluster.quit();
 ```
 
-#### Connect to your production Redis with TLS
+#### Connect to your production Valkey with TLS
 
-When you deploy your application, use TLS and follow the [Redis security](/docs/management/security/) guidelines.
+When you deploy your application, use TLS and follow the [security](/docs/management/security/) guidelines.
 
 ```js
 const client = createClient({
-    username: 'default', // use your Redis user. More info https://redis.io/docs/management/security/acl/
+    username: 'default', // use your Valkey user. More info https://valkey.io/topics/acl
     password: 'secret', // use your password here
     socket: {
-        host: 'my-redis.cloud.redislabs.com',
+        host: 'my-valkey.example.com',
         port: 6379,
         tls: true,
-        key: readFileSync('./redis_user_private.key'),
-        cert: readFileSync('./redis_user.crt'),
-        ca: [readFileSync('./redis_ca.pem')]
+        key: readFileSync('./valkey_user_private.key'),
+        cert: readFileSync('./valkey_user.crt'),
+        ca: [readFileSync('./valkey_ca.pem')]
     }
 });
 
-client.on('error', (err) => console.log('Redis Client Error', err));
+client.on('error', (err) => console.log('Valkey Client Error', err));
 
 await client.connect();
 
@@ -128,7 +128,7 @@ You can also use discrete parameters and UNIX sockets. Details can be found in t
 
 ### Learn more
 
-* [Redis commands](https://redis.js.org/#node-redis-usage-redis-commands)
+* [Commands](https://redis.js.org/#node-redis-usage-redis-commands)
 * [Programmability](https://redis.js.org/#node-redis-usage-programmability)
 * [Clustering](https://redis.js.org/#node-redis-usage-clustering)
 * [GitHub](https://github.com/redis/node-redis)
