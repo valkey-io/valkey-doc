@@ -105,7 +105,7 @@ This default timeout is enormous since a script usually runs in less than a mill
 The limit is in place to handle accidental infinite loops created during development.
 
 It is possible to modify the maximum time a script can be executed with millisecond precision,
-either via `redis.conf` or by using the `CONFIG SET` command.
+either via `valkey.conf` or by using the `CONFIG SET` command.
 The configuration parameter affecting max execution time is called `busy-reply-threshold`.
 
 When a script reaches the timeout threshold, it isn't terminated by Valkey automatically.
