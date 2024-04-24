@@ -98,7 +98,7 @@ If you have not yet run `make install` after building the Valkey source, you wil
 * Copy the init script that you'll find in the Valkey distribution under the **utils** directory into `/etc/init.d`. We suggest calling it with the name of the port where you are running this instance of Valkey. Make sure the resulting file has `0755` permissions.
     
     ```
-    sudo cp utils/redis_init_script /etc/init.d/valkey_6379
+    sudo cp utils/valkey_init_script /etc/init.d/valkey_6379
     ```
 
 * Edit the init script.
@@ -107,7 +107,7 @@ If you have not yet run `make install` after building the Valkey source, you wil
     sudo vi /etc/init.d/valkey_6379
     ```
 
-Make sure to set the **REDISPORT** variable to the port you are using.
+Make sure to set the `VALKEYPORT` variable to the port you are using.
 Both the pid file path and the configuration file name depend on the port number.
 
 * Copy the template configuration file you'll find in the root directory of the Valkey distribution into `/etc/valkey/` using the port number as the name, for instance:
