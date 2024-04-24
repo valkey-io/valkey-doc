@@ -112,7 +112,7 @@ This was interpreted by some as if Redis is no longer open source. Sanfilippo
 clarified on his blog [Redis will remain BSD licensed][antirez-remain-bsd].
 
 Yiftach Shoolman, CTO and co-founder of Redis Labs, also clarified in in the
-company's blog that [Redis’ License is BSD and will remain
+company's blog that [Redis' License is BSD and will remain
 BSD][will-remain-bsd]. He repeated this promise in [a comment on Hacker
 News][hn-always-bsd], writing “let me assure you that Redis remains and always
 will remain, open source, BSD license”.
