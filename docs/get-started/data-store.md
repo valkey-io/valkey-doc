@@ -1,34 +1,34 @@
 ---
-title: "Redis as an in-memory data structure store quick start guide"
+title: "Valkey as an in-memory data structure store quick start guide"
 linkTitle: "Data structure store"
 weight: 1
-description: Understand how to use basic Redis data types
+description: Understand how to use basic Valkey data types
 ---
 
 This quick start guide shows you how to:
 
-1. Get started with Redis 
-2. Store data under a key in Redis
-3. Retrieve data with a key from Redis
+1. Get started with Valkey 
+2. Store data under a key in Valkey
+3. Retrieve data with a key from Valkey
 4. Scan the keyspace for keys that match a specific pattern
 
 The examples in this article refer to a simple bicycle inventory.
 
 ## Setup
 
-See the [installation guides](/docs/install/install-redis/) to install Redis on your local machine.
+See the [installation guides](/docs/install/install-redis/) to install Valkey on your local machine.
 
 ## Connect
 
-The first step is to connect to Redis. You can find further details about the connection options in this documentation site's [connection section](/docs/connect). The following example shows how to connect to a Redis server that runs on localhost (`-h 127.0.0.1`) and listens on the default port (`-p 6379`): 
+The first step is to connect to Valkey. You can find further details about the connection options in this documentation site's [connection section](/docs/connect). The following example shows how to connect to a Valkey server that runs on localhost (`-h 127.0.0.1`) and listens on the default port (`-p 6379`): 
 
 {{< clients-example search_quickstart connect >}}
-> redis-cli -h 127.0.0.1 -p 6379
+> valkey-cli -h 127.0.0.1 -p 6379
 {{< /clients-example>}}
 
 ## Store and retrieve data
 
-Redis stands for Remote Dictionary Server. You can use the same data types as in your local programming environment but on the server side within Redis.
+Valkey stands for Remote Dictionary Server. You can use the same data types as in your local programming environment but on the server side within Valkey.
 
 Similar to byte arrays, Strings store sequences of bytes, including text, serialized objects, counter values, and binary arrays. The following example shows you how to set and get a string value:
 
@@ -61,7 +61,7 @@ You can get a complete overview of available data types in this documentation si
 
 ## Scan the keyspace
 
-Each item within Redis has a unique key. All items live within the Redis [keyspace](/docs/manual/keyspace/). You can scan the Redis keyspace via the [SCAN command](/commands/scan/). Here is an example that scans for the first 100 keys that have the prefix `bike:`:
+Each item within Valkey has a unique key. All items live within the Valkey [keyspace](/docs/manual/keyspace/). You can scan the Valkey keyspace via the [SCAN command](/commands/scan/). Here is an example that scans for the first 100 keys that have the prefix `bike:`:
 
 {{< clients-example scan_example >}}
 SCAN 0 MATCH "bike:*" COUNT 100
