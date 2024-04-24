@@ -34,6 +34,8 @@ Here is the meaning of the fields:
 * `user`: the authenticated username of the client
 * `redir`: client id of current client tracking redirection
 * `resp`: client RESP protocol version.
+* `lib-name`: The client library name as set by `CLIENT SETINFO`
+* `lib-version`: The client library version as set by `CLIENT SETINFO`
 
 The client flags can be a combination of:
 
