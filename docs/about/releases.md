@@ -1,26 +1,23 @@
 ---
-title: "Redis release cycle"
+title: "Valkey release cycle"
 linkTitle: "Release cycle"
 weight: 4
-description: How are new versions of Redis released?
+description: How are new versions of Valkey released?
 aliases:
     - /topics/releases
 ---
 
-Redis is system software and a type of system software that holds user data, so
+Valkey is system software and a type of system software that holds user data, so
 it is among the most critical pieces of a software stack.
 
-For this reason, Redis' release cycle is such that it ensures highly-stable
+For this reason, Valkey's release cycle is such that it ensures highly stable
 releases, even at the cost of slower cycles.
 
-New releases are published in the [Redis GitHub repository](http://github.com/redis/redis)
-and are also available for [download](/download). Announcements are sent to the
-[Redis mailing list](http://groups.google.com/group/redis-db) and by
-[@redisfeed on Twitter](https://twitter.com/redisfeed).
+New releases are published in the [Valkey GitHub repository](https://github.com/valkey-io/valkey/releases).
 
 ## Release cycle
 
-A given version of Redis can be at three different levels of stability:
+A given version of Valkey can be at three different levels of stability:
 
 * Unstable
 * Release Candidate
@@ -28,8 +25,8 @@ A given version of Redis can be at three different levels of stability:
 
 ### Unstable tree
 
-The unstable version of Redis is located in the `unstable` branch in the
-[Redis GitHub repository](http://github.com/redis/redis).
+The unstable version of Valkey is located in the `unstable` branch in the
+[Valkey GitHub repository](https://github.com/valkey-io/valkey).
 
 This branch is the source tree where most of the new features are under
 development. `unstable` is not considered production-ready: it may contain
@@ -40,12 +37,12 @@ of the time in a development environment without significant issues.
 
 ### Release candidate
 
-New minor and major versions of Redis begin as forks of the `unstable` branch.
-The forked branch's name is the target release
+New minor and major versions of Valkey begin by branching off the `unstable`
+branch. The branch name is the target release on the form *major.minor*.
+Subsequent patch releases are made on the same branch.
 
-For example, when Redis 6.0 was released as a release candidate, the `unstable`
-branch was forked into the `6.0` branch. The new branch is the release
-candidate (RC) for that version.
+For example, when Valkey 7.2.5 was released, the release was made on the `7.2`
+branch, which had been branched off from `unstable` earlier.
 
 Bug fixes and new features that can be stabilized during the release's time
 frame are committed to the unstable branch and backported to the release
@@ -114,12 +111,12 @@ Patches are released as needed to fix high-urgency issues, or once a stable
 version accumulates enough fixes to justify it.
 
 For contacting the core team on sensitive matters and security issues, please
-email [redis@redis.io](mailto:redis@redis.io).
+see [SECURITY.md](https://github.com/valkey-io/valkey/blob/unstable/SECURITY.md).
 
 ## Support
 
 As a rule, older versions are not supported as we try very hard to make the
-Redis API mostly backward compatible.
+API mostly backward compatible.
 
 Upgrading to newer versions is the recommended approach and is usually trivial.
 
