@@ -327,7 +327,7 @@ to run the script.
 #### Interact with the cluster
 
 To connect to Valkey Cluster, you'll need a cluster-aware Valkey client. 
-See the [documentation](/docs/clients) for your client of choice to determine its cluster support.
+See the documentation for your [client of choice](/resources/clients/) to determine its cluster support.
 
 You can also test your Valkey Cluster using the `valkey-cli` command line utility:
 
