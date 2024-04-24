@@ -1,21 +1,21 @@
 ---
 title: "Go guide"
 linkTitle: "Go"
-description: Connect your Go application to a Redis database
+description: Connect your Go application to a Valkey database
 weight: 2
 aliases:
   - /docs/clients/go/
 ---
 
-Install Redis and the Redis client, then connect your Go application to a Redis database. 
+Install Valkey and the Valkey client, then connect your Go application to a Valkey database.
 
 ## go-redis
 
-[go-redis](https://github.com/redis/go-redis) provides Go clients for various flavors of Redis and a type-safe API for each Redis command.
+[go-redis](https://github.com/redis/go-redis) provides Go clients for various flavors of Valkey and a type-safe API for each command.
 
 ### Install
 
-`go-redis` supports last two Go versions and only works with Go modules. 
+`go-redis` supports last two Go versions and only works with Go modules.
 So, first, you need to initialize a Go module:
 
 ```
@@ -91,7 +91,7 @@ userSession := client.HGetAll(ctx, "user-session:123").Val()
 fmt.Println(userSession)
  ```
 
-#### Connect to a Redis cluster
+#### Connect to a Valkey cluster
 
 To connect to a Redis cluster, use `NewClusterClient`. 
 
@@ -105,21 +105,21 @@ client := redis.NewClusterClient(&redis.ClusterOptions{
 })
 ```
 
-#### Connect to your production Redis with TLS
+#### Connect to your production Valkey with TLS
 
-When you deploy your application, use TLS and follow the [Redis security](/docs/management/security/) guidelines.
+When you deploy your application, use TLS and follow the [security](/docs/management/security/) guidelines.
 
-Establish a secure connection with your Redis database using this snippet.
+Establish a secure connection with your Valkey database using this snippet.
 
 ```go
 // Load client cert
-cert, err := tls.LoadX509KeyPair("redis_user.crt", "redis_user_private.key")
+cert, err := tls.LoadX509KeyPair("valkey_user.crt", "valkey_user_private.key")
 if err != nil {
     log.Fatal(err)
 }
 
 // Load CA cert
-caCert, err := os.ReadFile("redis_ca.pem")
+caCert, err := os.ReadFile("valkey_ca.pem")
 if err != nil {
     log.Fatal(err)
 }
@@ -127,9 +127,9 @@ caCertPool := x509.NewCertPool()
 caCertPool.AppendCertsFromPEM(caCert)
 
 client := redis.NewClient(&redis.Options{
-    Addr:     "my-redis.cloud.redislabs.com:6379",
-    Username: "default", // use your Redis user. More info https://redis.io/docs/management/security/acl/
-    Password: "secret", // use your Redis password
+    Addr:     "my-valkey.example.com:6379",
+    Username: "default", // use your Valkey user. More info https://valkey.io/topics/acl
+    Password: "secret", // use your Valkey password
     TLSConfig: &tls.Config{
         MinVersion:   tls.VersionTLS12,
         Certificates: []tls.Certificate{cert},
@@ -154,7 +154,7 @@ fmt.Println("foo", val)
 
 #### dial tcp: i/o timeout
 
-You get a `dial tcp: i/o timeout` error when `go-redis` can't connect to the Redis Server, for example, when the server is down or the port is protected by a firewall. To check if Redis Server is listening on the port, run telnet command on the host where the `go-redis` client is running.
+You get a `dial tcp: i/o timeout` error when `go-redis` can't connect to the server, for example, when the server is down or the port is protected by a firewall. To check if Valkey Server is listening on the port, run telnet command on the host where the `go-redis` client is running.
 
 ```go
 telnet localhost 6379
@@ -163,10 +163,9 @@ telnet: Unable to connect to remote host: Connection refused
 ```
 
 If you use Docker, Istio, or any other service mesh/sidecar, make sure the app starts after the container is fully available, for example, by configuring healthchecks with Docker and holdApplicationUntilProxyStarts with Istio. 
-For more information, see [Healthcheck](https://docs.docker.com/engine/reference/run/#healthcheck).
+For more information regarding Docker, see [Docker Healthcheck](https://docs.docker.com/engine/reference/run/#healthcheck).
 
 ### Learn more
 
-* [Documentation](https://redis.uptrace.dev/guide/)
 * [GitHub](https://github.com/redis/go-redis)
  

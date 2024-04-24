@@ -1,19 +1,19 @@
 ---
 title: "C#/.NET guide"
 linkTitle: "C#/.NET"
-description: Connect your .NET application to a Redis database
+description: Connect your .NET application to a Valkey database
 weight: 1
 aliases:
   - /docs/clients/dotnet/
   - /docs/redis-clients/dotnet/
 ---
 
-Install Redis and the Redis client, then connect your .NET application to a Redis database. 
+Install Valkey and the Valkey client, then connect your .NET application to a Valkey database.
 
 ## NRedisStack
 
-[NRedisStack](https://github.com/redis/NRedisStack) is a .NET client for Redis.
-`NredisStack` requires a running Redis server. See [Getting started](/docs/getting-started/) for Redis installation instructions.
+[NRedisStack](https://github.com/redis/NRedisStack) is a .NET client for Valkey and Redis.
+`NredisStack` requires a running Valkey or Redis server. See [Getting started](/docs/getting-started/) for Valkey installation instructions.
 
 ### Install
 
@@ -48,7 +48,7 @@ Store and retrieve a HashMap.
 var hash = new HashEntry[] { 
     new HashEntry("name", "John"), 
     new HashEntry("surname", "Smith"),
-    new HashEntry("company", "Redis"),
+    new HashEntry("company", "Garantia"),
     new HashEntry("age", "29"),
     };
 db.HashSet("user-session:123", hash);
@@ -56,12 +56,12 @@ db.HashSet("user-session:123", hash);
 var hashFields = db.HashGetAll("user-session:123");
 Console.WriteLine(String.Join("; ", hashFields));
 // Prints: 
-// name: John; surname: Smith; company: Redis; age: 29
+// name: John; surname: Smith; company: Garantia; age: 29
 ```
 
-#### Connect to a Redis cluster
+#### Connect to a Valkey cluster
 
-To connect to a Redis cluster, you just need to specify one or all cluster endpoints in the client configuration:
+To connect to a Valkey cluster, you just need to specify one or all cluster endpoints in the client configuration:
 
 ```csharp
 ConfigurationOptions options = new ConfigurationOptions
@@ -81,35 +81,35 @@ db.StringSet("foo", "bar");
 Console.WriteLine(db.StringGet("foo")); // prints bar
 ```
 
-#### Connect to your production Redis with TLS
+#### Connect to Valkey with TLS
 
-When you deploy your application, use TLS and follow the [Redis security](/docs/management/security/) guidelines.
+When you deploy your application, use TLS and follow the [security](/docs/management/security/) guidelines.
 
-Before connecting your application to the TLS-enabled Redis server, ensure that your certificates and private keys are in the correct format.
+Before connecting your application to the TLS-enabled Valkey server, ensure that your certificates and private keys are in the correct format.
 
 To convert user certificate and private key from the PEM format to `pfx`, use this command:
 
 ```bash
-openssl pkcs12 -inkey redis_user_private.key -in redis_user.crt -export -out redis.pfx
+openssl pkcs12 -inkey valkey_user_private.key -in valkey_user.crt -export -out valkey.pfx
 ```
 
 Enter password to protect your `pfx` file.
 
-Establish a secure connection with your Redis database using this snippet.
+Establish a secure connection with your Valkey database using this snippet.
 
 ```csharp
 ConfigurationOptions options = new ConfigurationOptions
 {
-    EndPoints = { { "my-redis.cloud.redislabs.com", 6379 } },
-    User = "default",  // use your Redis user. More info https://redis.io/docs/management/security/acl/
-    Password = "secret", // use your Redis password
+    EndPoints = { { "my-valkey.example.com", 6379 } },
+    User = "default",  // use your Valkey user. More info https://valkey.io/topics/acl
+    Password = "secret", // use your Valkey password
     Ssl = true,
     SslProtocols = System.Security.Authentication.SslProtocols.Tls12                
 };
 
 options.CertificateSelection += delegate
 {
-    return new X509Certificate2("redis.pfx", "secret"); // use the password you specified for pfx file
+    return new X509Certificate2("valkey.pfx", "secret"); // use the password you specified for pfx file
 };
 options.CertificateValidation += ValidateServerCertificate;
 
@@ -123,7 +123,7 @@ bool ValidateServerCertificate(
         return false;       
     }
 
-    var ca = new X509Certificate2("redis_ca.pem");
+    var ca = new X509Certificate2("valkey_ca.pem");
     bool verdict = (certificate.Issuer == ca.Subject);
     if (verdict) {
         return true;

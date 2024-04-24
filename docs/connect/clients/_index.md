@@ -1,15 +1,15 @@
 ---
-title: "Connect with Redis clients"
+title: "Connect with Valkey clients"
 linkTitle: "Clients"
-description: Connect your application to a Redis database and try an example
+description: Connect your application to a Valkey database and try an example
 weight: 45
 aliases:
  - /docs/redis-clients
  - /docs/clients/
 ---
 
-For more Redis topics, see [Using](/docs/manual/) and [Managing](/docs/management/) Redis.
+For more Valkey topics, see [Using](/docs/manual/) and [Managing](/docs/management/) Valkey.
 
-If you're ready to get started, see the following guides for the official client libraries you can use with Redis. For a complete list of community-driven clients, see [Clients](/resources/clients/).
+If you're ready to get started, see the following guides for some client libraries you can use with Valkey. For a complete list of community-driven clients, see [Clients](/resources/clients/).
 
 <hr>
