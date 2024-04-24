@@ -10,7 +10,7 @@ aliases: [
 ]
 ---
 
-Valkey Sentinel provides high availability for Valkey when not using [Valkey Cluster](/docs/manual/scaling). 
+Valkey Sentinel provides high availability for Valkey when not using [Valkey Cluster](cluster-tutorial.md). 
 
 Valkey Sentinel also provides other collateral tasks such as monitoring,
 notifications and acts as a configuration provider for clients.
@@ -613,7 +613,7 @@ The `SENTINEL` command is the main API for Sentinel. The following is the list o
 
 For connection management and administration purposes, Sentinel supports the following subset of Valkey's commands:
 
-* **ACL** (`>= 6.2`) This command manages the Sentinel Access Control List. For more information refer to the [ACL](/topics/acl) documentation page and the [_Sentinel Access Control List authentication_](#sentinel-access-control-list-authentication).
+* **ACL** (`>= 6.2`) This command manages the Sentinel Access Control List. For more information refer to the [ACL](acl.md) documentation page and the [_Sentinel Access Control List authentication_](#sentinel-access-control-list-authentication).
 * **AUTH** (`>= 5.0.1`) Authenticate a client connection. For more information refer to the `AUTH` command and the [_Configuring Sentinel instances with authentication_ section](#configuring-sentinel-instances-with-authentication).
 * **CLIENT** This command manages client connections. For more information refer to its subcommands' pages.
 * **COMMAND** (`>= 6.2`) This command returns information about commands. For more information refer to the `COMMAND` command and its various subcommands.
@@ -791,7 +791,7 @@ used for the asynchronous replication protocol.
 
 ## Valkey Access Control List authentication
 
-Starting with Valkey OSS 6, user authentication and permission is managed with the [Access Control List (ACL)](/topics/acl).
+Starting with Valkey OSS 6, user authentication and permission is managed with the [Access Control List (ACL)](acl.md).
 
 In order for Sentinels to connect to Valkey server instances when they are
 configured with ACL, the Sentinel configuration must include the
@@ -835,7 +835,7 @@ configured with `requirepass`, the Sentinel configuration must include the
 Configuring Sentinel instances with authentication
 ---
 
-Sentinel instances themselves can be secured by requiring clients to authenticate via the `AUTH` command. Starting with Valkey OSS 6.2, the [Access Control List (ACL)](/topics/acl) is available, whereas previous versions (starting with Valkey OSS 5.0.1) support password-only authentication.
+Sentinel instances themselves can be secured by requiring clients to authenticate via the `AUTH` command. Starting with Valkey OSS 6.2, the [Access Control List (ACL)](acl.md) is available, whereas previous versions (starting with Valkey OSS 5.0.1) support password-only authentication.
 
 Note that Sentinel's authentication configuration should be **applied to each of the instances** in your deployment, and **all instances should use the same configuration**. Furthermore, ACL and password-only authentication should not be used together.
 
@@ -879,7 +879,7 @@ Before using this configuration, make sure your client library can send the `AUT
 ### Sentinel clients implementation
 ---
 
-Sentinel requires explicit client support, unless the system is configured to execute a script that performs a transparent redirection of all the requests to the new master instance (virtual IP or other similar systems). The topic of client libraries implementation is covered in the document [Sentinel clients guidelines](/topics/sentinel-clients).
+Sentinel requires explicit client support, unless the system is configured to execute a script that performs a transparent redirection of all the requests to the new master instance (virtual IP or other similar systems). The topic of client libraries implementation is covered in the document [Sentinel clients guidelines](sentinel-clients.md).
 
 ## More advanced concepts
 

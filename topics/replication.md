@@ -177,7 +177,7 @@ for more details.
 Replicas are read-only by default.
 This behavior is controlled by the `replica-read-only` option in the valkey.conf file, and can be enabled and disabled at runtime using `CONFIG SET`.
 
-Read-only replicas will reject all write commands, so that it is not possible to write to a replica because of a mistake. This does not mean that the feature is intended to expose a replica instance to the internet or more generally to a network where untrusted clients exist, because administrative commands like `DEBUG` or `CONFIG` are still enabled. The [Security](/topics/security) page describes how to secure a Valkey instance.
+Read-only replicas will reject all write commands, so that it is not possible to write to a replica because of a mistake. This does not mean that the feature is intended to expose a replica instance to the internet or more generally to a network where untrusted clients exist, because administrative commands like `DEBUG` or `CONFIG` are still enabled. The [Security](security.md) page describes how to secure a Valkey instance.
 
 You may wonder why it is possible to revert the read-only setting
 and have replica instances that can be targeted by write operations.

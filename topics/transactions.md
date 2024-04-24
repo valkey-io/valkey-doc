@@ -25,7 +25,7 @@ if a client loses the connection to the server in the context of a
 transaction before calling the `EXEC` command none of the operations
 are performed, instead if the `EXEC` command is called, all the
 operations are performed. When using the
-[append-only file](/topics/persistence#append-only-file) Valkey makes sure
+[append-only file](persistence.md#append-only-file) Valkey makes sure
 to use a single write(2) syscall to write the transaction on disk.
 However if the Valkey server crashes or is killed by the system administrator
 in some hard way it is possible that only a partial number of operations
@@ -115,7 +115,7 @@ EXEC
 -WRONGTYPE Operation against a key holding the wrong kind of value
 ```
 
-`EXEC` returned two-element [bulk string reply](/topics/protocol#bulk-string-reply) where one is an `OK` code and
+`EXEC` returned two-element [bulk string reply](protocol.md#bulk-string-reply) where one is an `OK` code and
 the other an error reply. It's up to the client library to find a
 sensible way to provide the error to the user.
 
@@ -168,7 +168,7 @@ transactions.
 
 `WATCH`ed keys are monitored in order to detect changes against them. If
 at least one watched key is modified before the `EXEC` command, the
-whole transaction aborts, and `EXEC` returns a [Null reply](/topics/protocol#nil-reply) to notify that
+whole transaction aborts, and `EXEC` returns a [Null reply](protocol.md#nil-reply) to notify that
 the transaction failed.
 
 For example, imagine we have the need to atomically increment the value
@@ -259,11 +259,11 @@ ZREM zset element
 EXEC
 ```
 
-If `EXEC` fails (i.e. returns a [Null reply](/topics/protocol#nil-reply)) we just repeat the operation.
+If `EXEC` fails (i.e. returns a [Null reply](protocol.md#nil-reply)) we just repeat the operation.
 
 ## Valkey scripting and transactions
 
 Something else to consider for transaction like operations in redis are
-[redis scripts](/commands/eval) which are transactional. Everything
+[redis scripts](../commands/eval.md) which are transactional. Everything
 you can do with a Valkey Transaction, you can also do with a script, and
 usually the script will be both simpler and faster.

@@ -11,9 +11,9 @@ aliases:
 The modules documentation is composed of the following pages:
 
 * Introduction to Valkey modules (this file). An overview about Valkey Modules system and API. It's a good idea to start your reading here.
-* [Implementing native data types](/topics/modules-native-types) covers the implementation of native data types into modules.
-* [Blocking operations](/topics/modules-blocking-ops) shows how to write blocking commands that will not reply immediately, but will block the client, without blocking the Valkey server, and will provide a reply whenever will be possible.
-* [Valkey modules API reference](/topics/modules-api-ref) is generated from module.c top comments of RedisModule functions. It is a good reference in order to understand how each function works.
+* [Implementing native data types](modules-native-types.md) covers the implementation of native data types into modules.
+* [Blocking operations](modules-blocking-ops.md) shows how to write blocking commands that will not reply immediately, but will block the client, without blocking the Valkey server, and will provide a reply whenever will be possible.
+* [Valkey modules API reference](modules-api-ref.md) is generated from module.c top comments of RedisModule functions. It is a good reference in order to understand how each function works.
 
 Valkey modules make it possible to extend Valkey functionality using external
 modules, rapidly implementing new Valkey commands with features

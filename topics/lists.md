@@ -30,7 +30,7 @@ For example:
 * `BLMOVE` atomically moves elements from a source list to a target list.
   If the source list is empty, the command will block until a new element becomes available.
 
-See the [complete series of list commands](/commands/?group=list).
+See the [complete series of list commands](../commands/?group=list).
 
 ## Examples
 
@@ -121,7 +121,7 @@ taken at constant length in constant time.
 
 When fast access to the middle of a large collection of elements is important,
 there is a different data structure that can be used, called sorted sets.
-Sorted sets are covered in the [Sorted sets](/docs/data-types/sorted-sets) tutorial page.
+Sorted sets are covered in the [Sorted sets](sorted-sets.md) tutorial page.
 
 ### First steps with Lists
 
@@ -407,4 +407,4 @@ Exercise caution when running these commands, mainly when operating on large lis
 
 ## Alternatives
 
-Consider [Streams](/docs/data-types/streams) as an alternative to lists when you need to store and process an indeterminate series of events.
+Consider [Streams](streams-intro.md) as an alternative to lists when you need to store and process an indeterminate series of events.

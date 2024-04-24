@@ -136,7 +136,7 @@ is not always true. If you can efficiently represent something
 multi-dimensional in a linear way, they it is often possible to use a simple
 sorted set for indexing.
 
-For example the [Valkey geo indexing API](/commands/geoadd) uses a sorted
+For example the [Valkey geo indexing API](../commands/geoadd.md) uses a sorted
 set to index places by latitude and longitude using a technique called
 [Geo hash](https://en.wikipedia.org/wiki/Geohash). The sorted set score
 represents alternating bits of longitude and latitude, so that we map the
@@ -282,7 +282,7 @@ commands:
     ZADD myindex 0 banana:2
 
 Note that because it is possible that there are concurrent updates, the
-above three commands should be send via a [Lua script](/commands/eval)
+above three commands should be send via a [Lua script](../commands/eval.md)
 instead, so that the Lua script will atomically get the old count and
 re-add the item with incremented score.
 

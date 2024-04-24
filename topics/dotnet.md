@@ -13,7 +13,7 @@ Install Valkey and the Valkey client, then connect your .NET application to a Va
 ## NRedisStack
 
 [NRedisStack](https://github.com/redis/NRedisStack) is a .NET client for Valkey and Redis.
-`NredisStack` requires a running Valkey or Redis server. See [Getting started](/docs/getting-started/) for Valkey installation instructions.
+`NredisStack` requires a running Valkey or Redis server. See [Getting started](get-started.md) for Valkey installation instructions.
 
 ### Install
 

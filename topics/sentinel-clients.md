@@ -19,7 +19,7 @@ This document is targeted at Valkey clients developers that want to support Sent
 * Automatic configuration of clients via Sentinel.
 * Improved safety of Valkey Sentinel automatic failover.
 
-For details about how Valkey Sentinel works, please check the [Valkey Documentation](/topics/sentinel), as this document only contains information needed for Valkey client developers, and it is expected that readers are familiar with the way Valkey Sentinel works.
+For details about how Valkey Sentinel works, please check the [Valkey Documentation](sentinel.md), as this document only contains information needed for Valkey client developers, and it is expected that readers are familiar with the way Valkey Sentinel works.
 
 ## Valkey service discovery via Sentinel
 
@@ -142,7 +142,7 @@ It is not needed for a client to be able to make the list persistent updating it
 Subscribe to Sentinel events to improve responsiveness
 ===
 
-The [Sentinel documentation](/topics/sentinel) shows how clients can connect to
+The [Sentinel documentation](sentinel.md) shows how clients can connect to
 Sentinel instances using Pub/Sub in order to subscribe to changes in the
 Valkey instances configurations.
 

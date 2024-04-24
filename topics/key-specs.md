@@ -18,7 +18,7 @@ Cluster-aware Valkey clients had to have the keys' extraction logic hard-coded i
 Alternatively, the `COMMAND GETKEYS` can be used to achieve a similar extraction effect but at a higher latency.
 
 A Valkey client isn't obligated to support key specifications.
-It can continue using the legacy _first key_, _last key_ and _step_ scheme along with the [_movablekeys_ flag](/commands/command#flags) that remain unchanged.
+It can continue using the legacy _first key_, _last key_ and _step_ scheme along with the [_movablekeys_ flag](../commands/command.md#flags) that remain unchanged.
 
 However, a Valkey client that implements key specifications support can consolidate most of its keys' extraction logic.
 Even if the client encounters an unfamiliar type of key specification, it can always revert to the `COMMAND GETKEYS` command.

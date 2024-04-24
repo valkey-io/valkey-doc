@@ -20,7 +20,7 @@ See the [installation guides](/docs/install/install-redis/) to install Valkey on
 
 ## Connect
 
-The first step is to connect to Valkey. You can find further details about the connection options in this documentation site's [connection section](/docs/connect). The following example shows how to connect to a Valkey server that runs on localhost (`-h 127.0.0.1`) and listens on the default port (`-p 6379`): 
+The first step is to connect to Valkey. You can find further details about the connection options in this documentation site's [connection section](/docs/connect/). The following example shows how to connect to a Valkey server that runs on localhost (`-h 127.0.0.1`) and listens on the default port (`-p 6379`): 
 
 {{< clients-example search_quickstart connect >}}
 > valkey-cli -h 127.0.0.1 -p 6379
@@ -57,14 +57,14 @@ Hashes are the equivalent of dictionaries (dicts or hash maps). Among other thin
 8) "4972"
 {{< /clients-example >}}
 
-You can get a complete overview of available data types in this documentation site's [data types section](/docs/data-types/). Each data type has commands allowing you to manipulate or retrieve data. The [commands reference](/commands/) provides a sophisticated explanation.
+You can get a complete overview of available data types in this documentation site's [data types section](/docs/data-types/). Each data type has commands allowing you to manipulate or retrieve data. The [commands reference](../commands/) provides a sophisticated explanation.
 
 ## Scan the keyspace
 
-Each item within Valkey has a unique key. All items live within the Valkey [keyspace](/docs/manual/keyspace/). You can scan the Valkey keyspace via the [SCAN command](/commands/scan/). Here is an example that scans for the first 100 keys that have the prefix `bike:`:
+Each item within Valkey has a unique key. All items live within the Valkey [keyspace](keyspace.md). You can scan the Valkey keyspace via the [SCAN command](../commands/scan.md). Here is an example that scans for the first 100 keys that have the prefix `bike:`:
 
 {{< clients-example scan_example >}}
 SCAN 0 MATCH "bike:*" COUNT 100
 {{< /clients-example >}}
 
-[SCAN](/commands/scan/) returns a cursor position, allowing you to scan iteratively for the next batch of keys until you reach the cursor value 0.
+[SCAN](../commands/scan.md) returns a cursor position, allowing you to scan iteratively for the next batch of keys until you reach the cursor value 0.

@@ -70,9 +70,9 @@ Command flags are an array. It can contain the following simple strings (status 
 * **no_auth:** executing the command doesn't require authentication.
 * **no_async_loading:** the command is denied during asynchronous loading (that is when a replica uses disk-less `SWAPDB SYNC`, and allows access to the old dataset).
 * **no_mandatory_keys:** the command may accept key name arguments, but these aren't mandatory.
-* **no_multi:** the command isn't allowed inside the context of a [transaction](/topics/transactions).
-* **noscript:** the command can't be called from [scripts](/topics/eval-intro) or [functions](/topics/functions-intro).
-* **pubsub:** the command is related to [Valkey Pub/Sub](/topics/pubsub).
+* **no_multi:** the command isn't allowed inside the context of a [transaction](../topics/transactions.md).
+* **noscript:** the command can't be called from [scripts](../topics/eval-intro.md) or [functions](../topics/functions-intro.md).
+* **pubsub:** the command is related to [Valkey Pub/Sub](../topics/pubsub.md).
 * **random**: the command returns random results, which is a concern with verbatim script replication. This flag is a [command tip][tb].
 * **readonly:** the command doesn't modify data.
 * **sort_for_script:** the command's output is sorted when called from a script.

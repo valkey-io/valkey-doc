@@ -39,7 +39,7 @@ parts:
 
 The rest of this document covers the latency monitoring subsystem
 details. For more information about the general topic of Valkey
-and latency, see [Valkey latency problems troubleshooting](/topics/latency).
+and latency, see [Valkey latency problems troubleshooting](latency.md).
 
 ## Events and time series
 

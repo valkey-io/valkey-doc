@@ -64,7 +64,7 @@ from the Valkey instance to the standard output.
 ### Generating Valkey Protocol
 
 The Valkey protocol is extremely simple to generate and parse, and is
-[Documented here](/topics/protocol). However in order to generate protocol for
+[Documented here](protocol.md). However in order to generate protocol for
 the goal of bulk loading you don't need to understand every detail of the
 protocol, but just that every command is represented in the following way:
 

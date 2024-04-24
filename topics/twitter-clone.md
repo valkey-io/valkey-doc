@@ -446,7 +446,7 @@ simple: you may use client-side sharding, or something like a sharding proxy
 like Twemproxy, or the upcoming Valkey Cluster.
 
 To know more about those topics please read
-[our documentation about sharding](/topics/partitioning). However, the point here
+[our documentation about sharding](cluster-tutorial.md). However, the point here
 to stress is that in a key-value store, if you design with care, the data set
 is split among **many independent small keys**. To distribute those keys
 to multiple nodes is more straightforward and predictable compared to using

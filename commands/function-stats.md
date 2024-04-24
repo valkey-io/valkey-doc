@@ -14,4 +14,4 @@ The reply is map with two keys:
 
 You can use this command to inspect the invocation of a long-running function and decide whether kill it with the `FUNCTION KILL` command.
 
-For more information please refer to [Introduction to Valkey Functions](/topics/functions-intro).
+For more information please refer to [Introduction to Valkey Functions](../topics/functions-intro.md).

@@ -29,7 +29,7 @@ Streams support several trimming strategies (to prevent streams from growing unb
 * `XRANGE` returns a range of entries between two supplied entry IDs.
 * `XLEN` returns the length of a stream.
  
-See the [complete list of stream commands](/commands/?group=stream).
+See the [complete list of stream commands](../commands/?group=stream).
 
 
 ## Examples
@@ -929,4 +929,4 @@ A few remarks:
 
 ## Learn more
 
-* The [Streams Tutorial](/docs/data-types/streams-tutorial) explains Streams with many examples.
+* The [Streams Tutorial](streams-intro.md) explains Streams with many examples.

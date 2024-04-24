@@ -17,7 +17,7 @@ usually you don't want Valkey instances used only for caching to block on when
 shutting down.
 
 Also note: If Valkey receives one of the signals `SIGTERM` and `SIGINT`, the same shutdown sequence is performed.
-See also [Signal Handling](/topics/signals).
+See also [Signal Handling](../topics/signals.md).
 
 ## Modifiers
 

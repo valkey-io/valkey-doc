@@ -9,12 +9,12 @@ aliases:
     - /docs/manual/programmability/functions-intro/
 ---
 
-Valkey Functions is an API for managing code to be executed on the server. This feature, which became available in Redis OSS 7, supersedes the use of [EVAL](/docs/manual/programmability/eval-intro) in prior versions of Valkey.
+Valkey Functions is an API for managing code to be executed on the server. This feature, which became available in Redis OSS 7, supersedes the use of [EVAL](eval-intro.md) in prior versions of Valkey.
 
 ## Prologue (or, what's wrong with Eval Scripts?)
 
 Prior versions of Valkey made scripting available only via the `EVAL` command, which allows a Lua script to be sent for execution by the server.
-The core use cases for [Eval Scripts](/topics/eval-intro) is executing part of your application logic inside Valkey, efficiently and atomically.
+The core use cases for [Eval Scripts](eval-intro.md) is executing part of your application logic inside Valkey, efficiently and atomically.
 Such script can perform conditional updates across multiple keys, possibly combining several different data types.
 
 Using `EVAL` requires that the application sends the entire script for execution every time.
@@ -28,9 +28,9 @@ The underlying assumption is that scripts are a part of the application and not 
 This approach suits many light-weight scripting use cases, but introduces several difficulties once an application becomes complex and relies more heavily on scripting, namely:
 
 1. All client application instances must maintain a copy of all scripts. That means having some mechanism that applies script updates to all of the application's instances.
-1. Calling cached scripts within the context of a [transaction](/topics/transactions) increases the probability of the transaction failing because of a missing script. Being more likely to fail makes using cached scripts as building blocks of workflows less attractive.
+1. Calling cached scripts within the context of a [transaction](transactions.md) increases the probability of the transaction failing because of a missing script. Being more likely to fail makes using cached scripts as building blocks of workflows less attractive.
 1. SHA1 digests are meaningless, making debugging the system extremely hard (e.g., in a `MONITOR` session).
-1. When used naively, `EVAL` promotes an anti-pattern in which scripts the client application renders verbatim scripts instead of responsibly using the [`!KEYS` and `ARGV` Lua APIs](/topics/lua-api#runtime-globals).
+1. When used naively, `EVAL` promotes an anti-pattern in which scripts the client application renders verbatim scripts instead of responsibly using the [`!KEYS` and `ARGV` Lua APIs](lua-api.md#runtime-globals).
 1. Because they are ephemeral, a script can't call another script. This makes sharing and reusing code between scripts nearly impossible, short of client-side preprocessing (see the first point).
 
 To address these needs while avoiding breaking changes to already-established and well-liked ephemeral scripts, Redis OSS v7.0 introduces Valkey Functions.
@@ -56,10 +56,10 @@ The Valkey Functions feature makes no assumptions about the implementation's lan
 An execution engine that is part of the definition of the function handles running it.
 An engine can theoretically execute functions in any language as long as it respects several rules (such as the ability to terminate an executing function).
 
-Presently, as noted above, Valkey ships with a single embedded [Lua 5.1](/topics/lua-api) engine.
+Presently, as noted above, Valkey ships with a single embedded [Lua 5.1](lua-api.md) engine.
 There are plans to support additional engines in the future.
 Valkey functions can use all of Lua's available capabilities to ephemeral scripts,
-with the only exception being the [Valkey Lua scripts debugger](/topics/ldb).
+with the only exception being the [Valkey Lua scripts debugger](ldb.md).
 
 Functions also simplify development by enabling code sharing.
 Every function belongs to a single library, and any given library can consist of multiple functions.
@@ -73,7 +73,7 @@ Functions are also persisted to the AOF file and replicated from master to repli
 When Valkey is used as an ephemeral cache, additional mechanisms (described below) are required to make functions more durable.
 
 Like all other operations in Valkey, the execution of a function is atomic.
-A function's execution blocks all server activities during its entire time, similarly to the semantics of [transactions](/topics/transactions).
+A function's execution blocks all server activities during its entire time, similarly to the semantics of [transactions](transactions.md).
 These semantics mean that all of the script's effects either have yet to happen or had already happened.
 The blocking semantics of an executed function apply to all connected clients at all times.
 Because running a function blocks the Valkey server, functions are meant to finish executing quickly, so you should avoid using long-running functions.
@@ -82,7 +82,7 @@ Because running a function blocks the Valkey server, functions are meant to fini
 
 Let's explore Valkey Functions via some tangible examples and Lua snippets.
 
-At this point, if you're unfamiliar with Lua in general and specifically in Valkey, you may benefit from reviewing some of the examples in [Introduction to Eval Scripts](/topics/eval-intro) and [Lua API](/topics/lua-api) pages for a better grasp of the language.
+At this point, if you're unfamiliar with Lua in general and specifically in Valkey, you may benefit from reviewing some of the examples in [Introduction to Eval Scripts](eval-intro.md) and [Lua API](lua-api.md) pages for a better grasp of the language.
 
 Every Valkey function belongs to a single library that's loaded to Valkey.
 Loading a library to the database is done with the `FUNCTION LOAD` command.
@@ -237,7 +237,7 @@ server.register_function('my_hgetall', my_hgetall)
 server.register_function('my_hlastmodified', my_hlastmodified)
 ```
 
-While all of the above should be straightforward, note that the `my_hgetall` also calls [`server.setresp(3)`](/topics/lua-api#server.setresp).
+While all of the above should be straightforward, note that the `my_hgetall` also calls [`server.setresp(3)`](lua-api.md#server.setresp).
 That means that the function expects [RESP3](https://github.com/redis/redis-specifications/blob/master/protocol/RESP3.md) replies after calling `server.call()`, which, unlike the default RESP2 protocol, provides dictionary (associative arrays) replies.
 Doing so allows the function to delete (or set to `nil` as is the case with Lua tables) specific fields from the reply, and in our case, the `_last_modified_` field.
 
@@ -295,7 +295,7 @@ You can see that it is easy to update our library with new capabilities.
 On top of bundling functions together into database-managed software artifacts, libraries also facilitate code sharing.
 We can add to our library an error handling helper function called from other functions.
 The helper function `check_keys()` verifies that the input _keys_ table has a single key.
-Upon success it returns `nil`, otherwise it returns an [error reply](/topics/lua-api#server.error_reply).
+Upon success it returns `nil`, otherwise it returns an [error reply](lua-api.md#server.error_reply).
 
 The updated library's source code would be:
 
@@ -418,7 +418,7 @@ The server will reply with this error in the following cases:
 3. A disk error was detected (Valkey is unable to persist so it rejects writes).
 
 In these cases, you can add the `no-writes` flag to the function's registration, disable the safeguard and allow them to run.
-To register a function with flags use the [named arguments](/topics/lua-api#server.register_function_named_args) variant of `server.register_function`.
+To register a function with flags use the [named arguments](lua-api.md#server.register_function_named_args) variant of `server.register_function`.
 
 The updated registration code snippet from the library looks like this:
 
@@ -448,4 +448,4 @@ redis> FCALL_RO my_hlastmodified 1 myhash
 "1640772721"
 ```
 
-For the complete documentation flags, please refer to [Script flags](/topics/lua-api#script_flags).
+For the complete documentation flags, please refer to [Script flags](lua-api.md#script_flags).

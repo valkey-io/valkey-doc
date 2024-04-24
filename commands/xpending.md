@@ -1,7 +1,7 @@
 Fetching data from a stream via a consumer group, and not acknowledging
 such data, has the effect of creating *pending entries*. This is
 well explained in the `XREADGROUP` command, and even better in our
-[introduction to Streams](/topics/streams-intro). The `XACK` command
+[introduction to Streams](../topics/streams-intro.md). The `XACK` command
 will immediately remove the pending entry from the Pending Entries List (PEL)
 since once a message is successfully processed, there is no longer need
 for the consumer group to track it and to remember the current owner
@@ -15,7 +15,7 @@ if there are idle messages. Moreover this command, together with `XCLAIM`
 is used in order to implement recovering of consumers that are failing
 for a long time, and as a result certain messages are not processed: a
 different consumer can claim the message and continue. This is better
-explained in the [streams intro](/topics/streams-intro) and in the
+explained in the [streams intro](../topics/streams-intro.md) and in the
 `XCLAIM` command page, and is not covered here.
 
 ## Summary form of XPENDING

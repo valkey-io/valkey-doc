@@ -14,7 +14,7 @@ Install Valkey and the Valkey client, then connect your Python application to a 
 
 Get started with the [redis-py](https://github.com/redis/redis-py) client for Valkey and Redis.
 
-`redis-py` requires a running Valkey. See [Getting started](/docs/getting-started/) for Valkey installation instructions.
+`redis-py` requires a running Valkey. See [Getting started](get-started.md) for Valkey installation instructions.
 
 ### Install
 

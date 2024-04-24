@@ -237,7 +237,7 @@ To store user keys, Valkey allocates at most as much memory as the `maxmemory`
 setting enables (however there are small extra allocations possible).
 
 The exact value can be set in the configuration file or set later via
-`CONFIG SET` (for more info, see [Using memory as an LRU cache](/docs/reference/eviction)).
+`CONFIG SET` (for more info, see [Using memory as an LRU cache](lru-cache.md)).
 There are a few things that should be noted about how Valkey manages memory:
 
 * Valkey will not always free up (return) memory to the OS when keys are removed.

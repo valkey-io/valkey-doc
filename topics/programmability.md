@@ -9,13 +9,13 @@ aliases:
     - /docs/manual/programmability/
 ---
 
-Valkey provides a programming interface that lets you execute custom scripts on the server itself. In Redis OSS 7 and beyond, you can use [Valkey Functions](/docs/manual/programmability/functions-intro) to manage and run your scripts. In Redis OSS 6.2 and below, you use [Lua scripting with the EVAL command](/docs/manual/programmability/eval-intro) to program the server.
+Valkey provides a programming interface that lets you execute custom scripts on the server itself. In Redis OSS 7 and beyond, you can use [Valkey Functions](functions-intro.md) to manage and run your scripts. In Redis OSS 6.2 and below, you use [Lua scripting with the EVAL command](eval-intro.md) to program the server.
 
 ## Background
 
 Valkey is, by [definition](https://github.com/valkey-io/valkey/blob/unstable/MANIFESTO#L7), a _"domain-specific language for abstract data types"_.
-The language that Valkey speaks consists of its [commands](/commands).
-Most the commands specialize at manipulating core [data types](/topics/data-types-intro) in different ways.
+The language that Valkey speaks consists of its [commands](../commands/).
+Most the commands specialize at manipulating core [data types]() in different ways.
 In many cases, these commands provide all the functionality that a developer requires for managing application data in Valkey.
 
 The term **programmability** in Valkey means having the ability to execute arbitrary user-defined logic by the server.
@@ -28,7 +28,7 @@ Such APIs can encapsulate business logic and maintain a data model across multip
 User scripts are executed in Valkey by an embedded, sandboxed scripting engine.
 Presently, Valkey supports a single scripting engine, the [Lua 5.1](https://www.lua.org/) interpreter.
 
-Please refer to the [Valkey Lua API Reference](/topics/lua-api) page for complete documentation.
+Please refer to the [Valkey Lua API Reference](lua-api.md) page for complete documentation.
 
 ## Running scripts
 
@@ -48,11 +48,11 @@ In this case, loading a function to the database becomes an administrative deplo
 
 Please refer to the following pages for more information:
 
-* [Valkey Eval Scripts](/topics/eval-intro)
-* [Valkey Functions](/topics/functions-intro)
+* [Valkey Eval Scripts](eval-intro.md)
+* [Valkey Functions](functions-intro.md)
 
 When running a script or a function, Valkey guarantees its atomic execution.
-The script's execution blocks all server activities during its entire time, similarly to the semantics of [transactions](/topics/transactions).
+The script's execution blocks all server activities during its entire time, similarly to the semantics of [transactions](transactions.md).
 These semantics mean that all of the script's effects either have yet to happen or had already happened.
 The blocking semantics of an executed script apply to all connected clients at all times.
 
@@ -63,7 +63,7 @@ However, if you intend to use a slow script in your application, be aware that a
 ## Read-only scripts
 
 A read-only script is a script that only executes commands that don't modify any keys within Valkey.
-Read-only scripts can be executed either by adding the `no-writes` [flag](/topics/lua-api#script_flags) to the script or by executing the script with one of the read-only script command variants: `EVAL_RO`, `EVALSHA_RO`, or `FCALL_RO`.
+Read-only scripts can be executed either by adding the `no-writes` [flag](lua-api.md#script_flags) to the script or by executing the script with one of the read-only script command variants: `EVAL_RO`, `EVALSHA_RO`, or `FCALL_RO`.
 They have the following properties:
 
 * They can always be executed on replicas.
@@ -83,7 +83,7 @@ In addition to the benefits provided by all read-only scripts, the read-only scr
 Read-only scripts and read-only script commands were introduced in Redis OSS 7.0
 
 * Before Redis OSS 7.0.1 `PUBLISH`, `SPUBLISH` and `PFCOUNT` were not considered write commands in scripts
-* Before Redis OSS 7.0.1 the `no-writes` [flag](/topics/lua-api#script_flags) did not imply `allow-oom`
+* Before Redis OSS 7.0.1 the `no-writes` [flag](lua-api.md#script_flags) did not imply `allow-oom`
 * Before Redis OSS 7.0.1 the `no-writes` flag did not permit the script to run during write pauses.
 
 

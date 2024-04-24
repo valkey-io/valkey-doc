@@ -28,7 +28,7 @@ RESP is the protocol you should implement in your Valkey client.
 
 {{% alert title="Note" color="info" %}}
 The protocol outlined here is used only for client-server communication.
-[Valkey Cluster](/docs/reference/cluster-spec) uses a different binary protocol for exchanging messages between nodes.
+[Valkey Cluster](cluster-spec.md) uses a different binary protocol for exchanging messages between nodes.
 {{% /alert %}}
 
 ## RESP versions
@@ -60,7 +60,7 @@ This is the simplest model possible; however, there are some exceptions:
 
 * Valkey requests can be [pipelined](#multiple-commands-and-pipelining).
   Pipelining enables clients to send multiple commands at once and wait for replies later.
-* When a RESP2 connection subscribes to a [Pub/Sub](/docs/manual/pubsub) channel, the protocol changes semantics and becomes a *push* protocol.
+* When a RESP2 connection subscribes to a [Pub/Sub](pubsub.md) channel, the protocol changes semantics and becomes a *push* protocol.
   The client no longer requires sending commands because the server will automatically send new messages to the client (for the channels the client is subscribed to) as soon as they are received.
 * The `MONITOR` command.
   Invoking the `MONITOR` command switches the connection to an ad-hoc push mode.
@@ -472,7 +472,7 @@ Example:
 (The raw RESP encoding is split into multiple lines for readability).
 
 Some client libraries may ignore the difference between this type and the string type and return a native string in both cases.
-However, interactive clients, such as command line interfaces (e.g., [`valkey-cli`](/docs/manual/cli)), can use this type and know that their output should be presented to the human user as is and without quoting the string.
+However, interactive clients, such as command line interfaces (e.g., [`valkey-cli`](cli.md)), can use this type and know that their output should be presented to the human user as is and without quoting the string.
 
 For example, the Valkey command `INFO` outputs a report that includes newlines.
 When using RESP3, `valkey-cli` displays it correctly because it is sent as a Verbatim String reply (with its three bytes being "txt").
@@ -635,7 +635,7 @@ Pipelining is supported, so multiple commands can be sent with a single write op
 The client can skip reading replies and continue to send the commands one after the other.
 All the replies can be read at the end.
 
-For more information, see [Pipelining](/topics/pipelining).
+For more information, see [Pipelining](pipelining.md).
 
 ## Inline commands
 Sometimes you may need to send a command to the Valkey server but only have `telnet` available.
@@ -694,7 +694,7 @@ While comparable in performance to a binary protocol, the Valkey protocol is sig
 
 ## Tips for Valkey client authors
 
-* For testing purposes, use [Lua's type conversions](/topics/lua-api#lua-to-resp3-type-conversion) to have Valkey reply with any RESP2/RESP3 needed.
+* For testing purposes, use [Lua's type conversions](lua-api.md#lua-to-resp3-type-conversion) to have Valkey reply with any RESP2/RESP3 needed.
   As an example, a RESP3 double can be generated like so:
   ```
   EVAL "return { double = tonumber(ARGV[1]) }" 0 1e0

@@ -70,7 +70,7 @@ Will add a new entry but will also evict old entries so that the stream will con
 ## Additional information about streams
 
 For further information about streams please check our
-[introduction to Streams document](/topics/streams-intro).
+[introduction to Streams document](../topics/streams-intro.md).
 
 @examples
 

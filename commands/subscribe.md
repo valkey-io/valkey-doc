@@ -7,5 +7,5 @@ However, if RESP3 is used (see `HELLO`) it is possible for a client to issue any
 
 Note that `RESET` can be called to exit subscribed state.
 
-For more information, see [Pub/sub](/docs/interact/pubsub/).
+For more information, see [Pub/sub](../topics/pubsub.md).
 

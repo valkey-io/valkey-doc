@@ -15,12 +15,12 @@ This is a an installation guide. You'll learn how to install, run, and experimen
 
 See the guide below that best fits your needs:
 
-* [Install Valkey from Source](/docs/install/install-redis/install-redis-from-source)
-* [Install Valkey on Linux](/docs/install/install-redis/install-redis-on-linux)
-* [Install Valkey on macOS](/docs/install/install-redis/install-redis-on-mac-os)
-* [Install Valkey on Windows](/docs/install/install-redis/install-redis-on-windows)
+* [Install Valkey from Source](install-valkey-from-source.md)
+* [Install Valkey on Linux](install-valkey-on-linux.md)
+* [Install Valkey on macOS](install-valkey-on-mac-os.md)
+* [Install Valkey on Windows](install-valkey-on-windows.md)
 
-Refer to [Valkey Administration](/docs/management/admin/) for detailed setup tips.
+Refer to [Valkey Administration](admin.md) for detailed setup tips.
 
 ## Test if you can connect using the CLI
 
@@ -60,18 +60,18 @@ Note that a Valkey instance exposed to the internet without any security [is ver
 
 Of course using Valkey just from the command line interface is not enough as the goal is to use it from your application. To do so, you need to download and install a Valkey client library for your programming language.
 
-You'll find a [full list of clients for different languages in this page](/clients).
+You'll find a [full list of clients for different languages in this page](/clients/).
 
 
 ## Valkey persistence
 
-You can learn [how Valkey persistence works on this page](/docs/management/persistence/). It is important to understand that, if you start Valkey with the default configuration, Valkey will spontaneously save the dataset only from time to time. For example, after at least five minutes if you have at least 100 changes in your data. If you want your database to persist and be reloaded after a restart make sure to call the **SAVE** command manually every time you want to force a data set snapshot. Alternatively, you can save the data on disk before quitting by using the **SHUTDOWN** command:
+You can learn [how Valkey persistence works on this page](persistence.md). It is important to understand that, if you start Valkey with the default configuration, Valkey will spontaneously save the dataset only from time to time. For example, after at least five minutes if you have at least 100 changes in your data. If you want your database to persist and be reloaded after a restart make sure to call the **SAVE** command manually every time you want to force a data set snapshot. Alternatively, you can save the data on disk before quitting by using the **SHUTDOWN** command:
 
 ```
 $ valkey-cli shutdown
 ```
 
-This way, Valkey will save the data on disk before quitting. Reading the [persistence page](/docs/management/persistence/) is strongly suggested to better understand how Valkey persistence works.
+This way, Valkey will save the data on disk before quitting. Reading the [persistence page](persistence.md) is strongly suggested to better understand how Valkey persistence works.
 
 ## Install Valkey properly
 
@@ -152,6 +152,6 @@ Make sure that everything is working as expected:
 The above instructions don't include all of the Valkey configuration parameters that you could change. For example, to use AOF persistence instead of RDB persistence, or to set up replication, and so forth.
 {{% /alert  %}}
 
-You should also read the example [valkey.conf](https://github.com/valkey-io/valkey/blob/unstable/valkey.conf) file, which is heavily annotated to help guide you on making changes. Further details can also be found in the [configuration article on this site](/docs/management/config/).
+You should also read the example [valkey.conf](https://github.com/valkey-io/valkey/blob/unstable/valkey.conf) file, which is heavily annotated to help guide you on making changes. Further details can also be found in the [configuration article on this site](config.md).
 
 <hr>

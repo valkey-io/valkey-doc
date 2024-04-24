@@ -1,8 +1,8 @@
 This is a read-only variant of the `EVAL` command that cannot execute commands that modify data.
 
-For more information about when to use this command vs `EVAL`, please refer to [Read-only scripts](/docs/manual/programmability/#read-only-scripts).
+For more information about when to use this command vs `EVAL`, please refer to [Read-only scripts](../topics/programmability.md#read-only-scripts).
 
-For more information about `EVAL` scripts please refer to [Introduction to Eval Scripts](/topics/eval-intro).
+For more information about `EVAL` scripts please refer to [Introduction to Eval Scripts](../topics/eval-intro.md).
 
 @examples
 

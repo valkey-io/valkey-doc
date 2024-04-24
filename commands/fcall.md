@@ -14,7 +14,7 @@ Functions **should never** access keys with programmatically-generated names or 
 Any additional input argument **should not** represent names of keys.
 These are regular arguments and are passed in a Lua table as the callback's second argument.
 
-For more information please refer to the [Valkey Programmability](/topics/programmability) and [Introduction to Valkey Functions](/topics/functions-intro) pages.
+For more information please refer to the [Valkey Programmability](../topics/programmability.md) and [Introduction to Valkey Functions](../topics/functions-intro.md) pages.
 
 @examples
 

@@ -13,7 +13,7 @@ Install Valkey and the client, then connect your Node.js application to a Valkey
 ## node-redis
 
 [node-redis](https://github.com/redis/node-redis) is a modern, high-performance Valkey and Redis client for Node.js.
-`node-redis` requires a running Valkey server. See [Getting started](/docs/getting-started/) for Valkey installation instructions.
+`node-redis` requires a running Valkey server. See [Getting started](get-started.md) for Valkey installation instructions.
 
 ### Install
 

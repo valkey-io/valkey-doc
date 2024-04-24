@@ -42,7 +42,7 @@ Valkey is, after all, a direct result of its current design.
 
 If your real problem is not the total RAM needed, but the fact that you need
 to split your data set into multiple Valkey instances, please read the
-[partitioning page](/topics/partitioning) in this documentation for more info.
+[partitioning page](cluster-tutorial.md) in this documentation for more info.
 
 ## Can you use Valkey with a disk-based database?
 
@@ -59,7 +59,7 @@ and not refreshed on cache misses.
 
 A good practice is to consider memory consumption when mapping your logical data model to the physical data model within Valkey. These considerations include using specific data types, key patterns, and normalization.
 
-Beyond data modeling, there is more info in the [Memory Optimization page](/topics/memory-optimization).
+Beyond data modeling, there is more info in the [Memory Optimization page](memory-optimization.md).
 
 ## What happens if Valkey runs out of memory?
 
@@ -70,7 +70,7 @@ with an error to write commands (but will continue to accept read-only
 commands).
 
 You can also configure Valkey to evict keys when the max memory limit
-is reached. See the [eviction policy docs](/docs/manual/eviction/) for more information on this.
+is reached. See the [eviction policy docs](lru-cache.md) for more information on this.
 
 ## Background saving fails with a fork() error on Linux?
 
@@ -116,7 +116,7 @@ the same box and treat them as different servers. At some point a single
 box may not be enough anyway, so if you want to use multiple CPUs you can
 start thinking of some way to shard earlier.
 
-You can find more information about using multiple Valkey instances in the [Partitioning page](/topics/partitioning).
+You can find more information about using multiple Valkey instances in the [Partitioning page](cluster-tutorial.md).
 
 As of version 4.0, Valkey has started implementing threaded actions. For now this is limited to deleting objects in the background and blocking commands implemented via Valkey modules. For subsequent releases, the plan is to make Valkey more and more threaded.
 
@@ -142,4 +142,4 @@ Because of this, it's common for users with many expired keys to see fewer keys 
 
 ## Why did Linux Foundation start the Valkey project?
 
-Read about [the history of Valkey](/topics/history).
+Read about [the history of Valkey](history.md).

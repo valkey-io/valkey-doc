@@ -77,7 +77,7 @@ disable protected mode or manually bind all the interfaces.
 
 Valkey provides two ways to authenticate clients.
 The recommended authentication method, introduced in Valkey OSS 6.0, is via Access Control Lists, allowing named users to be created and assigned fine-grained permissions.
-Read more about Access Control Lists [here](/docs/management/security/acl/).
+Read more about Access Control Lists [here](acl.md).
 
 The legacy authentication method is enabled by editing the **valkey.conf** file, and providing a database password using the `requirepass` setting.
 This password is then used by all clients.

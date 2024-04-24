@@ -113,9 +113,9 @@ By default, a single String can be a maximum of 512 MB.
 
 ### Bitwise operations
 
-To perform bitwise operations on a string, see the [bitmaps data type](/docs/data-types/bitmaps) docs.
+To perform bitwise operations on a string, see the [bitmaps data type](bitmaps.md) docs.
 
-See the [complete list of string commands](/commands/?group=string).
+See the [complete list of string commands](../commands/?group=string).
 
 ## Performance
 
@@ -125,4 +125,4 @@ These random-access string commands may cause performance issues when dealing wi
 
 ## Alternatives
 
-If you're storing structured data as a serialized string, you may also want to consider Valkey [hashes](/docs/data-types/hashes).
+If you're storing structured data as a serialized string, you may also want to consider Valkey [hashes](hashes.md).

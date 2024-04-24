@@ -7,7 +7,7 @@ aliases:
 - /docs/getting-started/installation/install-redis-on-mac-os
 ---
 
-This guide shows you how to install Valkey on macOS using Homebrew. Homebrew is the easiest way to install Valkey on macOS. If you'd prefer to build Valkey from the source files on macOS, see [Installing Valkey from Source](/docs/install/install-redis/install-redis-from-source).
+This guide shows you how to install Valkey on macOS using Homebrew. Homebrew is the easiest way to install Valkey on macOS. If you'd prefer to build Valkey from the source files on macOS, see [Installing Valkey from Source](install-valkey-from-source.md).
 
 ## Prerequisites
 

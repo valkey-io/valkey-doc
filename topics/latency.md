@@ -25,11 +25,11 @@ a low latency fashion. However I understand that we are busy people, so
 let's start with a quick checklist. If you fail following these steps, please
 return here to read the full documentation.
 
-1. Make sure you are not running slow commands that are blocking the server. Use the Valkey [Slow Log feature](/commands/slowlog) to check this.
+1. Make sure you are not running slow commands that are blocking the server. Use the Valkey [Slow Log feature](../commands/slowlog.md) to check this.
 2. For EC2 users, make sure you use HVM based modern EC2 instances, like m3.medium. Otherwise fork() is too slow.
 3. Transparent huge pages must be disabled from your kernel. Use `echo never > /sys/kernel/mm/transparent_hugepage/enabled` to disable them, and restart your Valkey process.
 4. If you are using a virtual machine, it is possible that you have an intrinsic latency that has nothing to do with Valkey. Check the minimum latency you can expect from your runtime environment using `./valkey-cli --intrinsic-latency 100`. Note: you need to run this command in *the server* not in the client.
-5. Enable and use the [Latency monitor](/topics/latency-monitor) feature of Valkey in order to get a human readable description of the latency events and causes in your Valkey instance.
+5. Enable and use the [Latency monitor](latency-monitor.md) feature of Valkey in order to get a human readable description of the latency events and causes in your Valkey instance.
 
 In general, use the following table for durability VS latency/performance tradeoffs, ordered from stronger safety to better latency.
 
@@ -58,7 +58,7 @@ Valkey provides latency monitoring capabilities that
 are able to sample different execution paths to understand where the
 server is blocking. This makes debugging of the problems illustrated in
 this documentation much simpler, so we suggest enabling latency monitoring
-ASAP. Please refer to the [Latency monitor documentation](/topics/latency-monitor).
+ASAP. Please refer to the [Latency monitor documentation](latency-monitor.md).
 
 While the latency monitoring sampling and reporting capabilities will make
 it simpler to understand the source of latency in your Valkey system, it is still
@@ -200,7 +200,7 @@ values composed of many elements, or you should run a replica using Valkey
 replication where you run all your slow queries.
 
 It is possible to monitor slow commands using the Valkey
-[Slow Log feature](/commands/slowlog).
+[Slow Log feature](../commands/slowlog.md).
 
 Additionally, you can use your favorite per-process monitoring program
 (top, htop, prstat, etc ...) to quickly check the CPU consumption of the

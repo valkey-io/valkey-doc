@@ -45,7 +45,7 @@ aliases: [
 
 ### Security
 
-* By default, Valkey does not require any authentication and listens to all the network interfaces. This is a big security issue if you leave Valkey exposed on the internet or other places where attackers can reach it. See for example [this attack](http://antirez.com/news/96) to see how dangerous it can be. Please check our [security page](/topics/security) and the [quick start](/topics/quickstart) for information about how to secure Valkey.
+* By default, Valkey does not require any authentication and listens to all the network interfaces. This is a big security issue if you leave Valkey exposed on the internet or other places where attackers can reach it. See for example [this attack](http://antirez.com/news/96) to see how dangerous it can be. Please check our [security page](security.md) and the [quick start]() for information about how to secure Valkey.
 
 ## Running Valkey on EC2
 
@@ -76,4 +76,4 @@ Follow these steps to avoid downtime.
 
 * Once you confirm that the master is no longer receiving any queries (you can check this using the `MONITOR` command), elect the replica to master using the `REPLICAOF NO ONE` command, and then shut down your master.
 
-If you are using [Valkey Sentinel](/topics/sentinel) or [Valkey Cluster](/topics/cluster-tutorial), the simplest way to upgrade to newer versions is to upgrade one replica after the other. Then you can perform a manual failover to promote one of the upgraded replicas to master, and finally promote the last replica.
+If you are using [Valkey Sentinel](sentinel.md) or [Valkey Cluster](cluster-tutorial.md), the simplest way to upgrade to newer versions is to upgrade one replica after the other. Then you can perform a manual failover to promote one of the upgraded replicas to master, and finally promote the last replica.

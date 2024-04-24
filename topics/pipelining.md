@@ -143,7 +143,7 @@ As you can see, using pipelining, we improved the transfer by a factor of five.
 
 ## Pipelining vs Scripting
 
-Using [Valkey scripting](/commands/eval), a number of use cases for pipelining can be addressed more efficiently using scripts that perform a lot of the work needed at the server side.
+Using [Valkey scripting](../commands/eval.md), a number of use cases for pipelining can be addressed more efficiently using scripts that perform a lot of the work needed at the server side.
 A big advantage of scripting is that it is able to both read and write data with minimal latency, making operations like *read, compute, write* very fast (pipelining can't help in this scenario since the client needs the reply of the read command before it can call the write command).
 
 Sometimes the application may also want to send `EVAL` or `EVALSHA` commands in a pipeline. 

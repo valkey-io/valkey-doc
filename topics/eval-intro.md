@@ -10,7 +10,7 @@ aliases:
 ---
 
 Valkey lets users upload and execute Lua scripts on the server.
-Scripts can employ programmatic control structures and use most of the [commands](/commands) while executing to access the database.
+Scripts can employ programmatic control structures and use most of the [commands](../commands/) while executing to access the database.
 Because scripts execute in the server, reading and writing data from scripts is very efficient.
 
 Valkey guarantees the script's atomic execution.
@@ -29,11 +29,11 @@ Such scripts can perform conditional updates across multiple keys, possibly comb
 
 Scripts are executed in Valkey by an embedded execution engine.
 Presently, Valkey supports a single scripting engine, the [Lua 5.1](https://www.lua.org/) interpreter.
-Please refer to the [Valkey Lua API Reference](/topics/lua-api) page for complete documentation.
+Please refer to the [Valkey Lua API Reference](lua-api.md) page for complete documentation.
 
 Although the server executes them, Eval scripts are regarded as a part of the client-side application, which is why they're not named, versioned, or persisted.
 So all scripts may need to be reloaded by the application at any time if missing (after a server restart, fail-over to a replica, etc.).
-As of version 7.0, [Valkey Functions](/topics/functions-intro) offer an alternative approach to programmability which allow the server itself to be extended with additional programmed logic.
+As of version 7.0, [Valkey Functions](functions-intro.md) offer an alternative approach to programmability which allow the server itself to be extended with additional programmed logic.
 
 ## Getting started
 
@@ -92,7 +92,7 @@ Any input to the function that isn't the name of a key is a regular input argume
 
 In the example above, both _Hello_ and _Parameterization!_ regular input arguments for the script.
 Because the script doesn't touch any keys, we use the numerical argument _0_ to specify there are no key name arguments.
-The execution context makes arguments available to the script through [_KEYS_](/topics/lua-api#the-keys-global-variable) and [_ARGV_](/topics/lua-api#the-argv-global-variable) global runtime variables.
+The execution context makes arguments available to the script through [_KEYS_](lua-api.md#the-keys-global-variable) and [_ARGV_](lua-api.md#the-argv-global-variable) global runtime variables.
 The _KEYS_ table is pre-populated with all key name arguments provided to the script before its execution, whereas the _ARGV_ table serves a similar purpose but for regular arguments.
 
 The following attempts to demonstrate the distribution of input arguments between the scripts _KEYS_ and _ARGV_ runtime global variables:
@@ -108,12 +108,12 @@ redis> EVAL "return { KEYS[1], KEYS[2], ARGV[1], ARGV[2], ARGV[3] }" 2 key1 key2
 ```
 
 **Note:**
-as can been seen above, Lua's table arrays are returned as [RESP2 array replies](/topics/protocol#resp-arrays), so it is likely that your client's library will convert it to the native array data type in your programming language.
-Please refer to the rules that govern [data type conversion](/topics/lua-api#data-type-conversion) for more pertinent information.
+as can been seen above, Lua's table arrays are returned as [RESP2 array replies](protocol.md#resp-arrays), so it is likely that your client's library will convert it to the native array data type in your programming language.
+Please refer to the rules that govern [data type conversion](lua-api.md#data-type-conversion) for more pertinent information.
 
 ## Interacting with Valkey from a script
 
-It is possible to call Valkey commands from a Lua script either via [`server.call()`](/topics/lua-api#server.call) or [`server.pcall()`](/topics/lua-api#server.pcall).
+It is possible to call Valkey commands from a Lua script either via [`server.call()`](lua-api.md#server.call) or [`server.pcall()`](lua-api.md#server.pcall).
 
 The two are nearly identical.
 Both execute a Valkey command along with its provided arguments, if these represent a well-formed command.
@@ -177,12 +177,12 @@ redis> EVALSHA ffffffffffffffffffffffffffffffffffffffff 0
 ```
 
 In this case, the application should first load it with `SCRIPT LOAD` and then call `EVALSHA` once more to run the cached script by its SHA1 sum.
-Most of [Valkey' clients](/clients) already provide utility APIs for doing that automatically.
+Most of [Valkey' clients](/clients/) already provide utility APIs for doing that automatically.
 Please consult your client's documentation regarding the specific details.
 
 ### `!EVALSHA` in the context of pipelining
 
-Special care should be given executing `EVALSHA` in the context of a [pipelined request](/topics/pipelining).
+Special care should be given executing `EVALSHA` in the context of a [pipelined request](pipelining.md).
 The commands in a pipelined request run in the order they are sent, but other clients' commands may be interleaved for execution between these.
 Because of that, the `NOSCRIPT` error can return from a pipelined request but can't be handled.
 
@@ -220,19 +220,19 @@ These are:
   _1_ means the specific SHA1 is recognized as a script already present in the scripting cache. _0_'s meaning is that a script with this SHA1 wasn't loaded before (or at least never since the latest call to `SCRIPT FLUSH`).
 
 * `SCRIPT LOAD script`: this command registers the specified script in the Valkey script cache. 
-  It is a useful command in all the contexts where we want to ensure that `EVALSHA` doesn't not fail (for instance, in a pipeline or when called from a [`MULTI`/`EXEC` transaction](/topics/transactions)), without the need to execute the script.
+  It is a useful command in all the contexts where we want to ensure that `EVALSHA` doesn't not fail (for instance, in a pipeline or when called from a [`MULTI`/`EXEC` transaction](transactions.md)), without the need to execute the script.
 
 * `SCRIPT KILL`: this command is the only way to interrupt a long-running script (a.k.a slow script), short of shutting down the server.
-  A script is deemed as slow once its execution's duration exceeds the configured [maximum execution time](/topics/programmability#maximum-execution-time) threshold.
+  A script is deemed as slow once its execution's duration exceeds the configured [maximum execution time](programmability.md#maximum-execution-time) threshold.
   The `SCRIPT KILL` command can be used only with scripts that did not modify the dataset during their execution (since stopping a read-only script does not violate the scripting engine's guaranteed atomicity).
 
-* `SCRIPT DEBUG`: controls use of the built-in [Valkey Lua scripts debugger](/topics/ldb).
+* `SCRIPT DEBUG`: controls use of the built-in [Valkey Lua scripts debugger](ldb.md).
 
 ## Script replication
 
 In standalone deployments, a single Valkey instance called _master_ manages the entire database.
-A [clustered deployment](/topics/cluster-tutorial) has at least three masters managing the sharded database.
-Valkey uses [replication](/topics/replication) to maintain one or more replicas, or exact copies, for any given master.
+A [clustered deployment](cluster-tutorial.md) has at least three masters managing the sharded database.
+Valkey uses [replication](replication.md) to maintain one or more replicas, or exact copies, for any given master.
 
 Because scripts can modify the data, Valkey ensures all write operations performed by a script are also sent to replicas to maintain consistency.
 There are two conceptual approaches when it comes to script replication:
@@ -247,7 +247,7 @@ There are two conceptual approaches when it comes to script replication:
    While potentially lengthier in terms of network traffic, this replication mode is deterministic by definition and therefore doesn't require special consideration.
 
 Verbatim script replication was the only mode supported until Redis OSS 3.2, in which effects replication was added.
-The _lua-replicate-commands_ configuration directive and [`server.replicate_commands()`](/topics/lua-api#server.replicate_commands) Lua API can be used to enable it.
+The _lua-replicate-commands_ configuration directive and [`server.replicate_commands()`](lua-api.md#server.replicate_commands) Lua API can be used to enable it.
 
 In Redis OSS 5.0, effects replication became the default mode.
 As of Redis OSS 7.0, verbatim replication is no longer supported.
@@ -262,7 +262,7 @@ We call this **script effects replication**.
 starting with Redis OSS 5.0, script effects replication is the default mode and does not need to be explicitly enabled.
 
 In this replication mode, while Lua scripts are executed, Valkey collects all the commands executed by the Lua scripting engine that actually modify the dataset.
-When the script execution finishes, the sequence of commands that the script generated are wrapped into a [`MULTI`/`EXEC` transaction](/topics/transactions) and are sent to the replicas and AOF.
+When the script execution finishes, the sequence of commands that the script generated are wrapped into a [`MULTI`/`EXEC` transaction](transactions.md) and are sent to the replicas and AOF.
 
 This is useful in several ways depending on the use case:
 
@@ -278,7 +278,7 @@ Unless already enabled by the server's configuration or defaults (before Redis O
 server.replicate_commands()
 ```
 
-The [`server.replicate_commands()`](/topics/lua-api#server.replicate_commands) function returns _true) if script effects replication was enabled;
+The [`server.replicate_commands()`](lua-api.md#server.replicate_commands) function returns _true) if script effects replication was enabled;
 otherwise, if the function was called after the script already called a write command,
 it returns _false_, and normal whole script replication is used.
 
@@ -323,7 +323,7 @@ and undergo a silent lexicographical sorting filter before returning data to Lua
   However, starting with Redis OSS 5.0, this ordering is no longer performed because replicating effects circumvents this type of non-determinism.
   In general, even when developing for Redis OSS 4.0, never assume that certain commands in Lua will be ordered, but instead rely on the documentation of the original command you call to see the properties it provides.
 * Lua's pseudo-random number generation function `math.random` is modified and always uses the same seed for every execution.
-  This means that calling [`math.random`](/topics/lua-api#runtime-libraries) will always generate the same sequence of numbers every time a script is executed (unless `math.randomseed` is used).
+  This means that calling [`math.random`](lua-api.md#runtime-libraries) will always generate the same sequence of numbers every time a script is executed (unless `math.randomseed` is used).
 
 All that said, you can still use commands that write and random behavior with a simple trick.
 Imagine that you want to write a Valkey script that will populate a list with N random integers.
@@ -399,13 +399,13 @@ Note: an important part of this behavior is that the PRNG that Valkey implements
 ## Debugging Eval scripts
 
 Starting with Redis OSS 3.2, Valkey has support for native Lua debugging.
-The Valkey Lua debugger is a remote debugger consisting of a server, which is Valkey itself, and a client, which is by default [`redis-cli`](/topics/rediscli).
+The Valkey Lua debugger is a remote debugger consisting of a server, which is Valkey itself, and a client, which is by default [`redis-cli`]().
 
-The Lua debugger is described in the [Lua scripts debugging](/topics/ldb) section of the Valkey documentation.
+The Lua debugger is described in the [Lua scripts debugging](ldb.md) section of the Valkey documentation.
 
 ## Execution under low memory conditions
 
-When memory usage in Valkey exceeds the `maxmemory` limit, the first write command encountered in the script that uses additional memory will cause the script to abort (unless [`server.pcall`](/topics/lua-api#server.pcall) was used).
+When memory usage in Valkey exceeds the `maxmemory` limit, the first write command encountered in the script that uses additional memory will cause the script to abort (unless [`server.pcall`](lua-api.md#server.pcall) was used).
 
 However, an exception to the above is when the script's first write command does not use additional memory, as is the case with  (for example, `DEL` and `LREM`).
 In this case, Valkey will allow all commands in the script to run to ensure atomicity.
@@ -438,4 +438,4 @@ it still has a different set of defaults compared to a script without a `#!` lin
 
 Another difference is that scripts without `#!` can run commands that access keys belonging to different cluster hash slots, but ones with `#!` inherit the default flags, so they cannot.
 
-Please refer to [Script flags](/topics/lua-api#script_flags) to learn about the various scripts and the defaults.
+Please refer to [Script flags](lua-api.md#script_flags) to learn about the various scripts and the defaults.

@@ -15,7 +15,7 @@ Valkey scales horizontally with a deployment topology called Valkey Cluster.
 This topic will teach you how to set up, test, and operate Valkey Cluster in production.
 You will learn about the availability and consistency characteristics of Valkey Cluster from the end user's point of view.
 
-If you plan to run a production Valkey Cluster deployment or want to understand better how Valkey Cluster works internally, consult the [Valkey Cluster specification](/topics/cluster-spec).
+If you plan to run a production Valkey Cluster deployment or want to understand better how Valkey Cluster works internally, consult the [Valkey Cluster specification](cluster-spec.md).
 
 ## Valkey Cluster 101
 
@@ -896,7 +896,7 @@ The automatic reconfiguration of replicas is called *replicas migration* and is
 able to improve the reliability of a Valkey Cluster.
 
 {{% alert title="Note" color="info" %}} 
-You can read the details of replicas migration in the [Valkey Cluster Specification](/topics/cluster-spec), here we'll only provide some information about the
+You can read the details of replicas migration in the [Valkey Cluster Specification](cluster-spec.md), here we'll only provide some information about the
 general idea and what you should do in order to benefit from it.
 {{% /alert %}} 
 
@@ -1000,6 +1000,6 @@ If not for backward compatibility, the Valkey project no longer uses the word sl
 
 ## Learn more
 
-* [Valkey Cluster specification](/topics/cluster-spec)
+* [Valkey Cluster specification](cluster-spec.md)
 * [Docker documentation](https://docs.docker.com/engine/userguide/networking/dockernetworks/)
 
