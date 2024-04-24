@@ -1,25 +1,25 @@
 ---
-title: "Redis modules and blocking commands"
+title: "Valkey modules and blocking commands"
 linkTitle: "Blocking commands"
 weight: 1
 description: >
-    How to implement blocking commands in a Redis module
+    How to implement blocking commands in a Valkey module
 aliases:
     - /topics/modules-blocking-ops
 ---
 
-Redis has a few blocking commands among the built-in set of commands.
+Valkey has a few blocking commands among the built-in set of commands.
 One of the most used is `BLPOP` (or the symmetric `BRPOP`) which blocks
 waiting for elements arriving in a list.
 
 The interesting fact about blocking commands is that they do not block
 the whole server, but just the client calling them. Usually the reason to
 block is that we expect some external event to happen: this can be
-some change in the Redis data structures like in the `BLPOP` case, a
+some change in the Valkey data structures like in the `BLPOP` case, a
 long computation happening in a thread, to receive some data from the
 network, and so forth.
 
-Redis modules have the ability to implement blocking commands as well,
+Valkey modules have the ability to implement blocking commands as well,
 this documentation shows how the API works and describes a few patterns
 that can be used in order to model blocking commands.
 
@@ -27,12 +27,12 @@ that can be used in order to model blocking commands.
 How blocking and resuming works.
 ---
 
-_Note: You may want to check the `helloblock.c` example in the Redis source tree
+_Note: You may want to check the `helloblock.c` example in the Valkey source tree
 inside the `src/modules` directory, for a simple to understand example
 on how the blocking API is applied._
 
-In Redis modules, commands are implemented by callback functions that
-are invoked by the Redis core when the specific command is called
+In Valkey modules, commands are implemented by callback functions that
+are invoked by the Valkey core when the specific command is called
 by the user. Normally the callback terminates its execution sending
 some reply to the client. Using the following function instead, the
 function implementing the module command may request that the client
@@ -117,7 +117,7 @@ The important bit here is that the reply callback is called when the
 client is unblocked from the thread.
 
 The timeout command returns `NULL`, as it often happens with actual
-Redis blocking commands timing out.
+Valkey blocking commands timing out.
 
 Passing reply data when unblocking
 ---
@@ -258,16 +258,16 @@ the old version. However when the thread terminated its work, the
 representations are swapped and the new, processed version, is used.
 
 An example of this approach is the
-[Neural Redis module](https://github.com/antirez/neural-redis)
+[Neural Valkey module](https://github.com/antirez/neural-redis)
 where neural networks are trained in different threads while the
 user can still execute and inspect their older versions.
 
 Future work
 ---
 
-An API is work in progress right now in order to allow Redis modules APIs
+An API is work in progress right now in order to allow Valkey modules APIs
 to be called in a safe way from threads, so that the threaded command
 can access the data space and do incremental operations.
 
 There is no ETA for this feature but it may appear in the course of the
-Redis 4.0 release at some point.
+Redis OSS 4.0 release at some point.

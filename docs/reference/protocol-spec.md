@@ -1,14 +1,14 @@
 ---
-title: "Redis serialization protocol specification"
+title: "Valkey serialization protocol specification"
 linkTitle: "Protocol spec"
 weight: 4
-description: Redis serialization protocol (RESP) is the wire protocol that clients implement
+description: Valkey serialization protocol (RESP) is the wire protocol that clients implement
 aliases:
     - /topics/protocol
 ---
 
-To communicate with the Redis server, Redis clients use a protocol called REdis Serialization Protocol (RESP).
-While the protocol was designed specifically for Redis, you can use it for other client-server software projects.
+To communicate with the Valkey server, Valkey clients use a protocol called REdis Serialization Protocol (RESP).
+While the protocol was designed specifically for Valkey, you can use it for other client-server software projects.
 
 RESP is a compromise among the following considerations:
 
@@ -18,47 +18,47 @@ RESP is a compromise among the following considerations:
 
 RESP can serialize different data types including integers, strings, and arrays.
 It also features an error-specific type.
-A client sends a request to the Redis server as an array of strings.
+A client sends a request to the Valkey server as an array of strings.
 The array's contents are the command and its arguments that the server should execute.
 The server's reply type is command-specific.
 
 RESP is binary-safe and uses prefixed length to transfer bulk data so it does not require processing bulk data transferred from one process to another.
 
-RESP is the protocol you should implement in your Redis client.
+RESP is the protocol you should implement in your Valkey client.
 
 {{% alert title="Note" color="info" %}}
 The protocol outlined here is used only for client-server communication.
-[Redis Cluster](/docs/reference/cluster-spec) uses a different binary protocol for exchanging messages between nodes.
+[Valkey Cluster](/docs/reference/cluster-spec) uses a different binary protocol for exchanging messages between nodes.
 {{% /alert %}}
 
 ## RESP versions
-Support for the first version of the RESP protocol was introduced in Redis 1.2.
-Using RESP with Redis 1.2 was optional and had mainly served the purpose of working the kinks out of the protocol.
+Support for the first version of the RESP protocol was introduced in Redis OSS 1.2.
+Using RESP with Redis OSS 1.2 was optional and had mainly served the purpose of working the kinks out of the protocol.
 
-In Redis 2.0, the protocol's next version, a.k.a RESP2, became the standard communication method for clients with the Redis server.
+In Redis OSS 2.0, the protocol's next version, a.k.a RESP2, became the standard communication method for clients with the Valkey server.
 
 [RESP3](https://github.com/redis/redis-specifications/blob/master/protocol/RESP3.md) is a superset of RESP2 that mainly aims to make a client author's life a little bit easier.
-Redis 6.0 introduced experimental opt-in support of RESP3's features (excluding streaming strings and streaming aggregates).
+Redis OSS 6.0 introduced experimental opt-in support of RESP3's features (excluding streaming strings and streaming aggregates).
 In addition, the introduction of the `HELLO` command allows clients to handshake and upgrade the connection's protocol version (see [Client handshake](#client-handshake)).
 
-Up to and including Redis 7, both RESP2 and RESP3 clients can invoke all core commands.
+Up to and including Redis OSS 7, both RESP2 and RESP3 clients can invoke all core commands.
 However, commands may return differently typed replies for different protocol versions.
 
-Future versions of Redis may change the default protocol version, but it is unlikely that RESP2 will become entirely deprecated.
+Future versions of Valkey may change the default protocol version, but it is unlikely that RESP2 will become entirely deprecated.
 It is possible, however, that new features in upcoming versions will require the use of RESP3.
 
 ## Network layer
-A client connects to a Redis server by creating a TCP connection to its port (the default is 6379).
+A client connects to a Valkey server by creating a TCP connection to its port (the default is 6379).
 
-While RESP is technically non-TCP specific, the protocol is used exclusively with TCP connections (or equivalent stream-oriented connections like Unix sockets) in the context of Redis.
+While RESP is technically non-TCP specific, the protocol is used exclusively with TCP connections (or equivalent stream-oriented connections like Unix sockets) in the context of Valkey.
 
 ## Request-Response model
-The Redis server accepts commands composed of different arguments.
+The Valkey server accepts commands composed of different arguments.
 Then, the server processes the command and sends the reply back to the client.
 
 This is the simplest model possible; however, there are some exceptions:
 
-* Redis requests can be [pipelined](#multiple-commands-and-pipelining).
+* Valkey requests can be [pipelined](#multiple-commands-and-pipelining).
   Pipelining enables clients to send multiple commands at once and wait for replies later.
 * When a RESP2 connection subscribes to a [Pub/Sub](/docs/manual/pubsub) channel, the protocol changes semantics and becomes a *push* protocol.
   The client no longer requires sending commands because the server will automatically send new messages to the client (for the channels the client is subscribed to) as soon as they are received.
@@ -66,21 +66,21 @@ This is the simplest model possible; however, there are some exceptions:
   Invoking the `MONITOR` command switches the connection to an ad-hoc push mode.
   The protocol of this mode is not specified but is obvious to parse.
 * [Protected mode](/docs/management/security/#protected-mode).
-  Connections opened from a non-loopback address to a Redis while in protected mode are denied and terminated by the server.
-  Before terminating the connection, Redis unconditionally sends a `-DENIED` reply, regardless of whether the client writes to the socket.
+  Connections opened from a non-loopback address to a Valkey while in protected mode are denied and terminated by the server.
+  Before terminating the connection, Valkey unconditionally sends a `-DENIED` reply, regardless of whether the client writes to the socket.
 * The [RESP3 Push type](#resp3-pushes).
   As the name suggests, a push type allows the server to send out-of-band data to the connection.
   The server may push data at any time, and the data isn't necessarily related to specific commands executed by the client.
   
-Excluding these exceptions, the Redis protocol is a simple request-response protocol.
+Excluding these exceptions, the Valkey protocol is a simple request-response protocol.
 
 ## RESP protocol description
 RESP is essentially a serialization protocol that supports several data types.
 In RESP, the first byte of data determines its type.
 
-Redis generally uses RESP as a [request-response](#request-response-model) protocol in the following way:
+Valkey generally uses RESP as a [request-response](#request-response-model) protocol in the following way:
 
-* Clients send commands to a Redis server as an [array](#arrays) of [bulk strings](#bulk-strings).
+* Clients send commands to a Valkey server as an [array](#arrays) of [bulk strings](#bulk-strings).
   The first (and sometimes also the second) bulk string in the array is the command's name.
   Subsequent elements of the array are the arguments for the command.
 * The server replies with a RESP type.
@@ -106,7 +106,7 @@ Note that bulk strings may be further encoded and decoded, e.g. with a wide mult
 
 Aggregates, such as Arrays and Maps, can have varying numbers of sub-elements and nesting levels.
 
-The following table summarizes the RESP data types that Redis supports:
+The following table summarizes the RESP data types that Valkey supports:
 
 | RESP data type | Minimal protocol version | Category | First byte |
 | --- | --- | --- | --- |
@@ -132,12 +132,12 @@ Simple strings are encoded as a plus (`+`) character, followed by a string.
 The string mustn't contain a CR (`\r`) or LF (`\n`) character and is terminated by CRLF (i.e., `\r\n`).
 
 Simple strings transmit short, non-binary strings with minimal overhead.
-For example, many Redis commands reply with just "OK" on success.
+For example, many Valkey commands reply with just "OK" on success.
 The encoding of this Simple String is the following 5 bytes:
 
     +OK\r\n
 
-When Redis replies with a simple string, a client library should return to the caller a string value composed of the first character after the `+` up to the end of the string, excluding the final CRLF bytes.
+When Valkey replies with a simple string, a client library should return to the caller a string value composed of the first character after the `+` up to the end of the string, excluding the final CRLF bytes.
 
 To send binary strings, use [bulk strings](#bulk-strings) instead.
 
@@ -152,7 +152,7 @@ The basic format is:
 
     -Error message\r\n
 
-Redis replies with an error only when something goes wrong, for example, when you try to operate against the wrong data type, or when the command does not exist.
+Valkey replies with an error only when something goes wrong, for example, when you try to operate against the wrong data type, or when the command does not exist.
 The client should raise an exception when it receives an Error reply.
 
 The following are examples of error replies:
@@ -162,9 +162,9 @@ The following are examples of error replies:
 
 The first upper-case word after the `-`, up to the first space or newline, represents the kind of error returned.
 This word is called an _error prefix_.
-Note that the error prefix is a convention used by Redis rather than part of the RESP error type.
+Note that the error prefix is a convention used by Valkey rather than part of the RESP error type.
 
-For example, in Redis, `ERR` is a generic error, whereas `WRONGTYPE` is a more specific error that implies that the client attempted an operation against the wrong data type.
+For example, in Valkey, `ERR` is a generic error, whereas `WRONGTYPE` is a more specific error that implies that the client attempted an operation against the wrong data type.
 The error prefix allows the client to understand the type of error returned by the server without checking the exact error message.
 
 A client implementation can return different types of exceptions for various errors, or provide a generic way for trapping errors by directly providing the error name to the caller as a string.
@@ -188,7 +188,7 @@ RESP encodes integers in the following way:
 
 For example, `:0\r\n` and `:1000\r\n` are integer replies (of zero and one thousand, respectively).
 
-Many Redis commands return RESP integers, including `INCR`, `LLEN`, and `LASTSAVE`.
+Many Valkey commands return RESP integers, including `INCR`, `LLEN`, and `LASTSAVE`.
 An integer, by itself, has no special meaning other than in the context of the command that returned it.
 For example, it is an incremental number for `INCR`, a UNIX timestamp for `LASTSAVE`, and so forth.
 However, the returned integer is guaranteed to be in the range of a signed 64-bit integer.
@@ -202,7 +202,7 @@ Other commands, including `SADD`, `SREM`, and `SETNX`, return 1 when the data ch
 
 ### Bulk strings
 A bulk string represents a single binary string.
-The string can be of any size, but by default, Redis limits it to 512 MB (see the `proto-max-bulk-len` configuration directive).
+The string can be of any size, but by default, Valkey limits it to 512 MB (see the `proto-max-bulk-len` configuration directive).
 
 RESP encodes bulk strings in the following way:
 
@@ -235,14 +235,14 @@ It is encoded as a bulk string with the length of negative one (-1), like so:
 
     $-1\r\n
 
-A Redis client should return a nil object when the server replies with a null bulk string rather than the empty string.
+A Valkey client should return a nil object when the server replies with a null bulk string rather than the empty string.
 For example, a Ruby library should return `nil` while a C library should return `NULL` (or set a special flag in the reply object).
 
 <a name="array-reply"></a>
 
 ### Arrays
-Clients send commands to the Redis server as RESP arrays.
-Similarly, some Redis commands that return collections of elements use arrays as their replies. 
+Clients send commands to the Valkey server as RESP arrays.
+Similarly, some Valkey commands that return collections of elements use arrays as their replies. 
 An example is the `LRANGE` command that returns elements of a list.
 
 RESP Arrays' encoding uses the following format:
@@ -319,12 +319,12 @@ The encoding of a null array is that of an array with the length of -1, i.e.:
 
     *-1\r\n
 
-When Redis replies with a null array, the client should return a null object rather than an empty array.
+When Valkey replies with a null array, the client should return a null object rather than an empty array.
 This is necessary to distinguish between an empty list and a different condition (for instance, the timeout condition of the `BLPOP` command).
 
 #### Null elements in arrays
 Single elements of an array may be [null bulk string](#null-bulk-strings).
-This is used in Redis replies to signal that these elements are missing and not empty strings. This can happen, for example, with the `SORT` command when used with the `GET pattern` option
+This is used in Valkey replies to signal that these elements are missing and not empty strings. This can happen, for example, with the `SORT` command when used with the `GET pattern` option
 if the specified key is missing.
 
 Here's an example of an array reply containing a null element:
@@ -393,7 +393,7 @@ Because the fractional part is optional, the integer value of ten (10) can, ther
     :10\r\n
     ,10\r\n
 
-In such cases, the Redis client should return native integer and double values, respectively, providing that these types are supported by the language of its implementation.
+In such cases, the Valkey client should return native integer and double values, respectively, providing that these types are supported by the language of its implementation.
 
 The positive infinity, negative infinity and NaN values are encoded as follows:
 
@@ -472,11 +472,11 @@ Example:
 (The raw RESP encoding is split into multiple lines for readability).
 
 Some client libraries may ignore the difference between this type and the string type and return a native string in both cases.
-However, interactive clients, such as command line interfaces (e.g., [`redis-cli`](/docs/manual/cli)), can use this type and know that their output should be presented to the human user as is and without quoting the string.
+However, interactive clients, such as command line interfaces (e.g., [`valkey-cli`](/docs/manual/cli)), can use this type and know that their output should be presented to the human user as is and without quoting the string.
 
-For example, the Redis command `INFO` outputs a report that includes newlines.
-When using RESP3, `redis-cli` displays it correctly because it is sent as a Verbatim String reply (with its three bytes being "txt").
-When using RESP2, however, the `redis-cli` is hard-coded to look for the `INFO` command to ensure its correct display to the user.
+For example, the Valkey command `INFO` outputs a report that includes newlines.
+When using RESP3, `valkey-cli` displays it correctly because it is sent as a Verbatim String reply (with its three bytes being "txt").
+When using RESP2, however, the `valkey-cli` is hard-coded to look for the `INFO` command to ensure its correct display to the user.
 
 <a name="map-reply"></a>
 
@@ -511,7 +511,7 @@ Can be encoded in RESP like so:
 
 Both map keys and values can be any of RESP's types.
 
-Redis clients should return the idiomatic dictionary type that their language provides.
+Valkey clients should return the idiomatic dictionary type that their language provides.
 However, low-level programming languages (such as C, for example) will likely return an array along with type information that indicates to the caller that it is a dictionary.
 
 {{% alert title="Map pattern in RESP2" color="info" %}}
@@ -564,7 +564,7 @@ New RESP connections should begin the session by calling the `HELLO` command.
 This practice accomplishes two things:
 
 1. It allows servers to be backward compatible with RESP2 versions.
-  This is needed in Redis to make the transition to version 3 of the protocol gentler.
+  This is needed in Valkey to make the transition to version 3 of the protocol gentler.
 2. The `HELLO` command returns information about the server and the protocol that the client can use for different goals.
 
 The `HELLO` command has the following high-level syntax:
@@ -600,19 +600,19 @@ The information in the reply is partly server-dependent, but certain fields are 
 * **version**: the server's version.
 * **proto**: the highest supported version of the RESP protocol.
 
-In Redis' RESP3 implementation, the following fields are also emitted:
+In Valkey' RESP3 implementation, the following fields are also emitted:
 
 * **id**: the connection's identifier (ID).
 * **mode**: "standalone", "sentinel" or "cluster".
 * **role**: "master" or "replica".
 * **modules**: list of loaded modules as an Array of Bulk Strings.
 
-## Sending commands to a Redis server
-Now that you are familiar with the RESP serialization format, you can use it to help write a Redis client library.
+## Sending commands to a Valkey server
+Now that you are familiar with the RESP serialization format, you can use it to help write a Valkey client library.
 We can further specify how the interaction between the client and the server works:
 
-* A client sends the Redis server an [array](#arrays) consisting of only bulk strings.
-* A Redis server replies to clients, sending any valid RESP data type as a reply.
+* A client sends the Valkey server an [array](#arrays) consisting of only bulk strings.
+* A Valkey server replies to clients, sending any valid RESP data type as a reply.
 
 So, for example, a typical interaction could be the following.
 
@@ -638,9 +638,9 @@ All the replies can be read at the end.
 For more information, see [Pipelining](/topics/pipelining).
 
 ## Inline commands
-Sometimes you may need to send a command to the Redis server but only have `telnet` available.
-While the Redis protocol is simple to implement, it is not ideal for interactive sessions, and `redis-cli` may not always be available.
-For this reason, Redis also accepts commands in the _inline command_ format.
+Sometimes you may need to send a command to the Valkey server but only have `telnet` available.
+While the Valkey protocol is simple to implement, it is not ideal for interactive sessions, and `valkey-cli` may not always be available.
+For this reason, Valkey also accepts commands in the _inline command_ format.
 
 The following example demonstrates a server/client exchange using an inline command (the server chat starts with `S:`, the client chat with `C:`):
 
@@ -653,11 +653,11 @@ Here's another example of an inline command where the server returns an integer:
     S: :0
 
 Basically, to issue an inline command, you write space-separated arguments in a telnet session.
-Since no command starts with `*` (the identifying byte of RESP Arrays), Redis detects this condition and parses your command inline.
+Since no command starts with `*` (the identifying byte of RESP Arrays), Valkey detects this condition and parses your command inline.
 
-## High-performance parser for the Redis protocol
+## High-performance parser for the Valkey protocol
 
-While the Redis protocol is human-readable and easy to implement, its implementation can exhibit performance similar to that of a binary protocol.
+While the Valkey protocol is human-readable and easy to implement, its implementation can exhibit performance similar to that of a binary protocol.
 
 RESP uses prefixed lengths to transfer bulk data.
 That makes scanning the payload for special characters unnecessary (unlike parsing JSON, for example).
@@ -690,11 +690,11 @@ After the first CR is identified, it can be skipped along with the following LF 
 Then, the bulk data can be read with a single read operation that doesn't inspect the payload in any way.
 Finally, the remaining CR and LF characters are discarded without additional processing.
 
-While comparable in performance to a binary protocol, the Redis protocol is significantly more straightforward to implement in most high-level languages, reducing the number of bugs in client software.
+While comparable in performance to a binary protocol, the Valkey protocol is significantly more straightforward to implement in most high-level languages, reducing the number of bugs in client software.
 
-## Tips for Redis client authors
+## Tips for Valkey client authors
 
-* For testing purposes, use [Lua's type conversions](/topics/lua-api#lua-to-resp3-type-conversion) to have Redis reply with any RESP2/RESP3 needed.
+* For testing purposes, use [Lua's type conversions](/topics/lua-api#lua-to-resp3-type-conversion) to have Valkey reply with any RESP2/RESP3 needed.
   As an example, a RESP3 double can be generated like so:
   ```
   EVAL "return { double = tonumber(ARGV[1]) }" 0 1e0
