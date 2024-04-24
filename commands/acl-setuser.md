@@ -45,7 +45,7 @@ ACL rules are either words like "on", "off", "reset", "allkeys", or are
 special rules that start with a special character, and are followed by
 another string (without any space in between), like "+SET".
 
-The following documentation is a reference manual about the capabilities of this command, however our [ACL tutorial](/topics/acl) may be a more gentle introduction to how the ACL system works in general.
+The following documentation is a reference manual about the capabilities of this command, however our [ACL tutorial](../topics/acl.md) may be a more gentle introduction to how the ACL system works in general.
 
 ## ACL rules
 
@@ -55,8 +55,8 @@ This is a list of all the supported Valkey ACL rules:
 ### Command rules
 
 * `~<pattern>`: Adds the specified key pattern (glob style pattern, like in the `KEYS` command), to the list of key patterns accessible by the user. This grants both read and write permissions to keys that match the pattern. You can add multiple key patterns to the same user. Example: `~objects:*`
-* `%R~<pattern>`: Adds the specified read key pattern. This behaves similar to the regular key pattern but only grants permission to read from keys that match the given pattern. See [key permissions](/topics/acl#key-permissions) for more information.
-* `%W~<pattern>`: Adds the specified write key pattern. This behaves similar to the regular key pattern but only grants permission to write to keys that match the given pattern. See [key permissions](/topics/acl#key-permissions) for more information.
+* `%R~<pattern>`: Adds the specified read key pattern. This behaves similar to the regular key pattern but only grants permission to read from keys that match the given pattern. See [key permissions](../topics/acl.md#key-permissions) for more information.
+* `%W~<pattern>`: Adds the specified write key pattern. This behaves similar to the regular key pattern but only grants permission to write to keys that match the given pattern. See [key permissions](../topics/acl.md#key-permissions) for more information.
 * `%RW~<pattern>`: Alias for `~<pattern>`.
 * `allkeys`: Alias for `~*`, it allows the user to access all the keys.
 * `resetkeys`: Removes all the key patterns from the list of key patterns the user can access.
@@ -80,7 +80,7 @@ This is a list of all the supported Valkey ACL rules:
 * `#<hashedpassword>`: Adds the specified hashed password to the list of user passwords. A hashed password is hashed with SHA256 and translated into a hexadecimal string. Example: `#c3ab8ff13720e8ad9047dd39466b3c8974e592c2fa383d4a3960714caef0c4f2`.
 * `<password`: Like `>password` but removes the password instead of adding it.
 * `!<hashedpassword>`: Like `#<hashedpassword>` but removes the password instead of adding it.
-* `(<rule list>)`: Creates a new selector to match rules against. Selectors are evaluated after the user permissions, and are evaluated according to the order they are defined. If a command matches either the user permissions or any selector, it is allowed. See [selectors](/docs/management/security/acl#selectors) for more information.
+* `(<rule list>)`: Creates a new selector to match rules against. Selectors are evaluated after the user permissions, and are evaluated according to the order they are defined. If a command matches either the user permissions or any selector, it is allowed. See [selectors](../topics/acl.md#selectors) for more information.
 * `clearselectors`: Deletes all of the selectors attached to the user.
 * `reset`: Removes any capability from the user. They are set to off, without passwords, unable to execute any command, unable to access any key.
 

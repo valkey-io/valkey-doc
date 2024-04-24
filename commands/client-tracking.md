@@ -1,5 +1,5 @@
 This command enables the tracking feature of the Valkey server, that is used
-for [server assisted client side caching](/topics/client-side-caching).
+for [server assisted client side caching](../topics/client-side-caching.md).
 
 When tracking is enabled Valkey remembers the keys that the connection
 requested, in order to send later invalidation messages when such keys are
@@ -9,7 +9,7 @@ when the RESP3 protocol is used) or redirected in a different connection
 available where clients participating in this protocol receive every
 notification just subscribing to given key prefixes, regardless of the
 keys that they requested. Given the complexity of the argument please
-refer to [the main client side caching documentation](/topics/client-side-caching) for the details. This manual page is only a reference for the options of this subcommand.
+refer to [the main client side caching documentation](../topics/client-side-caching.md) for the details. This manual page is only a reference for the options of this subcommand.
 
 In order to enable tracking, use:
 

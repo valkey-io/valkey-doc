@@ -3,7 +3,7 @@ complete Lua debugger, codename LDB, that can be used to make the task of
 writing complex scripts much simpler. In debug mode Valkey acts as a remote
 debugging server and a client, such as `valkey-cli`, can execute scripts step by
 step, set breakpoints, inspect variables and more - for additional information
-about LDB refer to the [Valkey Lua debugger](/topics/ldb) page.
+about LDB refer to the [Valkey Lua debugger](../topics/ldb.md) page.
 
 **Important note:** avoid debugging Lua scripts using your Valkey production
 server. Use a development server instead.
@@ -19,4 +19,4 @@ is active and retains all changes to the data set once it ends.
 * `!SYNC`. Enable blocking synchronous debugging of Lua scripts (saves changes to data).
 * `NO`. Disables scripts debug mode.
 
-For more information about `EVAL` scripts please refer to [Introduction to Eval Scripts](/topics/eval-intro).
+For more information about `EVAL` scripts please refer to [Introduction to Eval Scripts](../topics/eval-intro.md).

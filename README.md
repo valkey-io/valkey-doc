@@ -58,8 +58,8 @@ when processed, produce Markdown content. Here's an example:
   ...
   "ACL CAT": [
     "One of the following:",
-    "* [Array reply](/docs/reference/protocol-spec#arrays): an array of [Bulk string reply](/docs/reference/protocol-spec#bulk-strings) elements representing ACL categories or commands in a given category.",
-    "* [Simple error reply](/docs/reference/protocol-spec#simple-errors): the command returns an error if an invalid category name is given."
+    "* [Array reply](topics/protocol.md#arrays): an array of [Bulk string reply](topics/protocol.md#bulk-strings) elements representing ACL categories or commands in a given category.",
+    "* [Simple error reply](topics/protocol.md#simple-errors): the command returns an error if an invalid category name is given."
   ],
   ...
 }
