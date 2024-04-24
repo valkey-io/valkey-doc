@@ -288,6 +288,6 @@ but MONITOR will impact the measured performance significantly.
 There are several third-party tools that can be used for benchmarking Valkey. Refer to each tool's
 documentation for more information about its goals and capabilities.
 
-* [memtier_benchmark](https://github.com/redislabs/memtier_benchmark) from [Redis Ltd.](https://twitter.com/RedisInc) is a NoSQL Valkey and Memcache traffic generation and benchmarking tool.
+* [memtier_benchmark](https://github.com/redislabs/memtier_benchmark) from [Redis Ltd.](https://twitter.com/RedisInc) is a NoSQL Valkey, Redis and Memcache traffic generation and benchmarking tool.
 * [rpc-perf](https://github.com/twitter/rpc-perf) from [Twitter](https://twitter.com/twitter) is a tool for benchmarking RPC services that supports Valkey and Memcache.
 * [YCSB](https://github.com/brianfrankcooper/YCSB) from [Yahoo @Yahoo](https://twitter.com/Yahoo) is a benchmarking framework with clients to many databases, including Valkey. 
