@@ -30,7 +30,7 @@ For example:
 * `BLMOVE` atomically moves elements from a source list to a target list.
   If the source list is empty, the command will block until a new element becomes available.
 
-See the [complete series of list commands](https://redis.io/commands/?group=list).
+See the [complete series of list commands](/commands/?group=list).
 
 ## Examples
 
@@ -144,7 +144,7 @@ element into a list, on the right (at the tail). Finally the
 {{< /clients-example >}}
 
 Note that `LRANGE` takes two indexes, the first and the last
-element of the range to return. Both the indexes can be negative, telling Redis
+element of the range to return. Both the indexes can be negative, telling Valkey
 to start counting from the end: so -1 is the last element, -2 is the
 penultimate element of the list, and so forth.
 
@@ -187,7 +187,7 @@ pop:
 (nil)
 {{< /clients-example >}}
 
-Redis returned a NULL value to signal that there are no elements in the
+Valkey returned a NULL value to signal that there are no elements in the
 list.
 
 ### Common use cases for lists
@@ -196,7 +196,7 @@ Lists are useful for a number of tasks, two very representative use cases
 are the following:
 
 * Remember the latest updates posted by users into a social network.
-* Communication between processes, using a consumer-producer pattern where the producer pushes items into a list, and a consumer (usually a *worker*) consumes those items and executes actions. Redis has special list commands to make this use case both more reliable and efficient.
+* Communication between processes, using a consumer-producer pattern where the producer pushes items into a list, and a consumer (usually a *worker*) consumes those items and executes actions. Valkey has special list commands to make this use case both more reliable and efficient.
 
 For example both the popular Ruby libraries [resque](https://github.com/resque/resque) and
 [sidekiq](https://github.com/mperham/sidekiq) use Lists under the hood in order to
@@ -216,7 +216,7 @@ photos published in a photo sharing social network and you want to speedup acces
 In many use cases we just want to use lists to store the *latest items*,
 whatever they are: social network updates, logs, or anything else.
 
-Redis allows us to use lists as a capped collection, only remembering the latest
+Valkey allows us to use lists as a capped collection, only remembering the latest
 N items and discarding all the oldest items using the `LTRIM` command.
 
 The `LTRIM` command is similar to `LRANGE`, but **instead of displaying the
@@ -237,7 +237,7 @@ OK
 3) "bike:3"
 {{< /clients-example >}}
 
-The above `LTRIM` command tells Redis to keep just list elements from index
+The above `LTRIM` command tells Valkey to keep just list elements from index
 0 to 2, everything else will be discarded. This allows for a very simple but
 useful pattern: doing a List push operation + a List trim operation together 
 to add a new element and discard elements exceeding a limit. Using 
@@ -281,10 +281,10 @@ to process, so `RPOP` just returns NULL. In this case a consumer is forced to wa
 some time and retry again with `RPOP`. This is called *polling*, and is not
 a good idea in this context because it has several drawbacks:
 
-1. Forces Redis and clients to process useless commands (all the requests when the list is empty will get no actual work done, they'll just return NULL).
-2. Adds a delay to the processing of items, since after a worker receives a NULL, it waits some time. To make the delay smaller, we could wait less between calls to `RPOP`, with the effect of amplifying problem number 1, i.e. more useless calls to Redis.
+1. Forces Valkey and clients to process useless commands (all the requests when the list is empty will get no actual work done, they'll just return NULL).
+2. Adds a delay to the processing of items, since after a worker receives a NULL, it waits some time. To make the delay smaller, we could wait less between calls to `RPOP`, with the effect of amplifying problem number 1, i.e. more useless calls to Valkey.
 
-So Redis implements commands called `BRPOP` and `BLPOP` which are versions
+So Valkey implements commands called `BRPOP` and `BLPOP` which are versions
 of `RPOP` and `LPOP` able to block if the list is empty: they'll return to
 the caller only when a new element is added to the list, or when a user-specified
 timeout is reached.
@@ -329,11 +329,11 @@ suggest that you read more on the following:
 
 So far in our examples we never had to create empty lists before pushing
 elements, or removing empty lists when they no longer have elements inside.
-It is Redis' responsibility to delete keys when lists are left empty, or to create
+It is Valkey' responsibility to delete keys when lists are left empty, or to create
 an empty list if the key does not exist and we are trying to add elements
 to it, for example, with `LPUSH`.
 
-This is not specific to lists, it applies to all the Redis data types
+This is not specific to lists, it applies to all the Valkey data types
 composed of multiple elements -- Streams, Sets, Sorted Sets and Hashes.
 
 Basically we can summarize the behavior with three rules:

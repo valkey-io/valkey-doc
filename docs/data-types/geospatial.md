@@ -1,9 +1,9 @@
 ﻿---
-title: "Redis geospatial"
+title: "Valkey geospatial"
 linkTitle: "Geospatial"
 weight: 80
 description: >
-    Introduction to the Redis Geospatial data type
+    Introduction to the Valkey Geospatial data type
 ---
 
 Geospatial indexes let you store coordinates and search for them.
@@ -14,7 +14,7 @@ This data structure is useful for finding nearby points within a given radius or
 * `GEOADD` adds a location to a given geospatial index (note that longitude comes before latitude with this command).
 * `GEOSEARCH` returns locations with a given radius or a bounding box.
 
-See the [complete list of geospatial index commands](https://redis.io/commands/?group=geo).
+See the [complete list of geospatial index commands](/commands/?group=geo).
 
 
 ## Examples

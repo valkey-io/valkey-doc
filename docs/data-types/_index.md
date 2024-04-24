@@ -1,7 +1,7 @@
 ---
-title: "Understand Redis data types"
+title: "Understand Valkey data types"
 linkTitle: "Understand data types"
-description: Overview of data types supported by Redis
+description: Overview of data types supported by Valkey
 weight: 35
 aliases:
     - /docs/manual/data-types
@@ -9,8 +9,8 @@ aliases:
     - /docs/data-types/tutorial
 ---
 
-Redis is a data structure server.
-At its core, Redis provides a collection of native data types that help you solve a wide variety of problems, from [caching](/docs/manual/client-side-caching/) to [queuing](/docs/data-types/lists/) to [event processing](/docs/data-types/streams/).
+Valkey is a data structure server.
+At its core, Valkey provides a collection of native data types that help you solve a wide variety of problems, from [caching](/docs/manual/client-side-caching/) to [queuing](/docs/data-types/lists/) to [event processing](/docs/data-types/streams/).
 Below is a short description of each data type, with links to broader overviews and command references.
 
 If you'd like to try a comprehensive tutorial for each data structure, see their overview pages below.
@@ -20,7 +20,7 @@ If you'd like to try a comprehensive tutorial for each data structure, see their
 
 ### Strings 
 
-[Strings](/docs/data-types/strings) are the most basic Redis data type, representing a sequence of bytes.
+[Strings](/docs/data-types/strings) are the most basic Valkey data type, representing a sequence of bytes.
 For more information, see:
 
 * [Overview of Strings](/docs/data-types/strings/)
@@ -106,6 +106,6 @@ The [HyperLogLog](/docs/data-types/hyperloglogs) data structures provide probabi
 To extend the features provided by the included data types, use one of these options:
 
 1. Write your own custom [server-side functions in Lua](/docs/manual/programmability/).
-1. Write your own Redis module using the [modules API](/docs/reference/modules/) or check out the [community-supported modules](/docs/modules/).
+1. Write your own Valkey module using the [modules API](/docs/reference/modules/) or check out the [community-supported modules](/docs/modules/).
 
 <hr>

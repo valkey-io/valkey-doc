@@ -17,13 +17,13 @@ proportional to the number of items you want to count, because you need
 to remember the elements you have already seen in the past in order to avoid
 counting them multiple times. However, a set of algorithms exist that trade 
 memory for precision: they return an estimated measure with a standard error, 
-which, in the case of the Redis implementation for HyperLogLog, is less than 1%.
+which, in the case of the Valkey implementation for HyperLogLog, is less than 1%.
 The magic of this algorithm is that you no longer need to use an amount of memory
 proportional to the number of items counted, and instead can use a
 constant amount of memory; 12k bytes in the worst case, or a lot less if your
 HyperLogLog (We'll just call them HLL from now) has seen very few elements.
 
-HLLs in Redis, while technically a different data structure, are encoded
+HLLs in Valkey, while technically a different data structure, are encoded
 as a String, so you can call `GET` to serialize a HLL, and `SET`
 to deserialize it back to the server.
 
@@ -55,7 +55,7 @@ OK
 Some examples of use cases for this data structure is counting unique queries
 performed by users in a search form every day, number of unique visitors to a web page and other similar cases.
 
-Redis is also able to perform the union of HLLs, please check the
+Valkey is also able to perform the union of HLLs, please check the
 [full documentation](/commands#hyperloglog) for more information.
 
 ## Use cases
@@ -82,7 +82,7 @@ One HyperLogLog is created per page (video/song) per period, and every IP/identi
 * `PFCOUNT` returns an estimate of the number of items in the set.
 * `PFMERGE` combines two or more HyperLogLogs into one.
 
-See the [complete list of HyperLogLog commands](https://redis.io/commands/?group=hyperloglog).
+See the [complete list of HyperLogLog commands](/commands/?group=hyperloglog).
 
 ## Performance
 
@@ -95,4 +95,4 @@ The HyperLogLog can estimate the cardinality of sets with up to 18,446,744,073,7
 
 ## Learn more
 
-* [Redis new data structure: the HyperLogLog](http://antirez.com/news/75) has a lot of details about the data structure and its implementation in Redis.
+* [Valkey new data structure: the HyperLogLog](http://antirez.com/news/75) has a lot of details about the data structure and its implementation in Valkey.

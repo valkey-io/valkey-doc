@@ -64,7 +64,7 @@ encoded in special way in memory that make them very memory efficient.
 * `HMGET` returns the values at one or more given fields.
 * `HINCRBY` increments the value at a given field by the integer provided.
 
-See the [complete list of hash commands](https://redis.io/commands/?group=hash).
+See the [complete list of hash commands](/commands/?group=hash).
 
 
 ## Examples
@@ -98,4 +98,4 @@ A few commands - such as `HKEYS`, `HVALS`, and `HGETALL` - are O(n), where _n_ i
 ## Limits
 
 Every hash can store up to 4,294,967,295 (2^32 - 1) field-value pairs.
-In practice, your hashes are limited only by the overall memory on the VMs hosting your Redis deployment.
+In practice, your hashes are limited only by the overall memory on the VMs hosting your Valkey deployment.
