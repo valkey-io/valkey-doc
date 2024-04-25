@@ -30,7 +30,7 @@ go get github.com/redis/go-redis/v9
 
 ### Connect
 
-To connect to a Redis server:
+To connect to a Valkey server:
 
 ```go
 import (
@@ -79,7 +79,7 @@ fmt.Println("foo", val)
 Store and retrieve a map.
 
 ```go
-session := map[string]string{"name": "John", "surname": "Smith", "company": "Redis", "age": "29"}
+session := map[string]string{"name": "John", "surname": "Smith", "company": "Xyzzy", "age": "29"}
 for k, v := range session {
     err := client.HSet(ctx, "user-session:123", k, v).Err()
     if err != nil {
@@ -93,7 +93,7 @@ fmt.Println(userSession)
 
 #### Connect to a Valkey cluster
 
-To connect to a Redis cluster, use `NewClusterClient`. 
+To connect to a Valkey cluster, use `NewClusterClient`.
 
 ```go
 client := redis.NewClusterClient(&redis.ClusterOptions{

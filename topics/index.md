@@ -9,4 +9,4 @@ aliases:
     - /topics/
 ---
 
-Welcome to the Redis documentation.
+Welcome to the Valkey documentation.

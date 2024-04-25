@@ -67,11 +67,11 @@ public class Main {
             Map<String, String> hash = new HashMap<>();;
             hash.put("name", "John");
             hash.put("surname", "Smith");
-            hash.put("company", "Redis");
+            hash.put("company", "Xyzzy");
             hash.put("age", "29");
             jedis.hset("user-session:123", hash);
             System.out.println(jedis.hgetAll("user-session:123"));
-            // Prints: {name=John, surname=Smith, company=Redis, age=29}
+            // Prints: {name=John, surname=Smith, company=Xyzzy, age=29}
         }
     }
 }
@@ -109,7 +109,7 @@ JedisCluster jedis = new JedisCluster(jedisClusterNodes);
 
 When you deploy your application, use TLS and follow the [security](/docs/management/security/) guidelines.
 
-Before connecting your application to the TLS-enabled Redis server, ensure that your certificates and private keys are in the correct format.
+Before connecting your application to the TLS-enabled Valkey server, ensure that your certificates and private keys are in the correct format.
 
 To convert user certificate and private key from the PEM format to `pkcs12`, use this command:
 
