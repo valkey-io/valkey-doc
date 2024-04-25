@@ -39,7 +39,7 @@ The commands that are allowed in the context of a subscribed RESP2 client are:
 
 However, if RESP3 is used (see `HELLO`), a client can issue any commands while in the subscribed state.
 
-Please note that when using `redis-cli`, in subscribed mode commands such as `UNSUBSCRIBE` and `PUNSUBSCRIBE` cannot be used because `redis-cli` will not accept any commands and can only quit the mode with `Ctrl-C`.
+Please note that when using `valkey-cli`, in subscribed mode commands such as `UNSUBSCRIBE` and `PUNSUBSCRIBE` cannot be used because `valkey-cli` will not accept any commands and can only quit the mode with `Ctrl-C`.
 
 ## Delivery semantics
 

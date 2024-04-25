@@ -57,7 +57,7 @@ of running `MONITOR` can be.
 Benchmark result **without** `MONITOR` running:
 
 ```
-$ src/redis-benchmark -c 10 -n 100000 -q
+$ src/valkey-benchmark -c 10 -n 100000 -q
 PING_INLINE: 101936.80 requests per second
 PING_BULK: 102880.66 requests per second
 SET: 95419.85 requests per second
@@ -68,7 +68,7 @@ INCR: 93283.58 requests per second
 Benchmark result **with** `MONITOR` running (`valkey-cli monitor > /dev/null`):
 
 ```
-$ src/redis-benchmark -c 10 -n 100000 -q
+$ src/valkey-benchmark -c 10 -n 100000 -q
 PING_INLINE: 58479.53 requests per second
 PING_BULK: 59136.61 requests per second
 SET: 41823.50 requests per second

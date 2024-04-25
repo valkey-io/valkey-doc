@@ -662,7 +662,7 @@
     "* [Array reply](/docs/reference/protocol-spec#arrays): a two-element array with the first element being the name of the key from which elements were popped and the second element being an array of elements."
   ],
   "LOLWUT": [
-    "[Bulk string reply](/docs/reference/protocol-spec#bulk-strings): a string containing generative computer art and the Redis version."
+    "[Bulk string reply](/docs/reference/protocol-spec#bulk-strings): a string containing generative computer art and the Valkey version."
   ],
   "LPOP": [
     "One of the following:",
@@ -841,7 +841,7 @@
     "* [Integer reply](/docs/reference/protocol-spec#integers): `-2` if the key does not exist."
   ],
   "PUBLISH": [
-    "[Integer reply](/docs/reference/protocol-spec#integers): the number of clients that received the message. Note that in a Redis Cluster, only clients that are connected to the same node as the publishing client are included in the count."
+    "[Integer reply](/docs/reference/protocol-spec#integers): the number of clients that received the message. Note that in a Valkey Cluster, only clients that are connected to the same node as the publishing client are included in the count."
   ],
   "PUBSUB": [],
   "PUBSUB CHANNELS": [
@@ -1043,7 +1043,7 @@
     "* [Array reply](/docs/reference/protocol-spec#arrays): when called with the _count_ argument, a list of the removed members."
   ],
   "SPUBLISH": [
-    "[Integer reply](/docs/reference/protocol-spec#integers): the number of clients that received the message. Note that in a Redis Cluster, only clients that are connected to the same node as the publishing client are included in the count"
+    "[Integer reply](/docs/reference/protocol-spec#integers): the number of clients that received the message. Note that in a Valkey Cluster, only clients that are connected to the same node as the publishing client are included in the count"
   ],
   "SRANDMEMBER": [
     "One of the following:",
