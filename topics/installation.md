@@ -11,24 +11,50 @@ aliases:
 
 This is a an installation guide. You'll learn how to install, run, and experiment with the Valkey server process.
 
+The download page [valkey.io/download](https://valkey.io/download) lists the latest releases.
+
 ## Install Valkey
 
-See the guide below that best fits your needs:
-
-* [Install Valkey from Source](install-valkey-from-source.md)
-* [Install Valkey on Linux](install-valkey-on-linux.md)
-* [Install Valkey on macOS](install-valkey-on-mac-os.md)
-* [Install Valkey on Windows](install-valkey-on-windows.md)
-
+These are some ways to install Valkey.
 Refer to [Valkey Administration](admin.md) for detailed setup tips.
+
+### From source
+
+Source releases are available from the GitHub [Releases](https://github.com/valkey-io/valkey/releases) page.
+
+Unpack the tarball (e.g. `tar -xzvf valkey-7.2.5.tar.gz`) and follow the instructions in the included README.md.
+
+### Containers
+
+Containers on [Docker Hub](https://hub.docker.com/r/valkey/valkey/).
+
+### Package managers
+
+Fedora and EPEL package name: [valkey](https://packages.fedoraproject.org/pkgs/valkey/valkey/).
+
+Homebrew package: [valkey](https://formulae.brew.sh/formula/valkey)
+
+### MacOS
+
+Use the [Homebrew](https://brew.sh/) package and install Valkey using `brew install valkey`.
+To run Valkey as a service, use `brew services start valkey`.
+Check that it's running using `brew services info valkey` and stop it using `brew services stop valkey`.
+
+### Windows
+
+Valkey is not officially supported on Windows. However, you can install Valkey
+on Windows for development using WSL (Windows Subsystem for Linux).
 
 ## Test if you can connect using the CLI
 
-After you have Valkey up and running, you can connect using `valkey-cli`.
+If you're not yet running Valkey as a system service,
+you can run Valkey in the foreground using `valkey-server` and stop it using Ctrl-C.
+
+When you have Valkey up and running, you can connect using `valkey-cli`.
 
 External programs talk to Valkey using a TCP socket and a Valkey specific protocol. This protocol is implemented in the Valkey client libraries for the different programming languages. However, to make hacking with Valkey simpler, Valkey provides a command line utility that can be used to send commands to Valkey. This program is called **valkey-cli**.
 
-The first thing to do to check if Valkey is working properly is sending a **PING** command using valkey-cli:
+The first thing to do to check if Valkey is working properly is sending a **PING** command using `valkey-cli`:
 
 ```
 $ valkey-cli ping
