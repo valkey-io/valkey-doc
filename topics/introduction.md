@@ -8,8 +8,8 @@ aliases:
   - /buzz
 ---
 
-Valkey is an open source (BSD licensed), in-memory __data structure store__ used as a database, cache, message broker, and streaming engine. Valkey provides [data structures](/docs/data-types/) such as
-[strings](strings.md), [hashes](hashes.md), [lists](lists.md), [sets](sets.md), [sorted sets](sorted-sets.md) with range queries, [bitmaps](bitmaps.md), [hyperloglogs](hyperloglogs.md), [geospatial indexes](geospatial.md), and [streams](streams-intro.md). Valkey has built-in [replication](replication.md), [Lua scripting](../commands/eval.md), [LRU eviction](lru-cache.md), [transactions](transactions.md), and different levels of [on-disk persistence](persistence.md), and provides high availability via [Valkey Sentinel](sentinel.md) and automatic partitioning with [Valkey Cluster](cluster-tutorial.md).
+Valkey is an open source (BSD licensed), in-memory __data structure store__ used as a database, cache, message broker, and streaming engine. Valkey provides [data structures](data-types.md) such as
+[strings](strings.md), [hashes](hashes.md), [lists](lists.md), [sets](sets.md), [sorted sets](sorted-sets.md) with range queries, [bitmaps](bitmaps.md), [hyperloglogs](hyperloglogs.md), [geospatial indexes](geospatial.md), and [streams](streams-intro.md). Valkey has built-in [replication](replication.md), [Lua scripting](eval-intro.md), [LRU eviction](lru-cache.md), [transactions](transactions.md), and different levels of [on-disk persistence](persistence.md), and provides high availability via [Valkey Sentinel](sentinel.md) and automatic partitioning with [Valkey Cluster](cluster-tutorial.md).
 
 You can run __atomic operations__
 on these types, like [appending to a string](../commands/append.md);

@@ -9,12 +9,14 @@ aliases:
   - /docs/manual/pubsub
 ---
 
-`SUBSCRIBE`, `UNSUBSCRIBE` and `PUBLISH` implement the [Publish/Subscribe messaging paradigm](http://en.wikipedia.org/wiki/Publish/subscribe) where (citing Wikipedia) senders (publishers) are not programmed to send their messages to specific receivers (subscribers).
-Rather, published messages are characterized into channels, without knowledge of what (if any) subscribers there may be.
+`SUBSCRIBE`, `UNSUBSCRIBE` and `PUBLISH` implement the [Publish/Subscribe messaging paradigm](http://en.wikipedia.org/wiki/Publish/subscribe) where publishers send their messages to channels, without knowlege of what receivers (subscribers) there may be.
 Subscribers express interest in one or more channels and only receive messages that are of interest, without knowledge of what (if any) publishers there are.
 This decoupling of publishers and subscribers allows for greater scalability and a more dynamic network topology.
 
-For instance, to subscribe to channels "channel11" and "ch:00" the client issues a `SUBSCRIBE` providing the names of the channels:
+Pubsub channels are not persisted. If there are no subscribes to a channel when a message is published, the message is lost.
+If you're looking for persisted messages queues, you may want to look into [Streams](streams-intro.md) instead.
+
+To subscribe to channels "channel11" and "ch:00" the client issues a `SUBSCRIBE` providing the names of the channels:
 
 ```bash
 SUBSCRIBE channel11 ch:00

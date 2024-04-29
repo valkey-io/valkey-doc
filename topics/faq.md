@@ -98,7 +98,7 @@ more optimistic allocation fashion, and this is indeed what you want for Valkey.
 You can refer to the [proc(5)][proc5] man page for explanations of the
 available values.
 
-[proc5]: http://man7.org/linux/man-pages/man5/proc.5.html
+[proc5]: https://man7.org/linux/man-pages/man5/proc.5.html
 
 ## Are Valkey on-disk snapshots atomic?
 
