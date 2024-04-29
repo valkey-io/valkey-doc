@@ -38,9 +38,9 @@ some reply to the client. Using the following function instead, the
 function implementing the module command may request that the client
 is put into the blocked state:
 
-    RedisModuleBlockedClient *RedisModule_BlockClient(RedisModuleCtx *ctx, RedisModuleCmdFunc reply_callback, RedisModuleCmdFunc timeout_callback, void (*free_privdata)(void*), long long timeout_ms);
+    ValkeyModuleBlockedClient *ValkeyModule_BlockClient(ValkeyModuleCtx *ctx, ValkeyModuleCmdFunc reply_callback, ValkeyModuleCmdFunc timeout_callback, void (*free_privdata)(void*), long long timeout_ms);
 
-The function returns a `RedisModuleBlockedClient` object, which is later
+The function returns a `ValkeyModuleBlockedClient` object, which is later
 used in order to unblock the client. The arguments have the following
 meaning:
 
@@ -52,10 +52,10 @@ meaning:
 
 Once a client is blocked, it can be unblocked with the following API:
 
-    int RedisModule_UnblockClient(RedisModuleBlockedClient *bc, void *privdata);
+    int ValkeyModule_UnblockClient(ValkeyModuleBlockedClient *bc, void *privdata);
 
 The function takes as argument the blocked client object returned by
-the previous call to `RedisModule_BlockClient()`, and unblock the client.
+the previous call to `ValkeyModule_BlockClient()`, and unblock the client.
 Immediately before the client gets unblocked, the `reply_callback` function
 specified when the client was blocked is called: this function will
 have access to the `privdata` pointer used here.
@@ -76,23 +76,23 @@ that blocks a client for one second, and then send as reply "Hello!".
 Note: arity checks and other non important things are not implemented
 int his command, in order to take the example simple.
 
-    int Example_RedisCommand(RedisModuleCtx *ctx, RedisModuleString **argv,
+    int Example_ValkeyCommand(ValkeyModuleCtx *ctx, ValkeyModuleString **argv,
                              int argc)
     {
-        RedisModuleBlockedClient *bc =
-            RedisModule_BlockClient(ctx,reply_func,timeout_func,NULL,0);
+        ValkeyModuleBlockedClient *bc =
+            ValkeyModule_BlockClient(ctx,reply_func,timeout_func,NULL,0);
 
         pthread_t tid;
         pthread_create(&tid,NULL,threadmain,bc);
 
-        return REDISMODULE_OK;
+        return VALKEYMODULE_OK;
     }
 
     void *threadmain(void *arg) {
-        RedisModuleBlockedClient *bc = arg;
+        ValkeyModuleBlockedClient *bc = arg;
 
         sleep(1); /* Wait one second and unblock. */
-        RedisModule_UnblockClient(bc,NULL);
+        ValkeyModule_UnblockClient(bc,NULL);
     }
 
 The above command blocks the client ASAP, spawning a thread that will
@@ -100,16 +100,16 @@ wait a second and will unblock the client. Let's check the reply and
 timeout callbacks, which are in our case very similar, since they
 just reply the client with a different reply type.
 
-    int reply_func(RedisModuleCtx *ctx, RedisModuleString **argv,
+    int reply_func(ValkeyModuleCtx *ctx, ValkeyModuleString **argv,
                    int argc)
     {
-        return RedisModule_ReplyWithSimpleString(ctx,"Hello!");
+        return ValkeyModule_ReplyWithSimpleString(ctx,"Hello!");
     }
 
-    int timeout_func(RedisModuleCtx *ctx, RedisModuleString **argv,
+    int timeout_func(ValkeyModuleCtx *ctx, ValkeyModuleString **argv,
                    int argc)
     {
-        return RedisModule_ReplyWithNull(ctx);
+        return ValkeyModule_ReplyWithNull(ctx);
     }
 
 The reply callback just sends the "Hello!" string to the client.
@@ -134,13 +134,13 @@ can be passed to the reply function so that we return it to the command
 caller. In order to make this working, we modify the functions as follow:
 
     void *threadmain(void *arg) {
-        RedisModuleBlockedClient *bc = arg;
+        ValkeyModuleBlockedClient *bc = arg;
 
         sleep(1); /* Wait one second and unblock. */
 
-        long *mynumber = RedisModule_Alloc(sizeof(long));
+        long *mynumber = ValkeyModule_Alloc(sizeof(long));
         *mynumber = rand();
-        RedisModule_UnblockClient(bc,mynumber);
+        ValkeyModule_UnblockClient(bc,mynumber);
     }
 
 As you can see, now the unblocking call is passing some private data,
@@ -148,25 +148,25 @@ that is the `mynumber` pointer, to the reply callback. In order to
 obtain this private data, the reply callback will use the following
 function:
 
-    void *RedisModule_GetBlockedClientPrivateData(RedisModuleCtx *ctx);
+    void *ValkeyModule_GetBlockedClientPrivateData(ValkeyModuleCtx *ctx);
 
 So our reply callback is modified like that:
 
-    int reply_func(RedisModuleCtx *ctx, RedisModuleString **argv,
+    int reply_func(ValkeyModuleCtx *ctx, ValkeyModuleString **argv,
                    int argc)
     {
-        long *mynumber = RedisModule_GetBlockedClientPrivateData(ctx);
+        long *mynumber = ValkeyModule_GetBlockedClientPrivateData(ctx);
         /* IMPORTANT: don't free mynumber here, but in the
          * free privdata callback. */
-        return RedisModule_ReplyWithLongLong(ctx,mynumber);
+        return ValkeyModule_ReplyWithLongLong(ctx,mynumber);
     }
 
 Note that we also need to pass a `free_privdata` function when blocking
-the client with `RedisModule_BlockClient()`, since the allocated
+the client with `ValkeyModule_BlockClient()`, since the allocated
 long value must be freed. Our callback will look like the following:
 
     void free_privdata(void *privdata) {
-        RedisModule_Free(privdata);
+        ValkeyModule_Free(privdata);
     }
 
 NOTE: It is important to stress that the private data is best freed in the
@@ -188,23 +188,23 @@ because this will trigger the reply callback to be called.
 
 In this case the best thing to do is to use the following function:
 
-    int RedisModule_AbortBlock(RedisModuleBlockedClient *bc);
+    int ValkeyModule_AbortBlock(ValkeyModuleBlockedClient *bc);
 
 Practically this is how to use it:
 
-    int Example_RedisCommand(RedisModuleCtx *ctx, RedisModuleString **argv,
+    int Example_ValkeyCommand(ValkeyModuleCtx *ctx, ValkeyModuleString **argv,
                              int argc)
     {
-        RedisModuleBlockedClient *bc =
-            RedisModule_BlockClient(ctx,reply_func,timeout_func,NULL,0);
+        ValkeyModuleBlockedClient *bc =
+            ValkeyModule_BlockClient(ctx,reply_func,timeout_func,NULL,0);
 
         pthread_t tid;
         if (pthread_create(&tid,NULL,threadmain,bc) != 0) {
-            RedisModule_AbortBlock(bc);
-            RedisModule_ReplyWithError(ctx,"Sorry can't create a thread");
+            ValkeyModule_AbortBlock(bc);
+            ValkeyModule_ReplyWithError(ctx,"Sorry can't create a thread");
         }
 
-        return REDISMODULE_OK;
+        return VALKEYMODULE_OK;
     }
 
 The client will be unblocked but the reply callback will not be called.
@@ -216,32 +216,32 @@ The following functions can be used in order to implement the reply and
 callback with the same function that implements the primary command
 function:
 
-    int RedisModule_IsBlockedReplyRequest(RedisModuleCtx *ctx);
-    int RedisModule_IsBlockedTimeoutRequest(RedisModuleCtx *ctx);
+    int ValkeyModule_IsBlockedReplyRequest(ValkeyModuleCtx *ctx);
+    int ValkeyModule_IsBlockedTimeoutRequest(ValkeyModuleCtx *ctx);
 
 So I could rewrite the example command without using a separated
 reply and timeout callback:
 
-    int Example_RedisCommand(RedisModuleCtx *ctx, RedisModuleString **argv,
+    int Example_ValkeyCommand(ValkeyModuleCtx *ctx, ValkeyModuleString **argv,
                              int argc)
     {
-        if (RedisModule_IsBlockedReplyRequest(ctx)) {
-            long *mynumber = RedisModule_GetBlockedClientPrivateData(ctx);
-            return RedisModule_ReplyWithLongLong(ctx,mynumber);
-        } else if (RedisModule_IsBlockedTimeoutRequest) {
-            return RedisModule_ReplyWithNull(ctx);
+        if (ValkeyModule_IsBlockedReplyRequest(ctx)) {
+            long *mynumber = ValkeyModule_GetBlockedClientPrivateData(ctx);
+            return ValkeyModule_ReplyWithLongLong(ctx,mynumber);
+        } else if (ValkeyModule_IsBlockedTimeoutRequest) {
+            return ValkeyModule_ReplyWithNull(ctx);
         }
 
-        RedisModuleBlockedClient *bc =
-            RedisModule_BlockClient(ctx,reply_func,timeout_func,NULL,0);
+        ValkeyModuleBlockedClient *bc =
+            ValkeyModule_BlockClient(ctx,reply_func,timeout_func,NULL,0);
 
         pthread_t tid;
         if (pthread_create(&tid,NULL,threadmain,bc) != 0) {
-            RedisModule_AbortBlock(bc);
-            RedisModule_ReplyWithError(ctx,"Sorry can't create a thread");
+            ValkeyModule_AbortBlock(bc);
+            ValkeyModule_ReplyWithError(ctx,"Sorry can't create a thread");
         }
 
-        return REDISMODULE_OK;
+        return VALKEYMODULE_OK;
     }
 
 Functionally is the same but there are people that will prefer the less

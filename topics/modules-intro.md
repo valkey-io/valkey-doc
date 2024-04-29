@@ -13,7 +13,7 @@ The modules documentation is composed of the following pages:
 * Introduction to Valkey modules (this file). An overview about Valkey Modules system and API. It's a good idea to start your reading here.
 * [Implementing native data types](modules-native-types.md) covers the implementation of native data types into modules.
 * [Blocking operations](modules-blocking-ops.md) shows how to write blocking commands that will not reply immediately, but will block the client, without blocking the Valkey server, and will provide a reply whenever will be possible.
-* [Valkey modules API reference](modules-api-ref.md) is generated from module.c top comments of RedisModule functions. It is a good reference in order to understand how each function works.
+* [Valkey modules API reference](modules-api-ref.md) is generated from module.c top comments of ValkeyModule functions. It is a good reference in order to understand how each function works.
 
 Valkey modules make it possible to extend Valkey functionality using external
 modules, rapidly implementing new Valkey commands with features
@@ -21,7 +21,7 @@ similar to what can be done inside the core itself.
 
 Valkey modules are dynamic libraries that can be loaded into Valkey at
 startup, or using the `MODULE LOAD` command. Valkey exports a C API, in the
-form of a single C header file called `redismodule.h`. Modules are meant
+form of a single C header file called `valkeymodule.h`. Modules are meant
 to be written in C, however it will be possible to use C++ or other languages
 that have C binding functionalities.
 
@@ -65,29 +65,29 @@ uses to register itself into the Valkey core.
 In order to show the different parts of a module, here we'll show a very
 simple module that implements a command that outputs a random number.
 
-    #include "redismodule.h"
+    #include "valkeymodule.h"
     #include <stdlib.h>
 
-    int HelloworldRand_RedisCommand(RedisModuleCtx *ctx, RedisModuleString **argv, int argc) {
-        RedisModule_ReplyWithLongLong(ctx,rand());
-        return REDISMODULE_OK;
+    int HelloworldRand_ValkeyCommand(ValkeyModuleCtx *ctx, ValkeyModuleString **argv, int argc) {
+        ValkeyModule_ReplyWithLongLong(ctx,rand());
+        return VALKEYMODULE_OK;
     }
 
-    int RedisModule_OnLoad(RedisModuleCtx *ctx, RedisModuleString **argv, int argc) {
-        if (RedisModule_Init(ctx,"helloworld",1,REDISMODULE_APIVER_1)
-            == REDISMODULE_ERR) return REDISMODULE_ERR;
+    int ValkeyModule_OnLoad(ValkeyModuleCtx *ctx, ValkeyModuleString **argv, int argc) {
+        if (ValkeyModule_Init(ctx,"helloworld",1,VALKEYMODULE_APIVER_1)
+            == VALKEYMODULE_ERR) return VALKEYMODULE_ERR;
 
-        if (RedisModule_CreateCommand(ctx,"helloworld.rand",
-            HelloworldRand_RedisCommand, "fast random",
-            0, 0, 0) == REDISMODULE_ERR)
-            return REDISMODULE_ERR;
+        if (ValkeyModule_CreateCommand(ctx,"helloworld.rand",
+            HelloworldRand_ValkeyCommand, "fast random",
+            0, 0, 0) == VALKEYMODULE_ERR)
+            return VALKEYMODULE_ERR;
 
-        return REDISMODULE_OK;
+        return VALKEYMODULE_OK;
     }
 
 The example module has two functions. One implements a command called
 HELLOWORLD.RAND. This function is specific of that module. However the
-other function called `RedisModule_OnLoad()` must be present in each
+other function called `ValkeyModule_OnLoad()` must be present in each
 Valkey module. It is the entry point for the module to be initialized,
 register its commands, and potentially other private data structures
 it uses.
@@ -99,16 +99,16 @@ have collisions.
 
 Note that if different modules have colliding commands, they'll not be
 able to work in Valkey at the same time, since the function
-`RedisModule_CreateCommand` will fail in one of the modules, so the module
+`ValkeyModule_CreateCommand` will fail in one of the modules, so the module
 loading will abort returning an error condition.
 
 ## Module initialization
 
-The above example shows the usage of the function `RedisModule_Init()`.
+The above example shows the usage of the function `ValkeyModule_Init()`.
 It should be the first function called by the module `OnLoad` function.
 The following is the function prototype:
 
-    int RedisModule_Init(RedisModuleCtx *ctx, const char *modulename,
+    int ValkeyModule_Init(ValkeyModuleCtx *ctx, const char *modulename,
                          int module_version, int api_version);
 
 The `Init` function announces the Valkey core that the module has a given
@@ -116,17 +116,17 @@ name, its version (that is reported by `MODULE LIST`), and that is willing
 to use a specific version of the API.
 
 If the API version is wrong, the name is already taken, or there are other
-similar errors, the function will return `REDISMODULE_ERR`, and the module
+similar errors, the function will return `VALKEYMODULE_ERR`, and the module
 `OnLoad` function should return ASAP with an error.
 
 Before the `Init` function is called, no other API function can be called,
 otherwise the module will segfault and the Valkey instance will crash.
 
-The second function called, `RedisModule_CreateCommand`, is used in order
+The second function called, `ValkeyModule_CreateCommand`, is used in order
 to register commands into the Valkey core. The following is the prototype:
 
-    int RedisModule_CreateCommand(RedisModuleCtx *ctx, const char *name,
-                                  RedisModuleCmdFunc cmdfunc, const char *strflags,
+    int ValkeyModule_CreateCommand(ValkeyModuleCtx *ctx, const char *name,
+                                  ValkeyModuleCmdFunc cmdfunc, const char *strflags,
                                   int firstkey, int lastkey, int keystep);
 
 As you can see, most Valkey modules API calls all take as first argument
@@ -139,19 +139,19 @@ and the positions of key names in the command's arguments.
 
 The function that implements the command must have the following prototype:
 
-    int mycommand(RedisModuleCtx *ctx, RedisModuleString **argv, int argc);
+    int mycommand(ValkeyModuleCtx *ctx, ValkeyModuleString **argv, int argc);
 
 The command function arguments are just the context, that will be passed
 to all the other API calls, the command argument vector, and total number
 of arguments, as passed by the user.
 
 As you can see, the arguments are provided as pointers to a specific data
-type, the `RedisModuleString`. This is an opaque data type you have API
+type, the `ValkeyModuleString`. This is an opaque data type you have API
 functions to access and use, direct access to its fields is never needed.
 
 Zooming into the example command implementation, we can find another call:
 
-    int RedisModule_ReplyWithLongLong(RedisModuleCtx *ctx, long long integer);
+    int ValkeyModule_ReplyWithLongLong(ValkeyModuleCtx *ctx, long long integer);
 
 This function returns an integer to the client that invoked the command,
 exactly like other Valkey commands do, like for example `INCR` or `SCARD`.
@@ -162,25 +162,25 @@ In most cases, there is no need for special cleanup.
 When a module is unloaded, Valkey will automatically unregister commands and
 unsubscribe from notifications.
 However in the case where a module contains some persistent memory or
-configuration, a module may include an optional `RedisModule_OnUnload`
+configuration, a module may include an optional `ValkeyModule_OnUnload`
 function.
 If a module provides this function, it will be invoked during the module unload
 process.
 The following is the function prototype:
 
-    int RedisModule_OnUnload(RedisModuleCtx *ctx);
+    int ValkeyModule_OnUnload(ValkeyModuleCtx *ctx);
 
 The `OnUnload` function may prevent module unloading by returning
-`REDISMODULE_ERR`.
-Otherwise, `REDISMODULE_OK` should be returned.
+`VALKEYMODULE_ERR`.
+Otherwise, `VALKEYMODULE_OK` should be returned.
 
 ## Setup and dependencies of a Valkey module
 
 Valkey modules don't depend on Valkey or some other library, nor they
-need to be compiled with a specific `redismodule.h` file. In order
-to create a new module, just copy a recent version of `redismodule.h`
+need to be compiled with a specific `valkeymodule.h` file. In order
+to create a new module, just copy a recent version of `valkeymodule.h`
 in your source tree, link all the libraries you want, and create
-a dynamic library having the `RedisModule_OnLoad()` function symbol
+a dynamic library having the `ValkeyModule_OnLoad()` function symbol
 exported.
 
 The module will be able to load into different versions of Valkey.
@@ -189,11 +189,11 @@ A module can be designed to support both newer and older Redis OSS versions wher
 If an API function is not implemented in the currently running Redis OSS version, the function pointer is set to NULL.
 This allows the module to check if a function exists before using it:
 
-    if (RedisModule_SetCommandInfo != NULL) {
-        RedisModule_SetCommandInfo(cmd, &info);
+    if (ValkeyModule_SetCommandInfo != NULL) {
+        ValkeyModule_SetCommandInfo(cmd, &info);
     }
 
-In recent versions of `redismodule.h`, a convenience macro `RMAPI_FUNC_SUPPORTED(funcname)` is defined.
+In recent versions of `valkeymodule.h`, a convenience macro `RMAPI_FUNC_SUPPORTED(funcname)` is defined.
 Using the macro or just comparing with NULL is a matter of personal preference.
 
 # Passing configuration parameters to Valkey modules
@@ -207,24 +207,24 @@ file name:
 
 In the above example the strings `foo`, `bar` and `1234` will be passed
 to the module `OnLoad()` function in the `argv` argument as an array
-of RedisModuleString pointers. The number of arguments passed is into `argc`.
+of ValkeyModuleString pointers. The number of arguments passed is into `argc`.
 
 The way you can access those strings will be explained in the rest of this
 document. Normally the module will store the module configuration parameters
 in some `static` global variable that can be accessed module wide, so that
 the configuration can change the behavior of different commands.
 
-## Working with RedisModuleString objects
+## Working with ValkeyModuleString objects
 
 The command argument vector `argv` passed to module commands, and the
-return value of other module APIs functions, are of type `RedisModuleString`.
+return value of other module APIs functions, are of type `ValkeyModuleString`.
 
 Usually you directly pass module strings to other API calls, however sometimes
 you may need to directly access the string object.
 
 There are a few functions in order to work with string objects:
 
-    const char *RedisModule_StringPtrLen(RedisModuleString *string, size_t *len);
+    const char *ValkeyModule_StringPtrLen(ValkeyModuleString *string, size_t *len);
 
 The above function accesses a string by returning its pointer and setting its
 length in `len`.
@@ -234,12 +234,12 @@ You should never write to a string object pointer, as you can see from the
 However, if you want, you can create new string objects using the following
 API:
 
-    RedisModuleString *RedisModule_CreateString(RedisModuleCtx *ctx, const char *ptr, size_t len);
+    ValkeyModuleString *ValkeyModule_CreateString(ValkeyModuleCtx *ctx, const char *ptr, size_t len);
 
 The string returned by the above command must be freed using a corresponding
-call to `RedisModule_FreeString()`:
+call to `ValkeyModule_FreeString()`:
 
-    void RedisModule_FreeString(RedisModuleString *str);
+    void ValkeyModule_FreeString(ValkeyModuleString *str);
 
 However if you want to avoid having to free strings, the automatic memory
 management, covered later in this document, can be a good alternative, by
@@ -255,12 +255,12 @@ be freed.
 Creating a new string from an integer is a very common operation, so there
 is a function to do this:
 
-    RedisModuleString *mystr = RedisModule_CreateStringFromLongLong(ctx,10);
+    ValkeyModuleString *mystr = ValkeyModule_CreateStringFromLongLong(ctx,10);
 
 Similarly in order to parse a string as a number:
 
     long long myval;
-    if (RedisModule_StringToLongLong(ctx,argv[1],&myval) == REDISMODULE_OK) {
+    if (ValkeyModule_StringToLongLong(ctx,argv[1],&myval) == VALKEYMODULE_OK) {
         /* Do something with 'myval' */
     }
 
@@ -288,49 +288,49 @@ the higher level one.
 
 ## Calling Valkey commands
 
-The high level API to access Valkey is the sum of the `RedisModule_Call()`
+The high level API to access Valkey is the sum of the `ValkeyModule_Call()`
 function, together with the functions needed in order to access the
 reply object returned by `Call()`.
 
-`RedisModule_Call` uses a special calling convention, with a format specifier
+`ValkeyModule_Call` uses a special calling convention, with a format specifier
 that is used to specify what kind of objects you are passing as arguments
 to the function.
 
 Valkey commands are invoked just using a command name and a list of arguments.
 However when calling commands, the arguments may originate from different
-kind of strings: null-terminated C strings, RedisModuleString objects as
+kind of strings: null-terminated C strings, ValkeyModuleString objects as
 received from the `argv` parameter in the command implementation, binary
 safe C buffers with a pointer and a length, and so forth.
 
 For example if I want to call `INCRBY` using a first argument (the key)
 a string received in the argument vector `argv`, which is an array
-of RedisModuleString object pointers, and a C string representing the
+of ValkeyModuleString object pointers, and a C string representing the
 number "10" as second argument (the increment), I'll use the following
 function call:
 
-    RedisModuleCallReply *reply;
-    reply = RedisModule_Call(ctx,"INCRBY","sc",argv[1],"10");
+    ValkeyModuleCallReply *reply;
+    reply = ValkeyModule_Call(ctx,"INCRBY","sc",argv[1],"10");
 
 The first argument is the context, and the second is always a null terminated
 C string with the command name. The third argument is the format specifier
 where each character corresponds to the type of the arguments that will follow.
-In the above case `"sc"` means a RedisModuleString object, and a null
+In the above case `"sc"` means a ValkeyModuleString object, and a null
 terminated C string. The other arguments are just the two arguments as
-specified. In fact `argv[1]` is a RedisModuleString and `"10"` is a null
+specified. In fact `argv[1]` is a ValkeyModuleString and `"10"` is a null
 terminated C string.
 
 This is the full list of format specifiers:
 
 * **c** -- Null terminated C string pointer.
 * **b** -- C buffer, two arguments needed: C string pointer and `size_t` length.
-* **s** -- RedisModuleString as received in `argv` or by other Valkey module APIs returning a RedisModuleString object.
+* **s** -- ValkeyModuleString as received in `argv` or by other Valkey module APIs returning a ValkeyModuleString object.
 * **l** -- Long long integer.
-* **v** -- Array of RedisModuleString objects.
+* **v** -- Array of ValkeyModuleString objects.
 * **!** -- This modifier just tells the function to replicate the command to replicas and AOF. It is ignored from the point of view of arguments parsing.
 * **A** -- This modifier, when `!` is given, tells to suppress AOF propagation: the command will be propagated only to replicas.
 * **R** -- This modifier, when `!` is given, tells to suppress replicas propagation: the command will be propagated only to the AOF if enabled.
 
-The function returns a `RedisModuleCallReply` object on success, on
+The function returns a `ValkeyModuleCallReply` object on success, on
 error NULL is returned.
 
 NULL is returned when the command name is invalid, the format specifier uses
@@ -338,47 +338,47 @@ characters that are not recognized, or when the command is called with the
 wrong number of arguments. In the above cases the `errno` var is set to `EINVAL`. NULL is also returned when, in an instance with Cluster enabled, the target
 keys are about non local hash slots. In this case `errno` is set to `EPERM`.
 
-## Working with RedisModuleCallReply objects.
+## Working with ValkeyModuleCallReply objects.
 
-`RedisModuleCall` returns reply objects that can be accessed using the
-`RedisModule_CallReply*` family of functions.
+`ValkeyModuleCall` returns reply objects that can be accessed using the
+`ValkeyModule_CallReply*` family of functions.
 
 In order to obtain the type or reply (corresponding to one of the data types
-supported by the Valkey protocol), the function `RedisModule_CallReplyType()`
+supported by the Valkey protocol), the function `ValkeyModule_CallReplyType()`
 is used:
 
-    reply = RedisModule_Call(ctx,"INCRBY","sc",argv[1],"10");
-    if (RedisModule_CallReplyType(reply) == REDISMODULE_REPLY_INTEGER) {
-        long long myval = RedisModule_CallReplyInteger(reply);
+    reply = ValkeyModule_Call(ctx,"INCRBY","sc",argv[1],"10");
+    if (ValkeyModule_CallReplyType(reply) == VALKEYMODULE_REPLY_INTEGER) {
+        long long myval = ValkeyModule_CallReplyInteger(reply);
         /* Do something with myval. */
     }
 
 Valid reply types are:
 
-* `REDISMODULE_REPLY_STRING` Bulk string or status replies.
-* `REDISMODULE_REPLY_ERROR` Errors.
-* `REDISMODULE_REPLY_INTEGER` Signed 64 bit integers.
-* `REDISMODULE_REPLY_ARRAY` Array of replies.
-* `REDISMODULE_REPLY_NULL` NULL reply.
+* `VALKEYMODULE_REPLY_STRING` Bulk string or status replies.
+* `VALKEYMODULE_REPLY_ERROR` Errors.
+* `VALKEYMODULE_REPLY_INTEGER` Signed 64 bit integers.
+* `VALKEYMODULE_REPLY_ARRAY` Array of replies.
+* `VALKEYMODULE_REPLY_NULL` NULL reply.
 
 Strings, errors and arrays have an associated length. For strings and errors
 the length corresponds to the length of the string. For arrays the length
 is the number of elements. To obtain the reply length the following function
 is used:
 
-    size_t reply_len = RedisModule_CallReplyLength(reply);
+    size_t reply_len = ValkeyModule_CallReplyLength(reply);
 
 In order to obtain the value of an integer reply, the following function is used, as already shown in the example above:
 
-    long long reply_integer_val = RedisModule_CallReplyInteger(reply);
+    long long reply_integer_val = ValkeyModule_CallReplyInteger(reply);
 
 Called with a reply object of the wrong type, the above function always
 returns `LLONG_MIN`.
 
 Sub elements of array replies are accessed this way:
 
-    RedisModuleCallReply *subreply;
-    subreply = RedisModule_CallReplyArrayElement(reply,idx);
+    ValkeyModuleCallReply *subreply;
+    subreply = ValkeyModule_CallReplyArrayElement(reply,idx);
 
 The above function returns NULL if you try to access out of range elements.
 
@@ -388,12 +388,12 @@ the resulting pointer (that is returned as a `const` pointer so that
 misusing must be pretty explicit):
 
     size_t len;
-    char *ptr = RedisModule_CallReplyStringPtr(reply,&len);
+    char *ptr = ValkeyModule_CallReplyStringPtr(reply,&len);
 
 If the reply type is not a string or an error, NULL is returned.
 
-RedisCallReply objects are not the same as module string objects
-(RedisModuleString types). However sometimes you may need to pass replies
+ValkeyCallReply objects are not the same as module string objects
+(ValkeyModuleString types). However sometimes you may need to pass replies
 of type string or integer, to API functions expecting a module string.
 
 When this is the case, you may want to evaluate if using the low level
@@ -401,16 +401,16 @@ API could be a simpler way to implement your command, or you can use
 the following function in order to create a new string object from a
 call reply of type string, error or integer:
 
-    RedisModuleString *mystr = RedisModule_CreateStringFromCallReply(myreply);
+    ValkeyModuleString *mystr = ValkeyModule_CreateStringFromCallReply(myreply);
 
 If the reply is not of the right type, NULL is returned.
-The returned string object should be released with `RedisModule_FreeString()`
+The returned string object should be released with `ValkeyModule_FreeString()`
 as usually, or by enabling automatic memory management (see corresponding
 section).
 
 ## Releasing call reply objects
 
-Reply objects must be freed using `RedisModule_FreeCallReply`. For arrays,
+Reply objects must be freed using `ValkeyModule_FreeCallReply`. For arrays,
 you need to free only the top level reply, not the nested replies.
 Currently the module implementation provides a protection in order to avoid
 crashing if you free a nested reply object for error, however this feature
@@ -432,49 +432,49 @@ the error message, like the "BUSY" string in the "BUSY the sever is busy" error
 message).
 
 All the functions to send a reply to the client are called
-`RedisModule_ReplyWith<something>`.
+`ValkeyModule_ReplyWith<something>`.
 
 To return an error, use:
 
-    RedisModule_ReplyWithError(RedisModuleCtx *ctx, const char *err);
+    ValkeyModule_ReplyWithError(ValkeyModuleCtx *ctx, const char *err);
 
 There is a predefined error string for key of wrong type errors:
 
-    REDISMODULE_ERRORMSG_WRONGTYPE
+    VALKEYMODULE_ERRORMSG_WRONGTYPE
 
 Example usage:
 
-    RedisModule_ReplyWithError(ctx,"ERR invalid arguments");
+    ValkeyModule_ReplyWithError(ctx,"ERR invalid arguments");
 
 We already saw how to reply with a `long long` in the examples above:
 
-    RedisModule_ReplyWithLongLong(ctx,12345);
+    ValkeyModule_ReplyWithLongLong(ctx,12345);
 
 To reply with a simple string, that can't contain binary values or newlines,
 (so it's suitable to send small words, like "OK") we use:
 
-    RedisModule_ReplyWithSimpleString(ctx,"OK");
+    ValkeyModule_ReplyWithSimpleString(ctx,"OK");
 
 It's possible to reply with "bulk strings" that are binary safe, using
 two different functions:
 
-    int RedisModule_ReplyWithStringBuffer(RedisModuleCtx *ctx, const char *buf, size_t len);
+    int ValkeyModule_ReplyWithStringBuffer(ValkeyModuleCtx *ctx, const char *buf, size_t len);
 
-    int RedisModule_ReplyWithString(RedisModuleCtx *ctx, RedisModuleString *str);
+    int ValkeyModule_ReplyWithString(ValkeyModuleCtx *ctx, ValkeyModuleString *str);
 
-The first function gets a C pointer and length. The second a RedisModuleString
+The first function gets a C pointer and length. The second a ValkeyModuleString
 object. Use one or the other depending on the source type you have at hand.
 
 In order to reply with an array, you just need to use a function to emit the
 array length, followed by as many calls to the above functions as the number
 of elements of the array are:
 
-    RedisModule_ReplyWithArray(ctx,2);
-    RedisModule_ReplyWithStringBuffer(ctx,"age",3);
-    RedisModule_ReplyWithLongLong(ctx,22);
+    ValkeyModule_ReplyWithArray(ctx,2);
+    ValkeyModule_ReplyWithStringBuffer(ctx,"age",3);
+    ValkeyModule_ReplyWithLongLong(ctx,22);
 
 To return nested arrays is easy, your nested array element just uses another
-call to `RedisModule_ReplyWithArray()` followed by the calls to emit the
+call to `ValkeyModule_ReplyWithArray()` followed by the calls to emit the
 sub array elements.
 
 ## Returning arrays with dynamic length
@@ -485,26 +485,26 @@ command that given a number outputs the prime factors. Instead of
 factorializing the number, storing the prime factors into an array, and
 later produce the command reply, a better solution is to start an array
 reply where the length is not known, and set it later. This is accomplished
-with a special argument to `RedisModule_ReplyWithArray()`:
+with a special argument to `ValkeyModule_ReplyWithArray()`:
 
-    RedisModule_ReplyWithArray(ctx, REDISMODULE_POSTPONED_LEN);
+    ValkeyModule_ReplyWithArray(ctx, VALKEYMODULE_POSTPONED_LEN);
 
 The above call starts an array reply so we can use other `ReplyWith` calls
 in order to produce the array items. Finally in order to set the length,
 use the following call:
 
-    RedisModule_ReplySetArrayLength(ctx, number_of_items);
+    ValkeyModule_ReplySetArrayLength(ctx, number_of_items);
 
 In the case of the FACTOR command, this translates to some code similar
 to this:
 
-    RedisModule_ReplyWithArray(ctx, REDISMODULE_POSTPONED_LEN);
+    ValkeyModule_ReplyWithArray(ctx, VALKEYMODULE_POSTPONED_LEN);
     number_of_factors = 0;
     while(still_factors) {
-        RedisModule_ReplyWithLongLong(ctx, some_factor);
+        ValkeyModule_ReplyWithLongLong(ctx, some_factor);
         number_of_factors++;
     }
-    RedisModule_ReplySetArrayLength(ctx, number_of_factors);
+    ValkeyModule_ReplySetArrayLength(ctx, number_of_factors);
 
 Another common use case for this feature is iterating over the arrays of
 some collection and only returning the ones passing some kind of filtering.
@@ -513,12 +513,12 @@ It is possible to have multiple nested arrays with postponed reply.
 Each call to `SetArray()` will set the length of the latest corresponding
 call to `ReplyWithArray()`:
 
-    RedisModule_ReplyWithArray(ctx, REDISMODULE_POSTPONED_LEN);
+    ValkeyModule_ReplyWithArray(ctx, VALKEYMODULE_POSTPONED_LEN);
     ... generate 100 elements ...
-    RedisModule_ReplyWithArray(ctx, REDISMODULE_POSTPONED_LEN);
+    ValkeyModule_ReplyWithArray(ctx, VALKEYMODULE_POSTPONED_LEN);
     ... generate 10 elements ...
-    RedisModule_ReplySetArrayLength(ctx, 10);
-    RedisModule_ReplySetArrayLength(ctx, 100);
+    ValkeyModule_ReplySetArrayLength(ctx, 10);
+    ValkeyModule_ReplySetArrayLength(ctx, 100);
 
 This creates a 100 items array having as last element a 10 items array.
 
@@ -526,21 +526,21 @@ This creates a 100 items array having as last element a 10 items array.
 
 Often commands need to check that the number of arguments and type of the key
 is correct. In order to report a wrong arity, there is a specific function
-called `RedisModule_WrongArity()`. The usage is trivial:
+called `ValkeyModule_WrongArity()`. The usage is trivial:
 
-    if (argc != 2) return RedisModule_WrongArity(ctx);
+    if (argc != 2) return ValkeyModule_WrongArity(ctx);
 
 Checking for the wrong type involves opening the key and checking the type:
 
-    RedisModuleKey *key = RedisModule_OpenKey(ctx,argv[1],
-        REDISMODULE_READ|REDISMODULE_WRITE);
+    ValkeyModuleKey *key = ValkeyModule_OpenKey(ctx,argv[1],
+        VALKEYMODULE_READ|VALKEYMODULE_WRITE);
 
-    int keytype = RedisModule_KeyType(key);
-    if (keytype != REDISMODULE_KEYTYPE_STRING &&
-        keytype != REDISMODULE_KEYTYPE_EMPTY)
+    int keytype = ValkeyModule_KeyType(key);
+    if (keytype != VALKEYMODULE_KEYTYPE_STRING &&
+        keytype != VALKEYMODULE_KEYTYPE_EMPTY)
     {
-        RedisModule_CloseKey(key);
-        return RedisModule_ReplyWithError(ctx,REDISMODULE_ERRORMSG_WRONGTYPE);
+        ValkeyModule_CloseKey(key);
+        return ValkeyModule_ReplyWithError(ctx,VALKEYMODULE_ERRORMSG_WRONGTYPE);
     }
 
 Note that you often want to proceed with a command both if the key
@@ -560,17 +560,17 @@ Because the API is meant to be very fast, it cannot do too many run-time
 checks, so the user must be aware of certain rules to follow:
 
 * Opening the same key multiple times where at least one instance is opened for writing, is undefined and may lead to crashes.
-* While a key is open, it should only be accessed via the low level key API. For example opening a key, then calling DEL on the same key using the `RedisModule_Call()` API will result into a crash. However it is safe to open a key, perform some operation with the low level API, closing it, then using other APIs to manage the same key, and later opening it again to do some more work.
+* While a key is open, it should only be accessed via the low level key API. For example opening a key, then calling DEL on the same key using the `ValkeyModule_Call()` API will result into a crash. However it is safe to open a key, perform some operation with the low level API, closing it, then using other APIs to manage the same key, and later opening it again to do some more work.
 
-In order to open a key the `RedisModule_OpenKey` function is used. It returns
+In order to open a key the `ValkeyModule_OpenKey` function is used. It returns
 a key pointer, that we'll use with all the next calls to access and modify
 the value:
 
-    RedisModuleKey *key;
-    key = RedisModule_OpenKey(ctx,argv[1],REDISMODULE_READ);
+    ValkeyModuleKey *key;
+    key = ValkeyModule_OpenKey(ctx,argv[1],VALKEYMODULE_READ);
 
-The second argument is the key name, that must be a `RedisModuleString` object.
-The third argument is the mode: `REDISMODULE_READ` or `REDISMODULE_WRITE`.
+The second argument is the key name, that must be a `ValkeyModuleString` object.
+The third argument is the mode: `VALKEYMODULE_READ` or `VALKEYMODULE_WRITE`.
 It is possible to use `|` to bitwise OR the two modes to open the key in
 both modes. Currently a key opened for writing can also be accessed for reading
 but this is to be considered an implementation detail. The right mode should
@@ -578,12 +578,12 @@ be used in sane modules.
 
 You can open non existing keys for writing, since the keys will be created
 when an attempt to write to the key is performed. However when opening keys
-just for reading, `RedisModule_OpenKey` will return NULL if the key does not
+just for reading, `ValkeyModule_OpenKey` will return NULL if the key does not
 exist.
 
 Once you are done using a key, you can close it with:
 
-    RedisModule_CloseKey(key);
+    ValkeyModule_CloseKey(key);
 
 Note that if automatic memory management is enabled, you are not forced to
 close keys. When the module function returns, Valkey will take care to close
@@ -591,18 +591,18 @@ all the keys which are still open.
 
 ## Getting the key type
 
-In order to obtain the value of a key, use the `RedisModule_KeyType()` function:
+In order to obtain the value of a key, use the `ValkeyModule_KeyType()` function:
 
-    int keytype = RedisModule_KeyType(key);
+    int keytype = ValkeyModule_KeyType(key);
 
 It returns one of the following values:
 
-    REDISMODULE_KEYTYPE_EMPTY
-    REDISMODULE_KEYTYPE_STRING
-    REDISMODULE_KEYTYPE_LIST
-    REDISMODULE_KEYTYPE_HASH
-    REDISMODULE_KEYTYPE_SET
-    REDISMODULE_KEYTYPE_ZSET
+    VALKEYMODULE_KEYTYPE_EMPTY
+    VALKEYMODULE_KEYTYPE_STRING
+    VALKEYMODULE_KEYTYPE_LIST
+    VALKEYMODULE_KEYTYPE_HASH
+    VALKEYMODULE_KEYTYPE_SET
+    VALKEYMODULE_KEYTYPE_ZSET
 
 The above are just the usual Valkey key types, with the addition of an empty
 type, that signals the key pointer is associated with an empty key that
@@ -613,21 +613,21 @@ does not yet exists.
 To create a new key, open it for writing and then write to it using one
 of the key writing functions. Example:
 
-    RedisModuleKey *key;
-    key = RedisModule_OpenKey(ctx,argv[1],REDISMODULE_WRITE);
-    if (RedisModule_KeyType(key) == REDISMODULE_KEYTYPE_EMPTY) {
-        RedisModule_StringSet(key,argv[2]);
+    ValkeyModuleKey *key;
+    key = ValkeyModule_OpenKey(ctx,argv[1],VALKEYMODULE_WRITE);
+    if (ValkeyModule_KeyType(key) == VALKEYMODULE_KEYTYPE_EMPTY) {
+        ValkeyModule_StringSet(key,argv[2]);
     }
 
 ## Deleting keys
 
 Just use:
 
-    RedisModule_DeleteKey(key);
+    ValkeyModule_DeleteKey(key);
 
-The function returns `REDISMODULE_ERR` if the key is not open for writing.
+The function returns `VALKEYMODULE_ERR` if the key is not open for writing.
 Note that after a key gets deleted, it is setup in order to be targeted
-by new key commands. For example `RedisModule_KeyType()` will return it is
+by new key commands. For example `ValkeyModule_KeyType()` will return it is
 an empty key, and writing to it will create a new key, possibly of another
 type (depending on the API used).
 
@@ -638,18 +638,18 @@ modify, get, and unset the time to live associated with a key.
 
 One function is used in order to query the current expire of an open key:
 
-    mstime_t RedisModule_GetExpire(RedisModuleKey *key);
+    mstime_t ValkeyModule_GetExpire(ValkeyModuleKey *key);
 
 The function returns the time to live of the key in milliseconds, or
-`REDISMODULE_NO_EXPIRE` as a special value to signal the key has no associated
+`VALKEYMODULE_NO_EXPIRE` as a special value to signal the key has no associated
 expire or does not exist at all (you can differentiate the two cases checking
-if the key type is `REDISMODULE_KEYTYPE_EMPTY`).
+if the key type is `VALKEYMODULE_KEYTYPE_EMPTY`).
 
 In order to change the expire of a key the following function is used instead:
 
-    int RedisModule_SetExpire(RedisModuleKey *key, mstime_t expire);
+    int ValkeyModule_SetExpire(ValkeyModuleKey *key, mstime_t expire);
 
-When called on a non existing key, `REDISMODULE_ERR` is returned, because
+When called on a non existing key, `VALKEYMODULE_ERR` is returned, because
 the function can only associate expires to existing open keys (non existing
 open keys are only useful in order to create new values with data type
 specific write operations).
@@ -658,7 +658,7 @@ Again the `expire` time is specified in milliseconds. If the key has currently
 no expire, a new expire is set. If the key already have an expire, it is
 replaced with the new value.
 
-If the key has an expire, and the special value `REDISMODULE_NO_EXPIRE` is
+If the key has an expire, and the special value `VALKEYMODULE_NO_EXPIRE` is
 used as a new expire, the expire is removed, similarly to the Valkey
 `PERSIST` command. In case the key was already persistent, no operation is
 performed.
@@ -670,7 +670,7 @@ associated to an open key. The returned length is value-specific, and is
 the string length for strings, and the number of elements for the aggregated
 data types (how many elements there is in a list, set, sorted set, hash).
 
-    size_t len = RedisModule_ValueLength(key);
+    size_t len = ValkeyModule_ValueLength(key);
 
 If the key does not exist, 0 is returned by the function:
 
@@ -679,7 +679,7 @@ If the key does not exist, 0 is returned by the function:
 Setting a new string value, like the Valkey `SET` command does, is performed
 using:
 
-    int RedisModule_StringSet(RedisModuleKey *key, RedisModuleString *str);
+    int ValkeyModule_StringSet(ValkeyModuleKey *key, ValkeyModuleString *str);
 
 The function works exactly like the Valkey `SET` command itself, that is, if
 there is a prior value (of any type) it will be deleted.
@@ -689,7 +689,7 @@ access) for speed. The API will return a pointer and a length, so that's
 possible to access and, if needed, modify the string directly.
 
     size_t len, j;
-    char *myptr = RedisModule_StringDMA(key,&len,REDISMODULE_WRITE);
+    char *myptr = ValkeyModule_StringDMA(key,&len,VALKEYMODULE_WRITE);
     for (j = 0; j < len; j++) myptr[j] = 'A';
 
 In the above example we write directly on the string. Note that if you want
@@ -699,10 +699,10 @@ DMA pointers are only valid if no other operations are performed with the key
 before using the pointer, after the DMA call.
 
 Sometimes when we want to manipulate strings directly, we need to change
-their size as well. For this scope, the `RedisModule_StringTruncate` function
+their size as well. For this scope, the `ValkeyModule_StringTruncate` function
 is used. Example:
 
-    RedisModule_StringTruncate(mykey,1024);
+    ValkeyModule_StringTruncate(mykey,1024);
 
 The function truncates, or enlarges the string as needed, padding it with
 zero bytes if the previous length is smaller than the new length we request.
@@ -716,18 +716,18 @@ the DMA pointer again, since the old may be invalid.
 
 It's possible to push and pop values from list values:
 
-    int RedisModule_ListPush(RedisModuleKey *key, int where, RedisModuleString *ele);
-    RedisModuleString *RedisModule_ListPop(RedisModuleKey *key, int where);
+    int ValkeyModule_ListPush(ValkeyModuleKey *key, int where, ValkeyModuleString *ele);
+    ValkeyModuleString *ValkeyModule_ListPop(ValkeyModuleKey *key, int where);
 
 In both the APIs the `where` argument specifies if to push or pop from tail
 or head, using the following macros:
 
-    REDISMODULE_LIST_HEAD
-    REDISMODULE_LIST_TAIL
+    VALKEYMODULE_LIST_HEAD
+    VALKEYMODULE_LIST_TAIL
 
-Elements returned by `RedisModule_ListPop()` are like strings created with
-`RedisModule_CreateString()`, they must be released with
-`RedisModule_FreeString()` or by enabling automatic memory management.
+Elements returned by `ValkeyModule_ListPop()` are like strings created with
+`ValkeyModule_CreateString()`, they must be released with
+`ValkeyModule_FreeString()` or by enabling automatic memory management.
 
 ## Set type API
 
@@ -738,30 +738,30 @@ Work in progress.
 Documentation missing, please refer to the top comments inside `module.c`
 for the following functions:
 
-* `RedisModule_ZsetAdd`
-* `RedisModule_ZsetIncrby`
-* `RedisModule_ZsetScore`
-* `RedisModule_ZsetRem`
+* `ValkeyModule_ZsetAdd`
+* `ValkeyModule_ZsetIncrby`
+* `ValkeyModule_ZsetScore`
+* `ValkeyModule_ZsetRem`
 
 And for the sorted set iterator:
 
-* `RedisModule_ZsetRangeStop`
-* `RedisModule_ZsetFirstInScoreRange`
-* `RedisModule_ZsetLastInScoreRange`
-* `RedisModule_ZsetFirstInLexRange`
-* `RedisModule_ZsetLastInLexRange`
-* `RedisModule_ZsetRangeCurrentElement`
-* `RedisModule_ZsetRangeNext`
-* `RedisModule_ZsetRangePrev`
-* `RedisModule_ZsetRangeEndReached`
+* `ValkeyModule_ZsetRangeStop`
+* `ValkeyModule_ZsetFirstInScoreRange`
+* `ValkeyModule_ZsetLastInScoreRange`
+* `ValkeyModule_ZsetFirstInLexRange`
+* `ValkeyModule_ZsetLastInLexRange`
+* `ValkeyModule_ZsetRangeCurrentElement`
+* `ValkeyModule_ZsetRangeNext`
+* `ValkeyModule_ZsetRangePrev`
+* `ValkeyModule_ZsetRangeEndReached`
 
 ## Hash type API
 
 Documentation missing, please refer to the top comments inside `module.c`
 for the following functions:
 
-* `RedisModule_HashSet`
-* `RedisModule_HashGet`
+* `ValkeyModule_HashSet`
+* `ValkeyModule_HashGet`
 
 ## Iterating aggregated values
 
@@ -776,9 +776,9 @@ way.
 
 When using the higher level APIs to invoke commands, replication happens
 automatically if you use the "!" modifier in the format string of
-`RedisModule_Call()` as in the following example:
+`ValkeyModule_Call()` as in the following example:
 
-    reply = RedisModule_Call(ctx,"INCRBY","!sc",argv[1],"10");
+    reply = ValkeyModule_Call(ctx,"INCRBY","!sc",argv[1],"10");
 
 As you can see the format specifier is `"!sc"`. The bang is not parsed as a
 format specifier, but it internally flags the command as "must replicate".
@@ -790,19 +790,19 @@ it consistently always performs the same work, what is possible to do is to
 replicate the command verbatim as the user executed it. To do that, you just
 need to call the following function:
 
-    RedisModule_ReplicateVerbatim(ctx);
+    ValkeyModule_ReplicateVerbatim(ctx);
 
 When you use the above API, you should not use any other replication function
 since they are not guaranteed to mix well.
 
 However this is not the only option. It's also possible to exactly tell
 Valkey what commands to replicate as the effect of the command execution, using
-an API similar to `RedisModule_Call()` but that instead of calling the command
+an API similar to `ValkeyModule_Call()` but that instead of calling the command
 sends it to the AOF / replicas stream. Example:
 
-    RedisModule_Replicate(ctx,"INCRBY","cl","foo",my_increment);
+    ValkeyModule_Replicate(ctx,"INCRBY","cl","foo",my_increment);
 
-It's possible to call `RedisModule_Replicate` multiple times, and each
+It's possible to call `ValkeyModule_Replicate` multiple times, and each
 will emit a command. All the sequence emitted is wrapped between a
 `MULTI/EXEC` transaction, so that the AOF and replication effects are the
 same as executing a single command.
@@ -828,7 +828,7 @@ When automatic memory management is enabled:
 
 1. You don't need to close open keys.
 2. You don't need to free replies.
-3. You don't need to free RedisModuleString objects.
+3. You don't need to free ValkeyModuleString objects.
 
 However you can still do it, if you want. For example, automatic memory
 management may be active, but inside a loop allocating a lot of strings,
@@ -837,7 +837,7 @@ you may still want to free strings no longer used.
 In order to enable automatic memory management, just call the following
 function at the start of the command implementation:
 
-    RedisModule_AutoMemory(ctx);
+    ValkeyModule_AutoMemory(ctx);
 
 Automatic memory management is usually the way to go, however experienced
 C programmers may not use it in order to gain some speed and memory usage
@@ -851,11 +851,11 @@ not technically forbidden, it is a lot better to use the Valkey Modules
 specific functions, that are exact replacements for `malloc`, `free`,
 `realloc` and `strdup`. These functions are:
 
-    void *RedisModule_Alloc(size_t bytes);
-    void* RedisModule_Realloc(void *ptr, size_t bytes);
-    void RedisModule_Free(void *ptr);
-    void RedisModule_Calloc(size_t nmemb, size_t size);
-    char *RedisModule_Strdup(const char *str);
+    void *ValkeyModule_Alloc(size_t bytes);
+    void* ValkeyModule_Realloc(void *ptr, size_t bytes);
+    void ValkeyModule_Free(void *ptr);
+    void ValkeyModule_Calloc(size_t nmemb, size_t size);
+    char *ValkeyModule_Strdup(const char *str);
 
 They work exactly like their `libc` equivalent calls, however they use
 the same allocator Valkey uses, and the memory allocated using these
@@ -867,7 +867,7 @@ allocated inside modules with libc `malloc()` is transparent to Valkey.
 Another reason to use the modules functions in order to allocate memory
 is that, when creating native data types inside modules, the RDB loading
 functions can return deserialized strings (from the RDB file) directly
-as `RedisModule_Alloc()` allocations, so they can be used directly to
+as `ValkeyModule_Alloc()` allocations, so they can be used directly to
 populate data structures after loading, instead of having to copy them
 to the data structure.
 
@@ -879,7 +879,7 @@ execution, but are just functional to execute the command itself.
 
 This work can be more easily accomplished using the Valkey pool allocator:
 
-    void *RedisModule_PoolAlloc(RedisModuleCtx *ctx, size_t bytes);
+    void *ValkeyModule_PoolAlloc(ValkeyModuleCtx *ctx, size_t bytes);
 
 It works similarly to `malloc()`, and returns memory aligned to the
 next power of two of greater or equal to `bytes` (for a maximum alignment
@@ -894,5 +894,5 @@ allocator.
 
 Documentation missing, please check the following functions inside `module.c`:
 
-    RedisModule_IsKeysPositionRequest(ctx);
-    RedisModule_KeyAtPos(ctx,pos);
+    ValkeyModule_IsKeysPositionRequest(ctx);
+    ValkeyModule_KeyAtPos(ctx,pos);

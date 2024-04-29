@@ -50,21 +50,21 @@ to declare a global variable that will hold a reference to the data type.
 The API to register the data type will return a data type reference that will
 be stored in the global variable.
 
-    static RedisModuleType *MyType;
+    static ValkeyModuleType *MyType;
     #define MYTYPE_ENCODING_VERSION 0
 
-    int RedisModule_OnLoad(RedisModuleCtx *ctx) {
-	RedisModuleTypeMethods tm = {
-	    .version = REDISMODULE_TYPE_METHOD_VERSION,
+    int ValkeyModule_OnLoad(ValkeyModuleCtx *ctx) {
+	ValkeyModuleTypeMethods tm = {
+	    .version = VALKEYMODULE_TYPE_METHOD_VERSION,
 	    .rdb_load = MyTypeRDBLoad,
 	    .rdb_save = MyTypeRDBSave,
 	    .aof_rewrite = MyTypeAOFRewrite,
 	    .free = MyTypeFree
 	};
 
-        MyType = RedisModule_CreateDataType(ctx, "MyType-AZ",
+        MyType = ValkeyModule_CreateDataType(ctx, "MyType-AZ",
 		MYTYPE_ENCODING_VERSION, &tm);
-        if (MyType == NULL) return REDISMODULE_ERR;
+        if (MyType == NULL) return VALKEYMODULE_ERR;
     }
 
 As you can see from the example above, a single API call is needed in order to
@@ -111,12 +111,12 @@ The last argument is a structure used in order to pass the type methods to the
 registration function: `rdb_load`, `rdb_save`, `aof_rewrite`, `digest` and
 `free` and `mem_usage` are all callbacks with the following prototypes and uses:
 
-    typedef void *(*RedisModuleTypeLoadFunc)(RedisModuleIO *rdb, int encver);
-    typedef void (*RedisModuleTypeSaveFunc)(RedisModuleIO *rdb, void *value);
-    typedef void (*RedisModuleTypeRewriteFunc)(RedisModuleIO *aof, RedisModuleString *key, void *value);
-    typedef size_t (*RedisModuleTypeMemUsageFunc)(void *value);
-    typedef void (*RedisModuleTypeDigestFunc)(RedisModuleDigest *digest, void *value);
-    typedef void (*RedisModuleTypeFreeFunc)(void *value);
+    typedef void *(*ValkeyModuleTypeLoadFunc)(ValkeyModuleIO *rdb, int encver);
+    typedef void (*ValkeyModuleTypeSaveFunc)(ValkeyModuleIO *rdb, void *value);
+    typedef void (*ValkeyModuleTypeRewriteFunc)(ValkeyModuleIO *aof, ValkeyModuleString *key, void *value);
+    typedef size_t (*ValkeyModuleTypeMemUsageFunc)(void *value);
+    typedef void (*ValkeyModuleTypeDigestFunc)(ValkeyModuleDigest *digest, void *value);
+    typedef void (*ValkeyModuleTypeFreeFunc)(void *value);
 
 * `rdb_load` is called when loading data from the RDB file. It loads data in the same format as `rdb_save` produces.
 * `rdb_save` is called when saving data to the RDB file.
@@ -180,7 +180,7 @@ immediately realizes what's wrong.
 Setting and getting keys
 ---
 
-After registering our new data type in the `RedisModule_OnLoad()` function,
+After registering our new data type in the `ValkeyModule_OnLoad()` function,
 we also need to be able to set Valkey keys having as value our native type.
 
 This normally happens in the context of commands that write data to a key.
@@ -188,15 +188,15 @@ The native types API allow to set and get keys to module native data types,
 and to test if a given key is already associated to a value of a specific data
 type.
 
-The API uses the normal modules `RedisModule_OpenKey()` low level key access
+The API uses the normal modules `ValkeyModule_OpenKey()` low level key access
 interface in order to deal with this. This is an example of setting a
 native type private data structure to a Valkey key:
 
-    RedisModuleKey *key = RedisModule_OpenKey(ctx,keyname,REDISMODULE_WRITE);
+    ValkeyModuleKey *key = ValkeyModule_OpenKey(ctx,keyname,VALKEYMODULE_WRITE);
     struct some_private_struct *data = createMyDataStructure();
-    RedisModule_ModuleTypeSetValue(key,MyType,data);
+    ValkeyModule_ModuleTypeSetValue(key,MyType,data);
 
-The function `RedisModule_ModuleTypeSetValue()` is used with a key handle open
+The function `ValkeyModule_ModuleTypeSetValue()` is used with a key handle open
 for writing, and gets three arguments: the key handle, the reference to the
 native type, as obtained during the type registration, and finally a `void*`
 pointer that contains the private data implementing the module native type.
@@ -208,11 +208,11 @@ to perform operations on the type.
 Similarly we can retrieve the private data from a key using this function:
 
     struct some_private_struct *data;
-    data = RedisModule_ModuleTypeGetValue(key);
+    data = ValkeyModule_ModuleTypeGetValue(key);
 
 We can also test for a key to have our native type as value:
 
-    if (RedisModule_ModuleTypeGetType(key) == MyType) {
+    if (ValkeyModule_ModuleTypeGetType(key) == MyType) {
         /* ... do something ... */
     }
 
@@ -221,13 +221,13 @@ is empty, if it contains a value of the right kind, and so forth. So
 the idiomatic code to implement a command writing to our native type
 is along these lines:
 
-    RedisModuleKey *key = RedisModule_OpenKey(ctx,argv[1],
-        REDISMODULE_READ|REDISMODULE_WRITE);
-    int type = RedisModule_KeyType(key);
-    if (type != REDISMODULE_KEYTYPE_EMPTY &&
-        RedisModule_ModuleTypeGetType(key) != MyType)
+    ValkeyModuleKey *key = ValkeyModule_OpenKey(ctx,argv[1],
+        VALKEYMODULE_READ|VALKEYMODULE_WRITE);
+    int type = ValkeyModule_KeyType(key);
+    if (type != VALKEYMODULE_KEYTYPE_EMPTY &&
+        ValkeyModule_ModuleTypeGetType(key) != MyType)
     {
-        return RedisModule_ReplyWithError(ctx,REDISMODULE_ERRORMSG_WRONGTYPE);
+        return ValkeyModule_ReplyWithError(ctx,VALKEYMODULE_ERRORMSG_WRONGTYPE);
     }
 
 Then if we successfully verified the key is not of the wrong type, and
@@ -237,11 +237,11 @@ key if there is already one:
 
     /* Create an empty value object if the key is currently empty. */
     struct some_private_struct *data;
-    if (type == REDISMODULE_KEYTYPE_EMPTY) {
+    if (type == VALKEYMODULE_KEYTYPE_EMPTY) {
         data = createMyDataStructure();
-        RedisModule_ModuleTypeSetValue(key,MyTyke,data);
+        ValkeyModule_ModuleTypeSetValue(key,MyTyke,data);
     } else {
-        data = RedisModule_ModuleTypeGetValue(key);
+        data = ValkeyModule_ModuleTypeGetValue(key);
     }
     /* Do something with 'data'... */
 
@@ -252,13 +252,13 @@ As already mentioned, when Valkey needs to free a key holding a native type
 value, it needs help from the module in order to release the memory. This
 is the reason why we pass a `free` callback during the type registration:
 
-    typedef void (*RedisModuleTypeFreeFunc)(void *value);
+    typedef void (*ValkeyModuleTypeFreeFunc)(void *value);
 
 A trivial implementation of the free method can be something like this,
 assuming our data structure is composed of a single allocation:
 
     void MyTypeFreeCallback(void *value) {
-        RedisModule_Free(value);
+        ValkeyModule_Free(value);
     }
 
 However a more real world one will call some function that performs a more
@@ -285,16 +285,16 @@ have to care those details yourself.
 
 This is the list of functions performing RDB saving and loading:
 
-    void RedisModule_SaveUnsigned(RedisModuleIO *io, uint64_t value);
-    uint64_t RedisModule_LoadUnsigned(RedisModuleIO *io);
-    void RedisModule_SaveSigned(RedisModuleIO *io, int64_t value);
-    int64_t RedisModule_LoadSigned(RedisModuleIO *io);
-    void RedisModule_SaveString(RedisModuleIO *io, RedisModuleString *s);
-    void RedisModule_SaveStringBuffer(RedisModuleIO *io, const char *str, size_t len);
-    RedisModuleString *RedisModule_LoadString(RedisModuleIO *io);
-    char *RedisModule_LoadStringBuffer(RedisModuleIO *io, size_t *lenptr);
-    void RedisModule_SaveDouble(RedisModuleIO *io, double value);
-    double RedisModule_LoadDouble(RedisModuleIO *io);
+    void ValkeyModule_SaveUnsigned(ValkeyModuleIO *io, uint64_t value);
+    uint64_t ValkeyModule_LoadUnsigned(ValkeyModuleIO *io);
+    void ValkeyModule_SaveSigned(ValkeyModuleIO *io, int64_t value);
+    int64_t ValkeyModule_LoadSigned(ValkeyModuleIO *io);
+    void ValkeyModule_SaveString(ValkeyModuleIO *io, ValkeyModuleString *s);
+    void ValkeyModule_SaveStringBuffer(ValkeyModuleIO *io, const char *str, size_t len);
+    ValkeyModuleString *ValkeyModule_LoadString(ValkeyModuleIO *io);
+    char *ValkeyModule_LoadStringBuffer(ValkeyModuleIO *io, size_t *lenptr);
+    void ValkeyModule_SaveDouble(ValkeyModuleIO *io, double value);
+    double ValkeyModule_LoadDouble(ValkeyModuleIO *io);
 
 The functions don't require any error checking from the module, that can
 always assume calls succeed.
@@ -309,18 +309,18 @@ double values, with the following structure:
 
 My `rdb_save` method may look like the following:
 
-    void DoubleArrayRDBSave(RedisModuleIO *io, void *ptr) {
+    void DoubleArrayRDBSave(ValkeyModuleIO *io, void *ptr) {
         struct dobule_array *da = ptr;
-        RedisModule_SaveUnsigned(io,da->count);
+        ValkeyModule_SaveUnsigned(io,da->count);
         for (size_t j = 0; j < da->count; j++)
-            RedisModule_SaveDouble(io,da->values[j]);
+            ValkeyModule_SaveDouble(io,da->values[j]);
     }
 
 What we did was to store the number of elements followed by each double
 value. So when later we'll have to load the structure in the `rdb_load`
 method we'll do something like this:
 
-    void *DoubleArrayRDBLoad(RedisModuleIO *io, int encver) {
+    void *DoubleArrayRDBLoad(ValkeyModuleIO *io, int encver) {
         if (encver != DOUBLE_ARRAY_ENC_VER) {
             /* We should actually log an error here, or try to implement
                the ability to load older versions of our data structure. */
@@ -328,11 +328,11 @@ method we'll do something like this:
         }
 
         struct double_array *da;
-        da = RedisModule_Alloc(sizeof(*da));
-        da->count = RedisModule_LoadUnsigned(io);
-        da->values = RedisModule_Alloc(da->count * sizeof(double));
+        da = ValkeyModule_Alloc(sizeof(*da));
+        da->count = ValkeyModule_LoadUnsigned(io);
+        da->values = ValkeyModule_Alloc(da->count * sizeof(double));
         for (size_t j = 0; j < da->count; j++)
-            da->values[j] = RedisModule_LoadDouble(io);
+            da->values[j] = ValkeyModule_LoadDouble(io);
         return da;
     }
 
@@ -346,7 +346,7 @@ it reads does not look correct. Valkey will just panic in that case.
 AOF rewriting
 ---
 
-    void RedisModule_EmitAOF(RedisModuleIO *io, const char *cmdname, const char *fmt, ...);
+    void ValkeyModule_EmitAOF(ValkeyModuleIO *io, const char *cmdname, const char *fmt, ...);
 
 Handling multiple encodings
 ---
@@ -356,13 +356,13 @@ Handling multiple encodings
 Allocating memory
 ---
 
-Modules data types should try to use `RedisModule_Alloc()` functions family
+Modules data types should try to use `ValkeyModule_Alloc()` functions family
 in order to allocate, reallocate and release heap memory used to implement the native data structures (see the other Valkey Modules documentation for detailed information).
 
 This is not just useful in order for Valkey to be able to account for the memory used by the module, but there are also more advantages:
 
 * Valkey uses the `jemalloc` allocator, that often prevents fragmentation problems that could be caused by using the libc allocator.
-* When loading strings from the RDB file, the native types API is able to return strings allocated directly with `RedisModule_Alloc()`, so that the module can directly link this memory into the data structure representation, avoiding a useless copy of the data.
+* When loading strings from the RDB file, the native types API is able to return strings allocated directly with `ValkeyModule_Alloc()`, so that the module can directly link this memory into the data structure representation, avoiding a useless copy of the data.
 
 Even if you are using external libraries implementing your data structures, the
 allocation functions provided by the module API is exactly compatible with
@@ -374,13 +374,13 @@ to avoid replacing manually all the calls with the Valkey Modules API calls,
 an approach could be to use simple macros in order to replace the libc calls
 with the Valkey API calls. Something like this could work:
 
-    #define malloc RedisModule_Alloc
-    #define realloc RedisModule_Realloc
-    #define free RedisModule_Free
-    #define strdup RedisModule_Strdup
+    #define malloc ValkeyModule_Alloc
+    #define realloc ValkeyModule_Realloc
+    #define free ValkeyModule_Free
+    #define strdup ValkeyModule_Strdup
 
 However take in mind that mixing libc calls with Valkey API calls will result
 into troubles and crashes, so if you replace calls using macros, you need to
 make sure that all the calls are correctly replaced, and that the code with
 the substituted calls will never, for example, attempt to call
-`RedisModule_Free()` with a pointer allocated using libc `malloc()`.
+`ValkeyModule_Free()` with a pointer allocated using libc `malloc()`.
