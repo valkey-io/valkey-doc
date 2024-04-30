@@ -10,8 +10,6 @@ aliases:
 
 This document provides information about how Valkey handles clients at the network layer level: connections, timeouts, buffers, and other similar topics are covered here.
 
-The information contained in this document is **only applicable to Redis OSS version 2.6 or greater**.
-
 ## Accepting Client Connections
 
 Valkey accepts clients connections on the configured TCP port and on the Unix socket if enabled. When a new client connection is accepted the following operations are performed:
@@ -44,10 +42,9 @@ However, Valkey does the following two things when serving clients:
 
 ## Maximum Concurrent Connected Clients
 
-In Redis OSS 2.4 there was a hard-coded limit for the maximum number of clients
-that could be handled simultaneously.
-
-In Redis OSS 2.6 and newer, this limit is configurable using the `maxclients` directive in `valkey.conf`. The default is 10,000 clients.
+The limit for the maximum number of clients that can be handled simultaneously
+is configurable using the `maxclients` directive in `valkey.conf`. The default
+is 10,000 clients.
 
 However, Valkey checks with the kernel what the maximum number of file
 descriptors that we are able to open is (the *soft limit* is checked). If the
