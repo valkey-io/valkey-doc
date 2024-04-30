@@ -15,14 +15,14 @@ aliases:
   license of Redis was changed to one that is not open source.
   Read more about this in the [History of Valkey](history.md).
   Redis is a trademark of Redis Ltd. Whenever we use the name Redis in the
-  Valkey documentation, we trying our best to use in accordance with the
+  Valkey documentation, we're trying our best to use it in accordance with the
   [Redis Trademark Guidelines](https://redis.com/legal/trademark-guidelines/).
 
 ## Licences:
 
 ### Three clause BSD license
 
-Every file in the Valkey distribution, with the exceptions of third party files
+Every file in the Valkey distribution, with the exception of third party files
 specified in the list below, is provided under the following license:
 
 ```
