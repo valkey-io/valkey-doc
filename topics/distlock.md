@@ -92,8 +92,8 @@ The key is set to a value “my\_random\_value”. This value must be unique acr
 
 Basically the random value is used in order to release the lock in a safe way, with a script that tells Valkey: remove the key only if it exists and the value stored at the key is exactly the one I expect to be. This is accomplished by the following Lua script:
 
-    if redis.call("get",KEYS[1]) == ARGV[1] then
-        return redis.call("del",KEYS[1])
+    if server.call("get",KEYS[1]) == ARGV[1] then
+        return server.call("del",KEYS[1])
     else
         return 0
     end
