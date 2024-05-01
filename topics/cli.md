@@ -339,14 +339,13 @@ testing, but this limitation should be known.
 
 ## Editing, history, completion and hints
 
-Because `valkey-cli` uses the
-[linenoise line editing library](http://github.com/antirez/linenoise), it
-always has line editing capabilities, without depending on `libreadline` or
+Because `valkey-cli` uses the "linenoise" line editing library shipped with
+Valkey, it has line editing capabilities without depending on `libreadline` or
 other optional libraries.
 
 Command execution history can be accessed in order to avoid retyping commands by pressing the arrow keys (up and down).
 The history is preserved between restarts of the CLI, in a file named
-`.rediscli_history` inside the user home directory, as specified
+`.valkeycli_history` inside the user home directory, as specified
 by the `HOME` environment variable. It is possible to use a different
 history filename by setting the `REDISCLI_HISTFILE` environment variable,
 and disable it by setting it to `/dev/null`.
@@ -363,7 +362,7 @@ syntax hints. Like command history, this behavior can be turned on and off via t
 
 ## Preferences
 
-There are two ways to customize `valkey-cli` behavior. The file `.redisclirc`
+There are two ways to customize `valkey-cli` behavior. The file `.valkeyclirc`
 in the home directory is loaded by the CLI on startup. You can override the
 file's default location by setting the `REDISCLI_RCFILE` environment variable to
 an alternative path. Preferences can also be set during a CLI session, in which 
@@ -371,7 +370,7 @@ case they will last only the duration of the session.
 
 To set preferences, use the special `:set` command. The following preferences
 can be set, either by typing the command in the CLI or adding it to the
-`.redisclirc` file:
+`.valkeyclirc` file:
 
 * `:set hints` - enables syntax hints
 * `:set nohints` - disables syntax hints
