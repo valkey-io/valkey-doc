@@ -202,7 +202,7 @@ For example both the popular Ruby libraries [resque](https://github.com/resque/r
 [sidekiq](https://github.com/mperham/sidekiq) use Lists under the hood in order to
 implement background jobs.
 
-The popular Twitter social network [takes the latest tweets](http://www.infoq.com/presentations/Real-Time-Delivery-Twitter)
+The popular Twitter social network [takes the latest tweets](https://www.infoq.com/presentations/Real-Time-Delivery-Twitter)
 posted by users into Lists.
 
 To describe a common use case step by step, imagine your home page shows the latest

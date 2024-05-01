@@ -52,7 +52,7 @@ ideas to the core and client libraries.
 The time with VMware
 --------------------
 
-In March, 2010, Sanfilippo was hired by [VMware](http://vmware.com) to work on
+In March, 2010, Sanfilippo was hired by [VMware](https://vmware.com) to work on
 Redis and Redis Tools. In his blog post [VMware: the new Redis
 home][antirez-vmware], he writes:
 

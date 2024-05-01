@@ -580,7 +580,7 @@ There are three additional rules to note about converting Lua to Valkey data typ
   So we always convert Lua numbers into integer replies, removing the decimal part of the number, if any.
   **If you want to return a Lua float, it should be returned as a string**,
   exactly like Valkey itself does (see, for instance, the `ZSCORE` command).
-* There's [no simple way to have nils inside Lua arrays](http://www.lua.org/pil/19.1.html) due 
+* There's [no simple way to have nils inside Lua arrays](https://www.lua.org/pil/19.1.html) due 
   to Lua's table semantics.
   Therefore, when Valkey converts a Lua array to RESP, the conversion stops when it encounters a Lua `nil` value.
 * When a Lua table is an associative array that contains keys and their respective values, the converted Valkey reply will **not** include them.
@@ -836,7 +836,7 @@ redis> EVAL "return cmsgpack.unpack(ARGV[1])" 0 "\x93\xa3foo\xa3bar\xa3baz"
 * Available in functions: yes
 
 The _bit_ library provides bitwise operations on numbers.
-Its documentation resides at [Lua BitOp documentation](http://bitop.luajit.org/api.html)
+Its documentation resides at [Lua BitOp documentation](https://bitop.luajit.org/api.html)
 It provides the following functions.
 
 #### <a name="bit.tobit()"></a> `bit.tobit(x)`
