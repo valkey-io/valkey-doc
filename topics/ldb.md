@@ -8,13 +8,13 @@ aliases:
   - /docs/manual/programmability/lua-debugging/
 ---
 
-Starting with version 3.2 Valkey includes a complete Lua debugger, that can be
-used in order to make the task of writing complex Valkey scripts much simpler.
+Valkey includes a complete Lua debugger, that can be
+used to make the task of writing complex Lua scripts much simpler.
 
 The Valkey Lua debugger, codenamed LDB, has the following important features:
 
 * It uses a server-client model, so it's a remote debugger.
-The Valkey server acts as the debugging server, while the default client is `redis-cli`. 
+The Valkey server acts as the debugging server, while the default client is `valkey-cli`. 
 However other clients can be developed by following the simple protocol implemented by the server.
 * By default every new debugging session is a forked session.
 It means that while the Valkey Lua script is being debugged, the server does not block and is usable for development or in order to execute multiple debugging sessions in parallel.
@@ -40,20 +40,20 @@ introduction:
 Use a development server instead.
 Also note that using the synchronous debugging mode (which is NOT the default) results in the Valkey server blocking for all the time the debugging session lasts.
 
-To start a new debugging session using `redis-cli` do the following:
+To start a new debugging session using `valkey-cli` do the following:
 
 1. Create your script in some file with your preferred editor. Let's assume you are editing your Valkey Lua script located at `/tmp/script.lua`.
 2. Start a debugging session with:
 
-    ./redis-cli --ldb --eval /tmp/script.lua
+    ./valkey-cli --ldb --eval /tmp/script.lua
 
-Note that with the `--eval` option of `redis-cli` you can pass key names and arguments to the script, separated by a comma, like in the following example:
+Note that with the `--eval` option of `valkey-cli` you can pass key names and arguments to the script, separated by a comma, like in the following example:
 
 ```
-./redis-cli --ldb --eval /tmp/script.lua mykey somekey , arg1 arg2
+./valkey-cli --ldb --eval /tmp/script.lua mykey somekey , arg1 arg2
 ```
 
-You'll enter a special mode where `redis-cli` no longer accepts its normal
+You'll enter a special mode where `valkey-cli` no longer accepts its normal
 commands, but instead prints a help screen and passes the unmodified debugging
 commands directly to Valkey.
 
@@ -61,7 +61,7 @@ The only commands which are not passed to the Valkey debugger are:
 
 * `quit` -- this will terminate the debugging session.
 It's like removing all the breakpoints and using the `continue` debugging command.
-Moreover the command will exit from `redis-cli`.
+Moreover the command will exit from `valkey-cli`.
 * `restart` -- the debugging session will restart from scratch, **reloading the new version of the script from the file**.
 So a normal debugging cycle involves modifying the script after some debugging, and calling `restart` in order to start debugging again with the new script changes.
 * `help` -- this command is passed to the Valkey Lua debugger, that will print a list of commands like the following:
@@ -123,12 +123,12 @@ If you use `continue` in order to execute the script till the next breakpoint, c
 
 
 When the scripts terminates naturally, the debugging session ends and
-`redis-cli` returns in its normal non-debugging mode. You can restart the
+`valkey-cli` returns in its normal non-debugging mode. You can restart the
 session using the `restart` command as usual.
 
-Another way to stop a debugging session is just interrupting `redis-cli`
+Another way to stop a debugging session is just interrupting `valkey-cli`
 manually by pressing `Ctrl+C`. Note that also any event breaking the
-connection between `redis-cli` and the `redis-server` will interrupt the
+connection between `valkey-cli` and the `valkey-server` will interrupt the
 debugging session.
 
 All the forked debugging sessions are terminated when the server is shut
@@ -178,17 +178,17 @@ to its original state.
 
 However for tracking certain bugs, you may want to retain the changes performed
 to the key space by each debugging session. When this is a good idea you
-should start the debugger using a special option, `ldb-sync-mode`, in `redis-cli`.
+should start the debugger using a special option, `ldb-sync-mode`, in `valkey-cli`.
 
 ```
-./redis-cli --ldb-sync-mode --eval /tmp/script.lua
+./valkey-cli --ldb-sync-mode --eval /tmp/script.lua
 ```
 
 > Note: Valkey server will be unreachable during the debugging session in this mode, so use with care.
 
 In this special mode, the `abort` command can stop the script half-way taking the changes operated to the dataset.
 Note that this is different compared to ending the debugging session normally. 
-If you just interrupt `redis-cli` the script will be fully executed and then the session terminated.
+If you just interrupt `valkey-cli` the script will be fully executed and then the session terminated.
 Instead with `abort` you can interrupt the script execution in the middle and start a new debugging session if needed.
 
 ## Logging from scripts
@@ -235,29 +235,8 @@ lua debugger> e server.sha1hex('foo')
 
 ## Debugging clients
 
-LDB uses the client-server model where the Valkey server acts as a debugging server that communicates using [RESP](protocol.md). While `redis-cli` is the default debug client, any [client](/clients/) can be used for debugging as long as it meets one of the following conditions:
+LDB uses the client-server model where the Valkey server acts as a debugging server that communicates using [RESP](protocol.md). While `valkey-cli` is the default debug client, any [client](../clients/) can be used for debugging as long as it meets one of the following conditions:
 
 1. The client provides a native interface for setting the debug mode and controlling the debug session.
 2. The client provides an interface for sending arbitrary commands over RESP.
 3. The client allows sending raw messages to the Valkey server.
-
-For example, the [Valkey plugin](https://redis.com/blog/zerobrane-studio-plugin-for-redis-lua-scripts) for [ZeroBrane Studio](https://studio.zerobrane.com/) integrates with LDB using [redis-lua](https://github.com/nrk/redis-lua). The following Lua code is a simplified example of how the plugin achieves that:
-
-```Lua
-local redis = require 'redis'
-
--- add LDB's Continue command
-redis.commands['ldbcontinue'] = redis.command('C')
-
--- script to be debugged
-local script = [[
-  local x, y = tonumber(ARGV[1]), tonumber(ARGV[2])
-  local result = x * y
-  return result
-]]
-
-local client = redis.connect('127.0.0.1', 6379)
-client:script("DEBUG", "YES")
-print(unpack(client:eval(script, 0, 6, 9)))
-client:ldbcontinue()
-```

@@ -34,7 +34,7 @@ Using the `valkey-check-aof` tool it is possible to fix the
 append only file that will remove the partial transaction so that the
 server can start again.
 
-Starting with version 2.2, Valkey allows for an extra guarantee to the
+Valkey allows for an extra guarantee to the
 above two, in the form of optimistic locking in a way very similar to a
 check-and-set (CAS) operation.
 This is documented [later](#cas) on this page.
@@ -74,7 +74,7 @@ simply scheduled for execution when `EXEC` is called.
 
 ## Errors inside a transaction
 
-During a transaction it is possible to encounter two kind of command errors:
+During a transaction it is possible to encounter two kinds of command errors:
 
 * A command may fail to be queued, so there may be an error before `EXEC` is called.
 For instance the command may be syntactically wrong (wrong number of arguments,
@@ -83,15 +83,8 @@ memory condition (if the server is configured to have a memory limit using the `
 * A command may fail *after* `EXEC` is called, for instance since we performed
 an operation against a key with the wrong value (like calling a list operation against a string value).
 
-Starting with Redis OSS 2.6.5, the server will detect an error during the accumulation of commands.
+The server will detect an error during the accumulation of commands.
 It will then refuse to execute the transaction returning an error during `EXEC`, discarding the transaction.
-
-> **Note for Redis OSS < 2.6.5:** Prior to Redis OSS 2.6.5 clients needed to detect errors occurring prior to `EXEC` by checking
-the return value of the queued command: if the command replies with QUEUED it was
-queued correctly, otherwise Valkey returns an error.
-If there is an error while queueing a command, most clients
-will abort and discard the transaction. Otherwise, if the client elected to proceed with the transaction
-the `EXEC` command would execute all commands queued successfully regardless of previous errors.
 
 Errors happening *after* `EXEC` instead are not handled in a special way:
 all the other commands will be executed even if some command fails during the transaction.
