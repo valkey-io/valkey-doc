@@ -22,12 +22,12 @@ methodical way of monitoring and analyzing Valkey performance.
 To do so you can rely on different methodologies (some more suited than other 
 depending on the class of issues/analysis we intend to make). A curated list
 of methodologies and their steps are enumerated by Brendan Greg at the
-[following link](http://www.brendangregg.com/methodology.html). 
+[following link](https://www.brendangregg.com/methodology.html). 
 
 We recommend the Utilization Saturation and Errors (USE) Method for answering
 the question of what is your bottleneck. Check the following mapping between
 system resource, metric, and tools for a practical deep dive:
-[USE method](http://www.brendangregg.com/USEmethod/use-rosetta.html). 
+[USE method](https://www.brendangregg.com/USEmethod/use-rosetta.html). 
 
 ### Ensuring the CPU is your bottleneck
 
@@ -115,7 +115,7 @@ documentation for advanced filtering, sorting and aggregation capabilities.
 
 #### Visualizing the recorded profile information using Flame Graphs
 
-[Flame graphs](http://www.brendangregg.com/flamegraphs.html) allow for a quick
+[Flame graphs](https://www.brendangregg.com/flamegraphs.html) allow for a quick
 and accurate visualization of frequent code-paths. They can be generated using
 Brendan Greg's open source programs on [github](https://github.com/brendangregg/FlameGraph),
 which create interactive SVGs from folded stack files.
@@ -232,5 +232,5 @@ duration of 60s, specifically for redis process:
 It's important to know that there are two very different ways in which PMCs can
 be used (counting and sampling), and we've focused solely on PMCs counting for
 the sake of this analysis. Brendan Greg clearly explains it on the following
-[link](http://www.brendangregg.com/blog/2017-05-04/the-pmcs-of-ec2.html).
+[link](https://www.brendangregg.com/blog/2017-05-04/the-pmcs-of-ec2.html).
 

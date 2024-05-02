@@ -137,7 +137,7 @@ If and when `server.call()` triggers a runtime exception, the raw exception is r
 Therefore, attempting to execute the following ephemeral script will fail and generate a runtime exception because `ECHO` accepts exactly one argument:
 
 ```lua
-redis> EVAL "return server.call('ECHO', 'Echo,', 'echo... ', 'eco... ', 'o...')" 0
+127.0.0.1:6379> EVAL "return server.call('ECHO', 'Echo,', 'echo... ', 'eco... ', 'o...')" 0
 (error) ERR Wrong number of args calling Valkey command from script script: b0345693f4b77517a711221050e76d24ae60b7f7, on @user_script:1.
 ```
 
@@ -172,7 +172,7 @@ return reply
 Evaluating this script with more than one argument will return:
 
 ```
-redis> EVAL "..." 0 hello world
+127.0.0.1:6379> EVAL "..." 0 hello world
 (error) ERR Something is wrong, but no worries, everything is under control
 ```
 
@@ -196,9 +196,9 @@ local reply2 = server.error_reply(text)
 Therefore, both forms are valid as means for returning an error reply from scripts:
 
 ```
-redis> EVAL "return { err = 'ERR My very special table error' }" 0
+127.0.0.1:6379> EVAL "return { err = 'ERR My very special table error' }" 0
 (error) ERR My very special table error
-redis> EVAL "return server.error_reply('ERR My very special reply error')" 0
+127.0.0.1:6379> EVAL "return server.error_reply('ERR My very special reply error')" 0
 (error) ERR My very special reply error
 ```
 
@@ -230,9 +230,9 @@ local status2 = server.status_reply(text)
 Therefore, both forms are valid as means for returning status replies from scripts:
 
 ```
-redis> EVAL "return { ok = 'TICK' }" 0
+127.0.0.1:6379> EVAL "return { ok = 'TICK' }" 0
 TICK
-redis> EVAL "return server.status_reply('TOCK')" 0
+127.0.0.1:6379> EVAL "return server.status_reply('TOCK')" 0
 TOCK
 ```
 
@@ -250,7 +250,7 @@ This function returns the SHA1 hexadecimal digest of its single string argument.
 You can, for example, obtain the empty string's SHA1 digest:
 
 ```
-redis> EVAL "return server.sha1hex('')" 0
+127.0.0.1:6379> EVAL "return server.sha1hex('')" 0
 "da39a3ee5e6b4b0d3255bfef95601890afd80709"
 ```
 
@@ -420,7 +420,7 @@ The second argument to `server.register_function` is a Lua function.
 Usage example:
 
 ```
-redis> FUNCTION LOAD "#!lua name=mylib\n server.register_function('noop', function() end)"
+127.0.0.1:6379> FUNCTION LOAD "#!lua name=mylib\n server.register_function('noop', function() end)"
 ```
 
 #### <a name="server.register_function_named_args"></a> Named arguments:  `server.register_function{function_name=name, callback=callback, flags={flag1, flag2, ..}, description=description}`
@@ -437,7 +437,7 @@ Both _function\_name_ and _callback_ are mandatory.
 Usage example:
 
 ```
-redis> FUNCTION LOAD "#!lua name=mylib\n server.register_function{function_name='noop', callback=function() end, flags={ 'no-writes' }, description='Does nothing'}"
+127.0.0.1:6379> FUNCTION LOAD "#!lua name=mylib\n server.register_function{function_name='noop', callback=function() end, flags={ 'no-writes' }, description='Does nothing'}"
 ```
 
 #### <a name="script_flags"></a> Script flags
@@ -580,7 +580,7 @@ There are three additional rules to note about converting Lua to Valkey data typ
   So we always convert Lua numbers into integer replies, removing the decimal part of the number, if any.
   **If you want to return a Lua float, it should be returned as a string**,
   exactly like Valkey itself does (see, for instance, the `ZSCORE` command).
-* There's [no simple way to have nils inside Lua arrays](http://www.lua.org/pil/19.1.html) due 
+* There's [no simple way to have nils inside Lua arrays](https://www.lua.org/pil/19.1.html) due 
   to Lua's table semantics.
   Therefore, when Valkey converts a Lua array to RESP, the conversion stops when it encounters a Lua `nil` value.
 * When a Lua table is an associative array that contains keys and their respective values, the converted Valkey reply will **not** include them.
@@ -588,16 +588,16 @@ There are three additional rules to note about converting Lua to Valkey data typ
 Lua to RESP2 type conversion examples:
 
 ```
-redis> EVAL "return 10" 0
+127.0.0.1:6379> EVAL "return 10" 0
 (integer) 10
 
-redis> EVAL "return { 1, 2, { 3, 'Hello World!' } }" 0
+127.0.0.1:6379> EVAL "return { 1, 2, { 3, 'Hello World!' } }" 0
 1) (integer) 1
 2) (integer) 2
 3) 1) (integer) 3
    1) "Hello World!"
 
-redis> EVAL "return server.call('get','foo')" 0
+127.0.0.1:6379> EVAL "return server.call('get','foo')" 0
 "bar"
 ```
 
@@ -606,7 +606,7 @@ The last example demonstrates receiving and returning the exact return value of 
 The following example shows how floats and arrays that cont nils and keys are handled:
 
 ```
-redis> EVAL "return { 1, 2, 3.3333, somekey = 'somevalue', 'foo', nil , 'bar' }" 0
+127.0.0.1:6379> EVAL "return { 1, 2, 3.3333, somekey = 'somevalue', 'foo', nil , 'bar' }" 0
 1) (integer) 1
 2) (integer) 2
 3) (integer) 3
@@ -735,7 +735,7 @@ It accepts a [_struct_ format string](#struct-formats) as its first argument, fo
 Usage example:
 
 ```
-redis> EVAL "return struct.pack('HH', 1, 2)" 0
+127.0.0.1:6379> EVAL "return struct.pack('HH', 1, 2)" 0
 "\x01\x00\x02\x00"
 ```
 
@@ -747,7 +747,7 @@ It accepts a [_struct_ format string](#struct-formats) as its first argument, fo
 Usage example:
 
 ```
-redis> EVAL "return { struct.unpack('HH', ARGV[1]) }" 0 "\x01\x00\x02\x00"
+127.0.0.1:6379> EVAL "return { struct.unpack('HH', ARGV[1]) }" 0 "\x01\x00\x02\x00"
 1) (integer) 1
 2) (integer) 2
 3) (integer) 5
@@ -761,7 +761,7 @@ It accepts a [_struct_ format string](#struct-formats) as its only argument.
 Usage example:
 
 ```
-redis> EVAL "return struct.size('HH')" 0
+127.0.0.1:6379> EVAL "return struct.size('HH')" 0
 (integer) 4
 ```
 
@@ -781,7 +781,7 @@ This function returns a JSON-encoded string for the Lua data type provided as it
 Usage example:
 
 ```
-redis> EVAL "return cjson.encode({ ['foo'] = 'bar' })" 0
+127.0.0.1:6379> EVAL "return cjson.encode({ ['foo'] = 'bar' })" 0
 "{\"foo\":\"bar\"}"
 ```
 
@@ -792,7 +792,7 @@ This function returns a Lua data type from the JSON-encoded string provided as i
 Usage example:
 
 ```
-redis> EVAL "return cjson.decode(ARGV[1])['foo']" 0 '{"foo":"bar"}'
+127.0.0.1:6379> EVAL "return cjson.decode(ARGV[1])['foo']" 0 '{"foo":"bar"}'
 "bar"
 ```
 
@@ -812,7 +812,7 @@ This function returns the packed string encoding of the Lua data type it is give
 Usage example:
 
 ```
-redis> EVAL "return cmsgpack.pack({'foo', 'bar', 'baz'})" 0
+127.0.0.1:6379> EVAL "return cmsgpack.pack({'foo', 'bar', 'baz'})" 0
 "\x93\xa3foo\xa3bar\xa3baz"
 ```
 
@@ -823,7 +823,7 @@ This function returns the unpacked values from decoding its input string argumen
 Usage example:
 
 ```
-redis> EVAL "return cmsgpack.unpack(ARGV[1])" 0 "\x93\xa3foo\xa3bar\xa3baz"
+127.0.0.1:6379> EVAL "return cmsgpack.unpack(ARGV[1])" 0 "\x93\xa3foo\xa3bar\xa3baz"
 1) "foo"
 2) "bar"
 3) "baz"
@@ -836,7 +836,7 @@ redis> EVAL "return cmsgpack.unpack(ARGV[1])" 0 "\x93\xa3foo\xa3bar\xa3baz"
 * Available in functions: yes
 
 The _bit_ library provides bitwise operations on numbers.
-Its documentation resides at [Lua BitOp documentation](http://bitop.luajit.org/api.html)
+Its documentation resides at [Lua BitOp documentation](https://bitop.luajit.org/api.html)
 It provides the following functions.
 
 #### <a name="bit.tobit()"></a> `bit.tobit(x)`
@@ -846,7 +846,7 @@ Normalizes a number to the numeric range for bit operations and returns it.
 Usage example:
 
 ```
-redis> EVAL 'return bit.tobit(1)' 0
+127.0.0.1:6379> EVAL 'return bit.tobit(1)' 0
 (integer) 1
 ```
 
@@ -857,7 +857,7 @@ Converts its first argument to a hex string. The number of hex digits is given b
 Usage example:
 
 ```
-redis> EVAL 'return bit.tohex(422342)' 0
+127.0.0.1:6379> EVAL 'return bit.tohex(422342)' 0
 "000671c6"
 ```
 
@@ -873,7 +873,7 @@ Note that more than two arguments are allowed.
 Usage example:
 
 ```
-redis> EVAL 'return bit.bor(1,2,4,8,16,32,64,128)' 0
+127.0.0.1:6379> EVAL 'return bit.bor(1,2,4,8,16,32,64,128)' 0
 (integer) 255
 ```
 

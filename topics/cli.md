@@ -92,7 +92,7 @@ When you input strings that contain single or double quotes, as you might in pas
 By default, `valkey-cli` connects to the server at the address 127.0.0.1 with port 6379.
 You can change the port using several command line options. To specify a different host name or an IP address, use the `-h` option. In order to set a different port, use `-p`.
 
-    $ valkey-cli -h redis15.localnet.org -p 6390 PING
+    $ valkey-cli -h valkey15.example.com -p 6390 PING
     PONG
 
 If your instance is password protected, the `-a <password>` option will
@@ -117,15 +117,15 @@ other than the default number zero by using the `-n <dbnum>` option:
     (integer) 1
 
 Some or all of this information can also be provided by using the `-u <uri>`
-option and the URI pattern `redis://user:password@host:port/dbnum`:
+option and the URI pattern `valkey://user:password@host:port/dbnum`:
 
-    $ valkey-cli -u redis://LJenkins:p%40ssw0rd@redis-16379.hosted.com:16379/0 PING
+    $ valkey-cli -u valkey://LJenkins:p%40ssw0rd@valkey-16379.example.com:16379/0 PING
     PONG
 
 **NOTE:**
 User, password and dbnum are optional.
 For authentication without a username, use username `default`.
-For TLS, use the scheme `rediss`.
+For TLS, use the scheme `valkeys`.
 
 ## SSL/TLS
 
@@ -237,7 +237,7 @@ Even without using the debugger, `valkey-cli` can be used to
 run scripts from a file as an argument:
 
     $ cat /tmp/script.lua
-    return redis.call('SET',KEYS[1],ARGV[1])
+    return server.call('SET',KEYS[1],ARGV[1])
     $ valkey-cli --eval /tmp/script.lua location:hastings:temp , 23
     OK
 
@@ -339,14 +339,13 @@ testing, but this limitation should be known.
 
 ## Editing, history, completion and hints
 
-Because `valkey-cli` uses the
-[linenoise line editing library](http://github.com/antirez/linenoise), it
-always has line editing capabilities, without depending on `libreadline` or
+Because `valkey-cli` uses the "linenoise" line editing library shipped with
+Valkey, it has line editing capabilities without depending on `libreadline` or
 other optional libraries.
 
 Command execution history can be accessed in order to avoid retyping commands by pressing the arrow keys (up and down).
 The history is preserved between restarts of the CLI, in a file named
-`.rediscli_history` inside the user home directory, as specified
+`.valkeycli_history` inside the user home directory, as specified
 by the `HOME` environment variable. It is possible to use a different
 history filename by setting the `REDISCLI_HISTFILE` environment variable,
 and disable it by setting it to `/dev/null`.
@@ -363,7 +362,7 @@ syntax hints. Like command history, this behavior can be turned on and off via t
 
 ## Preferences
 
-There are two ways to customize `valkey-cli` behavior. The file `.redisclirc`
+There are two ways to customize `valkey-cli` behavior. The file `.valkeyclirc`
 in the home directory is loaded by the CLI on startup. You can override the
 file's default location by setting the `REDISCLI_RCFILE` environment variable to
 an alternative path. Preferences can also be set during a CLI session, in which 
@@ -371,7 +370,7 @@ case they will last only the duration of the session.
 
 To set preferences, use the special `:set` command. The following preferences
 can be set, either by typing the command in the CLI or adding it to the
-`.redisclirc` file:
+`.valkeyclirc` file:
 
 * `:set hints` - enables syntax hints
 * `:set nohints` - disables syntax hints

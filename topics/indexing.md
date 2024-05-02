@@ -479,7 +479,7 @@ Representing and querying graphs using a hexastore
 
 One cool thing about composite indexes is that they are handy in order
 to represent graphs, using a data structure which is called
-[Hexastore](http://www.vldb.org/pvldb/vol1/1453965.pdf).
+[Hexastore](https://www.vldb.org/pvldb/vol1/1453965.pdf).
 
 The hexastore provides a representation for relations between objects,
 formed by a *subject*, a *predicate* and an *object*.
@@ -529,7 +529,7 @@ this relation. I do it again to filter by city. Finally I perform an `ops`
 query to find, of the list I obtained, who is considered friend by
 matteocollina.
 
-Make sure to check [Matteo Collina's slides about Levelgraph](http://nodejsconfit.levelgraph.io/) in order to better understand these ideas.
+Make sure to check [Matteo Collina's slides about Levelgraph](https://nodejsconfit.levelgraph.io/) in order to better understand these ideas.
 
 Multi dimensional indexes
 ===

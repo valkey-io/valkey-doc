@@ -80,7 +80,7 @@ In the above example the process ID is **58414**.
 
 Login into your Valkey server.
 
-(Optional but recommended) Start **screen** or **tmux** or any other program that will make sure that your GDB session will not be closed if your ssh connection times out. You can learn more about screen in [this article](http://www.linuxjournal.com/article/6340).
+(Optional but recommended) Start **screen** or **tmux** or any other program that will make sure that your GDB session will not be closed if your ssh connection times out. You can learn more about screen in [this article](https://www.linuxjournal.com/article/6340).
 
 Attach GDB to the running Valkey server by typing:
 

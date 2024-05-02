@@ -79,7 +79,7 @@ This strategy is known as _snapshotting_.
 
 Whenever Valkey needs to dump the dataset to disk, this is what happens:
 
-* Valkey [forks](http://linux.die.net/man/2/fork). We now have a child
+* Valkey [forks](https://linux.die.net/man/2/fork). We now have a child
 and a parent process.
 
 * The child starts to write the dataset to a temporary RDB file.
@@ -140,7 +140,7 @@ Valkey introduces an AOF rewrite limiting mechanism to ensure that failed AOF re
 ### How durable is the append only file?
 
 You can configure how many times Valkey will
-[`fsync`](http://linux.die.net/man/2/fsync) data on disk. There are
+[`fsync`](https://linux.die.net/man/2/fsync) data on disk. There are
 three options:
 
 * `appendfsync always`: `fsync` every time new commands are appended to the AOF. Very very slow, very safe. Note that the commands are appended to the AOF after a batch of commands from multiple clients or a pipeline are executed, so it means a single write and a single fsync (before sending the replies).
@@ -213,7 +213,7 @@ snapshotting.  This is how it works:
 
 **Valkey multi-part AOF**
 
-* Valkey [forks](http://linux.die.net/man/2/fork), so now we have a child
+* Valkey [forks](https://linux.die.net/man/2/fork), so now we have a child
 and a parent process.
 
 * The child starts writing the new base AOF in a temporary file.

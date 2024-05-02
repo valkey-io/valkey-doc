@@ -92,8 +92,8 @@ The key is set to a value “my\_random\_value”. This value must be unique acr
 
 Basically the random value is used in order to release the lock in a safe way, with a script that tells Valkey: remove the key only if it exists and the value stored at the key is exactly the one I expect to be. This is accomplished by the following Lua script:
 
-    if redis.call("get",KEYS[1]) == ARGV[1] then
-        return redis.call("del",KEYS[1])
+    if server.call("get",KEYS[1]) == ARGV[1] then
+        return server.call("del",KEYS[1])
     else
         return 0
     end
@@ -127,7 +127,7 @@ The algorithm relies on the assumption that while there is no synchronized clock
 
 At this point we need to better specify our mutual exclusion rule: it is guaranteed only as long as the client holding the lock terminates its work within the lock validity time (as obtained in step 3), minus some time (just a few milliseconds in order to compensate for clock drift between processes).
 
-This paper contains more information about similar systems requiring a bound *clock drift*: [Leases: an efficient fault-tolerant mechanism for distributed file cache consistency](http://dl.acm.org/citation.cfm?id=74870).
+This paper contains more information about similar systems requiring a bound *clock drift*: [Leases: an efficient fault-tolerant mechanism for distributed file cache consistency](https://dl.acm.org/citation.cfm?id=74870).
 
 ### Retry on Failure
 
@@ -233,4 +233,4 @@ Thanks in advance!
 ## Analysis of Redlock
 ---
 
-1. Martin Kleppmann [analyzed Redlock here](http://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html). A counterpoint to this analysis can be [found here](http://antirez.com/news/101).
+1. Martin Kleppmann [analyzed Redlock here](https://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html). A counterpoint to this analysis can be [found here](http://antirez.com/news/101).

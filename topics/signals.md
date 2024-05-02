@@ -9,8 +9,6 @@ aliases:
 
 This document provides information about how Valkey reacts to different POSIX signals such as `SIGTERM` and `SIGSEGV`.
 
-The information in this document **only applies to Redis OSS version 2.6 or greater**.
-
 ## SIGTERM and SIGINT
 
 The `SIGTERM` and `SIGINT` signals tell Valkey to shut down gracefully. When the server receives this signal,
@@ -37,7 +35,7 @@ This shutdown process includes the following actions:
 
 IF the RDB file can't be saved, the shutdown fails, and the server continues to run in order to ensure no data loss.
 Likewise, if the user just turned on AOF, and the server triggered the first AOF rewrite in order to create the initial AOF file but this file can't be saved, the shutdown fails and the server continues to run.
-Since Redis OSS 2.6.11, no further attempt to shut down will be made unless a new `SIGTERM` is received or the `SHUTDOWN` command is issued.
+No further attempt to shut down will be made unless a new `SIGTERM` is received or the `SHUTDOWN` command is issued.
 
 Since Redis OSS 7.0, the server waits for lagging replicas up to a configurable `shutdown-timeout`, 10 seconds by default, before shutting down.
 This provides a best effort to minimize the risk of data loss in a situation where no save points are configured and AOF is deactivated.
@@ -83,7 +81,7 @@ This error condition will persist until it becomes possible to create an RDB fil
 ## Kill the RDB file without errors
 
 Sometimes the user may want to kill the RDB-saving child process without
-generating an error. Since Redis OSS version 2.6.10, this can be done using the signal `SIGUSR1`. This signal is handled in a special way:
+generating an error. This can be done using the signal `SIGUSR1`. This signal is handled in a special way:
 it kills the child process like any other signal, but the parent process will
 not detect this as a critical error and will continue to serve write
 requests.

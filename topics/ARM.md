@@ -8,9 +8,9 @@ aliases:
     - /topics/ARM
 ---
 
-Redis OSS versions 4.0 and above support the ARM processor in general, and
-the Raspberry Pi specifically, as a main platform. Every new release of Valkey is tested on the Pi
-environment, and we update this documentation page with information about supported devices and other useful information. While Valkey does run on Android, in the future we look forward to extend our testing efforts to Android
+Valkey supports the ARM processor, for example
+the Raspberry Pi, as a main platform.
+While Valkey does run on Android, in the future we look forward to extend our testing efforts to Android
 to also make it an officially supported platform.
 
 We believe that Valkey is ideal for IoT and embedded devices for several
@@ -21,20 +21,20 @@ reasons:
 * Modeling data inside Valkey can be very useful in order to make in-device decisions for appliances that must respond very quickly or when the remote servers are offline.
 * Valkey can be used as a communication system between the processes running in the device.
 * The append-only file storage of Valkey is well suited for SSD cards.
-* The stream data structure included in Redis OSS versions 5.0 and higher was specifically designed for time series applications and has a very low memory overhead.
+* The stream data structure was specifically designed for time series applications and has a very low memory overhead.
 
 ## Valkey /proc/cpu/alignment requirements
 
 Linux on ARM allows to trap unaligned accesses and fix them inside the kernel
 in order to continue the execution of the offending program instead of
-generating a `SIGBUS`. Redis OSS 4.0 and greater are fixed in order to avoid any kind
+generating a `SIGBUS`. Valkey avoids any kind
 of unaligned access, so there is no need to have a specific value for this
 kernel configuration. Even when kernel alignment fixing set as disabled Valkey should
 run as expected.
 
 ## Building Valkey in the Pi
 
-* Download Redis OSS version 4.0 or higher.
+* Download Valkey.
 * Use `make` as usual to create the executable.
 
 There is nothing special in the process. The only difference is that by

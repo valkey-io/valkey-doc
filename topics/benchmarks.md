@@ -61,8 +61,8 @@ This example runs the tests for the `SET` and `LPUSH` commands and uses quiet mo
 
 You can even benchmark a specific command:
 
-    $ valkey-benchmark -n 100000 -q script load "redis.call('set','foo','bar')"
-    script load redis.call('set','foo','bar'): 69881.20 requests per second
+    $ valkey-benchmark -n 100000 -q script load "server.call('set','foo','bar')"
+    script load server.call('set','foo','bar'): 69881.20 requests per second
 
 ### Selecting the size of the key space
 

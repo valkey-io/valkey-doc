@@ -60,9 +60,9 @@ It is possible, although highly ill-advised, to have the application dynamically
 For example, the application could send these two entirely different, but at the same time perfectly identical scripts:
 
 ```
-redis> EVAL "return 'Hello'" 0
+127.0.0.1:6379> EVAL "return 'Hello'" 0
 "Hello"
-redis> EVAL "return 'Scripting!'" 0
+127.0.0.1:6379> EVAL "return 'Scripting!'" 0
 "Scripting!"
 ```
 
@@ -72,9 +72,9 @@ Instead of having your application generate subtle variations of the same script
 The following example demonstrates how to achieve the same effects as above, but via parameterization:
 
 ```
-redis> EVAL "return ARGV[1]" 0 Hello
+127.0.0.1:6379> EVAL "return ARGV[1]" 0 Hello
 "Hello"
-redis> EVAL "return ARGV[1]" 0 Parameterization!
+127.0.0.1:6379> EVAL "return ARGV[1]" 0 Parameterization!
 "Parameterization!"
 ```
 
@@ -99,7 +99,7 @@ The following attempts to demonstrate the distribution of input arguments betwee
 
 
 ```
-redis> EVAL "return { KEYS[1], KEYS[2], ARGV[1], ARGV[2], ARGV[3] }" 2 key1 key2 arg1 arg2 arg3
+127.0.0.1:6379> EVAL "return { KEYS[1], KEYS[2], ARGV[1], ARGV[2], ARGV[3] }" 2 key1 key2 arg1 arg2 arg3
 1) "key1"
 2) "key2"
 3) "arg1"
@@ -154,9 +154,9 @@ Once loaded, you can execute the cached script with the SHA1 digest returned fro
 Here's an example of loading and then executing a cached script:
 
 ```
-redis> SCRIPT LOAD "return 'Immabe a cached script'"
+127.0.0.1:6379> SCRIPT LOAD "return 'Immabe a cached script'"
 "c664a3bf70bd1d45c4284ffebb65a6f2299bfc9f"
-redis> EVALSHA c664a3bf70bd1d45c4284ffebb65a6f2299bfc9f 0
+127.0.0.1:6379> EVALSHA c664a3bf70bd1d45c4284ffebb65a6f2299bfc9f 0
 "Immabe a cached script"
 ```
 
@@ -172,7 +172,7 @@ The server returns an error if the script's SHA1 digest is not in the cache.
 For example:
 
 ```
-redis> EVALSHA ffffffffffffffffffffffffffffffffffffffff 0
+127.0.0.1:6379> EVALSHA ffffffffffffffffffffffffffffffffffffffff 0
 (error) NOSCRIPT No matching script
 ```
 
@@ -354,7 +354,7 @@ Every time this code runs, the resulting list will have exactly the
 following elements:
 
 ```
-redis> LRANGE mylist 0 -1
+127.0.0.1:6379> LRANGE mylist 0 -1
  1) "0.74509509873814"
  2) "0.87390407681181"
  3) "0.36876626981831"
@@ -399,7 +399,7 @@ Note: an important part of this behavior is that the PRNG that Valkey implements
 ## Debugging Eval scripts
 
 Starting with Redis OSS 3.2, Valkey has support for native Lua debugging.
-The Valkey Lua debugger is a remote debugger consisting of a server, which is Valkey itself, and a client, which is by default [`redis-cli`]().
+The Valkey Lua debugger is a remote debugger consisting of a server, which is Valkey itself, and a client, which is by default [`valkey-cli`]().
 
 The Lua debugger is described in the [Lua scripts debugging](ldb.md) section of the Valkey documentation.
 

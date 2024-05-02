@@ -147,7 +147,7 @@ Using [Valkey scripting](../commands/eval.md), a number of use cases for pipelin
 A big advantage of scripting is that it is able to both read and write data with minimal latency, making operations like *read, compute, write* very fast (pipelining can't help in this scenario since the client needs the reply of the read command before it can call the write command).
 
 Sometimes the application may also want to send `EVAL` or `EVALSHA` commands in a pipeline. 
-This is entirely possible and Valkey explicitly supports it with the [SCRIPT LOAD](https://redis.io/commands/script-load) command (it guarantees that `EVALSHA` can be called without the risk of failing).
+This is entirely possible and Valkey explicitly supports it with the [SCRIPT LOAD](../commands/script-load.md) command (it guarantees that `EVALSHA` can be called without the risk of failing).
 
 ## Appendix: Why are busy loops slow even on the loopback interface?
 

@@ -17,7 +17,7 @@ Let us figure it out through a series of Q&As.
 Q: What do you expect a network server to be doing all the time? <br/>
 A: Watch for inbound connections on the port its listening and accept them.
 
-Q: Calling [accept](http://man.cx/accept%282%29) yields a descriptor. What do I do with it?<br/>
+Q: Calling [accept](https://man.cx/accept%282%29) yields a descriptor. What do I do with it?<br/>
 A: Save the descriptor and do a non-blocking read/write operation on it.
 
 Q: Why does the read/write have to be non-blocking?<br/>
@@ -33,7 +33,7 @@ Q: So are there any open source event libraries that do what you just described?
 A: Yes. `libevent` and `libev` are two such event libraries that I can recall off the top of my head.
 
 Q: Does Valkey use such open source event libraries for handling socket I/O?<br/>
-A: No. For various [reasons](http://groups.google.com/group/redis-db/browse_thread/thread/b52814e9ef15b8d0/) Valkey uses its own event library.
+A: No. For various [reasons](https://groups.google.com/group/redis-db/browse_thread/thread/b52814e9ef15b8d0/) Valkey uses its own event library.
 
 ## The Valkey event library
 
@@ -67,7 +67,7 @@ Event Loop Initialization
 
 `aeCreateEventLoop` first `malloc`s `aeEventLoop` structure then calls `ae_epoll.c:aeApiCreate`.
 
-`aeApiCreate` `malloc`s `aeApiState` that has two fields - `epfd` that holds the `epoll` file descriptor returned by a call from [`epoll_create`](http://man.cx/epoll_create%282%29) and `events` that is of type `struct epoll_event` define by the Linux `epoll` library. The use of the `events` field will be  described later.
+`aeApiCreate` `malloc`s `aeApiState` that has two fields - `epfd` that holds the `epoll` file descriptor returned by a call from [`epoll_create`](https://man.cx/epoll_create%282%29) and `events` that is of type `struct epoll_event` define by the Linux `epoll` library. The use of the `events` field will be  described later.
 
 Next is `ae.c:aeCreateTimeEvent`. But before that `initServer` call `anet.c:anetTcpServer` that creates and returns a _listening descriptor_. The descriptor listens on *port 6379* by default. The returned  _listening descriptor_ is stored in `server.fd` field.
 
@@ -91,7 +91,7 @@ Next is `ae.c:aeCreateTimeEvent`. But before that `initServer` call `anet.c:anet
 `aeCreateFileEvent`
 ---
 
-The essence of `aeCreateFileEvent` function is to execute [`epoll_ctl`](http://man.cx/epoll_ctl) system call which adds a watch for `EPOLLIN` event on the _listening descriptor_ create by `anetTcpServer` and associate it with the `epoll` descriptor created by a call to `aeCreateEventLoop`.
+The essence of `aeCreateFileEvent` function is to execute [`epoll_ctl`](https://man.cx/epoll_ctl) system call which adds a watch for `EPOLLIN` event on the _listening descriptor_ create by `anetTcpServer` and associate it with the `epoll` descriptor created by a call to `aeCreateEventLoop`.
 
 Following is an explanation of what precisely `aeCreateFileEvent` does when called from `redis.c:initServer`.
 
@@ -120,14 +120,14 @@ Remember, that the timer event created by `aeCreateTimeEvent` has probably elaps
 
 The `tvp` structure variable along with the event loop variable is passed to `ae_epoll.c:aeApiPoll`.
 
-`aeApiPoll` functions does an [`epoll_wait`](http://man.cx/epoll_wait) on the `epoll` descriptor and populates the `eventLoop->fired` table with the details:
+`aeApiPoll` functions does an [`epoll_wait`](https://man.cx/epoll_wait) on the `epoll` descriptor and populates the `eventLoop->fired` table with the details:
 
   * `fd`: The descriptor that is now ready to do a read/write operation depending on the mask value.
   * `mask`: The read/write event that can now be performed on the corresponding descriptor.
 
 `aeApiPoll` returns the number of such file events ready for operation. Now to put things in context, if any client has requested for a connection then `aeApiPoll` would have noticed it and populated the `eventLoop->fired` table with an entry of the descriptor being the _listening descriptor_ and mask being `AE_READABLE`.
 
-Now, `aeProcessEvents` calls the `redis.c:acceptHandler` registered as the callback. `acceptHandler` executes [accept](http://man.cx/accept) on the _listening descriptor_ returning a _connected descriptor_ with the client. `redis.c:createClient` adds a file event on the _connected descriptor_ through a call to `ae.c:aeCreateFileEvent` like below:
+Now, `aeProcessEvents` calls the `redis.c:acceptHandler` registered as the callback. `acceptHandler` executes [accept](https://man.cx/accept) on the _listening descriptor_ returning a _connected descriptor_ with the client. `redis.c:createClient` adds a file event on the _connected descriptor_ through a call to `ae.c:aeCreateFileEvent` like below:
 
     if (aeCreateFileEvent(server.el, c->fd, AE_READABLE,
         readQueryFromClient, c) == AE_ERR) {

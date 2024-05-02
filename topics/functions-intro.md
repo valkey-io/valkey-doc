@@ -96,7 +96,7 @@ The Shebang format is:
 Let's try loading an empty library:
 
 ```
-redis> FUNCTION LOAD "#!lua name=mylib\n"
+127.0.0.1:6379> FUNCTION LOAD "#!lua name=mylib\n"
 (error) ERR No functions registered
 ```
 
@@ -121,9 +121,9 @@ In the example above, we provide two arguments about the function to Lua's `serv
 We can load our library and use `FCALL` to call the registered function:
 
 ```
-redis> FUNCTION LOAD "#!lua name=mylib\nserver.register_function('knockknock', function() return 'Who\\'s there?' end)"
+127.0.0.1:6379> FUNCTION LOAD "#!lua name=mylib\nserver.register_function('knockknock', function() return 'Who\\'s there?' end)"
 mylib
-redis> FCALL knockknock 0
+127.0.0.1:6379> FCALL knockknock 0
 "Who's there?"
 ```
 
@@ -173,7 +173,7 @@ server.register_function('my_hset', my_hset)
 If we create a new file named _mylib.lua_ that consists of the library's definition, we can load it like so (without stripping the source code of helpful whitespaces):
 
 ```bash
-$ cat mylib.lua | redis-cli -x FUNCTION LOAD REPLACE
+$ cat mylib.lua | valkey-cli -x FUNCTION LOAD REPLACE
 ```
 
 We've added the `REPLACE` modifier to the call to `FUNCTION LOAD` to tell Valkey that we want to overwrite the existing library definition.
@@ -182,9 +182,9 @@ Otherwise, we would have gotten an error from Valkey complaining that the librar
 Now that the library's updated code is loaded to Valkey, we can proceed and call our function:
 
 ```
-redis> FCALL my_hset 1 myhash myfield "some value" another_field "another value"
+127.0.0.1:6379> FCALL my_hset 1 myhash myfield "some value" another_field "another value"
 (integer) 3
-redis> HGETALL myhash
+127.0.0.1:6379> HGETALL myhash
 1) "_last_modified_"
 2) "1640772721"
 3) "myfield"
@@ -244,25 +244,25 @@ Doing so allows the function to delete (or set to `nil` as is the case with Lua 
 Assuming you've saved the library's implementation in the _mylib.lua_ file, you can replace it with:
 
 ```bash
-$ cat mylib.lua | redis-cli -x FUNCTION LOAD REPLACE
+$ cat mylib.lua | valkey-cli -x FUNCTION LOAD REPLACE
 ```
 
 Once loaded, you can call the library's functions with `FCALL`:
 
 ```
-redis> FCALL my_hgetall 1 myhash
+127.0.0.1:6379> FCALL my_hgetall 1 myhash
 1) "myfield"
 2) "some value"
 3) "another_field"
 4) "another value"
-redis> FCALL my_hlastmodified 1 myhash
+127.0.0.1:6379> FCALL my_hlastmodified 1 myhash
 "1640772721"
 ```
 
 You can also get the library's details with the `FUNCTION LIST` command:
 
 ```
-redis> FUNCTION LIST
+127.0.0.1:6379> FUNCTION LIST
 1) 1) "library_name"
    2) "mylib"
    3) "engine"
@@ -379,9 +379,9 @@ And your Valkey log file should have lines in it that are similar to:
 As noted above, Valkey automatically handles propagation of loaded functions to replicas.
 In a Valkey Cluster, it is also necessary to load functions to all cluster nodes. This is not handled automatically by Valkey Cluster, and needs to be handled by the cluster administrator (like module loading, configuration setting, etc.).
 
-As one of the goals of functions is to live separately from the client application, this should not be part of the Valkey client library responsibilities. Instead, `redis-cli --cluster-only-masters --cluster call host:port FUNCTION LOAD ...` can be used to execute the load command on all master nodes.
+As one of the goals of functions is to live separately from the client application, this should not be part of the Valkey client library responsibilities. Instead, `valkey-cli --cluster-only-masters --cluster call host:port FUNCTION LOAD ...` can be used to execute the load command on all master nodes.
 
-Also, note that `redis-cli --cluster add-node` automatically takes care to propagate the loaded functions from one of the existing nodes to the new node.
+Also, note that `valkey-cli --cluster add-node` automatically takes care to propagate the loaded functions from one of the existing nodes to the new node.
 
 ## Functions and ephemeral Valkey instances
 
@@ -392,7 +392,7 @@ In some cases there may be a need to start a fresh Valkey server with a set of f
 
 In such cases, we need to make sure that the pre-loaded functions are available before Valkey accepts inbound user connections and commands.
 
-To do that, it is possible to use `redis-cli --functions-rdb` to extract the functions from an existing server. This generates an RDB file that can be loaded by Valkey at startup.
+To do that, it is possible to use `valkey-cli --functions-rdb` to extract the functions from an existing server. This generates an RDB file that can be loaded by Valkey at startup.
 
 ## Function flags
 
@@ -405,7 +405,7 @@ By default, Valkey assumes that all functions may perform arbitrary read or writ
 In our previous example, we defined two functions that only read data. We can try executing them using `FCALL_RO` against a read-only replica.
 
 ```
-redis > FCALL_RO my_hgetall 1 myhash
+127.0.0.1:6379> FCALL_RO my_hgetall 1 myhash
 (error) ERR Can not execute a function with write flag using fcall_ro.
 ```
 
@@ -439,12 +439,12 @@ server.register_function{
 Once we've replaced the library, Valkey allows running both `my_hgetall` and `my_hlastmodified` with `FCALL_RO` against a read-only replica:
 
 ```
-redis> FCALL_RO my_hgetall 1 myhash
+127.0.0.1:6379> FCALL_RO my_hgetall 1 myhash
 1) "myfield"
 2) "some value"
 3) "another_field"
 4) "another value"
-redis> FCALL_RO my_hlastmodified 1 myhash
+127.0.0.1:6379> FCALL_RO my_hlastmodified 1 myhash
 "1640772721"
 ```
 

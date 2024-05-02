@@ -10,8 +10,6 @@ aliases:
 
 This document provides information about how Valkey handles clients at the network layer level: connections, timeouts, buffers, and other similar topics are covered here.
 
-The information contained in this document is **only applicable to Redis OSS version 2.6 or greater**.
-
 ## Accepting Client Connections
 
 Valkey accepts clients connections on the configured TCP port and on the Unix socket if enabled. When a new client connection is accepted the following operations are performed:
@@ -44,10 +42,9 @@ However, Valkey does the following two things when serving clients:
 
 ## Maximum Concurrent Connected Clients
 
-In Redis OSS 2.4 there was a hard-coded limit for the maximum number of clients
-that could be handled simultaneously.
-
-In Redis OSS 2.6 and newer, this limit is configurable using the `maxclients` directive in `valkey.conf`. The default is 10,000 clients.
+The limit for the maximum number of clients that can be handled simultaneously
+is configurable using the `maxclients` directive in `valkey.conf`. The default
+is 10,000 clients.
 
 However, Valkey checks with the kernel what the maximum number of file
 descriptors that we are able to open is (the *soft limit* is checked). If the
@@ -184,11 +181,11 @@ In the above example two clients are connected to the Valkey server. Let's look 
 * **name**: The client name as set by `CLIENT SETNAME`.
 * **age**: The number of seconds the connection existed for.
 * **idle**: The number of seconds the connection is idle.
-* **flags**: The kind of client (N means normal client, check the [full list of flags](https://redis.io/commands/client-list)).
+* **flags**: The kind of client (N means normal client, check the [full list of flags](../commands/client-list.md)).
 * **omem**: The amount of memory used by the client for the output buffer.
 * **cmd**: The last executed command.
 
-See the [`CLIENT LIST`](https://redis.io/commands/client-list) documentation for the full listing of fields and their purpose.
+See the [`CLIENT LIST`](../commands/client-list.md) documentation for the full listing of fields and their purpose.
 
 Once you have the list of clients, you can close a client's connection using the `CLIENT KILL` command, specifying the client address as its argument.
 
@@ -197,4 +194,4 @@ The commands `CLIENT SETNAME` and `CLIENT GETNAME` can be used to set and get th
 
 ## TCP keepalive
 
-From version 3.2 onwards, Valkey has TCP keepalive (`SO_KEEPALIVE` socket option) enabled by default and set to about 300 seconds. This option is useful in order to detect dead peers (clients that cannot be reached even if they look connected). Moreover, if there is network equipment between clients and servers that need to see some traffic in order to take the connection open, the option will prevent unexpected connection closed events.
+Valkey has TCP keepalive (`SO_KEEPALIVE` socket option) enabled by default and set to about 300 seconds. This option is useful in order to detect dead peers (clients that cannot be reached even if they look connected). Moreover, if there is network equipment between clients and servers that need to see some traffic in order to take the connection open, the option will prevent unexpected connection closed events.
