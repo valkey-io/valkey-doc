@@ -173,7 +173,7 @@ server.register_function('my_hset', my_hset)
 If we create a new file named _mylib.lua_ that consists of the library's definition, we can load it like so (without stripping the source code of helpful whitespaces):
 
 ```bash
-$ cat mylib.lua | redis-cli -x FUNCTION LOAD REPLACE
+$ cat mylib.lua | valkey-cli -x FUNCTION LOAD REPLACE
 ```
 
 We've added the `REPLACE` modifier to the call to `FUNCTION LOAD` to tell Valkey that we want to overwrite the existing library definition.
@@ -244,7 +244,7 @@ Doing so allows the function to delete (or set to `nil` as is the case with Lua 
 Assuming you've saved the library's implementation in the _mylib.lua_ file, you can replace it with:
 
 ```bash
-$ cat mylib.lua | redis-cli -x FUNCTION LOAD REPLACE
+$ cat mylib.lua | valkey-cli -x FUNCTION LOAD REPLACE
 ```
 
 Once loaded, you can call the library's functions with `FCALL`:
@@ -379,9 +379,9 @@ And your Valkey log file should have lines in it that are similar to:
 As noted above, Valkey automatically handles propagation of loaded functions to replicas.
 In a Valkey Cluster, it is also necessary to load functions to all cluster nodes. This is not handled automatically by Valkey Cluster, and needs to be handled by the cluster administrator (like module loading, configuration setting, etc.).
 
-As one of the goals of functions is to live separately from the client application, this should not be part of the Valkey client library responsibilities. Instead, `redis-cli --cluster-only-masters --cluster call host:port FUNCTION LOAD ...` can be used to execute the load command on all master nodes.
+As one of the goals of functions is to live separately from the client application, this should not be part of the Valkey client library responsibilities. Instead, `valkey-cli --cluster-only-masters --cluster call host:port FUNCTION LOAD ...` can be used to execute the load command on all master nodes.
 
-Also, note that `redis-cli --cluster add-node` automatically takes care to propagate the loaded functions from one of the existing nodes to the new node.
+Also, note that `valkey-cli --cluster add-node` automatically takes care to propagate the loaded functions from one of the existing nodes to the new node.
 
 ## Functions and ephemeral Valkey instances
 
@@ -392,7 +392,7 @@ In some cases there may be a need to start a fresh Valkey server with a set of f
 
 In such cases, we need to make sure that the pre-loaded functions are available before Valkey accepts inbound user connections and commands.
 
-To do that, it is possible to use `redis-cli --functions-rdb` to extract the functions from an existing server. This generates an RDB file that can be loaded by Valkey at startup.
+To do that, it is possible to use `valkey-cli --functions-rdb` to extract the functions from an existing server. This generates an RDB file that can be loaded by Valkey at startup.
 
 ## Function flags
 

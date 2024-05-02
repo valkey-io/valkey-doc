@@ -399,7 +399,7 @@ Note: an important part of this behavior is that the PRNG that Valkey implements
 ## Debugging Eval scripts
 
 Starting with Redis OSS 3.2, Valkey has support for native Lua debugging.
-The Valkey Lua debugger is a remote debugger consisting of a server, which is Valkey itself, and a client, which is by default [`redis-cli`]().
+The Valkey Lua debugger is a remote debugger consisting of a server, which is Valkey itself, and a client, which is by default [`valkey-cli`]().
 
 The Lua debugger is described in the [Lua scripts debugging](ldb.md) section of the Valkey documentation.
 
