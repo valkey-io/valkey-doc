@@ -97,7 +97,7 @@ This tip can be one of:
 ## Example
 
 ```
-redis> command info ping
+127.0.0.1:6379> command info ping
 1)  1) "ping"
     2) (integer) -1
     3) 1) fast

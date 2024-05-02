@@ -96,7 +96,7 @@ The Shebang format is:
 Let's try loading an empty library:
 
 ```
-redis> FUNCTION LOAD "#!lua name=mylib\n"
+127.0.0.1:6379> FUNCTION LOAD "#!lua name=mylib\n"
 (error) ERR No functions registered
 ```
 
@@ -121,9 +121,9 @@ In the example above, we provide two arguments about the function to Lua's `serv
 We can load our library and use `FCALL` to call the registered function:
 
 ```
-redis> FUNCTION LOAD "#!lua name=mylib\nserver.register_function('knockknock', function() return 'Who\\'s there?' end)"
+127.0.0.1:6379> FUNCTION LOAD "#!lua name=mylib\nserver.register_function('knockknock', function() return 'Who\\'s there?' end)"
 mylib
-redis> FCALL knockknock 0
+127.0.0.1:6379> FCALL knockknock 0
 "Who's there?"
 ```
 
@@ -182,9 +182,9 @@ Otherwise, we would have gotten an error from Valkey complaining that the librar
 Now that the library's updated code is loaded to Valkey, we can proceed and call our function:
 
 ```
-redis> FCALL my_hset 1 myhash myfield "some value" another_field "another value"
+127.0.0.1:6379> FCALL my_hset 1 myhash myfield "some value" another_field "another value"
 (integer) 3
-redis> HGETALL myhash
+127.0.0.1:6379> HGETALL myhash
 1) "_last_modified_"
 2) "1640772721"
 3) "myfield"
@@ -250,19 +250,19 @@ $ cat mylib.lua | redis-cli -x FUNCTION LOAD REPLACE
 Once loaded, you can call the library's functions with `FCALL`:
 
 ```
-redis> FCALL my_hgetall 1 myhash
+127.0.0.1:6379> FCALL my_hgetall 1 myhash
 1) "myfield"
 2) "some value"
 3) "another_field"
 4) "another value"
-redis> FCALL my_hlastmodified 1 myhash
+127.0.0.1:6379> FCALL my_hlastmodified 1 myhash
 "1640772721"
 ```
 
 You can also get the library's details with the `FUNCTION LIST` command:
 
 ```
-redis> FUNCTION LIST
+127.0.0.1:6379> FUNCTION LIST
 1) 1) "library_name"
    2) "mylib"
    3) "engine"
@@ -405,7 +405,7 @@ By default, Valkey assumes that all functions may perform arbitrary read or writ
 In our previous example, we defined two functions that only read data. We can try executing them using `FCALL_RO` against a read-only replica.
 
 ```
-redis > FCALL_RO my_hgetall 1 myhash
+127.0.0.1:6379> FCALL_RO my_hgetall 1 myhash
 (error) ERR Can not execute a function with write flag using fcall_ro.
 ```
 
@@ -439,12 +439,12 @@ server.register_function{
 Once we've replaced the library, Valkey allows running both `my_hgetall` and `my_hlastmodified` with `FCALL_RO` against a read-only replica:
 
 ```
-redis> FCALL_RO my_hgetall 1 myhash
+127.0.0.1:6379> FCALL_RO my_hgetall 1 myhash
 1) "myfield"
 2) "some value"
 3) "another_field"
 4) "another value"
-redis> FCALL_RO my_hlastmodified 1 myhash
+127.0.0.1:6379> FCALL_RO my_hlastmodified 1 myhash
 "1640772721"
 ```
 
