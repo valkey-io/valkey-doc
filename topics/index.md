@@ -42,7 +42,7 @@ Administration
 ---
 * [Installation](installation.md): How to install and configure Valkey. This targets people without prior experience with Valkey.
 * [valkey-cli](cli.md): The Valkey command line interface, used for administration, troubleshooting and experimenting with Valkey.
-* [Configuration](config.md): How to configure Valkey.
+* [Configuration](valkey.conf.md): How to configure Valkey.
 * [Replication](replication.md): What you need to know to set up primary-replica replication.
 * [Persistence](persistence.md): Options for configuring durability using disk backups.
 * [Administration](admin.md): Various administration topics.
