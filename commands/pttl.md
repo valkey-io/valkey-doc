@@ -7,10 +7,13 @@ The command returns the following values in case of errors:
 * The command returns `-2` if the key does not exist.
 * The command returns `-1` if the key exists but has no associated expire.
 
-@examples
+## Examples
 
-```cli
-SET mykey "Hello"
-EXPIRE mykey 1
-PTTL mykey
+```valkey-cli
+127.0.0.1:6379> SET mykey "Hello"
+OK
+127.0.0.1:6379> EXPIRE mykey 1
+(integer) 1
+127.0.0.1:6379> PTTL mykey
+(integer) 989
 ```

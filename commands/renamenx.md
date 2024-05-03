@@ -3,11 +3,15 @@ It returns an error when `key` does not exist.
 
 In Cluster mode, both `key` and `newkey` must be in the same **hash slot**, meaning that in practice only keys that have the same hash tag can be reliably renamed in cluster.
 
-@examples
+## Examples
 
-```cli
-SET mykey "Hello"
-SET myotherkey "World"
-RENAMENX mykey myotherkey
-GET myotherkey
+```valkey-cli
+127.0.0.1:6379> SET mykey "Hello"
+OK
+127.0.0.1:6379> SET myotherkey "World"
+OK
+127.0.0.1:6379> RENAMENX mykey myotherkey
+(integer) 0
+127.0.0.1:6379> GET myotherkey
+"World"
 ```

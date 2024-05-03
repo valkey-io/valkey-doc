@@ -72,11 +72,26 @@ Will add a new entry but will also evict old entries so that the stream will con
 For further information about streams please check our
 [introduction to Streams document](../topics/streams-intro.md).
 
-@examples
+## Examples
 
-```cli
-XADD mystream * name Sara surname OConnor
-XADD mystream * field1 value1 field2 value2 field3 value3
-XLEN mystream
-XRANGE mystream - +
+```valkey-cli
+127.0.0.1:6379> XADD mystream * name Sara surname OConnor
+"1714701491958-0"
+127.0.0.1:6379> XADD mystream * field1 value1 field2 value2 field3 value3
+"1714701491968-0"
+127.0.0.1:6379> XLEN mystream
+(integer) 2
+127.0.0.1:6379> XRANGE mystream - +
+1) 1) "1714701491958-0"
+   2) 1) "name"
+      2) "Sara"
+      3) "surname"
+      4) "OConnor"
+2) 1) "1714701491968-0"
+   2) 1) "field1"
+      2) "value1"
+      3) "field2"
+      4) "value2"
+      5) "field3"
+      6) "value3"
 ```

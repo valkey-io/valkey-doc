@@ -4,9 +4,15 @@ Given a sorted set representing a geospatial index, populated using the `GEOADD`
 
 The command can accept a variable number of arguments so it always returns an array of positions even when a single element is specified.
 
-@examples
+## Examples
 
-```cli
-GEOADD Sicily 13.361389 38.115556 "Palermo" 15.087269 37.502669 "Catania"
-GEOPOS Sicily Palermo Catania NonExisting
+```valkey-cli
+127.0.0.1:6379> GEOADD Sicily 13.361389 38.115556 "Palermo" 15.087269 37.502669 "Catania"
+(integer) 2
+127.0.0.1:6379> GEOPOS Sicily Palermo Catania NonExisting
+1) 1) "13.36138933897018433"
+   2) "38.11555639549629859"
+2) 1) "15.08726745843887329"
+   2) "37.50266842333162032"
+3) (nil)
 ```

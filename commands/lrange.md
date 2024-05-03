@@ -23,14 +23,25 @@ If `start` is larger than the end of the list, an empty list is returned.
 If `stop` is larger than the actual end of the list, Valkey will treat it like
 the last element of the list.
 
-@examples
+## Examples
 
-```cli
-RPUSH mylist "one"
-RPUSH mylist "two"
-RPUSH mylist "three"
-LRANGE mylist 0 0
-LRANGE mylist -3 2
-LRANGE mylist -100 100
-LRANGE mylist 5 10
+```valkey-cli
+127.0.0.1:6379> RPUSH mylist "one"
+(integer) 1
+127.0.0.1:6379> RPUSH mylist "two"
+(integer) 2
+127.0.0.1:6379> RPUSH mylist "three"
+(integer) 3
+127.0.0.1:6379> LRANGE mylist 0 0
+1) "one"
+127.0.0.1:6379> LRANGE mylist -3 2
+1) "one"
+2) "two"
+3) "three"
+127.0.0.1:6379> LRANGE mylist -100 100
+1) "one"
+2) "two"
+3) "three"
+127.0.0.1:6379> LRANGE mylist 5 10
+(empty array)
 ```

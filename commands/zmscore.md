@@ -2,10 +2,15 @@ Returns the scores associated with the specified `members` in the sorted set sto
 
 For every `member` that does not exist in the sorted set, a `nil` value is returned.
 
-@examples
+## Examples
 
-```cli
-ZADD myzset 1 "one"
-ZADD myzset 2 "two"
-ZMSCORE myzset "one" "two" "nofield"
+```valkey-cli
+127.0.0.1:6379> ZADD myzset 1 "one"
+(integer) 1
+127.0.0.1:6379> ZADD myzset 2 "two"
+(integer) 1
+127.0.0.1:6379> ZMSCORE myzset "one" "two" "nofield"
+1) "1"
+2) "2"
+3) (nil)
 ```

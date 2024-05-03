@@ -28,11 +28,31 @@ When the `ANY` option is used, the command returns as soon as enough matches are
 When `ANY` is not provided, the command will perform an effort that is proportional to the number of items matching the specified area and sort them,
 so to query very large areas with a very small `COUNT` option may be slow even if just a few results are returned.
 
-@examples
+## Examples
 
-```cli
-GEOADD Sicily 13.361389 38.115556 "Palermo" 15.087269 37.502669 "Catania"
-GEOADD Sicily 12.758489 38.788135 "edge1"   17.241510 38.788135 "edge2" 
-GEOSEARCH Sicily FROMLONLAT 15 37 BYRADIUS 200 km ASC
-GEOSEARCH Sicily FROMLONLAT 15 37 BYBOX 400 400 km ASC WITHCOORD WITHDIST
+```valkey-cli
+127.0.0.1:6379> GEOADD Sicily 13.361389 38.115556 "Palermo" 15.087269 37.502669 "Catania"
+(integer) 2
+127.0.0.1:6379> GEOADD Sicily 12.758489 38.788135 "edge1"   17.241510 38.788135 "edge2" 
+(integer) 2
+127.0.0.1:6379> GEOSEARCH Sicily FROMLONLAT 15 37 BYRADIUS 200 km ASC
+1) "Catania"
+2) "Palermo"
+127.0.0.1:6379> GEOSEARCH Sicily FROMLONLAT 15 37 BYBOX 400 400 km ASC WITHCOORD WITHDIST
+1) 1) "Catania"
+   2) "56.4413"
+   3) 1) "15.08726745843887329"
+      2) "37.50266842333162032"
+2) 1) "Palermo"
+   2) "190.4424"
+   3) 1) "13.36138933897018433"
+      2) "38.11555639549629859"
+3) 1) "edge2"
+   2) "279.7403"
+   3) 1) "17.24151045083999634"
+      2) "38.78813451624225195"
+4) 1) "edge1"
+   2) "279.7405"
+   3) 1) "12.7584877610206604"
+      2) "38.78813451624225195"
 ```

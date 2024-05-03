@@ -5,15 +5,15 @@ If the library doesn't exist, the server returns an error.
 
 For more information please refer to [Introduction to Valkey Functions](../topics/functions-intro.md).
 
-@examples
+## Examples
 
 ```
-valkey> FUNCTION LOAD "#!lua name=mylib \n server.register_function('myfunc', function(keys, args) return 'hello' end)"
+127.0.0.1:6379> FUNCTION LOAD "#!lua name=mylib \n server.register_function('myfunc', function(keys, args) return 'hello' end)"
 "mylib"
-valkey> FCALL myfunc 0
+127.0.0.1:6379> FCALL myfunc 0
 "hello"
-valkey> FUNCTION DELETE mylib
+127.0.0.1:6379> FUNCTION DELETE mylib
 OK
-valkey> FCALL myfunc 0
+127.0.0.1:6379> FCALL myfunc 0
 (error) ERR Function not found
 ```

@@ -13,15 +13,22 @@ If `source` and `destination` are the same, the operation is equivalent to
 removing the last element from the list and pushing it as first element of the
 list, so it can be considered as a list rotation command.
 
-@examples
+## Examples
 
-```cli
-RPUSH mylist "one"
-RPUSH mylist "two"
-RPUSH mylist "three"
-RPOPLPUSH mylist myotherlist
-LRANGE mylist 0 -1
-LRANGE myotherlist 0 -1
+```valkey-cli
+127.0.0.1:6379> RPUSH mylist "one"
+(integer) 1
+127.0.0.1:6379> RPUSH mylist "two"
+(integer) 2
+127.0.0.1:6379> RPUSH mylist "three"
+(integer) 3
+127.0.0.1:6379> RPOPLPUSH mylist myotherlist
+"three"
+127.0.0.1:6379> LRANGE mylist 0 -1
+1) "one"
+2) "two"
+127.0.0.1:6379> LRANGE myotherlist 0 -1
+1) "three"
 ```
 
 ## Pattern: Reliable queue

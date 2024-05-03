@@ -21,7 +21,7 @@ should be used.
 
 If `key` does not exist a nil bulk reply is returned.
 
-@examples
+## Examples
 
 ```
 > SET mykey 10

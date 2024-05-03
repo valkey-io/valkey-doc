@@ -49,7 +49,7 @@ In 7.2.0, **active-time** was added and **seen-time** was changed to denote the 
 The `COUNT` option can be used to limit the number of stream and PEL entries that are returned (The first `<count>` entries are returned).
 The default `COUNT` is 10 and a `COUNT` of 0 means that all entries will be returned (execution time may be long if the stream has a lot of entries).
 
-@examples
+## Examples
 
 Default reply:
 

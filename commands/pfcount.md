@@ -11,15 +11,21 @@ For example in order to take the count of all the unique search queries performe
 Note: as a side effect of calling this function, it is possible that the HyperLogLog is modified, since the last 8 bytes encode the latest computed cardinality
 for caching purposes. So `PFCOUNT` is technically a write command.
 
-@examples
+## Examples
 
-```cli
-PFADD hll foo bar zap
-PFADD hll zap zap zap
-PFADD hll foo bar
-PFCOUNT hll
-PFADD some-other-hll 1 2 3
-PFCOUNT hll some-other-hll
+```valkey-cli
+127.0.0.1:6379> PFADD hll foo bar zap
+(integer) 1
+127.0.0.1:6379> PFADD hll zap zap zap
+(integer) 0
+127.0.0.1:6379> PFADD hll foo bar
+(integer) 0
+127.0.0.1:6379> PFCOUNT hll
+(integer) 3
+127.0.0.1:6379> PFADD some-other-hll 1 2 3
+(integer) 1
+127.0.0.1:6379> PFCOUNT hll some-other-hll
+(integer) 6
 ```
 
 Performances

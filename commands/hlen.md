@@ -1,9 +1,12 @@
 Returns the number of fields contained in the hash stored at `key`.
 
-@examples
+## Examples
 
-```cli
-HSET myhash field1 "Hello"
-HSET myhash field2 "World"
-HLEN myhash
+```valkey-cli
+127.0.0.1:6379> HSET myhash field1 "Hello"
+(integer) 1
+127.0.0.1:6379> HSET myhash field2 "World"
+(integer) 1
+127.0.0.1:6379> HLEN myhash
+(integer) 2
 ```

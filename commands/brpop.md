@@ -10,14 +10,14 @@ the tail of a list instead of popping from the head.
 
 [cb]: /commands/blpop
 
-@examples
+## Examples
 
-```
-valkey> DEL list1 list2
+```valkey-cli
+127.0.0.1:6379> DEL list1 list2
 (integer) 0
-valkey> RPUSH list1 a b c
+127.0.0.1:6379> RPUSH list1 a b c
 (integer) 3
-valkey> BRPOP list1 list2 0
+127.0.0.1:6379> BRPOP list1 list2 0
 1) "list1"
 2) "c"
 ```

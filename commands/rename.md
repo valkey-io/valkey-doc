@@ -4,10 +4,13 @@ If `newkey` already exists it is overwritten, when this happens `RENAME` execute
 
 In Cluster mode, both `key` and `newkey` must be in the same **hash slot**, meaning that in practice only keys that have the same hash tag can be reliably renamed in cluster.
 
-@examples
+## Examples
 
-```cli
-SET mykey "Hello"
-RENAME mykey myotherkey
-GET myotherkey
+```valkey-cli
+127.0.0.1:6379> SET mykey "Hello"
+OK
+127.0.0.1:6379> RENAME mykey myotherkey
+OK
+127.0.0.1:6379> GET myotherkey
+"Hello"
 ```

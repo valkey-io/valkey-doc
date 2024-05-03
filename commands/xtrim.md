@@ -44,10 +44,21 @@ When used, it specifies the maximal `count` of entries that will be evicted.
 When `LIMIT` and `count` aren't specified, the default value of 100 * the number of entries in a macro node will be implicitly used as the `count`.
 Specifying the value 0 as `count` disables the limiting mechanism entirely.
 
-@examples
+## Examples
 
-```cli
-XADD mystream * field1 A field2 B field3 C field4 D
-XTRIM mystream MAXLEN 2
-XRANGE mystream - +
+```valkey-cli
+127.0.0.1:6379> XADD mystream * field1 A field2 B field3 C field4 D
+"1714701492231-0"
+127.0.0.1:6379> XTRIM mystream MAXLEN 2
+(integer) 0
+127.0.0.1:6379> XRANGE mystream - +
+1) 1) "1714701492231-0"
+   2) 1) "field1"
+      2) "A"
+      3) "field2"
+      4) "B"
+      5) "field3"
+      6) "C"
+      7) "field4"
+      8) "D"
 ```

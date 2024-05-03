@@ -69,10 +69,13 @@ The sentinel output is composed of the following parts:
 1. The string `sentinel`.
 2. An array of master names monitored by this Sentinel instance.
 
-@examples
+## Examples
 
-```cli
-ROLE
+```valkey-cli
+127.0.0.1:6379> ROLE
+1) "master"
+2) (integer) 0
+3) (empty array)
 ```
 
 **A note about the word slave used in this man page**: If not for Redis OSS compatibility, the Valkey project does not use the word slave. Unfortunately in this command the word slave is part of the protocol, so we'll be able to remove such occurrences only when this API will be naturally deprecated.

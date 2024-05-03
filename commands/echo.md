@@ -1,7 +1,8 @@
 Returns `message`.
 
-@examples
+## Examples
 
-```cli
-ECHO "Hello World!"
+```valkey-cli
+127.0.0.1:6379> ECHO "Hello World!"
+"Hello World!"
 ```

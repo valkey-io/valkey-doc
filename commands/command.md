@@ -194,7 +194,7 @@ Each element in the array represents one subcommand and follows the same specifi
 [td]: /topics/key-specs
 [tr]: /topics/key-specs
 
-@examples
+## Examples
 
 The following is `COMMAND`'s output for the `GET` command:
 

@@ -7,12 +7,17 @@ Here, `-1` means the last element, `-2` means the penultimate and so forth.
 
 When the value at `key` is not a list, an error is returned.
 
-@examples
+## Examples
 
-```cli
-LPUSH mylist "World"
-LPUSH mylist "Hello"
-LINDEX mylist 0
-LINDEX mylist -1
-LINDEX mylist 3
+```valkey-cli
+127.0.0.1:6379> LPUSH mylist "World"
+(integer) 1
+127.0.0.1:6379> LPUSH mylist "Hello"
+(integer) 2
+127.0.0.1:6379> LINDEX mylist 0
+"Hello"
+127.0.0.1:6379> LINDEX mylist -1
+"World"
+127.0.0.1:6379> LINDEX mylist 3
+(nil)
 ```

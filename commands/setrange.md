@@ -26,19 +26,24 @@ Thanks to `SETRANGE` and the analogous `GETRANGE` commands, you can use Valkey
 strings as a linear array with O(1) random access.
 This is a very fast and efficient storage in many real world use cases.
 
-@examples
+## Examples
 
 Basic usage:
 
-```cli
-SET key1 "Hello World"
-SETRANGE key1 6 "Valkey"
-GET key1
+```valkey-cli
+127.0.0.1:6379> SET key1 "Hello World"
+OK
+127.0.0.1:6379> SETRANGE key1 6 "Valkey"
+(integer) 12
+127.0.0.1:6379> GET key1
+"Hello Valkey"
 ```
 
 Example of zero padding:
 
-```cli
-SETRANGE key2 6 "Valkey"
-GET key2
+```valkey-cli
+127.0.0.1:6379> SETRANGE key2 6 "Valkey"
+(integer) 12
+127.0.0.1:6379> GET key2
+"\x00\x00\x00\x00\x00\x00Valkey"
 ```

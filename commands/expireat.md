@@ -27,11 +27,15 @@ The `EXPIREAT` command supports a set of options:
 A non-volatile key is treated as an infinite TTL for the purpose of `GT` and `LT`.
 The `GT`, `LT` and `NX` options are mutually exclusive.
 
-@examples
+## Examples
 
-```cli
-SET mykey "Hello"
-EXISTS mykey
-EXPIREAT mykey 1293840000
-EXISTS mykey
+```valkey-cli
+127.0.0.1:6379> SET mykey "Hello"
+OK
+127.0.0.1:6379> EXISTS mykey
+(integer) 1
+127.0.0.1:6379> EXPIREAT mykey 1293840000
+(integer) 1
+127.0.0.1:6379> EXISTS mykey
+(integer) 0
 ```

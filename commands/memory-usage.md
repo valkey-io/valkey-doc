@@ -8,7 +8,7 @@ For nested data types, the optional `SAMPLES` option can be provided, where
 `count` is the number of sampled nested values. The samples are averaged to estimate the total size.
 By default, this option is set to `5`. To sample the all of the nested values, use `SAMPLES 0`.
 
-@examples
+## Examples
 
 With Valkey v7.2.4 64-bit and **jemalloc**, the empty string measures as follows:
 

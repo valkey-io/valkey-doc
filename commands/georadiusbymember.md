@@ -7,10 +7,14 @@ Please check the example below and the `GEORADIUS` documentation for more inform
 
 Note that `GEORADIUSBYMEMBER_RO` is addeded in order to provide a read-only command that can be used in replicas. See the `GEORADIUS` page for more information.
 
-@examples
+## Examples
 
-```cli
-GEOADD Sicily 13.583333 37.316667 "Agrigento"
-GEOADD Sicily 13.361389 38.115556 "Palermo" 15.087269 37.502669 "Catania"
-GEORADIUSBYMEMBER Sicily Agrigento 100 km
+```valkey-cli
+127.0.0.1:6379> GEOADD Sicily 13.583333 37.316667 "Agrigento"
+(integer) 1
+127.0.0.1:6379> GEOADD Sicily 13.361389 38.115556 "Palermo" 15.087269 37.502669 "Catania"
+(integer) 2
+127.0.0.1:6379> GEORADIUSBYMEMBER Sicily Agrigento 100 km
+1) "Agrigento"
+2) "Palermo"
 ```

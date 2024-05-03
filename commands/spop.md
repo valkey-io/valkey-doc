@@ -6,18 +6,30 @@ By default, the command pops a single member from the set. When provided with
 the optional `count` argument, the reply will consist of up to `count` members,
 depending on the set's cardinality.
 
-@examples
+## Examples
 
-```cli
-SADD myset "one"
-SADD myset "two"
-SADD myset "three"
-SPOP myset
-SMEMBERS myset
-SADD myset "four"
-SADD myset "five"
-SPOP myset 3
-SMEMBERS myset
+```valkey-cli
+127.0.0.1:6379> SADD myset "one"
+(integer) 1
+127.0.0.1:6379> SADD myset "two"
+(integer) 1
+127.0.0.1:6379> SADD myset "three"
+(integer) 1
+127.0.0.1:6379> SPOP myset
+"three"
+127.0.0.1:6379> SMEMBERS myset
+1) "one"
+2) "two"
+127.0.0.1:6379> SADD myset "four"
+(integer) 1
+127.0.0.1:6379> SADD myset "five"
+(integer) 1
+127.0.0.1:6379> SPOP myset 3
+1) "one"
+2) "four"
+3) "five"
+127.0.0.1:6379> SMEMBERS myset
+1) "two"
 ```
 ## Distribution of returned elements
 

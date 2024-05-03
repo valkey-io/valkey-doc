@@ -1,9 +1,13 @@
 Returns all field names in the hash stored at `key`.
 
-@examples
+## Examples
 
-```cli
-HSET myhash field1 "Hello"
-HSET myhash field2 "World"
-HKEYS myhash
+```valkey-cli
+127.0.0.1:6379> HSET myhash field1 "Hello"
+(integer) 1
+127.0.0.1:6379> HSET myhash field2 "World"
+(integer) 1
+127.0.0.1:6379> HKEYS myhash
+1) "field1"
+2) "field2"
 ```

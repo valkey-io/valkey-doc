@@ -33,11 +33,18 @@ when searching for keys matching the pattern.
 For example, with the pattern `{a}h*llo`, Valkey would only try to match it with the keys in slot 15495, which hash tag `{a}` implies.
 To use pattern with hash tag, see [Hash tags](../topics/cluster-spec.md#hash-tags) in the Cluster specification for more information.
 
-@examples
+## Examples
 
-```cli
-MSET firstname Jack lastname Stuntman age 35
-KEYS *name*
-KEYS a??
-KEYS *
+```valkey-cli
+127.0.0.1:6379> MSET firstname Jack lastname Stuntman age 35
+OK
+127.0.0.1:6379> KEYS *name*
+1) "lastname"
+2) "firstname"
+127.0.0.1:6379> KEYS a??
+1) "age"
+127.0.0.1:6379> KEYS *
+1) "age"
+2) "lastname"
+3) "firstname"
 ```

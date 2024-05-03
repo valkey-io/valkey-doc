@@ -8,13 +8,26 @@ In this case, the number of returned fields is the absolute value of the specifi
 
 The optional `WITHVALUES` modifier changes the reply so it includes the respective values of the randomly selected hash fields.
 
-@examples
+## Examples
 
-```cli
-HSET coin heads obverse tails reverse edge null
-HRANDFIELD coin
-HRANDFIELD coin
-HRANDFIELD coin -5 WITHVALUES
+```valkey-cli
+127.0.0.1:6379> HSET coin heads obverse tails reverse edge null
+(integer) 3
+127.0.0.1:6379> HRANDFIELD coin
+"heads"
+127.0.0.1:6379> HRANDFIELD coin
+"heads"
+127.0.0.1:6379> HRANDFIELD coin -5 WITHVALUES
+ 1) "heads"
+ 2) "obverse"
+ 3) "tails"
+ 4) "reverse"
+ 5) "edge"
+ 6) "null"
+ 7) "heads"
+ 8) "obverse"
+ 9) "edge"
+10) "null"
 ```
 
 ## Specification of the behavior when count is passed

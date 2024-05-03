@@ -5,13 +5,20 @@ If `key` does not exist, it is treated as an empty set and this command returns
 
 An error is returned when the value stored at `key` is not a set.
 
-@examples
+## Examples
 
-```cli
-SADD myset "one"
-SADD myset "two"
-SADD myset "three"
-SREM myset "one"
-SREM myset "four"
-SMEMBERS myset
+```valkey-cli
+127.0.0.1:6379> SADD myset "one"
+(integer) 1
+127.0.0.1:6379> SADD myset "two"
+(integer) 1
+127.0.0.1:6379> SADD myset "three"
+(integer) 1
+127.0.0.1:6379> SREM myset "one"
+(integer) 1
+127.0.0.1:6379> SREM myset "four"
+(integer) 0
+127.0.0.1:6379> SMEMBERS myset
+1) "two"
+2) "three"
 ```

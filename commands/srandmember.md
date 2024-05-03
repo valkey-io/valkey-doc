@@ -6,13 +6,22 @@ The array's length is either `count` or the set's cardinality (`SCARD`), whichev
 If called with a negative `count`, the behavior changes and the command is allowed to return the **same element multiple times**.
 In this case, the number of returned elements is the absolute value of the specified `count`.
 
-@examples
+## Examples
 
-```cli
-SADD myset one two three
-SRANDMEMBER myset
-SRANDMEMBER myset 2
-SRANDMEMBER myset -5
+```valkey-cli
+127.0.0.1:6379> SADD myset one two three
+(integer) 3
+127.0.0.1:6379> SRANDMEMBER myset
+"three"
+127.0.0.1:6379> SRANDMEMBER myset 2
+1) "one"
+2) "three"
+127.0.0.1:6379> SRANDMEMBER myset -5
+1) "two"
+2) "one"
+3) "one"
+4) "one"
+5) "two"
 ```
 
 ## Specification of the behavior when count is passed

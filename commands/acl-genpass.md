@@ -25,15 +25,13 @@ rounded to the next multiple of 4. So for instance asking for just 1
 bit password will result in 4 bits to be emitted, in the form of a single
 hex character.
 
-@examples
+## Examples
 
-```
-> ACL GENPASS
+```valkey-cli
+127.0.0.1:6379> ACL GENPASS
 "dd721260bfe1b3d9601e7fbab36de6d04e2e67b0ef1c53de59d45950db0dd3cc"
-
-> ACL GENPASS 32
+127.0.0.1:6379> ACL GENPASS 32
 "355ef3dd"
-
-> ACL GENPASS 5
+127.0.0.1:6379> ACL GENPASS 5
 "90"
 ```

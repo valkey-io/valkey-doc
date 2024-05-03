@@ -1,9 +1,12 @@
 Returns the set cardinality (number of elements) of the set stored at `key`.
 
-@examples
+## Examples
 
-```cli
-SADD myset "Hello"
-SADD myset "World"
-SCARD myset
+```valkey-cli
+127.0.0.1:6379> SADD myset "Hello"
+(integer) 1
+127.0.0.1:6379> SADD myset "World"
+(integer) 1
+127.0.0.1:6379> SCARD myset
+(integer) 2
 ```

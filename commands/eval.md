@@ -20,7 +20,7 @@ The number of evicted scripts can be viewed through `INFO`'s `evicted_scripts`.
 
 Please refer to the [Valkey Programmability](../topics/programmability.md) and [Introduction to Eval Scripts](../topics/eval-intro.md) for more information about Lua scripts.
 
-@examples
+## Examples
 
 The following example will run a script that returns the first argument that it gets.
 

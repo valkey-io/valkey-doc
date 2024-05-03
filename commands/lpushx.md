@@ -3,12 +3,18 @@ already exists and holds a list.
 In contrary to `LPUSH`, no operation will be performed when `key` does not yet
 exist.
 
-@examples
+## Examples
 
-```cli
-LPUSH mylist "World"
-LPUSHX mylist "Hello"
-LPUSHX myotherlist "Hello"
-LRANGE mylist 0 -1
-LRANGE myotherlist 0 -1
+```valkey-cli
+127.0.0.1:6379> LPUSH mylist "World"
+(integer) 1
+127.0.0.1:6379> LPUSHX mylist "Hello"
+(integer) 2
+127.0.0.1:6379> LPUSHX myotherlist "Hello"
+(integer) 0
+127.0.0.1:6379> LRANGE mylist 0 -1
+1) "Hello"
+2) "World"
+127.0.0.1:6379> LRANGE myotherlist 0 -1
+(empty array)
 ```

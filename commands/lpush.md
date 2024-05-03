@@ -10,10 +10,14 @@ leftmost element to the rightmost element.
 So for instance the command `LPUSH mylist a b c` will result into a list
 containing `c` as first element, `b` as second element and `a` as third element.
 
-@examples
+## Examples
 
-```cli
-LPUSH mylist "world"
-LPUSH mylist "hello"
-LRANGE mylist 0 -1
+```valkey-cli
+127.0.0.1:6379> LPUSH mylist "world"
+(integer) 1
+127.0.0.1:6379> LPUSH mylist "hello"
+(integer) 2
+127.0.0.1:6379> LRANGE mylist 0 -1
+1) "hello"
+2) "world"
 ```

@@ -14,14 +14,14 @@ popped from.
 
 [cl]: /commands/blpop
 
-@examples
+## Examples
 
-```
-valkey> DEL zset1 zset2
+```valkey-cli
+127.0.0.1:6379> DEL zset1 zset2
 (integer) 0
-valkey> ZADD zset1 0 a 1 b 2 c
+127.0.0.1:6379> ZADD zset1 0 a 1 b 2 c
 (integer) 3
-valkey> BZPOPMIN zset1 zset2 0
+127.0.0.1:6379> BZPOPMIN zset1 zset2 0
 1) "zset1"
 2) "a"
 3) "0"

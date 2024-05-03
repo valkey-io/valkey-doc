@@ -8,17 +8,28 @@ By default, the command calculates the cardinality of the intersection of all gi
 When provided with the optional `LIMIT` argument (which defaults to 0 and means unlimited), if the intersection cardinality reaches limit partway through the computation, the algorithm will exit and yield limit as the cardinality.
 Such implementation ensures a significant speedup for queries where the limit is lower than the actual intersection cardinality.
 
-@examples
+## Examples
 
-```cli
-SADD key1 "a"
-SADD key1 "b"
-SADD key1 "c"
-SADD key1 "d"
-SADD key2 "c"
-SADD key2 "d"
-SADD key2 "e"
-SINTER key1 key2
-SINTERCARD 2 key1 key2
-SINTERCARD 2 key1 key2 LIMIT 1
+```valkey-cli
+127.0.0.1:6379> SADD key1 "a"
+(integer) 1
+127.0.0.1:6379> SADD key1 "b"
+(integer) 1
+127.0.0.1:6379> SADD key1 "c"
+(integer) 1
+127.0.0.1:6379> SADD key1 "d"
+(integer) 1
+127.0.0.1:6379> SADD key2 "c"
+(integer) 1
+127.0.0.1:6379> SADD key2 "d"
+(integer) 1
+127.0.0.1:6379> SADD key2 "e"
+(integer) 1
+127.0.0.1:6379> SINTER key1 key2
+1) "c"
+2) "d"
+127.0.0.1:6379> SINTERCARD 2 key1 key2
+(integer) 2
+127.0.0.1:6379> SINTERCARD 2 key1 key2 LIMIT 1
+(integer) 1
 ```

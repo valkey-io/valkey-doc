@@ -14,14 +14,21 @@ Keys that do not exist are considered to be empty sets.
 With one of the keys being an empty set, the resulting set is also empty (since
 set intersection with an empty set always results in an empty set).
 
-@examples
+## Examples
 
-```cli
-SADD key1 "a"
-SADD key1 "b"
-SADD key1 "c"
-SADD key2 "c"
-SADD key2 "d"
-SADD key2 "e"
-SINTER key1 key2
+```valkey-cli
+127.0.0.1:6379> SADD key1 "a"
+(integer) 1
+127.0.0.1:6379> SADD key1 "b"
+(integer) 1
+127.0.0.1:6379> SADD key1 "c"
+(integer) 1
+127.0.0.1:6379> SADD key2 "c"
+(integer) 1
+127.0.0.1:6379> SADD key2 "d"
+(integer) 1
+127.0.0.1:6379> SADD key2 "e"
+(integer) 1
+127.0.0.1:6379> SINTER key1 key2
+1) "c"
 ```

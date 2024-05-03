@@ -9,10 +9,13 @@ The command returns the following valueis in case of errors:
 
 See also the `PTTL` command that returns the same information with milliseconds resolution.
 
-@examples
+## Examples
 
-```cli
-SET mykey "Hello"
-EXPIRE mykey 10
-TTL mykey
+```valkey-cli
+127.0.0.1:6379> SET mykey "Hello"
+OK
+127.0.0.1:6379> EXPIRE mykey 10
+(integer) 1
+127.0.0.1:6379> TTL mykey
+(integer) 10
 ```

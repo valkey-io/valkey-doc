@@ -3,10 +3,13 @@ yet exist.
 If `key` does not exist, a new key holding a hash is created.
 If `field` already exists, this operation has no effect.
 
-@examples
+## Examples
 
-```cli
-HSETNX myhash field "Hello"
-HSETNX myhash field "World"
-HGET myhash field
+```valkey-cli
+127.0.0.1:6379> HSETNX myhash field "Hello"
+(integer) 1
+127.0.0.1:6379> HSETNX myhash field "World"
+(integer) 0
+127.0.0.1:6379> HGET myhash field
+"Hello"
 ```

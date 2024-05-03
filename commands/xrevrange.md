@@ -14,14 +14,25 @@ enough to send:
 
     XREVRANGE somestream + - COUNT 1
 
-@examples
+## Examples
 
-```cli
-XADD writers * name Virginia surname Woolf
-XADD writers * name Jane surname Austen
-XADD writers * name Toni surname Morrison
-XADD writers * name Agatha surname Christie
-XADD writers * name Ngozi surname Adichie
-XLEN writers
-XREVRANGE writers + - COUNT 1
+```valkey-cli
+127.0.0.1:6379> XADD writers * name Virginia surname Woolf
+"1714701492147-0"
+127.0.0.1:6379> XADD writers * name Jane surname Austen
+"1714701492157-0"
+127.0.0.1:6379> XADD writers * name Toni surname Morrison
+"1714701492167-0"
+127.0.0.1:6379> XADD writers * name Agatha surname Christie
+"1714701492177-0"
+127.0.0.1:6379> XADD writers * name Ngozi surname Adichie
+"1714701492187-0"
+127.0.0.1:6379> XLEN writers
+(integer) 5
+127.0.0.1:6379> XREVRANGE writers + - COUNT 1
+1) 1) "1714701492187-0"
+   2) 1) "name"
+      2) "Ngozi"
+      3) "surname"
+      4) "Adichie"
 ```

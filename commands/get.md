@@ -3,12 +3,15 @@ If the key does not exist the special value `nil` is returned.
 An error is returned if the value stored at `key` is not a string, because `GET`
 only handles string values.
 
-@examples
+## Examples
 
-```cli
-GET nonexisting
-SET mykey "Hello"
-GET mykey
+```valkey-cli
+127.0.0.1:6379> GET nonexisting
+(nil)
+127.0.0.1:6379> SET mykey "Hello"
+OK
+127.0.0.1:6379> GET mykey
+"Hello"
 ```
 
 ### Code examples

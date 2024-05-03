@@ -2,9 +2,9 @@ Return the username the current connection is authenticated with.
 New connections are authenticated with the "default" user. They
 can change user using `AUTH`.
 
-@examples
+## Examples
 
-```
-> ACL WHOAMI
+```valkey-cli
+127.0.0.1:6379> ACL WHOAMI
 "default"
 ```

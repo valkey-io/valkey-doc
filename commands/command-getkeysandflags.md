@@ -8,10 +8,23 @@ You can use `COMMAND GETKEYS` or `COMMAND GETKEYSANDFLAGS` to discover key names
 
 Refer to [key specifications](../topics/key-specs.md#logical-operation-flags) for information about the meaning of the key flags.
 
-@examples
+## Examples
 
-```cli
-COMMAND GETKEYS MSET a b c d e f
-COMMAND GETKEYS EVAL "not consulted" 3 key1 key2 key3 arg1 arg2 arg3 argN
-COMMAND GETKEYSANDFLAGS LMOVE mylist1 mylist2 left left
+```valkey-cli
+127.0.0.1:6379> COMMAND GETKEYS MSET a b c d e f
+1) "a"
+2) "c"
+3) "e"
+127.0.0.1:6379> COMMAND GETKEYS EVAL "not consulted" 3 key1 key2 key3 arg1 arg2 arg3 argN
+1) "key1"
+2) "key2"
+3) "key3"
+127.0.0.1:6379> COMMAND GETKEYSANDFLAGS LMOVE mylist1 mylist2 left left
+1) 1) "mylist1"
+   2) 1) RW
+      2) access
+      3) delete
+2) 1) "mylist2"
+   2) 1) RW
+      2) insert
 ```

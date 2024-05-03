@@ -17,13 +17,16 @@ The `SET` command supports a set of options that modify its behavior:
 
 Note: Since the `SET` command options can replace `SETNX`, `SETEX`, `PSETEX`, `GETSET`, it is possible that in future versions of Valkey these commands will be deprecated and finally removed.
 
-@examples
+## Examples
 
-```cli
-SET mykey "Hello"
-GET mykey
-
-SET anotherkey "will expire in a minute" EX 60
+```valkey-cli
+127.0.0.1:6379> SET mykey "Hello"
+OK
+127.0.0.1:6379> GET mykey
+"Hello"
+127.0.0.1:6379> 
+127.0.0.1:6379> SET anotherkey "will expire in a minute" EX 60
+OK
 ```
 
 ### Code examples

@@ -1,9 +1,12 @@
 Returns if `member` is a member of the set stored at `key`.
 
-@examples
+## Examples
 
-```cli
-SADD myset "one"
-SISMEMBER myset "one"
-SISMEMBER myset "two"
+```valkey-cli
+127.0.0.1:6379> SADD myset "one"
+(integer) 1
+127.0.0.1:6379> SISMEMBER myset "one"
+(integer) 1
+127.0.0.1:6379> SISMEMBER myset "two"
+(integer) 0
 ```

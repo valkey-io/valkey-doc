@@ -37,7 +37,7 @@ write command was executed in the context of a given client. When `WAIT` is
 called Valkey checks if the specified number of replicas already acknowledged
 this offset or a greater one.
 
-@examples
+## Examples
 
 ```
 > SET foo bar

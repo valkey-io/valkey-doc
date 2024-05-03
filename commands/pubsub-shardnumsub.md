@@ -4,7 +4,7 @@ Note that it is valid to call this command without channels, in this case it wil
 
 Cluster note: in a Valkey Cluster, `PUBSUB`'s replies in a cluster only report information from the node's Pub/Sub context, rather than the entire cluster.
 
-@examples
+## Examples
 
 ```
 > PUBSUB SHARDNUMSUB orders

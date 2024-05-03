@@ -4,9 +4,9 @@ removed from the system, this is the default user that every new connection
 is authenticated with. The list of users may include usernames that do not
 exist, in such case no operation is performed for the non existing users.
 
-@examples
+## Examples
 
-```
-> ACL DELUSER antirez
-1
+```valkey-cli
+127.0.0.1:6379> ACL DELUSER antirez
+(integer) 1
 ```

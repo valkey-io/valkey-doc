@@ -9,14 +9,14 @@ Note: This description of command rules reflects the user's effective permission
 
 Selectors are listed in the order they were applied to the user, and include information about commands, key patterns, and channel patterns.
 
-@examples
+## Examples
 
 Here's an example configuration for a user
 
-```
-> ACL SETUSER sample on nopass +GET allkeys &* (+SET ~key2)
+```valkey-cli
+127.0.0.1:6379> ACL SETUSER sample on nopass +GET allkeys &* (+SET ~key2)
 "OK"
-> ACL GETUSER sample
+127.0.0.1:6379> ACL GETUSER sample
 1) "flags"
 2) 1) "on"
    2) "allkeys"

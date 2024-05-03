@@ -3,10 +3,15 @@ For every key that does not hold a string value or does not exist, the special
 value `nil` is returned.
 Because of this, the operation never fails.
 
-@examples
+## Examples
 
-```cli
-SET key1 "Hello"
-SET key2 "World"
-MGET key1 key2 nonexisting
+```valkey-cli
+127.0.0.1:6379> SET key1 "Hello"
+OK
+127.0.0.1:6379> SET key2 "World"
+OK
+127.0.0.1:6379> MGET key1 key2 nonexisting
+1) "Hello"
+2) "World"
+3) (nil)
 ```

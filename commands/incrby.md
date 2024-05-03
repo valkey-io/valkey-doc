@@ -6,9 +6,11 @@ This operation is limited to 64 bit signed integers.
 
 See `INCR` for extra information on increment/decrement operations.
 
-@examples
+## Examples
 
-```cli
-SET mykey "10"
-INCRBY mykey 5
+```valkey-cli
+127.0.0.1:6379> SET mykey "10"
+OK
+127.0.0.1:6379> INCRBY mykey 5
+(integer) 15
 ```
