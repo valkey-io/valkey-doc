@@ -101,7 +101,6 @@ Examples:
 * The `MSET` command has a _range_ of _-1_, _2_ and _0_.
 * The `XREAD` command has a _range_ of _-1_, _1_ and _2_.
 * The `ZUNION` command has a _start_search_ type _index_ with the value _1_, and `find_keys` of type _keynum_ with values of _0_, _1_ and _1_.
-* The [`AI.DAGRUN`](https://oss.redislabs.com/redisai/master/commands/#aidagrun) command has a _start_search_ of type _keyword_ with values of _"LOAD"_ and _1_, and `find_keys` of type _keynum_ with values of _0_, _1_ and _1_.
 
 **Note:**
 this isn't a perfect solution as the module writers can come up with anything.
