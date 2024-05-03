@@ -21,8 +21,8 @@ For more information please refer to the [Valkey Programmability](../topics/prog
 The following example will create a library named `mylib` with a single function, `myfunc`, that returns the first argument it gets.
 
 ```
-valkey> FUNCTION LOAD "#!lua name=mylib \n server.register_function('myfunc', function(keys, args) return args[1] end)"
+127.0.0.1:6379> FUNCTION LOAD "#!lua name=mylib \n server.register_function('myfunc', function(keys, args) return args[1] end)"
 "mylib"
-valkey> FCALL myfunc 0 hello
+127.0.0.1:6379> FCALL myfunc 0 hello
 "hello"
 ```

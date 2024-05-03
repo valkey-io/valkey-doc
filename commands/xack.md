@@ -17,6 +17,6 @@ Valkey server.
 ## Examples
 
 ```
-valkey> XACK mystream mygroup 1526569495631-0
+127.0.0.1:6379> XACK mystream mygroup 1526569495631-0
 (integer) 1
 ```

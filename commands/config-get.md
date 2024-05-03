@@ -10,7 +10,7 @@ of key-value pairs.
 Example:
 
 ```
-valkey> config get *max-*-entries* maxmemory
+127.0.0.1:6379> config get *max-*-entries* maxmemory
  1) "maxmemory"
  2) "0"
  3) "hash-max-listpack-entries"
