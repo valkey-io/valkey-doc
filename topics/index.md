@@ -26,7 +26,7 @@ Programming with Valkey
 * [Valkey as an LRU cache](lru-cache.md): How to configure Valkey as a cache with a fixed amount of memory and automatic eviction of keys.
 * [Transactions](transactions.md): Valkey's approach to atomic transactions.
 * [Client side caching](client-side-caching.md): How a client can be notified by the server when a key has changed.
-* [Redis keyspace notifications](notifications.md): Get notifications of keyspace events via Pub/Sub.
+* [Keyspace notifications](notifications.md): Get notifications of keyspace events via Pub/Sub.
 * [Protocol specification](protocol.md): The client-server protocol, for client authors.
 
 Server-side scripting in Valkey
@@ -49,10 +49,10 @@ Administration
 * [Security](security.md): An overview of Valkey's security.
 * [Access Control Lists](acl.md): ACLs make it possible to allow users to run only selected commands and access only specific key patterns.
 * [Encryption](encryption.md): How to use TLS for communication.
-* [Signals Handling](signals.md): How Redis handles signals.
-* [Connections Handling](clients.md): How Redis handles clients connections.
-* [Sentinel](sentinel.md): Valkey Sentinel is one of the official high availability solutions for Valkey.
-* [Releases](releases.md): Redis development cycle and version numbering.
+* [Signals Handling](signals.md): How Valkey handles signals.
+* [Connections Handling](clients.md): How Valkey handles clients connections.
+* [Sentinel](sentinel.md): Valkey Sentinel is one of the official high availability deployment modes.
+* [Releases](releases.md): Valkey's development cycle and version numbering.
 
 Valkey Cluster
 ---
@@ -70,17 +70,17 @@ Valkey modules API
 
 Performance
 ---
-* [Latency monitoring](latency-monitor.md): Redis integrated latency monitoring and reporting capabilities are helpful to tune Redis instances for low latency workloads.
-* [Benchmarks](benchmarks.md): See how fast Redis is in different platforms.
-* [Redis on-CPU profiling and tracing](performance-on-cpu.md): See how to perform on-CPU resource bottlenecks analysis in Redis.
+* [Latency monitoring](latency-monitor.md): Integrated latency monitoring and reporting help tuning for low latency.
+* [valkey-benchmark](benchmark.md): The benchmarking tool shipped with Valkey.
+* [On-CPU profiling and tracing](performance-on-cpu.md): How to find on-CPU resource bottlenecks.
 
 Tutorials & FAQ
 ---
 
 * [Mass insertion of data](mass-insertion.md): How to add a big amount of data to a Valkey instance in a short time.
-* [Distributed locks](distlock.md): Implementing a distributed lock manager with Redis.
-* [Creating secondary indexes with Redis](indexing.md): Use Redis data structures to create secondary indexes, composed indexes and traverse graphs.
-* [Redis on ARM and Raspberry Pi](ARM.md): ARM and the Raspberry Pi are supported platforms. This page contains general information and benchmarks.
+* [Distributed locks](distlock.md): Implementing a distributed lock manager.
+* [Secondary indexes](indexing.md): How to simulate secondary indexes, composed indexes and traverse graphs using various data structures.
+* [ARM and Raspberry Pi](ARM.md): ARM and the Raspberry Pi are supported platforms. This page contains general information and benchmarks.
 * [Writing a simple Twitter clone with PHP and Valkey](twitter-clone.md)
 * [Troubleshooting](problems.md): Problems? Bugs? High latency? Other issues? Use our problems troubleshooting page as a starting point to find more information.
 * [FAQ](faq.md): Frequently asked questions.
