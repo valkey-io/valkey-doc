@@ -4,7 +4,7 @@ can change user using `AUTH`.
 
 ## Examples
 
-```
-> ACL WHOAMI
+```valkey-cli
+127.0.0.1:6379> ACL WHOAMI
 "default"
 ```

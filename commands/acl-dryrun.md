@@ -3,11 +3,11 @@ This command can be used to test the permissions of a given user without having 
 
 ## Examples
 
-```
-> ACL SETUSER VIRGINIA +SET ~*
+```valkey-cli
+127.0.0.1:6379> ACL SETUSER VIRGINIA +SET ~*
 "OK"
-> ACL DRYRUN VIRGINIA SET foo bar
+127.0.0.1:6379> ACL DRYRUN VIRGINIA SET foo bar
 "OK"
-> ACL DRYRUN VIRGINIA GET foo
+127.0.0.1:6379> ACL DRYRUN VIRGINIA GET foo
 "User VIRGINIA has no permissions to run the 'get' command"
 ```

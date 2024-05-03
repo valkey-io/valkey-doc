@@ -36,10 +36,12 @@ it had previously defined rules associated, we can use the special rule
 
 After resetting a user, its ACL rules revert to the default: inactive, passwordless, can't execute any command nor access any key or channel:
 
-    > ACL SETUSER antirez reset
-    +OK
-    > ACL LIST
-    1) "user antirez off -@all"
+```valkey-cli
+127.0.0.1:6379> ACL SETUSER antirez reset
+OK
+127.0.0.1:6379> ACL LIST
+1) "user antirez off -@all"
+```
 
 ACL rules are either words like "on", "off", "reset", "allkeys", or are
 special rules that start with a special character, and are followed by
@@ -86,10 +88,9 @@ This is a list of all the supported Valkey ACL rules:
 
 ## Examples
 
-```
-> ACL SETUSER alan allkeys +@string +@set -SADD >alanpassword
-+OK
-
-> ACL SETUSER antirez heeyyyy
+```valkey-cli
+127.0.0.1:6379> ACL SETUSER alan allkeys +@string +@set -SADD >alanpassword
+OK
+127.0.0.1:6379> ACL SETUSER antirez heeyyyy
 (error) ERR Error in ACL SETUSER modifier 'heeyyyy': Syntax error
 ```

@@ -8,10 +8,12 @@ sure to have an *all or nothing* behavior, that is:
 
 ## Examples
 
+```valkey-cli
+127.0.0.1:6379> ACL LOAD
+OK
 ```
-> ACL LOAD
-+OK
 
-> ACL LOAD
--ERR /tmp/foo:1: Unknown command or category name in ACL...
+```valkey-cli
+127.0.0.1:6379> ACL LOAD
+(error) ERR /tmp/foo:1: Unknown command or category name in ACL...
 ```

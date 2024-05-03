@@ -3,8 +3,8 @@ users in the Valkey ACL system.
 
 ## Examples
 
-```
-> ACL USERS
+```valkey-cli
+127.0.0.1:6379> ACL USERS
 1) "anna"
 2) "antirez"
 3) "default"
