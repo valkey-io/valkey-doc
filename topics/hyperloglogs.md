@@ -39,18 +39,18 @@ same:
 * Every time you see a new element, you add it to the count with `PFADD`.
 * When you want to retrieve the current approximation of unique elements added using the `PFADD` command, you can use the `PFCOUNT` command. If you need to merge two different HLLs, the `PFMERGE` command is available. Since HLLs provide approximate counts of unique elements, the result of the merge will give you an approximation of the number of unique elements across both source HLLs.
 
-{{< clients-example hll_tutorial pfadd >}}
-> PFADD bikes Hyperion Deimos Phoebe Quaoar
+```valkey-cli
+127.0.0.1:6379> PFADD bikes Hyperion Deimos Phoebe Quaoar
 (integer) 1
-> PFCOUNT bikes
+127.0.0.1:6379> PFCOUNT bikes
 (integer) 4
-> PFADD commuter_bikes Salacia Mimas Quaoar
+127.0.0.1:6379> PFADD commuter_bikes Salacia Mimas Quaoar
 (integer) 1
-> PFMERGE all_bikes bikes commuter_bikes
+127.0.0.1:6379> PFMERGE all_bikes bikes commuter_bikes
 OK
-> PFCOUNT all_bikes
+127.0.0.1:6379> PFCOUNT all_bikes
 (integer) 6
-{{< /clients-example >}}
+```
 
 Some examples of use cases for this data structure is counting unique queries
 performed by users in a search form every day, number of unique visitors to a web page and other similar cases.

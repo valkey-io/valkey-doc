@@ -22,9 +22,9 @@ See the [installation guides](/docs/install/install-redis/) to install Valkey on
 
 The first step is to connect to Valkey. You can find further details about the connection options in this documentation site's [connection section](/docs/connect/). The following example shows how to connect to a Valkey server that runs on localhost (`-h 127.0.0.1`) and listens on the default port (`-p 6379`): 
 
-{{< clients-example search_quickstart connect >}}
-> valkey-cli -h 127.0.0.1 -p 6379
-{{< /clients-example>}}
+```sh
+$ valkey-cli -h 127.0.0.1 -p 6379
+```
 
 ## Store and retrieve data
 
@@ -32,21 +32,23 @@ Valkey stands for Remote Dictionary Server. You can use the same data types as i
 
 Similar to byte arrays, Strings store sequences of bytes, including text, serialized objects, counter values, and binary arrays. The following example shows you how to set and get a string value:
 
-{{< clients-example set_and_get >}}
-SET bike:1 "Process 134"
-GET bike:1
-{{< /clients-example >}}
+```valkey-cli
+127.0.0.1:6379> SET bike:1 "Process 134"
+OK
+127.0.0.1:6379> GET bike:1
+"Process 134"
+```
 
 Hashes are the equivalent of dictionaries (dicts or hash maps). Among other things, you can use hashes to represent plain objects and to store groupings of counters. The following example explains how to set and access field values of an object:
 
-{{< clients-example hash_tutorial set_get_all >}}
-> HSET bike:1 model Deimos brand Ergonom type 'Enduro bikes' price 4972
+```valkey-cli
+127.0.0.1:6379> HSET bike:1 model Deimos brand Ergonom type 'Enduro bikes' price 4972
 (integer) 4
-> HGET bike:1 model
+127.0.0.1:6379> HGET bike:1 model
 "Deimos"
-> HGET bike:1 price
+127.0.0.1:6379> HGET bike:1 price
 "4972"
-> HGETALL bike:1
+127.0.0.1:6379> HGETALL bike:1
 1) "model"
 2) "Deimos"
 3) "brand"
@@ -55,7 +57,7 @@ Hashes are the equivalent of dictionaries (dicts or hash maps). Among other thin
 6) "Enduro bikes"
 7) "price"
 8) "4972"
-{{< /clients-example >}}
+```
 
 You can get a complete overview of available data types in this documentation site's [data types section](/docs/data-types/). Each data type has commands allowing you to manipulate or retrieve data. The [commands reference](../commands/) provides a sophisticated explanation.
 
@@ -63,8 +65,14 @@ You can get a complete overview of available data types in this documentation si
 
 Each item within Valkey has a unique key. All items live within the Valkey [keyspace](keyspace.md). You can scan the Valkey keyspace via the [SCAN command](../commands/scan.md). Here is an example that scans for the first 100 keys that have the prefix `bike:`:
 
-{{< clients-example scan_example >}}
-SCAN 0 MATCH "bike:*" COUNT 100
-{{< /clients-example >}}
+```valkey-cli
+127.0.0.1:6379> SCAN 0 MATCH "bike:*" COUNT 100
+1) "0"
+2) 1) "bike:4"
+   2) "bike:3"
+   3) "bike:5"
+   4) "bike:1"
+   5) "bike:2"
+```
 
 [SCAN](../commands/scan.md) returns a cursor position, allowing you to scan iteratively for the next batch of keys until you reach the cursor value 0.

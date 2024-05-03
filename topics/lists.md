@@ -35,60 +35,60 @@ See the [complete series of list commands](../commands/?group=list).
 ## Examples
 
 * Treat a list like a queue (first in, first out):
-{{< clients-example list_tutorial queue >}}
-> LPUSH bikes:repairs bike:1
+```valkey-cli
+127.0.0.1:6379> LPUSH bikes:repairs bike:1
 (integer) 1
-> LPUSH bikes:repairs bike:2
+127.0.0.1:6379> LPUSH bikes:repairs bike:2
 (integer) 2
-> RPOP bikes:repairs
+127.0.0.1:6379> RPOP bikes:repairs
 "bike:1"
-> RPOP bikes:repairs
+127.0.0.1:6379> RPOP bikes:repairs
 "bike:2"
-{{< /clients-example >}}
+```
 
 * Treat a list like a stack (first in, last out):
-{{< clients-example list_tutorial stack >}}
-> LPUSH bikes:repairs bike:1
+```valkey-cli
+127.0.0.1:6379> LPUSH bikes:repairs bike:1
 (integer) 1
-> LPUSH bikes:repairs bike:2
+127.0.0.1:6379> LPUSH bikes:repairs bike:2
 (integer) 2
-> LPOP bikes:repairs
+127.0.0.1:6379> LPOP bikes:repairs
 "bike:2"
-> LPOP bikes:repairs
+127.0.0.1:6379> LPOP bikes:repairs
 "bike:1"
-{{< /clients-example >}}
+```
 
 * Check the length of a list:
-{{< clients-example list_tutorial llen >}}
-> LLEN bikes:repairs
+```valkey-cli
+127.0.0.1:6379> LLEN bikes:repairs
 (integer) 0
-{{< /clients-example >}}
+```
 
 * Atomically pop an element from one list and push to another:
-{{< clients-example list_tutorial lmove_lrange >}}
-> LPUSH bikes:repairs bike:1
+```valkey-cli
+127.0.0.1:6379> LPUSH bikes:repairs bike:1
 (integer) 1
-> LPUSH bikes:repairs bike:2
+127.0.0.1:6379> LPUSH bikes:repairs bike:2
 (integer) 2
-> LMOVE bikes:repairs bikes:finished LEFT LEFT
+127.0.0.1:6379> LMOVE bikes:repairs bikes:finished LEFT LEFT
 "bike:2"
-> LRANGE bikes:repairs 0 -1
+127.0.0.1:6379> LRANGE bikes:repairs 0 -1
 1) "bike:1"
-> LRANGE bikes:finished 0 -1
+127.0.0.1:6379> LRANGE bikes:finished 0 -1
 1) "bike:2"
-{{< /clients-example >}}
+```
 
 * To limit the length of a list you can call `LTRIM`:
-{{< clients-example list_tutorial ltrim.1 >}}
-> RPUSH bikes:repairs bike:1 bike:2 bike:3 bike:4 bike:5
+```valkey-cli
+127.0.0.1:6379> RPUSH bikes:repairs bike:1 bike:2 bike:3 bike:4 bike:5
 (integer) 5
-> LTRIM bikes:repairs 0 2
+127.0.0.1:6379> LTRIM bikes:repairs 0 2
 OK
-> LRANGE bikes:repairs 0 -1
+127.0.0.1:6379> LRANGE bikes:repairs 0 -1
 1) "bike:1"
 2) "bike:2"
 3) "bike:3"
-{{< /clients-example >}}
+```
 
 ### What are Lists?
 To explain the List data type it's better to start with a little bit of theory,
@@ -130,18 +130,18 @@ left (at the head), while the `RPUSH` command adds a new
 element into a list, on the right (at the tail). Finally the
 `LRANGE` command extracts ranges of elements from lists:
 
-{{< clients-example list_tutorial lpush_rpush >}}
-> RPUSH bikes:repairs bike:1
+```valkey-cli
+127.0.0.1:6379> RPUSH bikes:repairs bike:1
 (integer) 1
-> RPUSH bikes:repairs bike:2
+127.0.0.1:6379> RPUSH bikes:repairs bike:2
 (integer) 2
-> LPUSH bikes:repairs bike:important_bike
+127.0.0.1:6379> LPUSH bikes:repairs bike:important_bike
 (integer) 3
-> LRANGE bikes:repairs 0 -1
+127.0.0.1:6379> LRANGE bikes:repairs 0 -1
 1) "bike:important_bike"
 2) "bike:1"
 3) "bike:2"
-{{< /clients-example >}}
+```
 
 Note that `LRANGE` takes two indexes, the first and the last
 element of the range to return. Both the indexes can be negative, telling Valkey
@@ -154,17 +154,17 @@ the final `LPUSH` appended the element on the left.
 Both commands are *variadic commands*, meaning that you are free to push
 multiple elements into a list in a single call:
 
-{{< clients-example list_tutorial variadic >}}
-> RPUSH bikes:repairs bike:1 bike:2 bike:3
+```valkey-cli
+127.0.0.1:6379> RPUSH bikes:repairs bike:1 bike:2 bike:3
 (integer) 3
-> LPUSH bikes:repairs bike:important_bike bike:very_important_bike
-> LRANGE mylist 0 -1
+127.0.0.1:6379> LPUSH bikes:repairs bike:important_bike bike:very_important_bike
+127.0.0.1:6379> LRANGE mylist 0 -1
 1) "bike:very_important_bike"
 2) "bike:important_bike"
 3) "bike:1"
 4) "bike:2"
 5) "bike:3"
-{{< /clients-example >}}
+```
 
 An important operation defined on Lists is the ability to *pop elements*.
 Popping elements is the operation of both retrieving the element from the list,
@@ -174,18 +174,18 @@ of the list. We'll add three elements and pop three elements, so at the end of t
 sequence of commands the list is empty and there are no more elements to
 pop:
 
-{{< clients-example list_tutorial lpop_rpop >}}
-> RPUSH bikes:repairs bike:1 bike:2 bike:3
+```valkey-cli
+127.0.0.1:6379> RPUSH bikes:repairs bike:1 bike:2 bike:3
 (integer) 3
-> RPOP bikes:repairs
+127.0.0.1:6379> RPOP bikes:repairs
 "bike:3"
-> LPOP bikes:repairs
+127.0.0.1:6379> LPOP bikes:repairs
 "bike:1"
-> RPOP bikes:repairs
+127.0.0.1:6379> RPOP bikes:repairs
 "bike:2"
-> RPOP bikes:repairs
+127.0.0.1:6379> RPOP bikes:repairs
 (nil)
-{{< /clients-example >}}
+```
 
 Valkey returned a NULL value to signal that there are no elements in the
 list.
@@ -226,16 +226,16 @@ the elements outside the given range are removed.
 For example, if you're adding bikes on the end of a list of repairs, but only
 want to worry about the 3 that have been on the list the longest:
 
-{{< clients-example list_tutorial ltrim >}}
-> RPUSH bikes:repairs bike:1 bike:2 bike:3 bike:4 bike:5
+```valkey-cli
+127.0.0.1:6379> RPUSH bikes:repairs bike:1 bike:2 bike:3 bike:4 bike:5
 (integer) 5
-> LTRIM bikes:repairs 0 2
+127.0.0.1:6379> LTRIM bikes:repairs 0 2
 OK
-> LRANGE bikes:repairs 0 -1
+127.0.0.1:6379> LRANGE bikes:repairs 0 -1
 1) "bike:1"
 2) "bike:2"
 3) "bike:3"
-{{< /clients-example >}}
+```
 
 The above `LTRIM` command tells Valkey to keep just list elements from index
 0 to 2, everything else will be discarded. This allows for a very simple but
@@ -243,16 +243,16 @@ useful pattern: doing a List push operation + a List trim operation together
 to add a new element and discard elements exceeding a limit. Using 
 `LTRIM` with negative indexes can then be used to keep only the 3 most recently added:
 
-{{< clients-example list_tutorial ltrim_end_of_list >}}
-> RPUSH bikes:repairs bike:1 bike:2 bike:3 bike:4 bike:5
+```valkey-cli
+127.0.0.1:6379> RPUSH bikes:repairs bike:1 bike:2 bike:3 bike:4 bike:5
 (integer) 5
-> LTRIM bikes:repairs -3 -1
+127.0.0.1:6379> LTRIM bikes:repairs -3 -1
 OK
-> LRANGE bikes:repairs 0 -1
+127.0.0.1:6379> LRANGE bikes:repairs 0 -1
 1) "bike:3"
 2) "bike:4"
 3) "bike:5"
-{{< /clients-example >}}
+```
 
 The above combination adds new elements and keeps only the 3
 newest elements into the list. With `LRANGE` you can access the top items
@@ -291,19 +291,19 @@ timeout is reached.
 
 This is an example of a `BRPOP` call we could use in the worker:
 
-{{< clients-example list_tutorial brpop >}}
-> RPUSH bikes:repairs bike:1 bike:2
+```valkey-cli
+127.0.0.1:6379> RPUSH bikes:repairs bike:1 bike:2
 (integer) 2
-> BRPOP bikes:repairs 1
+127.0.0.1:6379> BRPOP bikes:repairs 1
 1) "bikes:repairs"
 2) "bike:2"
-> BRPOP bikes:repairs 1
+127.0.0.1:6379> BRPOP bikes:repairs 1
 1) "bikes:repairs"
 2) "bike:1"
-> BRPOP bikes:repairs 1
+127.0.0.1:6379> BRPOP bikes:repairs 1
 (nil)
 (2.01s)
-{{< /clients-example >}}
+```
 
 It means: "wait for elements in the list `bikes:repairs`, but return if after 1 second
 no element is available".
@@ -344,53 +344,53 @@ Basically we can summarize the behavior with three rules:
 
 Examples of rule 1:
 
-{{< clients-example list_tutorial rule_1 >}}
-> DEL new_bikes
+```valkey-cli
+127.0.0.1:6379> DEL new_bikes
 (integer) 0
-> LPUSH new_bikes bike:1 bike:2 bike:3
+127.0.0.1:6379> LPUSH new_bikes bike:1 bike:2 bike:3
 (integer) 3
-{{< /clients-example >}}
+```
 
 However we can't perform operations against the wrong type if the key exists:
 
-{{< clients-example list_tutorial rule_1.1 >}}
-> SET new_bikes bike:1
+```valkey-cli
+127.0.0.1:6379> SET new_bikes bike:1
 OK
-> TYPE new_bikes
+127.0.0.1:6379> TYPE new_bikes
 string
-> LPUSH new_bikes bike:2 bike:3
+127.0.0.1:6379> LPUSH new_bikes bike:2 bike:3
 (error) WRONGTYPE Operation against a key holding the wrong kind of value
-{{< /clients-example >}}
+```
 
 Example of rule 2:
 
-{{< clients-example list_tutorial rule_2 >}}
-> RPUSH bikes:repairs bike:1 bike:2 bike:3
+```valkey-cli
+127.0.0.1:6379> RPUSH bikes:repairs bike:1 bike:2 bike:3
 (integer) 3
-> EXISTS bikes:repairs
+127.0.0.1:6379> EXISTS bikes:repairs
 (integer) 1
-> LPOP bikes:repairs
+127.0.0.1:6379> LPOP bikes:repairs
 "bike:3"
-> LPOP bikes:repairs
+127.0.0.1:6379> LPOP bikes:repairs
 "bike:2"
-> LPOP bikes:repairs
+127.0.0.1:6379> LPOP bikes:repairs
 "bike:1"
-> EXISTS bikes:repairs
+127.0.0.1:6379> EXISTS bikes:repairs
 (integer) 0
-{{< /clients-example >}}
+```
 
 The key no longer exists after all the elements are popped.
 
 Example of rule 3:
 
-{{< clients-example list_tutorial rule_3 >}}
-> DEL bikes:repairs
+```valkey-cli
+127.0.0.1:6379> DEL bikes:repairs
 (integer) 0
-> LLEN bikes:repairs
+127.0.0.1:6379> LLEN bikes:repairs
 (integer) 0
-> LPOP bikes:repairs
+127.0.0.1:6379> LPOP bikes:repairs
 (nil)
-{{< /clients-example >}}
+```
 
 
 ## Limits

@@ -34,14 +34,14 @@ You can represent this scenario using a bitmap whose key references the current 
 
 * Rider 123 pings the server on January 1, 2024 within the 00:00 hour. You can then confirm that rider 123 pinged the server. You can also check to see if rider 456 has pinged the server for that same hour.
 
-{{< clients-example bitmap_tutorial ping >}}
-> SETBIT pings:2024-01-01-00:00 123 1
+```valkey-cli
+127.0.0.1:6379> SETBIT pings:2024-01-01-00:00 123 1
 (integer) 0
-> GETBIT pings:2024-01-01-00:00 123
-1
-> GETBIT pings:2024-01-01-00:00 456
-0
-{{< /clients-example >}}
+127.0.0.1:6379> GETBIT pings:2024-01-01-00:00 123
+(integer) 1
+127.0.0.1:6379> GETBIT pings:2024-01-01-00:00 456
+(integer) 0
+```
 
 
 ## Bit Operations
@@ -75,10 +75,10 @@ There are three commands operating on group of bits:
 Both `BITPOS` and `BITCOUNT` are able to operate with byte ranges of the
 string, instead of running for the whole length of the string. We can trivially see the number of bits that have been set in a bitmap.
 
-{{< clients-example bitmap_tutorial bitcount >}}
-> BITCOUNT pings:2024-01-01-00:00
+```valkey-cli
+127.0.0.1:6379> BITCOUNT pings:2024-01-01-00:00
 (integer) 1
-{{< /clients-example >}}
+```
 
 For example imagine you want to know the longest streak of daily visits of
 your web site users. You start counting days starting from zero, that is the

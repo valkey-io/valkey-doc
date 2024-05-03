@@ -35,18 +35,18 @@ See the [complete list of stream commands](../commands/?group=stream).
 ## Examples
 
 * When our racers pass a checkpoint, we add a stream entry for each racer that includes the racer's name, speed, position, and location ID:
-{{< clients-example stream_tutorial xadd >}}
-> XADD race:france * rider Castilla speed 30.2 position 1 location_id 1
+```valkey-cli
+127.0.0.1:6379> XADD race:france * rider Castilla speed 30.2 position 1 location_id 1
 "1692632086370-0"
-> XADD race:france * rider Norem speed 28.8 position 3 location_id 1
+127.0.0.1:6379> XADD race:france * rider Norem speed 28.8 position 3 location_id 1
 "1692632094485-0"
-> XADD race:france * rider Prickett speed 29.7 position 2 location_id 1
+127.0.0.1:6379> XADD race:france * rider Prickett speed 29.7 position 2 location_id 1
 "1692632102976-0"
-{{< /clients-example >}}
+```
 
 * Read two stream entries starting at ID `1692632086370-0`:
-{{< clients-example stream_tutorial xrange >}}
-> XRANGE race:france 1692632086370-0 + COUNT 2
+```valkey-cli
+127.0.0.1:6379> XRANGE race:france 1692632086370-0 + COUNT 2
 1) 1) "1692632086370-0"
    2) 1) "rider"
       2) "Castilla"
@@ -65,13 +65,13 @@ See the [complete list of stream commands](../commands/?group=stream).
       6) "3"
       7) "location_id"
       8) "1"
-{{< /clients-example >}}
+```
 
 * Read up to 100 new stream entries, starting at the end of the stream, and block for up to 300 ms if no entries are being written:
-{{< clients-example stream_tutorial xread_block >}}
-> XREAD COUNT 100 BLOCK 300 STREAMS race:france $
+```valkey-cli
+127.0.0.1:6379> XREAD COUNT 100 BLOCK 300 STREAMS race:france $
 (nil)
-{{< /clients-example >}}
+```
 
 ## Performance
 
@@ -90,19 +90,19 @@ Streams are an append-only data structure. The fundamental write command, called
 
 Each stream entry consists of one or more field-value pairs, somewhat like a dictionary or a Hash:
 
-{{< clients-example stream_tutorial xadd_2 >}}
-> XADD race:france * rider Castilla speed 29.9 position 1 location_id 2
+```valkey-cli
+127.0.0.1:6379> XADD race:france * rider Castilla speed 29.9 position 1 location_id 2
 "1692632147973-0"
-{{< /clients-example >}}
+```
 
 The above call to the `XADD` command adds an entry `rider: Castilla, speed: 29.9, position: 1, location_id: 2` to the stream at key `race:france`, using an auto-generated entry ID, which is the one returned by the command, specifically `1692632147973-0`. It gets as its first argument the key name `race:france`, the second argument is the entry ID that identifies every entry inside a stream. However, in this case, we passed `*` because we want the server to generate a new ID for us. Every new ID will be monotonically increasing, so in more simple terms, every new entry added will have a higher ID compared to all the past entries. Auto-generation of IDs by the server is almost always what you want, and the reasons for specifying an ID explicitly are very rare. We'll talk more about this later. The fact that each Stream entry has an ID is another similarity with log files, where line numbers, or the byte offset inside the file, can be used in order to identify a given entry. Returning back at our `XADD` example, after the key name and ID, the next arguments are the field-value pairs composing our stream entry.
 
 It is possible to get the number of items inside a Stream just using the `XLEN` command:
 
-{{< clients-example stream_tutorial xlen >}}
-> XLEN race:france
+```valkey-cli
+127.0.0.1:6379> XLEN race:france
 (integer) 4
-{{< /clients-example >}}
+```
 
 ### Entry IDs
 
@@ -118,26 +118,26 @@ The format of such IDs may look strange at first, and the gentle reader may wond
 
 If for some reason the user needs incremental IDs that are not related to time but are actually associated to another external system ID, as previously mentioned, the `XADD` command can take an explicit ID instead of the `*` wildcard ID that triggers auto-generation, like in the following examples:
 
-{{< clients-example stream_tutorial xadd_id >}}
-> XADD race:usa 0-1 racer Castilla
+```valkey-cli
+127.0.0.1:6379> XADD race:usa 0-1 racer Castilla
 0-1
-> XADD race:usa 0-2 racer Norem
+127.0.0.1:6379> XADD race:usa 0-2 racer Norem
 0-2
-{{< /clients-example >}}
+```
 
 Note that in this case, the minimum ID is 0-1 and that the command will not accept an ID equal or smaller than a previous one:
 
-{{< clients-example stream_tutorial xadd_bad_id >}}
-> XADD race:usa 0-1 racer Prickett
+```valkey-cli
+127.0.0.1:6379> XADD race:usa 0-1 racer Prickett
 (error) ERR The ID specified in XADD is equal or smaller than the target stream top item
-{{< /clients-example >}}
+```
 
 If you're running Redis OSS 7 or later, you can also provide an explicit ID consisting of the milliseconds part only. In this case, the sequence portion of the ID will be automatically generated. To do this, use the syntax below:
 
-{{< clients-example stream_tutorial xadd_7 >}}
-> XADD race:usa 0-* racer Prickett
+```valkey-cli
+127.0.0.1:6379> XADD race:usa 0-* racer Prickett
 0-3
-{{< /clients-example >}}
+```
 
 ## Getting data from Streams
 
@@ -153,8 +153,8 @@ Streams support all three of the query modes described above via different comma
 
 To query the stream by range we are only required to specify two IDs, *start* and *end*. The range returned will include the elements having start or end as ID, so the range is inclusive. The two special IDs `-` and `+` respectively mean the smallest and the greatest ID possible.
 
-{{< clients-example stream_tutorial xrange_all >}}
-> XRANGE race:france - +
+```valkey-cli
+127.0.0.1:6379> XRANGE race:france - +
 1) 1) "1692632086370-0"
    2) 1) "rider"
       2) "Castilla"
@@ -191,12 +191,12 @@ To query the stream by range we are only required to specify two IDs, *start* an
       6) "1"
       7) "location_id"
       8) "2"
-{{< /clients-example >}}
+```
 
 Each entry returned is an array of two items: the ID and the list of field-value pairs. We already said that the entry IDs have a relation with the time, because the part at the left of the `-` character is the Unix time in milliseconds of the local node that created the stream entry, at the moment the entry was created (however note that streams are replicated with fully specified `XADD` commands, so the replicas will have identical IDs to the master). This means that I could query a range of time using `XRANGE`. In order to do so, however, I may want to omit the sequence part of the ID: if omitted, in the start of the range it will be assumed to be 0, while in the end part it will be assumed to be the maximum sequence number available. This way, querying using just two milliseconds Unix times, we get all the entries that were generated in that range of time, in an inclusive way. For instance, if I want to query a two milliseconds period I could use:
 
-{{< clients-example stream_tutorial xrange_time >}}
-> XRANGE race:france 1692632086369 1692632086371
+```valkey-cli
+127.0.0.1:6379> XRANGE race:france 1692632086369 1692632086371
 1) 1) "1692632086370-0"
    2) 1) "rider"
       2) "Castilla"
@@ -206,12 +206,12 @@ Each entry returned is an array of two items: the ID and the list of field-value
       6) "1"
       7) "location_id"
       8) "1"
-{{< /clients-example >}}
+```
 
 I have only a single entry in this range. However in real data sets, I could query for ranges of hours, or there could be many items in just two milliseconds, and the result returned could be huge. For this reason, `XRANGE` supports an optional **COUNT** option at the end. By specifying a count, I can just get the first *N* items. If I want more, I can get the last ID returned, increment the sequence part by one, and query again. Let's see this in the following example. Let's assume that the stream `race:france` was populated with 4 items. To start my iteration, getting 2 items per command, I start with the full range, but with a count of 2.
 
-{{< clients-example stream_tutorial xrange_step_1 >}}
-> XRANGE race:france - + COUNT 2
+```valkey-cli
+127.0.0.1:6379> XRANGE race:france - + COUNT 2
 1) 1) "1692632086370-0"
    2) 1) "rider"
       2) "Castilla"
@@ -230,12 +230,12 @@ I have only a single entry in this range. However in real data sets, I could que
       6) "3"
       7) "location_id"
       8) "1"
-{{< /clients-example >}}
+```
 
 To continue the iteration with the next two items, I have to pick the last ID returned, that is `1692632094485-0`, and add the prefix `(` to it. The resulting exclusive range interval, that is `(1692632094485-0` in this case, can now be used as the new *start* argument for the next `XRANGE` call:
 
-{{< clients-example stream_tutorial xrange_step_2 >}}
-> XRANGE race:france (1692632094485-0 + COUNT 2
+```valkey-cli
+127.0.0.1:6379> XRANGE race:france (1692632094485-0 + COUNT 2
 1) 1) "1692632102976-0"
    2) 1) "rider"
       2) "Prickett"
@@ -254,21 +254,21 @@ To continue the iteration with the next two items, I have to pick the last ID re
       6) "1"
       7) "location_id"
       8) "2"
-{{< /clients-example >}}
+```
 
 Now that we've retrieved 4 items out of a stream that only had 4 entries in it, if we try to retrieve more items, we'll get an empty array:
 
-{{< clients-example stream_tutorial xrange_empty >}}
-> XRANGE race:france (1692632147973-0 + COUNT 2
+```valkey-cli
+127.0.0.1:6379> XRANGE race:france (1692632147973-0 + COUNT 2
 (empty array)
-{{< /clients-example >}}
+```
 
 Since `XRANGE` complexity is *O(log(N))* to seek, and then *O(M)* to return M elements, with a small count the command has a logarithmic time complexity, which means that each step of the iteration is fast. So `XRANGE` is also the de facto *streams iterator* and does not require an **XSCAN** command.
 
 The command `XREVRANGE` is the equivalent of `XRANGE` but returning the elements in inverted order, so a practical use for `XREVRANGE` is to check what is the last item in a Stream:
 
-{{< clients-example stream_tutorial xrevrange >}}
-> XREVRANGE race:france + - COUNT 1
+```valkey-cli
+127.0.0.1:6379> XREVRANGE race:france + - COUNT 1
 1) 1) "1692632147973-0"
    2) 1) "rider"
       2) "Castilla"
@@ -278,7 +278,7 @@ The command `XREVRANGE` is the equivalent of `XRANGE` but returning the elements
       6) "1"
       7) "location_id"
       8) "2"
-{{< /clients-example >}}
+```
 
 Note that the `XREVRANGE` command takes the *start* and *stop* arguments in reverse order.
 
@@ -292,8 +292,8 @@ When we do not want to access items by a range in a stream, usually what we want
 
 The command that provides the ability to listen for new messages arriving into a stream is called `XREAD`. It's a bit more complex than `XRANGE`, so we'll start showing simple forms, and later the whole command layout will be provided.
 
-{{< clients-example stream_tutorial xread >}}
-> XREAD COUNT 2 STREAMS race:france 0
+```valkey-cli
+127.0.0.1:6379> XREAD COUNT 2 STREAMS race:france 0
 1) 1) "race:france"
    2) 1) 1) "1692632086370-0"
          2) 1) "rider"
@@ -313,7 +313,7 @@ The command that provides the ability to listen for new messages arriving into a
             6) "3"
             7) "location_id"
             8) "1"
-{{< /clients-example >}}
+```
 
 The above is the non-blocking form of `XREAD`. Note that the **COUNT** option is not mandatory, in fact the only mandatory option of the command is the **STREAMS** option, that specifies a list of keys together with the corresponding maximum ID already seen for each stream by the calling consumer, so that the command will provide the client only with messages with an ID greater than the one we specified.
 
@@ -391,19 +391,19 @@ Now it's time to zoom in to see the fundamental consumer group commands. They ar
 
 Assuming I have a key `race:france` of type stream already existing, in order to create a consumer group I just need to do the following:
 
-{{< clients-example stream_tutorial xgroup_create >}}
-> XGROUP CREATE race:france france_riders $
+```valkey-cli
+127.0.0.1:6379> XGROUP CREATE race:france france_riders $
 OK
-{{< /clients-example >}}
+```
 
 As you can see in the command above when creating the consumer group we have to specify an ID, which in the example is just `$`. This is needed because the consumer group, among the other states, must have an idea about what message to serve next at the first consumer connecting, that is, what was the *last message ID* when the group was just created. If we provide `$` as we did, then only new messages arriving in the stream from now on will be provided to the consumers in the group. If we specify `0` instead the consumer group will consume *all* the messages in the stream history to start with. Of course, you can specify any other valid ID. What you know is that the consumer group will start delivering messages that are greater than the ID you specify. Because `$` means the current greatest ID in the stream, specifying `$` will have the effect of consuming only new messages.
 
 `XGROUP CREATE` also supports creating the stream automatically, if it doesn't exist, using the optional `MKSTREAM` subcommand as the last argument:
 
-{{< clients-example stream_tutorial xgroup_create_mkstream >}}
-> XGROUP CREATE race:italy italy_riders $ MKSTREAM
+```valkey-cli
+127.0.0.1:6379> XGROUP CREATE race:italy italy_riders $ MKSTREAM
 OK
-{{< /clients-example >}}
+```
 
 Now that the consumer group is created we can immediately try to read messages via the consumer group using the `XREADGROUP` command. We'll read from consumers, that we will call Alice and Bob, to see how the system will return different messages to Alice or Bob.
 
@@ -412,23 +412,23 @@ Now that the consumer group is created we can immediately try to read messages v
 We'll add riders to the race:italy stream and try reading something using the consumer group:
 Note: *here rider is the field name, and the name is the associated value. Remember that stream items are small dictionaries.*
 
-{{< clients-example stream_tutorial xgroup_read >}}
-> XADD race:italy * rider Castilla
+```valkey-cli
+127.0.0.1:6379> XADD race:italy * rider Castilla
 "1692632639151-0"
-> XADD race:italy * rider Royce
+127.0.0.1:6379> XADD race:italy * rider Royce
 "1692632647899-0"
-> XADD race:italy * rider Sam-Bodden
+127.0.0.1:6379> XADD race:italy * rider Sam-Bodden
 "1692632662819-0"
-> XADD race:italy * rider Prickett
+127.0.0.1:6379> XADD race:italy * rider Prickett
 "1692632670501-0"
-> XADD race:italy * rider Norem
+127.0.0.1:6379> XADD race:italy * rider Norem
 "1692632678249-0"
-> XREADGROUP GROUP italy_riders Alice COUNT 1 STREAMS race:italy >
+127.0.0.1:6379> XREADGROUP GROUP italy_riders Alice COUNT 1 STREAMS race:italy >
 1) 1) "race:italy"
    2) 1) 1) "1692632639151-0"
          2) 1) "rider"
             2) "Castilla"
-{{< /clients-example >}}
+```
 
 `XREADGROUP` replies are just like `XREAD` replies. Note however the `GROUP <group-name> <consumer-name>` provided above. It states that I want to read from the stream using the consumer group `mygroup` and I'm the consumer `Alice`. Every time a consumer performs an operation with a consumer group, it must specify its name, uniquely identifying this consumer inside the group.
 
@@ -441,30 +441,30 @@ This is almost always what you want, however it is also possible to specify a re
 
 We can test this behavior immediately specifying an ID of 0, without any **COUNT** option: we'll just see the only pending message, that is, the one about Castilla:
 
-{{< clients-example stream_tutorial xgroup_read_id >}}
-> XREADGROUP GROUP italy_riders Alice STREAMS race:italy 0
+```valkey-cli
+127.0.0.1:6379> XREADGROUP GROUP italy_riders Alice STREAMS race:italy 0
 1) 1) "race:italy"
    2) 1) 1) "1692632639151-0"
          2) 1) "rider"
             2) "Castilla"
-{{< /clients-example >}}
+```
 
 However, if we acknowledge the message as processed, it will no longer be part of the pending messages history, so the system will no longer report anything:
 
-{{< clients-example stream_tutorial xack >}}
-> XACK race:italy italy_riders 1692632639151-0
+```valkey-cli
+127.0.0.1:6379> XACK race:italy italy_riders 1692632639151-0
 (integer) 1
-> XREADGROUP GROUP italy_riders Alice STREAMS race:italy 0
+127.0.0.1:6379> XREADGROUP GROUP italy_riders Alice STREAMS race:italy 0
 1) 1) "race:italy"
    2) (empty array)
-{{< /clients-example >}}
+```
 
 Don't worry if you yet don't know how `XACK` works, the idea is just that processed messages are no longer part of the history that we can access.
 
 Now it's Bob's turn to read something:
 
-{{< clients-example stream_tutorial xgroup_read_bob >}}
-> XREADGROUP GROUP italy_riders Bob COUNT 2 STREAMS race:italy >
+```valkey-cli
+127.0.0.1:6379> XREADGROUP GROUP italy_riders Bob COUNT 2 STREAMS race:italy >
 1) 1) "race:italy"
    2) 1) 1) "1692632647899-0"
          2) 1) "rider"
@@ -472,7 +472,7 @@ Now it's Bob's turn to read something:
       2) 1) "1692632662819-0"
          2) 1) "rider"
             2) "Sam-Bodden"
-{{< /clients-example >}}
+```
 
 Bob asked for a maximum of two messages and is reading via the same group `mygroup`. So what happens is that Valkey reports just *new* messages. As you can see the "Castilla" message is not delivered, since it was already delivered to Alice, so Bob gets Royce and Sam-Bodden and so forth.
 
@@ -555,14 +555,14 @@ The first step of this process is just a command that provides observability of 
 This is a read-only command which is always safe to call and will not change ownership of any message.
 In its simplest form, the command is called with two arguments, which are the name of the stream and the name of the consumer group.
 
-{{< clients-example stream_tutorial xpending >}}
-> XPENDING race:italy italy_riders
+```valkey-cli
+127.0.0.1:6379> XPENDING race:italy italy_riders
 1) (integer) 2
 2) "1692632647899-0"
 3) "1692632662819-0"
 4) 1) 1) "Bob"
       2) "2"
-{{< /clients-example >}}
+```
 
 When called in this way, the command outputs the total number of pending messages in the consumer group (two in this case), the lower and higher message ID among the pending messages, and finally a list of consumers and the number of pending messages they have.
 We have only Bob with two pending messages because the single message that Alice requested was acknowledged using `XACK`.
@@ -575,8 +575,8 @@ XPENDING <key> <groupname> [[IDLE <min-idle-time>] <start-id> <end-id> <count> [
 
 By providing a start and end ID (that can be just `-` and `+` as in `XRANGE`) and a count to control the amount of information returned by the command, we are able to know more about the pending messages. The optional final argument, the consumer name, is used if we want to limit the output to just messages pending for a given consumer, but won't use this feature in the following example.
 
-{{< clients-example stream_tutorial xpending_plus_minus >}}
-> XPENDING race:italy italy_riders - + 10
+```valkey-cli
+127.0.0.1:6379> XPENDING race:italy italy_riders - + 10
 1) 1) "1692632647899-0"
    2) "Bob"
    3) (integer) 74642
@@ -585,19 +585,19 @@ By providing a start and end ID (that can be just `-` and `+` as in `XRANGE`) an
    2) "Bob"
    3) (integer) 74642
    4) (integer) 1
-{{< /clients-example >}}
+```
 
 Now we have the details for each message: the ID, the consumer name, the *idle time* in milliseconds, which is how many milliseconds have passed since the last time the message was delivered to some consumer, and finally the number of times that a given message was delivered.
 We have two messages from Bob, and they are idle for 60000+ milliseconds, about a minute.
 
 Note that nobody prevents us from checking what the first message content was by just using `XRANGE`.
 
-{{< clients-example stream_tutorial xrange_pending >}}
-> XRANGE race:italy 1692632647899-0 1692632647899-0
+```valkey-cli
+127.0.0.1:6379> XRANGE race:italy 1692632647899-0 1692632647899-0
 1) 1) "1692632647899-0"
    2) 1) "rider"
       2) "Royce"
-{{< /clients-example >}}
+```
 
 We have just to repeat the same ID twice in the arguments. Now that we have some ideas, Alice may decide that after 1 minute of not processing messages, Bob will probably not recover quickly, and it's time to *claim* such messages and resume the processing in place of Bob. To do so, we use the `XCLAIM` command.
 
@@ -618,12 +618,12 @@ However, as a side effect, claiming a message will reset its idle time and will 
 
 This is the result of the command execution:
 
-{{< clients-example stream_tutorial xclaim >}}
-> XCLAIM race:italy italy_riders Alice 60000 1692632647899-0
+```valkey-cli
+127.0.0.1:6379> XCLAIM race:italy italy_riders Alice 60000 1692632647899-0
 1) 1) "1692632647899-0"
    2) 1) "rider"
       2) "Royce"
-{{< /clients-example >}}
+```
 
 The message was successfully claimed by Alice, who can now process the message and acknowledge it, and move things forward even if the original consumer is not recovering.
 
@@ -646,24 +646,24 @@ XAUTOCLAIM <key> <group> <consumer> <min-idle-time> <start> [COUNT count] [JUSTI
 
 So, in the example above, I could have used automatic claiming to claim a single message like this:
 
-{{< clients-example stream_tutorial xautoclaim >}}
-> XAUTOCLAIM race:italy italy_riders Alice 60000 0-0 COUNT 1
+```valkey-cli
+127.0.0.1:6379> XAUTOCLAIM race:italy italy_riders Alice 60000 0-0 COUNT 1
 1) "0-0"
 2) 1) 1) "1692632662819-0"
       2) 1) "rider"
          2) "Sam-Bodden"
-{{< /clients-example >}}
+```
 
 Like `XCLAIM`, the command replies with an array of the claimed messages, but it also returns a stream ID that allows iterating the pending entries.
 The stream ID is a cursor, and I can use it in my next call to continue in claiming idle pending messages:
 
-{{< clients-example stream_tutorial xautoclaim_cursor >}}
-> XAUTOCLAIM race:italy italy_riders Lora 60000 (1692632662819-0 COUNT 1
+```valkey-cli
+127.0.0.1:6379> XAUTOCLAIM race:italy italy_riders Lora 60000 (1692632662819-0 COUNT 1
 1) "1692632662819-0"
 2) 1) 1) "1692632647899-0"
       2) 1) "rider"
          2) "Royce"
-{{< /clients-example >}}
+```
 
 When `XAUTOCLAIM` returns the "0-0" stream ID as a cursor, that means that it reached the end of the consumer group pending entries list.
 That doesn't mean that there are no new idle pending messages, so the process continues by calling `XAUTOCLAIM` from the beginning of the stream.
@@ -682,8 +682,8 @@ However we may want to do more than that, and the `XINFO` command is an observab
 
 This command uses subcommands in order to show different information about the status of the stream and its consumer groups. For instance **XINFO STREAM <key>** reports information about the stream itself.
 
-{{< clients-example stream_tutorial xinfo >}}
-> XINFO STREAM race:italy
+```valkey-cli
+127.0.0.1:6379> XINFO STREAM race:italy
  1) "length"
  2) (integer) 5
  3) "radix-tree-keys"
@@ -702,12 +702,12 @@ This command uses subcommands in order to show different information about the s
 14) 1) "1692632678249-0"
     2) 1) "rider"
        2) "Norem"
-{{< /clients-example >}}
+```
 
 The output shows information about how the stream is encoded internally, and also shows the first and last message in the stream. Another piece of information available is the number of consumer groups associated with this stream. We can dig further asking for more information about the consumer groups.
 
-{{< clients-example stream_tutorial xinfo_groups >}}
-> XINFO GROUPS race:italy
+```valkey-cli
+127.0.0.1:6379> XINFO GROUPS race:italy
 1) 1) "name"
    2) "italy_riders"
    3) "consumers"
@@ -716,14 +716,14 @@ The output shows information about how the stream is encoded internally, and als
    6) (integer) 2
    7) "last-delivered-id"
    8) "1692632662819-0"
-{{< /clients-example >}}
+```
 
 As you can see in this and in the previous output, the `XINFO` command outputs a sequence of field-value items. Because it is an observability command this allows the human user to immediately understand what information is reported, and allows the command to report more information in the future by adding more fields without breaking compatibility with older clients. Other commands that must be more bandwidth efficient, like `XPENDING`, just report the information without the field names.
 
 The output of the example above, where the **GROUPS** subcommand is used, should be clear observing the field names. We can check in more detail the state of a specific consumer group by checking the consumers that are registered in the group.
 
-{{< clients-example stream_tutorial xinfo_consumers >}}
-> XINFO CONSUMERS race:italy italy_riders
+```valkey-cli
+127.0.0.1:6379> XINFO CONSUMERS race:italy italy_riders
 1) 1) "name"
    2) "Alice"
    3) "pending"
@@ -742,7 +742,7 @@ The output of the example above, where the **GROUPS** subcommand is used, should
    4) (integer) 1
    5) "idle"
    6) (integer) 72241
-{{< /clients-example >}}
+```
 
 In case you do not remember the syntax of the command, just ask the command itself for help:
 
@@ -779,23 +779,23 @@ So basically Kafka partitions are more similar to using N different Valkey keys,
 
 Many applications do not want to collect data into a stream forever. Sometimes it is useful to have at maximum a given number of items inside a stream, other times once a given size is reached, it is useful to move data from Valkey to a storage which is not in memory and not as fast but suited to store the history for, potentially, decades to come. Streams have some support for this. One is the **MAXLEN** option of the `XADD` command. This option is very simple to use:
 
-{{< clients-example stream_tutorial maxlen >}}
-> XADD race:italy MAXLEN 2 * rider Jones
+```valkey-cli
+127.0.0.1:6379> XADD race:italy MAXLEN 2 * rider Jones
 "1692633189161-0"
-> XADD race:italy MAXLEN 2 * rider Wood
+127.0.0.1:6379> XADD race:italy MAXLEN 2 * rider Wood
 "1692633198206-0"
-> XADD race:italy MAXLEN 2 * rider Henshaw
+127.0.0.1:6379> XADD race:italy MAXLEN 2 * rider Henshaw
 "1692633208557-0"
-> XLEN race:italy
+127.0.0.1:6379> XLEN race:italy
 (integer) 2
-> XRANGE race:italy - +
+127.0.0.1:6379> XRANGE race:italy - +
 1) 1) "1692633198206-0"
    2) 1) "rider"
       2) "Wood"
 2) 1) "1692633208557-0"
    2) 1) "rider"
       2) "Henshaw"
-{{< /clients-example >}}
+```
 
 Using **MAXLEN** the old entries are automatically evicted when the specified length is reached, so that the stream is left at a constant size. There is currently no option to tell the stream to just retain items that are not older than a given period, because such command, in order to run consistently, would potentially block for a long time in order to evict items. Imagine for example what happens if there is an insertion spike, then a long pause, and another insertion, all with the same maximum time. The stream would block to evict the data that became too old during the pause. So it is up to the user to do some planning and understand what is the maximum stream length desired. Moreover, while the length of the stream is proportional to the memory used, trimming by time is less simple to control and anticipate: it depends on the insertion rate which often changes over time (and when it does not change, then to just trim by size is trivial).
 
@@ -809,17 +809,17 @@ The `~` argument between the **MAXLEN** option and the actual count means, I don
 
 There is also the `XTRIM` command, which performs something very similar to what the **MAXLEN** option does above, except that it can be run by itself:
 
-{{< clients-example stream_tutorial xtrim >}}
-> XTRIM race:italy MAXLEN 10
+```valkey-cli
+127.0.0.1:6379> XTRIM race:italy MAXLEN 10
 (integer) 0
-{{< /clients-example >}}
+```
 
 Or, as for the `XADD` option:
 
-{{< clients-example stream_tutorial xtrim2 >}}
-> XTRIM mystream MAXLEN ~ 10
+```valkey-cli
+127.0.0.1:6379> XTRIM mystream MAXLEN ~ 10
 (integer) 0
-{{< /clients-example >}}
+```
 
 However, `XTRIM` is designed to accept different trimming strategies. Another trimming strategy is **MINID**, that evicts entries with IDs lower than the one specified.
 
@@ -859,21 +859,21 @@ So when designing an application using Streams and consumer groups, make sure to
 
 Streams also have a special command for removing items from the middle of a stream, just by ID. Normally for an append only data structure this may look like an odd feature, but it is actually useful for applications involving, for instance, privacy regulations. The command is called `XDEL` and receives the name of the stream followed by the IDs to delete:
 
-{{< clients-example stream_tutorial xdel >}}
-> XRANGE race:italy - + COUNT 2
+```valkey-cli
+127.0.0.1:6379> XRANGE race:italy - + COUNT 2
 1) 1) "1692633198206-0"
    2) 1) "rider"
       2) "Wood"
 2) 1) "1692633208557-0"
    2) 1) "rider"
       2) "Henshaw"
-> XDEL race:italy 1692633208557-0
+127.0.0.1:6379> XDEL race:italy 1692633208557-0
 (integer) 1
-> XRANGE race:italy - + COUNT 2
+127.0.0.1:6379> XRANGE race:italy - + COUNT 2
 1) 1) "1692633198206-0"
    2) 1) "rider"
       2) "Wood"
-{{< /clients-example >}}
+```
 
 However in the current implementation, memory is not really reclaimed until a macro node is completely empty, so you should not abuse this feature.
 

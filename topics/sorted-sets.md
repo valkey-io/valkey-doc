@@ -31,14 +31,14 @@ represent sorted sets). They are ordered according to the following rule:
 
 Let's start with a simple example, we'll add all our racers and the score they got in the first race:
 
-{{< clients-example ss_tutorial zadd >}}
-> ZADD racer_scores 10 "Norem"
+```valkey-cli
+127.0.0.1:6379> ZADD racer_scores 10 "Norem"
 (integer) 1
-> ZADD racer_scores 12 "Castilla"
+127.0.0.1:6379> ZADD racer_scores 12 "Castilla"
 (integer) 1
-> ZADD racer_scores 8 "Sam-Bodden" 10 "Royce" 6 "Ford" 14 "Prickett"
+127.0.0.1:6379> ZADD racer_scores 8 "Sam-Bodden" 10 "Royce" 6 "Ford" 14 "Prickett"
 (integer) 4
-{{< /clients-example >}}
+```
 
 
 As you can see `ZADD` is similar to `SADD`, but takes one additional argument
@@ -55,30 +55,30 @@ every time we add an element Valkey performs an O(log(N)) operation. That's
 good, but when we ask for sorted elements Valkey does not have to do any work at
 all, it's already sorted. Note that the `ZRANGE` order is low to high, while the `ZREVRANGE` order is high to low:
 
-{{< clients-example ss_tutorial zrange >}}
-> ZRANGE racer_scores 0 -1
+```valkey-cli
+127.0.0.1:6379> ZRANGE racer_scores 0 -1
 1) "Ford"
 2) "Sam-Bodden"
 3) "Norem"
 4) "Royce"
 5) "Castilla"
 6) "Prickett"
-> ZREVRANGE racer_scores 0 -1
+127.0.0.1:6379> ZREVRANGE racer_scores 0 -1
 1) "Prickett"
 2) "Castilla"
 3) "Royce"
 4) "Norem"
 5) "Sam-Bodden"
 6) "Ford"
-{{< /clients-example >}}
+```
 
 Note: 0 and -1 means from element index 0 to the last element (-1 works
 here just as it does in the case of the `LRANGE` command).
 
 It is possible to return scores as well, using the `WITHSCORES` argument:
 
-{{< clients-example ss_tutorial zrange_withscores >}}
-> ZRANGE racer_scores 0 -1 withscores
+```valkey-cli
+127.0.0.1:6379> ZRANGE racer_scores 0 -1 withscores
  1) "Ford"
  2) "6"
  3) "Sam-Bodden"
@@ -91,7 +91,7 @@ It is possible to return scores as well, using the `WITHSCORES` argument:
 10) "12"
 11) "Prickett"
 12) "14"
-{{< /clients-example >}}
+```
 
 ### Operating on ranges
 
@@ -99,13 +99,13 @@ Sorted sets are more powerful than this. They can operate on ranges.
 Let's get all the racers with 10 or fewer points. We
 use the `ZRANGEBYSCORE` command to do it:
 
-{{< clients-example ss_tutorial zrangebyscore >}}
-> ZRANGEBYSCORE racer_scores -inf 10
+```valkey-cli
+127.0.0.1:6379> ZRANGEBYSCORE racer_scores -inf 10
 1) "Ford"
 2) "Sam-Bodden"
 3) "Norem"
 4) "Royce"
-{{< /clients-example >}}
+```
 
 We asked Valkey to return all the elements with a score between negative
 infinity and 10 (both extremes are included).
@@ -114,16 +114,16 @@ To remove an element we'd simply call `ZREM` with the racer's name.
 It's also possible to remove ranges of elements. Let's remove racer Castilla along with all
 the racers with strictly fewer than 10 points:
 
-{{< clients-example ss_tutorial zremrangebyscore >}}
-> ZREM racer_scores "Castilla"
+```valkey-cli
+127.0.0.1:6379> ZREM racer_scores "Castilla"
 (integer) 1
-> ZREMRANGEBYSCORE racer_scores -inf 9
+127.0.0.1:6379> ZREMRANGEBYSCORE racer_scores -inf 9
 (integer) 2
-> ZRANGE racer_scores 0 -1
+127.0.0.1:6379> ZRANGE racer_scores 0 -1
 1) "Norem"
 2) "Royce"
 3) "Prickett"
-{{< /clients-example >}}
+```
 
 `ZREMRANGEBYSCORE` is perhaps not the best command name,
 but it can be very useful, and returns the number of removed elements.
@@ -134,12 +134,12 @@ position of an element in the set of ordered elements.
 The `ZREVRANK` command is also available in order to get the rank, considering
 the elements sorted in a descending way.
 
-{{< clients-example ss_tutorial zrank >}}
-> ZRANK racer_scores "Norem"
+```valkey-cli
+127.0.0.1:6379> ZRANK racer_scores "Norem"
 (integer) 0
-> ZREVRANK racer_scores "Norem"
+127.0.0.1:6379> ZREVRANK racer_scores "Norem"
 (integer) 3
-{{< /clients-example >}}
+```
 
 ### Lexicographical scores
 
@@ -155,20 +155,20 @@ The main commands to operate with lexicographical ranges are `ZRANGEBYLEX`,
 For example, let's add again our list of famous hackers, but this time
 using a score of zero for all the elements. We'll see that because of the sorted sets ordering rules, they are already sorted lexicographically. Using `ZRANGEBYLEX` we can ask for lexicographical ranges:
 
-{{< clients-example ss_tutorial zadd_lex >}}
-> ZADD racer_scores 0 "Norem" 0 "Sam-Bodden" 0 "Royce" 0 "Castilla" 0 "Prickett" 0 "Ford"
+```valkey-cli
+127.0.0.1:6379> ZADD racer_scores 0 "Norem" 0 "Sam-Bodden" 0 "Royce" 0 "Castilla" 0 "Prickett" 0 "Ford"
 (integer) 3
-> ZRANGE racer_scores 0 -1
+127.0.0.1:6379> ZRANGE racer_scores 0 -1
 1) "Castilla"
 2) "Ford"
 3) "Norem"
 4) "Prickett"
 5) "Royce"
 6) "Sam-Bodden"
-> ZRANGEBYLEX racer_scores [A [L
+127.0.0.1:6379> ZRANGEBYLEX racer_scores [A [L
 1) "Castilla"
 2) "Ford"
-{{< /clients-example >}}
+```
 
 Ranges can be inclusive or exclusive (depending on the first character),
 also string infinite and minus infinite are specified respectively with
@@ -201,18 +201,18 @@ the #4932 best score here").
 ## Examples
 
 * There are two ways we can use a sorted set to represent a leaderboard. If we know a racer's new score, we can update it directly via the `ZADD` command. However, if we want to add points to an existing score, we can use the `ZINCRBY` command.
-{{< clients-example ss_tutorial leaderboard >}}
-> ZADD racer_scores 100 "Wood"
+```valkey-cli
+127.0.0.1:6379> ZADD racer_scores 100 "Wood"
 (integer) 1
-> ZADD racer_scores 100 "Henshaw"
+127.0.0.1:6379> ZADD racer_scores 100 "Henshaw"
 (integer) 1
-> ZADD racer_scores 150 "Henshaw"
+127.0.0.1:6379> ZADD racer_scores 150 "Henshaw"
 (integer) 0
-> ZINCRBY racer_scores 50 "Wood"
+127.0.0.1:6379> ZINCRBY racer_scores 50 "Wood"
 "150"
-> ZINCRBY racer_scores 50 "Henshaw"
+127.0.0.1:6379> ZINCRBY racer_scores 50 "Henshaw"
 "200"
-{{< /clients-example >}}
+```
 
 You'll see that `ZADD` returns 0 when the member already exists (the score is updated), while `ZINCRBY` returns the new score. The score for racer Henshaw went from 100, was changed to 150 with no regard for what score was there before, and then was incremented by 50 to 200.
 
