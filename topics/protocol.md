@@ -26,10 +26,9 @@ RESP is binary-safe and uses prefixed length to transfer bulk data so it does no
 
 RESP is the protocol you should implement in your Valkey client.
 
-{{% alert title="Note" color="info" %}}
+**Note:**
 The protocol outlined here is used only for client-server communication.
 [Valkey Cluster](cluster-spec.md) uses a different binary protocol for exchanging messages between nodes.
-{{% /alert %}}
 
 ## RESP versions
 Support for the first version of the RESP protocol was introduced in Redis OSS 1.2.
@@ -302,10 +301,9 @@ The above encodes a two-element array.
 The first element is an array that, in turn, contains three integers (1, 2, 3).
 The second element is another array containing a simple string and an error.
 
-{{% alert title="Multi bulk reply" color="info" %}}
+**Note:**
 In some places, the RESP Array type may be referred to as _multi bulk_.
 The two are the same.
-{{% /alert %}}
 
 <a name="nil-array-reply"></a>
 
@@ -351,12 +349,10 @@ Here's Null's raw RESP encoding:
 
     _\r\n
 
-{{% alert title="Null Bulk String, Null Arrays and Nulls" color="info" %}}
+**Note:**
 Due to historical reasons, RESP2 features two specially crafted values for representing null values of bulk strings and arrays.
 This duality has always been a redundancy that added zero semantical value to the protocol itself.
-
 The null type, introduced in RESP3, aims to fix this wrong.
-{{% /alert %}}
 
 <a name="boolean-reply">
 
@@ -514,12 +510,11 @@ Both map keys and values can be any of RESP's types.
 Valkey clients should return the idiomatic dictionary type that their language provides.
 However, low-level programming languages (such as C, for example) will likely return an array along with type information that indicates to the caller that it is a dictionary.
 
-{{% alert title="Map pattern in RESP2" color="info" %}}
+**Note:**
 RESP2 doesn't have a map type.
 A map in RESP2 is represented by a flat array containing the keys and the values.
 The first element is a key, followed by the corresponding value, then the next key and so on, like this:
 `key1, value1, key2, value2, ...`.
-{{% /alert %}}
 
 <a name="set-reply"></a>
 

@@ -68,11 +68,8 @@ This application answers these questions:
 - How many unique users have played this song? 
 - How many unique users have viewed this video? 
 
-{{% alert title="Note" color="warning" %}}
- 
+**Note:**
 Storing the IP address or any other kind of personal identifier is against the law in some countries, which makes it impossible to get unique visitor statistics on your website.
-
-{{% /alert %}}
 
 One HyperLogLog is created per page (video/song) per period, and every IP/identifier is added to it on every visit.
 
