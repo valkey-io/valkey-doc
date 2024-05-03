@@ -10,26 +10,26 @@ aliases:
 
 Client-side caching is a technique used to create high performance services.
 It exploits the memory available on application servers, servers that are
-usually distinct computers compared to the database nodes, to store some subset
-of the database information directly in the application side.
+usually distinct computers compared to the Valkey nodes, to store some subset
+of the Valkey information directly in the application side.
 
-Normally when data is required, the application servers ask the database about
+Normally when data is required, the application servers ask the Valkey about
 such information, like in the following diagram:
 
 
     +-------------+                                +----------+
     |             | ------- GET user:1234 -------> |          |
-    | Application |                                | Database |
+    | Application |                                |  Valkey  |
     |             | <---- username = Alice ------- |          |
     +-------------+                                +----------+
 
 When client-side caching is used, the application will store the reply of
 popular queries directly inside the application memory, so that it can
-reuse such replies later, without contacting the database again:
+reuse such replies later, without contacting the Valkey again:
 
     +-------------+                                +----------+
     |             |                                |          |
-    | Application |       ( No chat needed )       | Database |
+    | Application |       ( No chat needed )       |  Valkey  |
     |             |                                |          |
     +-------------+                                +----------+
     | Local cache |
@@ -41,10 +41,10 @@ reuse such replies later, without contacting the database again:
 
 While the application memory used for the local cache may not be very big,
 the time needed in order to access the local computer memory is orders of
-magnitude smaller compared to accessing a networked service like a database.
+magnitude smaller compared to accessing a networked service like a Valkey.
 Since often the same small percentage of data are accessed frequently,
 this pattern can greatly reduce the latency for the application to get data
-and, at the same time, the load in the database side.
+and, at the same time, the load in the Valkey side.
 
 Moreover there are many datasets where items change very infrequently.
 For instance, most user posts in a social network are either immutable or
@@ -56,7 +56,7 @@ visibility, it is clear why such a pattern can be very useful.
 Usually the two key advantages of client-side caching are:
 
 1. Data is available with a very small latency.
-2. The database system receives less queries, allowing it to serve the same dataset with a smaller number of nodes.
+2. The Valkey system receives less queries, allowing it to serve the same dataset with a smaller number of nodes.
 
 ## There are two hard problems in computer science...
 
@@ -76,7 +76,7 @@ the point of view of the bandwidth used, because often such patterns involve
 sending the invalidation messages to every client in the application, even
 if certain clients may not have any copy of the invalidated data. Moreover
 every application query altering the data requires to use the `PUBLISH`
-command, costing the database more CPU time to process this command.
+command, costing the Valkey more CPU time to process this command.
 
 Regardless of what schema is used, there is a simple fact: many very large
 applications implement some form of client-side caching, because it is the
@@ -117,7 +117,7 @@ handling the data structures implementing the feature:
 
 * The server remembers the list of clients that may have cached a given key in a single global table. This table is called the **Invalidation Table**. The invalidation table can contain a maximum number of entries. If a new key is inserted, the server may evict an older entry by pretending that such key was modified (even if it was not), and sending an invalidation message to the clients. Doing so, it can reclaim the memory used for this key, even if this will force the clients having a local copy of the key to evict it.
 * Inside the invalidation table we don't really need to store pointers to clients' structures, that would force a garbage collection procedure when the client disconnects: instead what we do is just store client IDs (each Valkey client has a unique numerical ID). If a client disconnects, the information will be incrementally garbage collected as caching slots are invalidated.
-* There is a single keys namespace, not divided by database numbers. So if a client is caching the key `foo` in database 2, and some other client changes the value of the key `foo` in database 3, an invalidation message will still be sent. This way we can ignore database numbers reducing both the memory usage and the implementation complexity.
+* There is a single keys namespace, not divided by Valkey numbers. So if a client is caching the key `foo` in Valkey 2, and some other client changes the value of the key `foo` in Valkey 3, an invalidation message will still be sent. This way we can ignore Valkey numbers reducing both the memory usage and the implementation complexity.
 
 ## Two connections mode
 
