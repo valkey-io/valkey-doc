@@ -10,11 +10,24 @@ The optional `WITHSCORES` modifier changes the reply so it includes the respecti
 
 @examples
 
-```cli
-ZADD dadi 1 uno 2 due 3 tre 4 quattro 5 cinque 6 sei
-ZRANDMEMBER dadi
-ZRANDMEMBER dadi
-ZRANDMEMBER dadi -5 WITHSCORES
+```valkey-cli
+127.0.0.1:6379> ZADD dadi 1 uno 2 due 3 tre 4 quattro 5 cinque 6 sei
+(integer) 6
+127.0.0.1:6379> ZRANDMEMBER dadi
+"uno"
+127.0.0.1:6379> ZRANDMEMBER dadi
+"uno"
+127.0.0.1:6379> ZRANDMEMBER dadi -5 WITHSCORES
+ 1) "cinque"
+ 2) "5"
+ 3) "sei"
+ 4) "6"
+ 5) "quattro"
+ 6) "4"
+ 7) "quattro"
+ 8) "4"
+ 9) "sei"
+10) "6"
 ```
 
 ## Specification of the behavior when count is passed

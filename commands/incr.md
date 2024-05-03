@@ -15,10 +15,13 @@ representation of the integer.
 
 @examples
 
-```cli
-SET mykey "10"
-INCR mykey
-GET mykey
+```valkey-cli
+127.0.0.1:6379> SET mykey "10"
+OK
+127.0.0.1:6379> INCR mykey
+(integer) 11
+127.0.0.1:6379> GET mykey
+"11"
 ```
 
 ## Pattern: Counter

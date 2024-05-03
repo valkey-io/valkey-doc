@@ -12,8 +12,13 @@ others are unchanged.
 
 @examples
 
-```cli
-MSETNX key1 "Hello" key2 "there"
-MSETNX key2 "new" key3 "world"
-MGET key1 key2 key3
+```valkey-cli
+127.0.0.1:6379> MSETNX key1 "Hello" key2 "there"
+(integer) 1
+127.0.0.1:6379> MSETNX key2 "new" key3 "world"
+(integer) 0
+127.0.0.1:6379> MGET key1 key2 key3
+1) "Hello"
+2) "there"
+3) (nil)
 ```

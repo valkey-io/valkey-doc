@@ -11,9 +11,13 @@ HyperLogLog.
 
 @examples
 
-```cli
-PFADD hll1 foo bar zap a
-PFADD hll2 a b c foo
-PFMERGE hll3 hll1 hll2
-PFCOUNT hll3
+```valkey-cli
+127.0.0.1:6379> PFADD hll1 foo bar zap a
+(integer) 1
+127.0.0.1:6379> PFADD hll2 a b c foo
+(integer) 1
+127.0.0.1:6379> PFMERGE hll3 hll1 hll2
+OK
+127.0.0.1:6379> PFCOUNT hll3
+(integer) 6
 ```

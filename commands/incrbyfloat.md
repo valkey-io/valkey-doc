@@ -25,12 +25,17 @@ regardless of the actual internal precision of the computation.
 
 @examples
 
-```cli
-SET mykey 10.50
-INCRBYFLOAT mykey 0.1
-INCRBYFLOAT mykey -5
-SET mykey 5.0e3
-INCRBYFLOAT mykey 2.0e2
+```valkey-cli
+127.0.0.1:6379> SET mykey 10.50
+OK
+127.0.0.1:6379> INCRBYFLOAT mykey 0.1
+"10.6"
+127.0.0.1:6379> INCRBYFLOAT mykey -5
+"5.6"
+127.0.0.1:6379> SET mykey 5.0e3
+OK
+127.0.0.1:6379> INCRBYFLOAT mykey 2.0e2
+"5200"
 ```
 
 ## Implementation details

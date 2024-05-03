@@ -4,8 +4,12 @@ This has the same effect as running `SINTER` with one argument `key`.
 
 @examples
 
-```cli
-SADD myset "Hello"
-SADD myset "World"
-SMEMBERS myset
+```valkey-cli
+127.0.0.1:6379> SADD myset "Hello"
+(integer) 1
+127.0.0.1:6379> SADD myset "World"
+(integer) 1
+127.0.0.1:6379> SMEMBERS myset
+1) "Hello"
+2) "World"
 ```

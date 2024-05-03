@@ -20,14 +20,22 @@ This command comes in place of the now deprecated `RPOPLPUSH`. Doing
 
 @examples
 
-```cli
-RPUSH mylist "one"
-RPUSH mylist "two"
-RPUSH mylist "three"
-LMOVE mylist myotherlist RIGHT LEFT
-LMOVE mylist myotherlist LEFT RIGHT
-LRANGE mylist 0 -1
-LRANGE myotherlist 0 -1
+```valkey-cli
+127.0.0.1:6379> RPUSH mylist "one"
+(integer) 1
+127.0.0.1:6379> RPUSH mylist "two"
+(integer) 2
+127.0.0.1:6379> RPUSH mylist "three"
+(integer) 3
+127.0.0.1:6379> LMOVE mylist myotherlist RIGHT LEFT
+"three"
+127.0.0.1:6379> LMOVE mylist myotherlist LEFT RIGHT
+"one"
+127.0.0.1:6379> LRANGE mylist 0 -1
+1) "two"
+127.0.0.1:6379> LRANGE myotherlist 0 -1
+1) "three"
+2) "one"
 ```
 
 ## Pattern: Reliable queue

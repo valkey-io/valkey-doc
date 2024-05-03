@@ -5,11 +5,19 @@ An error is returned for out of range indexes.
 
 @examples
 
-```cli
-RPUSH mylist "one"
-RPUSH mylist "two"
-RPUSH mylist "three"
-LSET mylist 0 "four"
-LSET mylist -2 "five"
-LRANGE mylist 0 -1
+```valkey-cli
+127.0.0.1:6379> RPUSH mylist "one"
+(integer) 1
+127.0.0.1:6379> RPUSH mylist "two"
+(integer) 2
+127.0.0.1:6379> RPUSH mylist "three"
+(integer) 3
+127.0.0.1:6379> LSET mylist 0 "four"
+OK
+127.0.0.1:6379> LSET mylist -2 "five"
+OK
+127.0.0.1:6379> LRANGE mylist 0 -1
+1) "four"
+2) "five"
+3) "three"
 ```

@@ -14,12 +14,17 @@ information.
 
 @examples
 
-```cli
-HSET mykey field 10.50
-HINCRBYFLOAT mykey field 0.1
-HINCRBYFLOAT mykey field -5
-HSET mykey field 5.0e3
-HINCRBYFLOAT mykey field 2.0e2
+```valkey-cli
+127.0.0.1:6379> HSET mykey field 10.50
+(integer) 1
+127.0.0.1:6379> HINCRBYFLOAT mykey field 0.1
+"10.6"
+127.0.0.1:6379> HINCRBYFLOAT mykey field -5
+"5.6"
+127.0.0.1:6379> HSET mykey field 5.0e3
+(integer) 0
+127.0.0.1:6379> HINCRBYFLOAT mykey field 2.0e2
+"5200"
 ```
 
 ## Implementation details

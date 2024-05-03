@@ -13,10 +13,15 @@ The `GETEX` command supports a set of options that modify its behavior:
 
 @examples
 
-```cli
-SET mykey "Hello"
-GETEX mykey
-TTL mykey
-GETEX mykey EX 60
-TTL mykey
+```valkey-cli
+127.0.0.1:6379> SET mykey "Hello"
+OK
+127.0.0.1:6379> GETEX mykey
+"Hello"
+127.0.0.1:6379> TTL mykey
+(integer) -1
+127.0.0.1:6379> GETEX mykey EX 60
+"Hello"
+127.0.0.1:6379> TTL mykey
+(integer) 60
 ```

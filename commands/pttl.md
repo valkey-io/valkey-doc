@@ -9,8 +9,11 @@ The command returns the following values in case of errors:
 
 @examples
 
-```cli
-SET mykey "Hello"
-EXPIRE mykey 1
-PTTL mykey
+```valkey-cli
+127.0.0.1:6379> SET mykey "Hello"
+OK
+127.0.0.1:6379> EXPIRE mykey 1
+(integer) 1
+127.0.0.1:6379> PTTL mykey
+(integer) 989
 ```

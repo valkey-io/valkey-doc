@@ -4,8 +4,11 @@ An error is returned when the value stored at `key` is not a list.
 
 @examples
 
-```cli
-LPUSH mylist "World"
-LPUSH mylist "Hello"
-LLEN mylist
+```valkey-cli
+127.0.0.1:6379> LPUSH mylist "World"
+(integer) 1
+127.0.0.1:6379> LPUSH mylist "Hello"
+(integer) 2
+127.0.0.1:6379> LLEN mylist
+(integer) 2
 ```

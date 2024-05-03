@@ -11,12 +11,22 @@ Apart from the reversed ordering, `ZREVRANGEBYSCORE` is similar to
 
 @examples
 
-```cli
-ZADD myzset 1 "one"
-ZADD myzset 2 "two"
-ZADD myzset 3 "three"
-ZREVRANGEBYSCORE myzset +inf -inf
-ZREVRANGEBYSCORE myzset 2 1
-ZREVRANGEBYSCORE myzset 2 (1
-ZREVRANGEBYSCORE myzset (2 (1
+```valkey-cli
+127.0.0.1:6379> ZADD myzset 1 "one"
+(integer) 1
+127.0.0.1:6379> ZADD myzset 2 "two"
+(integer) 1
+127.0.0.1:6379> ZADD myzset 3 "three"
+(integer) 1
+127.0.0.1:6379> ZREVRANGEBYSCORE myzset +inf -inf
+1) "three"
+2) "two"
+3) "one"
+127.0.0.1:6379> ZREVRANGEBYSCORE myzset 2 1
+1) "two"
+2) "one"
+127.0.0.1:6379> ZREVRANGEBYSCORE myzset 2 (1
+1) "two"
+127.0.0.1:6379> ZREVRANGEBYSCORE myzset (2 (1
+(empty array)
 ```

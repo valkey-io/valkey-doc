@@ -10,9 +10,13 @@ associated with it.
 
 @examples
 
-```cli
-XADD mystream * item 1
-XADD mystream * item 2
-XADD mystream * item 3
-XLEN mystream
+```valkey-cli
+127.0.0.1:6379> XADD mystream * item 1
+"1714701492011-0"
+127.0.0.1:6379> XADD mystream * item 2
+"1714701492021-0"
+127.0.0.1:6379> XADD mystream * item 3
+"1714701492031-0"
+127.0.0.1:6379> XLEN mystream
+(integer) 3
 ```

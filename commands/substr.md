@@ -9,10 +9,15 @@ the actual length of the string.
 
 @examples
 
-```cli
-SET mykey "This is a string"
-GETRANGE mykey 0 3
-GETRANGE mykey -3 -1
-GETRANGE mykey 0 -1
-GETRANGE mykey 10 100
+```valkey-cli
+127.0.0.1:6379> SET mykey "This is a string"
+OK
+127.0.0.1:6379> GETRANGE mykey 0 3
+"This"
+127.0.0.1:6379> GETRANGE mykey -3 -1
+"ing"
+127.0.0.1:6379> GETRANGE mykey 0 -1
+"This is a string"
+127.0.0.1:6379> GETRANGE mykey 10 100
+"string"
 ```

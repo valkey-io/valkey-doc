@@ -60,9 +60,20 @@ If the user inserts all the elements in a sorted set with the same score (for ex
 
 @examples
 
-```cli
-ZADD myzset 1 "one"
-ZADD myzset 1 "uno"
-ZADD myzset 2 "two" 3 "three"
-ZRANGE myzset 0 -1 WITHSCORES
+```valkey-cli
+127.0.0.1:6379> ZADD myzset 1 "one"
+(integer) 1
+127.0.0.1:6379> ZADD myzset 1 "uno"
+(integer) 1
+127.0.0.1:6379> ZADD myzset 2 "two" 3 "three"
+(integer) 2
+127.0.0.1:6379> ZRANGE myzset 0 -1 WITHSCORES
+1) "one"
+2) "1"
+3) "uno"
+4) "1"
+5) "two"
+6) "2"
+7) "three"
+8) "3"
 ```

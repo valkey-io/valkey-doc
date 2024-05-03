@@ -26,11 +26,15 @@ zero bytes up to the length of the longest string.
 
 @examples
 
-```cli
-SET key1 "foobar"
-SET key2 "abcdef"
-BITOP AND dest key1 key2
-GET dest
+```valkey-cli
+127.0.0.1:6379> SET key1 "foobar"
+OK
+127.0.0.1:6379> SET key2 "abcdef"
+OK
+127.0.0.1:6379> BITOP AND dest key1 key2
+(integer) 6
+127.0.0.1:6379> GET dest
+"`bc`ab"
 ```
 
 ## Pattern: real time metrics using bitmaps

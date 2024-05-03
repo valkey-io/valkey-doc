@@ -22,10 +22,13 @@ the same _key_ will not have the allocation overhead.
 
 @examples
 
-```cli
-SETBIT mykey 7 1
-SETBIT mykey 7 0
-GET mykey
+```valkey-cli
+127.0.0.1:6379> SETBIT mykey 7 1
+(integer) 0
+127.0.0.1:6379> SETBIT mykey 7 0
+(integer) 1
+127.0.0.1:6379> GET mykey
+"\x00"
 ```
 
 ## Pattern: accessing the entire bitmap

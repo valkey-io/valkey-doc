@@ -8,8 +8,11 @@ others are unchanged.
 
 @examples
 
-```cli
-MSET key1 "Hello" key2 "World"
-GET key1
-GET key2
+```valkey-cli
+127.0.0.1:6379> MSET key1 "Hello" key2 "World"
+OK
+127.0.0.1:6379> GET key1
+"Hello"
+127.0.0.1:6379> GET key2
+"World"
 ```

@@ -7,9 +7,13 @@ Note: the command has a complexity of just O(log(N)) because it uses elements ra
 
 @examples
 
-```cli
-ZADD myzset 0 a 0 b 0 c 0 d 0 e
-ZADD myzset 0 f 0 g
-ZLEXCOUNT myzset - +
-ZLEXCOUNT myzset [b [f
+```valkey-cli
+127.0.0.1:6379> ZADD myzset 0 a 0 b 0 c 0 d 0 e
+(integer) 5
+127.0.0.1:6379> ZADD myzset 0 f 0 g
+(integer) 2
+127.0.0.1:6379> ZLEXCOUNT myzset - +
+(integer) 7
+127.0.0.1:6379> ZLEXCOUNT myzset [b [f
+(integer) 5
 ```

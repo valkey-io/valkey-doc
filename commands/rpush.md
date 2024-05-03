@@ -12,8 +12,12 @@ containing `a` as first element, `b` as second element and `c` as third element.
 
 @examples
 
-```cli
-RPUSH mylist "hello"
-RPUSH mylist "world"
-LRANGE mylist 0 -1
+```valkey-cli
+127.0.0.1:6379> RPUSH mylist "hello"
+(integer) 1
+127.0.0.1:6379> RPUSH mylist "world"
+(integer) 2
+127.0.0.1:6379> LRANGE mylist 0 -1
+1) "hello"
+2) "world"
 ```

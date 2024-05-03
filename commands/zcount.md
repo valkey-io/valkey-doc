@@ -8,10 +8,15 @@ Note: the command has a complexity of just O(log(N)) because it uses elements ra
 
 @examples
 
-```cli
-ZADD myzset 1 "one"
-ZADD myzset 2 "two"
-ZADD myzset 3 "three"
-ZCOUNT myzset -inf +inf
-ZCOUNT myzset (1 3
+```valkey-cli
+127.0.0.1:6379> ZADD myzset 1 "one"
+(integer) 1
+127.0.0.1:6379> ZADD myzset 2 "two"
+(integer) 1
+127.0.0.1:6379> ZADD myzset 3 "three"
+(integer) 1
+127.0.0.1:6379> ZCOUNT myzset -inf +inf
+(integer) 3
+127.0.0.1:6379> ZCOUNT myzset (1 3
+(integer) 2
 ```

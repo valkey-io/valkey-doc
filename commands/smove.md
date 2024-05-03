@@ -14,11 +14,18 @@ An error is returned if `source` or `destination` does not hold a set value.
 
 @examples
 
-```cli
-SADD myset "one"
-SADD myset "two"
-SADD myotherset "three"
-SMOVE myset myotherset "two"
-SMEMBERS myset
-SMEMBERS myotherset
+```valkey-cli
+127.0.0.1:6379> SADD myset "one"
+(integer) 1
+127.0.0.1:6379> SADD myset "two"
+(integer) 1
+127.0.0.1:6379> SADD myotherset "three"
+(integer) 1
+127.0.0.1:6379> SMOVE myset myotherset "two"
+(integer) 1
+127.0.0.1:6379> SMEMBERS myset
+1) "one"
+127.0.0.1:6379> SMEMBERS myotherset
+1) "three"
+2) "two"
 ```

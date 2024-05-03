@@ -10,10 +10,13 @@ An error is returned when `seconds` is invalid.
 
 @examples
 
-```cli
-SETEX mykey 10 "Hello"
-TTL mykey
-GET mykey
+```valkey-cli
+127.0.0.1:6379> SETEX mykey 10 "Hello"
+OK
+127.0.0.1:6379> TTL mykey
+(integer) 10
+127.0.0.1:6379> GET mykey
+"Hello"
 ```
 ## See also
 

@@ -4,8 +4,11 @@ See also the `PEXPIRETIME` command which returns the same information with milli
 
 @examples
 
-```cli
-SET mykey "Hello"
-EXPIREAT mykey 33177117420
-EXPIRETIME mykey
+```valkey-cli
+127.0.0.1:6379> SET mykey "Hello"
+OK
+127.0.0.1:6379> EXPIREAT mykey 33177117420
+(integer) 1
+127.0.0.1:6379> EXPIRETIME mykey
+(integer) 33177117420
 ```

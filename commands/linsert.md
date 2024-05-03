@@ -8,9 +8,15 @@ An error is returned when `key` exists but does not hold a list value.
 
 @examples
 
-```cli
-RPUSH mylist "Hello"
-RPUSH mylist "World"
-LINSERT mylist BEFORE "World" "There"
-LRANGE mylist 0 -1
+```valkey-cli
+127.0.0.1:6379> RPUSH mylist "Hello"
+(integer) 1
+127.0.0.1:6379> RPUSH mylist "World"
+(integer) 2
+127.0.0.1:6379> LINSERT mylist BEFORE "World" "There"
+(integer) 3
+127.0.0.1:6379> LRANGE mylist 0 -1
+1) "Hello"
+2) "There"
+3) "World"
 ```

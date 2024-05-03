@@ -7,8 +7,11 @@ will happen later asynchronously.
 
 @examples
 
-```cli
-SET key1 "Hello"
-SET key2 "World"
-UNLINK key1 key2 key3
+```valkey-cli
+127.0.0.1:6379> SET key1 "Hello"
+OK
+127.0.0.1:6379> SET key2 "World"
+OK
+127.0.0.1:6379> UNLINK key1 key2 key3
+(integer) 2
 ```

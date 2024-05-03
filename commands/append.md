@@ -5,11 +5,15 @@ will be similar to `SET` in this special case.
 
 @examples
 
-```cli
-EXISTS mykey
-APPEND mykey "Hello"
-APPEND mykey " World"
-GET mykey
+```valkey-cli
+127.0.0.1:6379> EXISTS mykey
+(integer) 0
+127.0.0.1:6379> APPEND mykey "Hello"
+(integer) 5
+127.0.0.1:6379> APPEND mykey " World"
+(integer) 11
+127.0.0.1:6379> GET mykey
+"Hello World"
 ```
 
 ## Pattern: Time series
@@ -44,9 +48,13 @@ more friendly to be distributed across many Valkey instances.
 An example sampling the temperature of a sensor using fixed-size strings (using
 a binary format is better in real implementations).
 
-```cli
-APPEND ts "0043"
-APPEND ts "0035"
-GETRANGE ts 0 3
-GETRANGE ts 4 7
+```valkey-cli
+127.0.0.1:6379> APPEND ts "0043"
+(integer) 4
+127.0.0.1:6379> APPEND ts "0035"
+(integer) 8
+127.0.0.1:6379> GETRANGE ts 0 3
+"0043"
+127.0.0.1:6379> GETRANGE ts 4 7
+"0035"
 ```

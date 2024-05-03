@@ -4,11 +4,17 @@ The different types that can be returned are: `string`, `list`, `set`, `zset`,
 
 @examples
 
-```cli
-SET key1 "value"
-LPUSH key2 "value"
-SADD key3 "value"
-TYPE key1
-TYPE key2
-TYPE key3
+```valkey-cli
+127.0.0.1:6379> SET key1 "value"
+OK
+127.0.0.1:6379> LPUSH key2 "value"
+(integer) 1
+127.0.0.1:6379> SADD key3 "value"
+(integer) 1
+127.0.0.1:6379> TYPE key1
+string
+127.0.0.1:6379> TYPE key2
+list
+127.0.0.1:6379> TYPE key3
+set
 ```

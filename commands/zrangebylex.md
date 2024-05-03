@@ -49,9 +49,20 @@ we can store the value of the element we are actually indexing.
 
 @examples
 
-```cli
-ZADD myzset 0 a 0 b 0 c 0 d 0 e 0 f 0 g
-ZRANGEBYLEX myzset - [c
-ZRANGEBYLEX myzset - (c
-ZRANGEBYLEX myzset [aaa (g
+```valkey-cli
+127.0.0.1:6379> ZADD myzset 0 a 0 b 0 c 0 d 0 e 0 f 0 g
+(integer) 7
+127.0.0.1:6379> ZRANGEBYLEX myzset - [c
+1) "a"
+2) "b"
+3) "c"
+127.0.0.1:6379> ZRANGEBYLEX myzset - (c
+1) "a"
+2) "b"
+127.0.0.1:6379> ZRANGEBYLEX myzset [aaa (g
+1) "b"
+2) "c"
+3) "d"
+4) "e"
+5) "f"
 ```

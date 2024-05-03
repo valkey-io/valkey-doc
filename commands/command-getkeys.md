@@ -9,8 +9,16 @@ You can use `COMMAND GETKEYS` or `COMMAND GETKEYSANDFLAGS` to discover key names
 
 @examples
 
-```cli
-COMMAND GETKEYS MSET a b c d e f
-COMMAND GETKEYS EVAL "not consulted" 3 key1 key2 key3 arg1 arg2 arg3 argN
-COMMAND GETKEYS SORT mylist ALPHA STORE outlist
+```valkey-cli
+127.0.0.1:6379> COMMAND GETKEYS MSET a b c d e f
+1) "a"
+2) "c"
+3) "e"
+127.0.0.1:6379> COMMAND GETKEYS EVAL "not consulted" 3 key1 key2 key3 arg1 arg2 arg3 argN
+1) "key1"
+2) "key2"
+3) "key3"
+127.0.0.1:6379> COMMAND GETKEYS SORT mylist ALPHA STORE outlist
+1) "mylist"
+2) "outlist"
 ```

@@ -5,8 +5,13 @@ For every `field` that does not exist in the hash, a `nil` value is returned.
 Because non-existing keys are treated as empty hashes, running `HMGET` against
 a non-existing `key` will return a list of `nil` values.
 
-```cli
-HSET myhash field1 "Hello"
-HSET myhash field2 "World"
-HMGET myhash field1 field2 nofield
+```valkey-cli
+127.0.0.1:6379> HSET myhash field1 "Hello"
+(integer) 1
+127.0.0.1:6379> HSET myhash field2 "World"
+(integer) 1
+127.0.0.1:6379> HMGET myhash field1 field2 nofield
+1) "Hello"
+2) "World"
+3) (nil)
 ```

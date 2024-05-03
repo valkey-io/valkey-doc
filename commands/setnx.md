@@ -5,10 +5,13 @@ When `key` already holds a value, no operation is performed.
 
 @examples
 
-```cli
-SETNX mykey "Hello"
-SETNX mykey "World"
-GET mykey
+```valkey-cli
+127.0.0.1:6379> SETNX mykey "Hello"
+(integer) 1
+127.0.0.1:6379> SETNX mykey "World"
+(integer) 0
+127.0.0.1:6379> GET mykey
+"Hello"
 ```
 
 ## Design pattern: Locking with `!SETNX`

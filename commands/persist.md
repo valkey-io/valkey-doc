@@ -4,10 +4,15 @@ is associated).
 
 @examples
 
-```cli
-SET mykey "Hello"
-EXPIRE mykey 10
-TTL mykey
-PERSIST mykey
-TTL mykey
+```valkey-cli
+127.0.0.1:6379> SET mykey "Hello"
+OK
+127.0.0.1:6379> EXPIRE mykey 10
+(integer) 1
+127.0.0.1:6379> TTL mykey
+(integer) 10
+127.0.0.1:6379> PERSIST mykey
+(integer) 1
+127.0.0.1:6379> TTL mykey
+(integer) -1
 ```

@@ -5,10 +5,13 @@ only handles string values.
 
 @examples
 
-```cli
-GET nonexisting
-SET mykey "Hello"
-GET mykey
+```valkey-cli
+127.0.0.1:6379> GET nonexisting
+(nil)
+127.0.0.1:6379> SET mykey "Hello"
+OK
+127.0.0.1:6379> GET mykey
+"Hello"
 ```
 
 ### Code examples

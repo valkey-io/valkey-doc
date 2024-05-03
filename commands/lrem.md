@@ -14,11 +14,18 @@ exist, the command will always return `0`.
 
 @examples
 
-```cli
-RPUSH mylist "hello"
-RPUSH mylist "hello"
-RPUSH mylist "foo"
-RPUSH mylist "hello"
-LREM mylist -2 "hello"
-LRANGE mylist 0 -1
+```valkey-cli
+127.0.0.1:6379> RPUSH mylist "hello"
+(integer) 1
+127.0.0.1:6379> RPUSH mylist "hello"
+(integer) 2
+127.0.0.1:6379> RPUSH mylist "foo"
+(integer) 3
+127.0.0.1:6379> RPUSH mylist "hello"
+(integer) 4
+127.0.0.1:6379> LREM mylist -2 "hello"
+(integer) 2
+127.0.0.1:6379> LRANGE mylist 0 -1
+1) "hello"
+2) "foo"
 ```

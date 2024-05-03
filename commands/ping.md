@@ -12,8 +12,10 @@ of the argument.
 
 @examples
 
-```cli
-PING
-
-PING "hello world"
+```valkey-cli
+127.0.0.1:6379> PING
+PONG
+127.0.0.1:6379> 
+127.0.0.1:6379> PING "hello world"
+"hello world"
 ```

@@ -6,9 +6,15 @@ to `count` elements, depending on the list's length.
 
 @examples
 
-```cli
-RPUSH mylist "one" "two" "three" "four" "five"
-RPOP mylist
-RPOP mylist 2
-LRANGE mylist 0 -1
+```valkey-cli
+127.0.0.1:6379> RPUSH mylist "one" "two" "three" "four" "five"
+(integer) 5
+127.0.0.1:6379> RPOP mylist
+"five"
+127.0.0.1:6379> RPOP mylist 2
+1) "four"
+2) "three"
+127.0.0.1:6379> LRANGE mylist 0 -1
+1) "one"
+2) "two"
 ```

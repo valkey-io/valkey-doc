@@ -15,9 +15,13 @@ The `GT`, `LT` and `NX` options are mutually exclusive.
 
 @examples
 
-```cli
-SET mykey "Hello"
-PEXPIREAT mykey 1555555555005
-TTL mykey
-PTTL mykey
+```valkey-cli
+127.0.0.1:6379> SET mykey "Hello"
+OK
+127.0.0.1:6379> PEXPIREAT mykey 1555555555005
+(integer) 1
+127.0.0.1:6379> TTL mykey
+(integer) -2
+127.0.0.1:6379> PTTL mykey
+(integer) -2
 ```

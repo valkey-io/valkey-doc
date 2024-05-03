@@ -5,8 +5,11 @@ If `key` does not exist, it is treated as an empty hash and this command returns
 
 @examples
 
-```cli
-HSET myhash field1 "foo"
-HDEL myhash field1
-HDEL myhash field2
+```valkey-cli
+127.0.0.1:6379> HSET myhash field1 "foo"
+(integer) 1
+127.0.0.1:6379> HDEL myhash field1
+(integer) 1
+127.0.0.1:6379> HDEL myhash field2
+(integer) 0
 ```

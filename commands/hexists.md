@@ -2,8 +2,11 @@ Returns if `field` is an existing field in the hash stored at `key`.
 
 @examples
 
-```cli
-HSET myhash field1 "foo"
-HEXISTS myhash field1
-HEXISTS myhash field2
+```valkey-cli
+127.0.0.1:6379> HSET myhash field1 "foo"
+(integer) 1
+127.0.0.1:6379> HEXISTS myhash field1
+(integer) 1
+127.0.0.1:6379> HEXISTS myhash field2
+(integer) 0
 ```

@@ -4,8 +4,12 @@ For every `member`, `1` is returned if the value is a member of the set, or `0` 
 
 @examples
 
-```cli
-SADD myset "one"
-SADD myset "one"
-SMISMEMBER myset "one" "notamember"
+```valkey-cli
+127.0.0.1:6379> SADD myset "one"
+(integer) 1
+127.0.0.1:6379> SADD myset "one"
+(integer) 0
+127.0.0.1:6379> SMISMEMBER myset "one" "notamember"
+1) (integer) 1
+2) (integer) 0
 ```

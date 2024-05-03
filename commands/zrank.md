@@ -10,12 +10,20 @@ to low.
 
 @examples
 
-```cli
-ZADD myzset 1 "one"
-ZADD myzset 2 "two"
-ZADD myzset 3 "three"
-ZRANK myzset "three"
-ZRANK myzset "four"
-ZRANK myzset "three" WITHSCORE
-ZRANK myzset "four" WITHSCORE
+```valkey-cli
+127.0.0.1:6379> ZADD myzset 1 "one"
+(integer) 1
+127.0.0.1:6379> ZADD myzset 2 "two"
+(integer) 1
+127.0.0.1:6379> ZADD myzset 3 "three"
+(integer) 1
+127.0.0.1:6379> ZRANK myzset "three"
+(integer) 2
+127.0.0.1:6379> ZRANK myzset "four"
+(nil)
+127.0.0.1:6379> ZRANK myzset "three" WITHSCORE
+1) (integer) 2
+2) "3"
+127.0.0.1:6379> ZRANK myzset "four" WITHSCORE
+(nil)
 ```

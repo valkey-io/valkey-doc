@@ -3,8 +3,11 @@ This command is similar to `GET`, except for the fact that it also deletes the k
 
 @examples
 
-```cli
-SET mykey "Hello"
-GETDEL mykey
-GET mykey
+```valkey-cli
+127.0.0.1:6379> SET mykey "Hello"
+OK
+127.0.0.1:6379> GETDEL mykey
+"Hello"
+127.0.0.1:6379> GET mykey
+(nil)
 ```

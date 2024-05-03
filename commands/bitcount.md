@@ -17,13 +17,19 @@ For negative values, -1 is the last bit, -2 is the penultimate, and so forth.
 
 @examples
 
-```cli
-SET mykey "foobar"
-BITCOUNT mykey
-BITCOUNT mykey 0 0
-BITCOUNT mykey 1 1
-BITCOUNT mykey 1 1 BYTE
-BITCOUNT mykey 5 30 BIT
+```valkey-cli
+127.0.0.1:6379> SET mykey "foobar"
+OK
+127.0.0.1:6379> BITCOUNT mykey
+(integer) 26
+127.0.0.1:6379> BITCOUNT mykey 0 0
+(integer) 4
+127.0.0.1:6379> BITCOUNT mykey 1 1
+(integer) 6
+127.0.0.1:6379> BITCOUNT mykey 1 1 BYTE
+(integer) 6
+127.0.0.1:6379> BITCOUNT mykey 5 30 BIT
+(integer) 17
 ```
 
 ## Pattern: real-time metrics using bitmaps

@@ -8,9 +8,14 @@ be the first, followed by the elements with lower scores.
 
 @examples
 
-```cli
-ZADD myzset 1 "one"
-ZADD myzset 2 "two"
-ZADD myzset 3 "three"
-ZPOPMAX myzset
+```valkey-cli
+127.0.0.1:6379> ZADD myzset 1 "one"
+(integer) 1
+127.0.0.1:6379> ZADD myzset 2 "two"
+(integer) 1
+127.0.0.1:6379> ZADD myzset 3 "three"
+(integer) 1
+127.0.0.1:6379> ZPOPMAX myzset
+1) "three"
+2) "3"
 ```

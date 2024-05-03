@@ -55,16 +55,25 @@ _Navigation session_ pattern section below.
 
 @examples
 
-```cli
-SET mykey "Hello"
-EXPIRE mykey 10
-TTL mykey
-SET mykey "Hello World"
-TTL mykey
-EXPIRE mykey 10 XX
-TTL mykey
-EXPIRE mykey 10 NX
-TTL mykey
+```valkey-cli
+127.0.0.1:6379> SET mykey "Hello"
+OK
+127.0.0.1:6379> EXPIRE mykey 10
+(integer) 1
+127.0.0.1:6379> TTL mykey
+(integer) 10
+127.0.0.1:6379> SET mykey "Hello World"
+OK
+127.0.0.1:6379> TTL mykey
+(integer) -1
+127.0.0.1:6379> EXPIRE mykey 10 XX
+(integer) 0
+127.0.0.1:6379> TTL mykey
+(integer) -1
+127.0.0.1:6379> EXPIRE mykey 10 NX
+(integer) 1
+127.0.0.1:6379> TTL mykey
+(integer) 10
 ```
 
 ## Pattern: Navigation session

@@ -20,7 +20,10 @@ have the following properties:
 
 @examples
 
-```cli
-GEOADD Sicily 13.361389 38.115556 "Palermo" 15.087269 37.502669 "Catania"
-GEOHASH Sicily Palermo Catania
+```valkey-cli
+127.0.0.1:6379> GEOADD Sicily 13.361389 38.115556 "Palermo" 15.087269 37.502669 "Catania"
+(integer) 2
+127.0.0.1:6379> GEOHASH Sicily Palermo Catania
+1) "sqc8b49rny0"
+2) "sqdtr74hyu0"
 ```
