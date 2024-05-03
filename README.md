@@ -71,21 +71,21 @@ links for the reply type. Note: do not use `@reply-type` specifiers; use only th
 **Important**: all links below are under construction.
 
 ```md
-@simple-string-reply: [Simple string reply](https://valkey.io/docs/reference/protocol-spec#simple-strings)
-@simple-error-reply: [Simple error reply](https://valkey.io/docs/reference/protocol-spec#simple-errors)
-@integer-reply: [Integer reply](https://valkey.io/docs/reference/protocol-spec#integers)
-@bulk-string-reply: [Bulk string reply](https://valkey.io/docs/reference/protocol-spec#bulk-strings)
-@array-reply: [Array reply](https://valkey.io/docs/reference/protocol-spec#arrays)
-@nil-reply: [Nil reply](https://valkey.io/docs/reference/protocol-spec#bulk-strings)
-@null-reply: [Null reply](https://valkey.io/docs/reference/protocol-spec#nulls)
-@boolean-reply: [Boolean reply](https://valkey.io/docs/reference/protocol-spec#booleans)
-@double-reply: [Double reply](https://valkey.io/docs/reference/protocol-spec#doubles)
-@big-number-reply: [Big number reply](https://valkey.io/docs/reference/protocol-spec#big-numbers)
-@bulk-error-reply: [Bulk error reply](https://valkey.io/docs/reference/protocol-spec#bulk-errors)
-@verbatim-string-reply: [Verbatim string reply](https://valkey.io/docs/reference/protocol-spec#verbatim-strings)
-@map-reply: [Map reply](https://valkey.io/docs/reference/protocol-spec#maps)
-@set-reply: [Set reply](https://valkey.io/docs/reference/protocol-spec#sets)
-@push-reply: [Push reply](https://valkey.io/docs/reference/protocol-spec#pushes)
+@simple-string-reply: [Simple string reply](https://valkey.io/topics/protocol#simple-strings)
+@simple-error-reply: [Simple error reply](https://valkey.io/topics/protocol#simple-errors)
+@integer-reply: [Integer reply](https://valkey.io/topics/protocol#integers)
+@bulk-string-reply: [Bulk string reply](https://valkey.io/topics/protocol#bulk-strings)
+@array-reply: [Array reply](https://valkey.io/topics/protocol#arrays)
+@nil-reply: [Nil reply](https://valkey.io/topics/protocol#bulk-strings)
+@null-reply: [Null reply](https://valkey.io/topics/protocol#nulls)
+@boolean-reply: [Boolean reply](https://valkey.io/topics/protocol#booleans)
+@double-reply: [Double reply](https://valkey.io/topics/protocol#doubles)
+@big-number-reply: [Big number reply](https://valkey.io/topics/protocol#big-numbers)
+@bulk-error-reply: [Bulk error reply](https://valkey.io/topics/protocol#bulk-errors)
+@verbatim-string-reply: [Verbatim string reply](https://valkey.io/topics/protocol#verbatim-strings)
+@map-reply: [Map reply](https://valkey.io/topics/protocol#maps)
+@set-reply: [Set reply](https://valkey.io/topics/protocol#sets)
+@push-reply: [Push reply](https://valkey.io/topics/protocol#pushes)
 ```
 
 ## Styling guidelines
