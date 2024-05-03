@@ -31,7 +31,7 @@ It is important to note that when used in this way `LTRIM` is an O(1) operation
 because in the average case just one element is removed from the tail of the
 list.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> RPUSH mylist "one"

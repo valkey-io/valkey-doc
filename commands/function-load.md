@@ -20,7 +20,7 @@ The command will return an error in the following circumstances:
 
 For more information please refer to [Introduction to Valkey Functions](../topics/functions-intro.md).
 
-@examples
+## Examples
 
 The following example will create a library named `mylib` with a single function, `myfunc`, that returns the first argument it gets.
 

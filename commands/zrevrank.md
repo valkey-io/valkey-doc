@@ -8,7 +8,7 @@ The optional `WITHSCORE` argument supplements the command's reply with the score
 Use `ZRANK` to get the rank of an element with the scores ordered from low to
 high.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> ZADD myzset 1 "one"

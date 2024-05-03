@@ -84,7 +84,7 @@ This is a list of all the supported Valkey ACL rules:
 * `clearselectors`: Deletes all of the selectors attached to the user.
 * `reset`: Removes any capability from the user. They are set to off, without passwords, unable to execute any command, unable to access any key.
 
-@examples
+## Examples
 
 ```
 > ACL SETUSER alan allkeys +@string +@set -SADD >alanpassword

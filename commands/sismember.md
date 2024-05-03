@@ -1,6 +1,6 @@
 Returns if `member` is a member of the set stored at `key`.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> SADD myset "one"

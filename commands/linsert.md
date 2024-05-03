@@ -6,7 +6,7 @@ performed.
 
 An error is returned when `key` exists but does not hold a list value.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> RPUSH mylist "Hello"

@@ -3,7 +3,7 @@ end of the string.
 If `key` does not exist it is created and set as an empty string, so `APPEND`
 will be similar to `SET` in this special case.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> EXISTS mykey

@@ -1,6 +1,6 @@
 Returns the value associated with `field` in the hash stored at `key`.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> HSET myhash field1 "foo"

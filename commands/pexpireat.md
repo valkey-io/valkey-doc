@@ -13,7 +13,7 @@ The `PEXPIREAT` command supports a set of options since Redis OSS 7.0:
 A non-volatile key is treated as an infinite TTL for the purpose of `GT` and `LT`.
 The `GT`, `LT` and `NX` options are mutually exclusive.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> SET mykey "Hello"

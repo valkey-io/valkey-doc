@@ -15,7 +15,7 @@ We can use an additional argument `BIT` to specify a bit index.
 So 0 is the first bit, 1 is the second bit, and so forth.
 For negative values, -1 is the last bit, -2 is the penultimate, and so forth.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> SET mykey "foobar"

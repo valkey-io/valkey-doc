@@ -6,7 +6,7 @@ See `MSETNX` if you don't want to overwrite existing values.
 It is not possible for clients to see that some of the keys were updated while
 others are unchanged.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> MSET key1 "Hello" key2 "World"

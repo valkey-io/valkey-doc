@@ -4,7 +4,7 @@ For more information about when to use this command vs `EVAL`, please refer to [
 
 For more information about `EVAL` scripts please refer to [Introduction to Eval Scripts](../topics/eval-intro.md).
 
-@examples
+## Examples
 
 ```
 > SET mykey "Hello"

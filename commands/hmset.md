@@ -3,7 +3,7 @@ Sets the specified fields to their respective values in the hash stored at
 This command overwrites any specified fields already existing in the hash.
 If `key` does not exist, a new key holding a hash is created.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> HMSET myhash field1 "Hello" field2 "World"

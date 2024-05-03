@@ -1,6 +1,6 @@
 This command is like `ZRANGE`, but stores the result in the `<dst>` destination key.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> ZADD srczset 1 "one" 2 "two" 3 "three" 4 "four"

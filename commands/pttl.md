@@ -7,7 +7,7 @@ The command returns the following values in case of errors:
 * The command returns `-2` if the key does not exist.
 * The command returns `-1` if the key exists but has no associated expire.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> SET mykey "Hello"

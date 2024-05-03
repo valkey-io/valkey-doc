@@ -6,7 +6,7 @@ By default, the command pops a single member from the set. When provided with
 the optional `count` argument, the reply will consist of up to `count` members,
 depending on the set's cardinality.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> SADD myset "one"

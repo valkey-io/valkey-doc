@@ -2,7 +2,7 @@ Returns the scores associated with the specified `members` in the sorted set sto
 
 For every `member` that does not exist in the sorted set, a `nil` value is returned.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> ZADD myzset 1 "one"

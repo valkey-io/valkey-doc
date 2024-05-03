@@ -9,7 +9,7 @@ If the destination variable exists, it is treated as one of the source sets
 and its cardinality will be included in the cardinality of the computed
 HyperLogLog.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> PFADD hll1 foo bar zap a

@@ -28,7 +28,7 @@ When the `ANY` option is used, the command returns as soon as enough matches are
 When `ANY` is not provided, the command will perform an effort that is proportional to the number of items matching the specified area and sort them,
 so to query very large areas with a very small `COUNT` option may be slow even if just a few results are returned.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> GEOADD Sicily 13.361389 38.115556 "Palermo" 15.087269 37.502669 "Catania"

@@ -3,7 +3,7 @@ For more information on the `index` argument, see `LINDEX`.
 
 An error is returned for out of range indexes.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> RPUSH mylist "one"

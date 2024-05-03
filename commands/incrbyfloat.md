@@ -23,7 +23,7 @@ Trailing zeroes are always removed.
 The precision of the output is fixed at 17 digits after the decimal point
 regardless of the actual internal precision of the computation.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> SET mykey 10.50

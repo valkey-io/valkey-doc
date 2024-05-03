@@ -3,7 +3,7 @@ sorted set, it is returned to the client.
 
 For a description of the `WEIGHTS` and `AGGREGATE` options, see `ZUNIONSTORE`.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> ZADD zset1 1 "one"

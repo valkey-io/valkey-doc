@@ -39,7 +39,7 @@ The model assumes that the Earth is a sphere since it uses the Haversine formula
 The introduced errors are not an issue when used, for example, by social networks and similar applications requiring this type of querying. 
 However, in the worst case, the error may be up to 0.5%, so you may want to consider other systems for error-critical applications.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> GEOADD Sicily 13.361389 38.115556 "Palermo" 15.087269 37.502669 "Catania"

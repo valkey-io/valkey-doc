@@ -6,7 +6,7 @@ The cluster makes sure that published shard messages are forwarded to all the no
 
 For more information about sharded pubsub, see [Sharded Pubsub](../topics/pubsub.md#sharded-pubsub).
 
-@examples
+## Examples
 
 For example the following command publish to channel `orders` with a subscriber already waiting for message(s).
     

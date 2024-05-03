@@ -6,7 +6,7 @@ This operation is limited to 64 bit signed integers.
 
 See `INCR` for extra information on increment/decrement operations.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> SET mykey "10"

@@ -1,7 +1,7 @@
 Removes all elements in the sorted set stored at `key` with a score between
 `min` and `max` (inclusive).
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> ZADD myzset 1 "one"

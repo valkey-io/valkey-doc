@@ -8,7 +8,7 @@ In this case, the number of returned fields is the absolute value of the specifi
 
 The optional `WITHVALUES` modifier changes the reply so it includes the respective values of the randomly selected hash fields.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> HSET coin heads obverse tails reverse edge null

@@ -12,7 +12,7 @@ The exact behavior of this command is identical to the one of the `INCRBYFLOAT`
 command, please refer to the documentation of `INCRBYFLOAT` for further
 information.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> HSET mykey field 10.50

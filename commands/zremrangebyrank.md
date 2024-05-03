@@ -7,7 +7,7 @@ the element with the highest score.
 For example: `-1` is the element with the highest score, `-2` the element with
 the second highest score and so forth.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> ZADD myzset 1 "one"

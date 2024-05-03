@@ -10,7 +10,7 @@ the tail of a list instead of popping from the head.
 
 [cb]: /commands/blpop
 
-@examples
+## Examples
 
 ```
 valkey> DEL list1 list2

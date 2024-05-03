@@ -17,7 +17,7 @@ The `SET` command supports a set of options that modify its behavior:
 
 Note: Since the `SET` command options can replace `SETNX`, `SETEX`, `PSETEX`, `GETSET`, it is possible that in future versions of Valkey these commands will be deprecated and finally removed.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> SET mykey "Hello"

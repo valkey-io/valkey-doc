@@ -26,7 +26,7 @@ collection in case a given macro-node reaches a given amount of deleted
 entries. Currently with the usage we anticipate for this data structure, it is
 not a good idea to add such complexity.
 
-@examples
+## Examples
 
 ```
 > XADD mystream * a 1

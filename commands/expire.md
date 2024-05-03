@@ -53,7 +53,7 @@ _Navigation session_ pattern section below.
 
 `EXPIRE` would return 0 and not alter the timeout for a key with a timeout set.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> SET mykey "Hello"

@@ -18,7 +18,7 @@ no-op if `wherefrom` is the same as `whereto`).
 This command comes in place of the now deprecated `RPOPLPUSH`. Doing
 `LMOVE RIGHT LEFT` is equivalent.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> RPUSH mylist "one"

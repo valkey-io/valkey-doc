@@ -14,7 +14,7 @@ with the highest scores instead of popping the ones with the lowest scores.
 
 [cb]: /commands/bzpopmin
 
-@examples
+## Examples
 
 ```
 valkey> DEL zset1 zset2

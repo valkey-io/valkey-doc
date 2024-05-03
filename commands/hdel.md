@@ -3,7 +3,7 @@ Specified fields that do not exist within this hash are ignored.
 If `key` does not exist, it is treated as an empty hash and this command returns
 `0`.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> HSET myhash field1 "foo"

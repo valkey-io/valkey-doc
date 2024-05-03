@@ -40,7 +40,7 @@ In addition, Valkey replicas asynchronously ping their master with two replicati
 Valkey remembers, for each client, the replication offset of the produced replication stream when the last write command was executed in the context of that client.
 When `WAITAOF` is called, Valkey checks if the local Valkey and/or the specified number of replicas have confirmed fsyncing this offset or a greater one to their AOF.
 
-@examples
+## Examples
 
 ```
 > SET foo bar

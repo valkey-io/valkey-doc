@@ -16,7 +16,7 @@ These are regular arguments and are passed in a Lua table as the callback's seco
 
 For more information please refer to the [Valkey Programmability](../topics/programmability.md) and [Introduction to Valkey Functions](../topics/functions-intro.md) pages.
 
-@examples
+## Examples
 
 The following example will create a library named `mylib` with a single function, `myfunc`, that returns the first argument it gets.
 

@@ -7,7 +7,7 @@ A client can subscribe to channels across different slots over separate `SSUBSCR
 
 For more information about sharded Pub/Sub, see [Sharded Pub/Sub](../topics/pubsub.md#sharded-pubsub).
 
-@examples
+## Examples
 
 ```
 > ssubscribe orders

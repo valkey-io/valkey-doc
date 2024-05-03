@@ -8,7 +8,7 @@ is provided, like the rate at which the system forks processes.
 
 This is the output you should provide if you are looking for help about Latency related issues.
 
-@examples
+## Examples
 
 ```
 127.0.0.1:6379> latency doctor

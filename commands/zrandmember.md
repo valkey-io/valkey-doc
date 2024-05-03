@@ -8,7 +8,7 @@ In this case, the number of returned elements is the absolute value of the speci
 
 The optional `WITHSCORES` modifier changes the reply so it includes the respective scores of the randomly selected elements from the sorted set.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> ZADD dadi 1 uno 2 due 3 tre 4 quattro 5 cinque 6 sei

@@ -10,7 +10,7 @@ that either all the fields or none at all are set.
 It is not possible for clients to see that some of the keys were updated while
 others are unchanged.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> MSETNX key1 "Hello" key2 "there"

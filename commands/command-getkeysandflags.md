@@ -8,7 +8,7 @@ You can use `COMMAND GETKEYS` or `COMMAND GETKEYSANDFLAGS` to discover key names
 
 Refer to [key specifications](../topics/key-specs.md#logical-operation-flags) for information about the meaning of the key flags.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> COMMAND GETKEYS MSET a b c d e f

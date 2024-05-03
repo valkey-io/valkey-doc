@@ -5,7 +5,7 @@ blocking, while `DEL` is. This is where the command name comes from: the
 command just **unlinks** the keys from the keyspace. The actual removal
 will happen later asynchronously.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> SET key1 "Hello"

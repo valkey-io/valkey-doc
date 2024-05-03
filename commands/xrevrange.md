@@ -14,7 +14,7 @@ enough to send:
 
     XREVRANGE somestream + - COUNT 1
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> XADD writers * name Virginia surname Woolf

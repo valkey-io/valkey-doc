@@ -6,7 +6,7 @@ get returned.
 If you request details about non-existing commands, their return
 position will be nil.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> COMMAND INFO get set eval

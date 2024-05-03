@@ -7,7 +7,7 @@ Please check the example below and the `GEORADIUS` documentation for more inform
 
 Note that `GEORADIUSBYMEMBER_RO` is addeded in order to provide a read-only command that can be used in replicas. See the `GEORADIUS` page for more information.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> GEOADD Sicily 13.583333 37.316667 "Agrigento"

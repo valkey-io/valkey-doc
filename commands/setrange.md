@@ -26,7 +26,7 @@ Thanks to `SETRANGE` and the analogous `GETRANGE` commands, you can use Valkey
 strings as a linear array with O(1) random access.
 This is a very fast and efficient storage in many real world use cases.
 
-@examples
+## Examples
 
 Basic usage:
 

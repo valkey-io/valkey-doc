@@ -1,7 +1,7 @@
 This command is similar to `ZDIFFSTORE`, but instead of storing the resulting
 sorted set, it is returned to the client.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> ZADD zset1 1 "one"

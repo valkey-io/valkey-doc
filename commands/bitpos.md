@@ -22,7 +22,7 @@ bit, -2 is the penultimate, and so forth.
 
 Non-existent keys are treated as empty strings.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> SET mykey "\xff\xf0\x00"

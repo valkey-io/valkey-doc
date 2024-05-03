@@ -24,7 +24,7 @@ zero-padded up to the length of the longest string.
 The same holds true for non-existent keys, that are considered as a stream of
 zero bytes up to the length of the longest string.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> SET key1 "foobar"

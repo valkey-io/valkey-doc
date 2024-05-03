@@ -20,7 +20,7 @@ This can be done using `GETSET mycounter "0"`:
 "0"
 ```
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> SET mykey "Hello"

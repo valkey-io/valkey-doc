@@ -5,7 +5,7 @@ If the library doesn't exist, the server returns an error.
 
 For more information please refer to [Introduction to Valkey Functions](../topics/functions-intro.md).
 
-@examples
+## Examples
 
 ```
 valkey> FUNCTION LOAD "#!lua name=mylib \n server.register_function('myfunc', function(keys, args) return 'hello' end)"

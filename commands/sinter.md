@@ -14,7 +14,7 @@ Keys that do not exist are considered to be empty sets.
 With one of the keys being an empty set, the resulting set is also empty (since
 set intersection with an empty set always results in an empty set).
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> SADD key1 "a"

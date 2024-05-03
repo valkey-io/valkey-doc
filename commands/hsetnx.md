@@ -3,7 +3,7 @@ yet exist.
 If `key` does not exist, a new key holding a hash is created.
 If `field` already exists, this operation has no effect.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> HSETNX myhash field "Hello"

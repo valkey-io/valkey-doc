@@ -169,7 +169,7 @@ of XRANGE:
 For further information about streams please check our
 [introduction to Streams document](../topics/streams-intro.md).
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> XADD writers * name Virginia surname Woolf

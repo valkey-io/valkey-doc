@@ -6,7 +6,7 @@ performed.
 
 The range of values supported by `HINCRBY` is limited to 64 bit signed integers.
 
-@examples
+## Examples
 
 Since the `increment` argument is signed, both increment and decrement
 operations can be performed:

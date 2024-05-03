@@ -2,7 +2,7 @@ Returns the absolute Unix timestamp (since January 1, 1970) in seconds at which 
 
 See also the `PEXPIRETIME` command which returns the same information with milliseconds resolution.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> SET mykey "Hello"

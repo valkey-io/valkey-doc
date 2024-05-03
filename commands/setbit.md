@@ -20,7 +20,7 @@ allocation) takes ~8ms.
 Note that once this first allocation is done, subsequent calls to `SETBIT` for
 the same _key_ will not have the allocation overhead.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> SETBIT mykey 7 1

@@ -10,7 +10,7 @@ See `BLMPOP` for the blocking variant of this command.
 Elements are popped from either the left or right of the first non-empty list based on the passed argument.
 The number of returned elements is limited to the lower between the non-empty list's length, and the count argument (which defaults to 1).
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> LMPOP 2 non1 non2 LEFT COUNT 10

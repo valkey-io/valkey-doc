@@ -11,7 +11,7 @@ For example in order to take the count of all the unique search queries performe
 Note: as a side effect of calling this function, it is possible that the HyperLogLog is modified, since the last 8 bytes encode the latest computed cardinality
 for caching purposes. So `PFCOUNT` is technically a write command.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> PFADD hll foo bar zap

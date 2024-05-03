@@ -4,7 +4,7 @@ By default, the command pops a single element from the end of the list.
 When provided with the optional `count` argument, the reply will consist of up
 to `count` elements, depending on the list's length.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> RPUSH mylist "one" "two" "three" "four" "five"

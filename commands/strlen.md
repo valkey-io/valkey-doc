@@ -1,7 +1,7 @@
 Returns the length of the string value stored at `key`.
 An error is returned when `key` holds a non-string value.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> SET mykey "Hello world"

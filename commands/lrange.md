@@ -23,7 +23,7 @@ If `start` is larger than the end of the list, an empty list is returned.
 If `stop` is larger than the actual end of the list, Valkey will treat it like
 the last element of the list.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> RPUSH mylist "one"

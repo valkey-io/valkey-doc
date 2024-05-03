@@ -9,7 +9,7 @@ The command returns the following valueis in case of errors:
 
 See also the `PTTL` command that returns the same information with milliseconds resolution.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> SET mykey "Hello"

@@ -12,7 +12,7 @@ For example, `LREM list -2 "hello"` will remove the last two occurrences of
 Note that non-existing keys are treated like empty lists, so when `key` does not
 exist, the command will always return `0`.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> RPUSH mylist "hello"

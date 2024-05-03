@@ -8,7 +8,7 @@ Streams are not auto-deleted once they have no entries inside (for instance
 after an `XDEL` call), because the stream may have consumer groups
 associated with it.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> XADD mystream * item 1

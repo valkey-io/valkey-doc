@@ -12,7 +12,7 @@ The optional `COUNT` can be used to specify the number of elements to pop, and i
 
 The number of popped elements is the minimum from the sorted set's cardinality and `COUNT`'s value.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> ZMPOP 1 notsuchkey MIN

@@ -10,7 +10,7 @@ Each reported event has the following fields:
 "All-time" means the maximum latency since the Valkey instance was
 started, or the time that events were reset `LATENCY RESET`.
 
-@examples
+## Examples
 
 ```
 127.0.0.1:6379> debug sleep 1

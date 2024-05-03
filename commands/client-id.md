@@ -7,7 +7,7 @@ ID has certain guarantees:
 This command is especially useful together with `CLIENT UNBLOCK`.
 Check the `CLIENT UNBLOCK` command page for a pattern involving the two commands.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> CLIENT ID

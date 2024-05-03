@@ -3,7 +3,7 @@ For every key that does not hold a string value or does not exist, the special
 value `nil` is returned.
 Because of this, the operation never fails.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> SET key1 "Hello"

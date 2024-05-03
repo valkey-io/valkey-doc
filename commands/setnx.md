@@ -3,7 +3,7 @@ In that case, it is equal to `SET`.
 When `key` already holds a value, no operation is performed.
 `SETNX` is short for "**SET** if **N**ot e**X**ists".
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> SETNX mykey "Hello"

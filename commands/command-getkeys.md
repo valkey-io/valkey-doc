@@ -7,7 +7,7 @@ from a full Valkey command.
 but in some cases it's not possible to find keys of certain commands and then the entire command must be parsed to discover some / all key names.
 You can use `COMMAND GETKEYS` or `COMMAND GETKEYSANDFLAGS` to discover key names directly from how Valkey parses the commands.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> COMMAND GETKEYS MSET a b c d e f

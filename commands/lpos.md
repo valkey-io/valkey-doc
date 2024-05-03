@@ -57,7 +57,7 @@ Finally, the `MAXLEN` option tells the command to compare the provided element o
 
 When `MAXLEN` is used, it is possible to specify 0 as the maximum number of comparisons, as a way to tell the command we want unlimited comparisons. This is better than giving a very large `MAXLEN` option because it is more general.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> RPUSH mylist a b c d 1 2 3 4 3 3 3

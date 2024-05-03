@@ -72,7 +72,7 @@ Will add a new entry but will also evict old entries so that the stream will con
 For further information about streams please check our
 [introduction to Streams document](../topics/streams-intro.md).
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> XADD mystream * name Sara surname OConnor

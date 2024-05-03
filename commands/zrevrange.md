@@ -4,7 +4,7 @@ Descending lexicographical order is used for elements with equal score.
 
 Apart from the reversed ordering, `ZREVRANGE` is similar to `ZRANGE`.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> ZADD myzset 1 "one"

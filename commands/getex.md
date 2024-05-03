@@ -11,7 +11,7 @@ The `GETEX` command supports a set of options that modify its behavior:
 * `PXAT` *timestamp-milliseconds* -- Set the specified Unix time at which the key will expire, in milliseconds.
 * `PERSIST` -- Remove the time to live associated with the key.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> SET mykey "Hello"

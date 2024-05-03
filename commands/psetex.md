@@ -1,7 +1,7 @@
 `PSETEX` works exactly like `SETEX` with the sole difference that the expire
 time is specified in milliseconds instead of seconds.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> PSETEX mykey 1000 "Hello"

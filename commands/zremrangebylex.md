@@ -2,7 +2,7 @@ When all the elements in a sorted set are inserted with the same score, in order
 
 The meaning of `min` and `max` are the same of the `ZRANGEBYLEX` command. Similarly, this command actually removes the same elements that `ZRANGEBYLEX` would return if called with the same `min` and `max` arguments.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> ZADD myzset 0 aaaa 0 b 0 c 0 d 0 e

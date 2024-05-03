@@ -8,7 +8,7 @@ index for the destination key.
 The command returns zero when the `destination` key already exists. The
 `REPLACE` option removes the `destination` key before copying the value to it.
 
-@examples
+## Examples
 
 ```
 SET dolly "sheep"

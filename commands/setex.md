@@ -8,7 +8,7 @@ SET key value EX seconds
 
 An error is returned when `seconds` is invalid.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> SETEX mykey 10 "Hello"

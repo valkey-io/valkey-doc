@@ -69,7 +69,7 @@ The sentinel output is composed of the following parts:
 1. The string `sentinel`.
 2. An array of master names monitored by this Sentinel instance.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> ROLE

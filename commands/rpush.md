@@ -10,7 +10,7 @@ leftmost element to the rightmost element.
 So for instance the command `RPUSH mylist a b c` will result into a list
 containing `a` as first element, `b` as second element and `c` as third element.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> RPUSH mylist "hello"

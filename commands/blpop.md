@@ -76,7 +76,7 @@ thing that happens when the timeout is reached.
 If you like science fiction, think of time flowing at infinite speed inside a
 `MULTI` / `EXEC` block...
 
-@examples
+## Examples
 
 ```
 valkey> DEL list1 list2

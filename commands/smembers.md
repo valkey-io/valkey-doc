@@ -2,7 +2,7 @@ Returns all the members of the set value stored at `key`.
 
 This has the same effect as running `SINTER` with one argument `key`.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> SADD myset "Hello"

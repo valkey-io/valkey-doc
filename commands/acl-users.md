@@ -1,7 +1,7 @@
 The command shows a list of all the usernames of the currently configured
 users in the Valkey ACL system.
 
-@examples
+## Examples
 
 ```
 > ACL USERS

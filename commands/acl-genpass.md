@@ -25,7 +25,7 @@ rounded to the next multiple of 4. So for instance asking for just 1
 bit password will result in 4 bits to be emitted, in the form of a single
 hex character.
 
-@examples
+## Examples
 
 ```
 > ACL GENPASS

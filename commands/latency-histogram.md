@@ -20,7 +20,7 @@ If you need to enable it, call `CONFIG SET latency-tracking yes`.
 
 To delete the latency histograms' data use the `CONFIG RESETSTAT` command.
 
-@examples
+## Examples
 
 ```
 127.0.0.1:6379> LATENCY HISTOGRAM set

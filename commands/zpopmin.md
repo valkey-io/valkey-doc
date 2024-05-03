@@ -6,7 +6,7 @@ value that is higher than the sorted set's cardinality will not produce an
 error. When returning multiple elements, the one with the lowest score will
 be the first, followed by the elements with greater scores.
 
-@examples
+## Examples
 
 ```valkey-cli
 127.0.0.1:6379> ZADD myzset 1 "one"
