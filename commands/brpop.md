@@ -8,7 +8,7 @@ See the [BLPOP documentation][cb] for the exact semantics, since `BRPOP` is
 identical to `BLPOP` with the only difference being that it pops elements from
 the tail of a list instead of popping from the head.
 
-[cb]: /commands/blpop
+[cb]: blpop.md
 
 ## Examples
 
