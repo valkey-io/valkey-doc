@@ -15,12 +15,12 @@ Since Valkey keys are strings, when we use the string type as a value too,
 we are mapping a string to another string. The string data type is useful
 for a number of use cases, like caching HTML fragments or pages.
 
-{{< clients-example set_tutorial set_get >}}
-    > SET bike:1 Deimos
-    OK
-    > GET bike:1
-    "Deimos"
-{{< /clients-example >}}
+```valkey-cli
+127.0.0.1:6379> SET bike:1 Deimos
+OK
+127.0.0.1:6379> GET bike:1
+"Deimos"
+```
 
 As you can see using the `SET` and the `GET` commands are the way we set
 and retrieve a string value. Note that `SET` will replace any existing value
@@ -34,12 +34,12 @@ The `SET` command has interesting options, that are provided as additional
 arguments. For example, I may ask `SET` to fail if the key already exists,
 or the opposite, that it only succeed if the key already exists:
 
-{{< clients-example set_tutorial setnx_xx >}}
-    > set bike:1 bike nx
-    (nil)
-    > set bike:1 bike xx
-    OK
-{{< /clients-example >}}
+```valkey-cli
+127.0.0.1:6379> set bike:1 bike nx
+(nil)
+127.0.0.1:6379> set bike:1 bike xx
+OK
+```
 
 There are a number of other commands for operating on strings. For example
 the `GETSET` command sets a key to a new value, returning the old value as the
@@ -54,14 +54,14 @@ The ability to set or retrieve the value of multiple keys in a single
 command is also useful for reduced latency. For this reason there are
 the `MSET` and `MGET` commands:
 
-{{< clients-example set_tutorial mset >}}
-    > mset bike:1 "Deimos" bike:2 "Ares" bike:3 "Vanth"
-    OK
-    > mget bike:1 bike:2 bike:3
-    1) "Deimos"
-    2) "Ares"
-    3) "Vanth"
-{{< /clients-example >}}
+```valkey-cli
+127.0.0.1:6379> mset bike:1 "Deimos" bike:2 "Ares" bike:3 "Vanth"
+OK
+127.0.0.1:6379> mget bike:1 bike:2 bike:3
+1) "Deimos"
+2) "Ares"
+3) "Vanth"
+```
 
 When `MGET` is used, Valkey returns an array of values.
 
@@ -69,14 +69,14 @@ When `MGET` is used, Valkey returns an array of values.
 Even if strings are the basic values of Valkey, there are interesting operations
 you can perform with them. For instance, one is atomic increment:
 
-{{< clients-example set_tutorial incr >}}
-    > set total_crashes 0
-    OK
-    > incr total_crashes
-    (integer) 1
-    > incrby total_crashes 10
-    (integer) 11
-{{< /clients-example >}}
+```valkey-cli
+127.0.0.1:6379> set total_crashes 0
+OK
+127.0.0.1:6379> incr total_crashes
+(integer) 1
+127.0.0.1:6379> incrby total_crashes 10
+(integer) 11
+```
 
 The `INCR` command parses the string value as an integer,
 increments it by one, and finally sets the obtained value as the new value.

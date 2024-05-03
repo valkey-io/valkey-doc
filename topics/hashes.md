@@ -9,14 +9,14 @@ description: >
 Hashes are record types structured as collections of field-value pairs.
 You can use hashes to represent basic objects and to store groupings of counters, among other things.
 
-{{< clients-example hash_tutorial set_get_all >}}
-> HSET bike:1 model Deimos brand Ergonom type 'Enduro bikes' price 4972
+```valkey-cli
+127.0.0.1:6379> HSET bike:1 model Deimos brand Ergonom type 'Enduro bikes' price 4972
 (integer) 4
-> HGET bike:1 model
+127.0.0.1:6379> HGET bike:1 model
 "Deimos"
-> HGET bike:1 price
+127.0.0.1:6379> HGET bike:1 price
 "4972"
-> HGETALL bike:1
+127.0.0.1:6379> HGETALL bike:1
 1) "model"
 2) "Deimos"
 3) "brand"
@@ -25,8 +25,7 @@ You can use hashes to represent basic objects and to store groupings of counters
 6) "Enduro bikes"
 7) "price"
 8) "4972"
-
-{{< /clients-example >}}
+```
 
 While hashes are handy to represent *objects*, actually the number of fields you can
 put inside a hash has no practical limits (other than available memory), so you can use
@@ -35,22 +34,22 @@ hashes in many different ways inside your application.
 The command `HSET` sets multiple fields of the hash, while `HGET` retrieves
 a single field. `HMGET` is similar to `HGET` but returns an array of values:
 
-{{< clients-example hash_tutorial hmget >}}
-> HMGET bike:1 model price no-such-field
+```valkey-cli
+127.0.0.1:6379> HMGET bike:1 model price no-such-field
 1) "Deimos"
 2) "4972"
 3) (nil)
-{{< /clients-example >}}
+```
 
 There are commands that are able to perform operations on individual fields
 as well, like `HINCRBY`:
 
-{{< clients-example hash_tutorial hincrby >}}
-> HINCRBY bike:1 price 100
+```valkey-cli
+127.0.0.1:6379> HINCRBY bike:1 price 100
 (integer) 5072
-> HINCRBY bike:1 price -100
+127.0.0.1:6379> HINCRBY bike:1 price -100
 (integer) 4972
-{{< /clients-example >}}
+```
 
 You can find the [full list of hash commands in the documentation](https://redis.io/commands#hash).
 
@@ -70,23 +69,23 @@ See the [complete list of hash commands](../commands/?group=hash).
 ## Examples
 
 * Store counters for the number of times bike:1 has been ridden, has crashed, or has changed owners:
-{{< clients-example hash_tutorial incrby_get_mget >}}
-> HINCRBY bike:1:stats rides 1
+```valkey-cli
+127.0.0.1:6379> HINCRBY bike:1:stats rides 1
 (integer) 1
-> HINCRBY bike:1:stats rides 1
+127.0.0.1:6379> HINCRBY bike:1:stats rides 1
 (integer) 2
-> HINCRBY bike:1:stats rides 1
+127.0.0.1:6379> HINCRBY bike:1:stats rides 1
 (integer) 3
-> HINCRBY bike:1:stats crashes 1
+127.0.0.1:6379> HINCRBY bike:1:stats crashes 1
 (integer) 1
-> HINCRBY bike:1:stats owners 1
+127.0.0.1:6379> HINCRBY bike:1:stats owners 1
 (integer) 1
-> HGET bike:1:stats rides
+127.0.0.1:6379> HGET bike:1:stats rides
 "3"
-> HMGET bike:1:stats owners crashes
+127.0.0.1:6379> HMGET bike:1:stats owners crashes
 1) "1"
 2) "1"
-{{< /clients-example >}}
+```
 
 
 ## Performance

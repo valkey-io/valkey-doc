@@ -27,36 +27,36 @@ See the [complete list of set commands](../commands/?group=set).
 
 * Store the sets of bikes racing in France and the USA. Note that 
 if you add a member that already exists, it will be ignored. 
-{{< clients-example sets_tutorial sadd >}}
-> SADD bikes:racing:france bike:1
+```valkey-cli
+127.0.0.1:6379> SADD bikes:racing:france bike:1
 (integer) 1
-> SADD bikes:racing:france bike:1
+127.0.0.1:6379> SADD bikes:racing:france bike:1
 (integer) 0
-> SADD bikes:racing:france bike:2 bike:3
+127.0.0.1:6379> SADD bikes:racing:france bike:2 bike:3
 (integer) 2
-> SADD bikes:racing:usa bike:1 bike:4
+127.0.0.1:6379> SADD bikes:racing:usa bike:1 bike:4
 (integer) 2
-{{< /clients-example >}}
+```
 
 * Check whether bike:1 or bike:2 are racing in the US.
-{{< clients-example sets_tutorial sismember >}}
-> SISMEMBER bikes:racing:usa bike:1
+```valkey-cli
+127.0.0.1:6379> SISMEMBER bikes:racing:usa bike:1
 (integer) 1
-> SISMEMBER bikes:racing:usa bike:2
+127.0.0.1:6379> SISMEMBER bikes:racing:usa bike:2
 (integer) 0
-{{< /clients-example >}}
+```
 
 * Which bikes are competing in both races?
-{{< clients-example sets_tutorial sinter >}}
-> SINTER bikes:racing:france bikes:racing:usa
+```valkey-cli
+127.0.0.1:6379> SINTER bikes:racing:france bikes:racing:usa
 1) "bike:1"
-{{< /clients-example >}}
+```
 
 * How many bikes are racing in France?
-{{< clients-example sets_tutorial scard >}}
-> SCARD bikes:racing:france
+```valkey-cli
+127.0.0.1:6379> SCARD bikes:racing:france
 (integer) 3
-{{< /clients-example >}}
+```
 ## Tutorial
 
 The `SADD` command adds new elements to a set. It's also possible
@@ -64,14 +64,14 @@ to do a number of other operations against sets like testing if a given element
 already exists, performing the intersection, union or difference between
 multiple sets, and so forth.
 
-{{< clients-example sets_tutorial sadd_smembers >}}
-> SADD bikes:racing:france bike:1 bike:2 bike:3
+```valkey-cli
+127.0.0.1:6379> SADD bikes:racing:france bike:1 bike:2 bike:3
 (integer) 3
-> SMEMBERS bikes:racing:france
+127.0.0.1:6379> SMEMBERS bikes:racing:france
 1) bike:3
 2) bike:1
 3) bike:2
-{{< /clients-example >}}
+```
 
 Here I've added three elements to my set and told Valkey to return all the
 elements. There is no order guarantee with a set. Valkey is free to return the
@@ -79,25 +79,25 @@ elements in any order at every call.
 
 Valkey has commands to test for set membership. These commands can be used on single as well as multiple items:
 
-{{< clients-example sets_tutorial smismember >}}
-> SISMEMBER bikes:racing:france bike:1
+```valkey-cli
+127.0.0.1:6379> SISMEMBER bikes:racing:france bike:1
 (integer) 1
-> SMISMEMBER bikes:racing:france bike:2 bike:3 bike:4
+127.0.0.1:6379> SMISMEMBER bikes:racing:france bike:2 bike:3 bike:4
 1) (integer) 1
 2) (integer) 1
 3) (integer) 0
-{{< /clients-example >}}
+```
 
 We can also find the difference between two sets. For instance, we may want
 to know which bikes are racing in France but not in the USA:
 
-{{< clients-example sets_tutorial sdiff >}}
-> SADD bikes:racing:usa bike:1 bike:4
+```valkey-cli
+127.0.0.1:6379> SADD bikes:racing:usa bike:1 bike:4
 (integer) 2
-> SDIFF bikes:racing:france bikes:racing:usa
+127.0.0.1:6379> SDIFF bikes:racing:france bikes:racing:usa
 1) "bike:3"
 2) "bike:2"
-{{< /clients-example >}}
+```
 
 There are other non trivial operations that are still easy to implement
 using the right Valkey commands. For instance we may want a list of all the
@@ -107,28 +107,28 @@ sets. In addition to intersection you can also perform
 unions, difference, and more. For example 
 if we add a third race we can see some of these commands in action:
 
-{{< clients-example sets_tutorial multisets >}}
-> SADD bikes:racing:france bike:1 bike:2 bike:3
+```valkey-cli
+127.0.0.1:6379> SADD bikes:racing:france bike:1 bike:2 bike:3
 (integer) 3
-> SADD bikes:racing:usa bike:1 bike:4
+127.0.0.1:6379> SADD bikes:racing:usa bike:1 bike:4
 (integer) 2
-> SADD bikes:racing:italy bike:1 bike:2 bike:3 bike:4
+127.0.0.1:6379> SADD bikes:racing:italy bike:1 bike:2 bike:3 bike:4
 (integer) 4
-> SINTER bikes:racing:france bikes:racing:usa bikes:racing:italy
+127.0.0.1:6379> SINTER bikes:racing:france bikes:racing:usa bikes:racing:italy
 1) "bike:1"
-> SUNION bikes:racing:france bikes:racing:usa bikes:racing:italy
+127.0.0.1:6379> SUNION bikes:racing:france bikes:racing:usa bikes:racing:italy
 1) "bike:2"
 2) "bike:1"
 3) "bike:4"
 4) "bike:3"
-> SDIFF bikes:racing:france bikes:racing:usa bikes:racing:italy
+127.0.0.1:6379> SDIFF bikes:racing:france bikes:racing:usa bikes:racing:italy
 (empty array)
-> SDIFF bikes:racing:france bikes:racing:usa
+127.0.0.1:6379> SDIFF bikes:racing:france bikes:racing:usa
 1) "bike:3"
 2) "bike:2"
-> SDIFF bikes:racing:usa bikes:racing:france
+127.0.0.1:6379> SDIFF bikes:racing:usa bikes:racing:france
 1) "bike:4"
-{{< /clients-example >}}
+```
 
 You'll note that the `SDIFF` command returns an empty array when the
 difference between all sets is empty. You'll also note that the order of sets
@@ -139,20 +139,20 @@ remove one or more items from a set, or you can use the `SPOP` command to
 remove a random item from a set. You can also _return_ a random item from a
 set without removing it using the `SRANDMEMBER` command:
 
-{{< clients-example sets_tutorial srem >}}
-> SADD bikes:racing:france bike:1 bike:2 bike:3 bike:4 bike:5
+```valkey-cli
+127.0.0.1:6379> SADD bikes:racing:france bike:1 bike:2 bike:3 bike:4 bike:5
 (integer) 5
-> SREM bikes:racing:france bike:1
+127.0.0.1:6379> SREM bikes:racing:france bike:1
 (integer) 1
-> SPOP bikes:racing:france
+127.0.0.1:6379> SPOP bikes:racing:france
 "bike:3"
-> SMEMBERS bikes:racing:france
+127.0.0.1:6379> SMEMBERS bikes:racing:france
 1) "bike:2"
 2) "bike:4"
 3) "bike:5"
-> SRANDMEMBER bikes:racing:france
+127.0.0.1:6379> SRANDMEMBER bikes:racing:france
 "bike:2"
-{{< /clients-example >}}
+```
 
 ## Limits
 
