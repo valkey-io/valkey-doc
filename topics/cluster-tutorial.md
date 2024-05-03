@@ -166,12 +166,11 @@ However, if the partition lasts enough time for B1 to be promoted to master
 on the majority side of the partition, the writes that Z1 has sent to B
 in the meantime will be lost.
 
-{{% alert title="Note" color="info" %}}
+**Note:**
 There is a **maximum window** to the amount of writes Z1 will be able
 to send to B: if enough time has elapsed for the majority side of the
 partition to elect a replica as master, every master node in the minority
 side will have stopped accepting writes.
-{{% /alert %}}
 
 This amount of time is a very important configuration directive of Valkey
 Cluster, and is called the **node timeout**.
@@ -347,10 +346,9 @@ valkey 127.0.0.1:7002> get hello
 "world"
 ```
 
-{{% alert title="Note" color="info" %}} 
+**Note:**
 If you created the cluster using the script, your nodes may listen
 on different ports, starting from 30001 by default.
-{{% /alert %}}
 
 The `valkey-cli` cluster support is very basic, so it always uses the fact that
 Valkey Cluster nodes are able to redirect a client to the right node.
@@ -634,10 +632,9 @@ To trigger the failover, the simplest thing we can do (that is also
 the semantically simplest failure that can occur in a distributed system)
 is to crash a single process, in our case a single master.
 
-{{% alert title="Note" color="info" %}} 
+**Note:**
 During this test, you should take a tab open with the consistency test
 application running.
-{{% /alert %}} 
 
 We can identify a master and crash it with the following command:
 
@@ -744,11 +741,10 @@ the failover starts, and the old master is informed about the configuration
 switch. When the clients are unblocked on the old master, they are redirected
 to the new master.
 
-{{% alert title="Note" color="info" %}} 
+**Note:**
 To promote a replica to master, it must first be known as a replica by a majority of the masters in the cluster.
   Otherwise, it cannot win the failover election.
   If the replica has just been added to the cluster (see [Add a new node as a replica](#add-a-new-node-as-a-replica)), you may need to wait a while before sending the `CLUSTER FAILOVER` command, to make sure the masters in cluster are aware of the new replica.
-{{% /alert %}} 
 
 #### Add a new node
 
@@ -895,10 +891,9 @@ master to another one automatically, without the help of the system administrato
 The automatic reconfiguration of replicas is called *replicas migration* and is
 able to improve the reliability of a Valkey Cluster.
 
-{{% alert title="Note" color="info" %}} 
+**Note:**
 You can read the details of replicas migration in the [Valkey Cluster Specification](cluster-spec.md), here we'll only provide some information about the
 general idea and what you should do in order to benefit from it.
-{{% /alert %}} 
 
 The reason why you may want to let your cluster replicas to move from one master
 to another under certain condition, is that usually the Valkey Cluster is as
@@ -994,9 +989,8 @@ Cluster, which is to use the `valkey-cli --cluster import` command.
 The command moves all the keys of a running instance (deleting the keys from
 the source instance) to the specified pre-existing Valkey Cluster. 
 
-{{% alert title="Note" color="info" %}} 
+**Note:**
 If not for backward compatibility, the Valkey project no longer uses the word slave. Unfortunately in this command the word slave is part of the protocol, so we'll be able to remove such occurrences only when this API will be naturally deprecated.
-{{% /alert %}} 
 
 ## Learn more
 

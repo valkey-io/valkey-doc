@@ -108,9 +108,8 @@ Running Valkey from the command line is fine just to hack a bit or for developme
 
 A proper install using an init script is strongly recommended. 
 
-{{% alert title="Note" color="warning" %}}
+**Note:**
 The available packages for supported Linux distributions already include the capability of starting the Valkey server from `/etc/init`.
-{{% /alert  %}}
 
 If you have not yet run `make install` after building the Valkey source, you will need to do so before continuing. By default, `make install` will copy the `valkey-server` and `valkey-cli` binaries to `/usr/local/bin`.
 
@@ -174,9 +173,8 @@ Make sure that everything is working as expected:
 3. Check that your Valkey instance is logging to the `/var/log/valkey_6379.log` file.
 4. If it's a new machine where you can try it without problems, make sure that after a reboot everything is still working.
 
-{{% alert title="Note" color="warning" %}}
+**Note:**
 The above instructions don't include all of the Valkey configuration parameters that you could change. For example, to use AOF persistence instead of RDB persistence, or to set up replication, and so forth.
-{{% /alert  %}}
 
 You should also read the example [valkey.conf](https://github.com/valkey-io/valkey/blob/unstable/valkey.conf) file, which is heavily annotated to help guide you on making changes. Further details can also be found in the [configuration article on this site](config.md).
 
