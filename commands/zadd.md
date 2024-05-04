@@ -46,7 +46,7 @@ that can also be used to verify if an element already exists or not.
 For an introduction to sorted sets, see the data types page on [sorted
 sets][tdtss].
 
-[tdtss]: /topics/data-types#sorted-sets
+[tdtss]: ../topics/data-types.md#sorted-sets
 
 Elements with the same score
 ---

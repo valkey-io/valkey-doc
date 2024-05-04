@@ -129,7 +129,7 @@ Itamar Haber from Redis Labs, Zhao Zhao from Alibaba and Madelyn Olson from
 Amazon. The members were selected “based on demonstrated, long-term personal
 involvement and contributions”. This was described in the projects
 [Governance][governance-2020] page which was the inspiration for the current
-[Valkey governance](valkey-governance).
+[Valkey governance][valkey-governance].
 
 [governance-2020]: https://web.archive.org/web/20200709170526/https://redis.io/topics/governance
 [valkey-governance]: https://github.com/valkey-io/valkey/blob/unstable/GOVERNANCE.md

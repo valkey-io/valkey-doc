@@ -29,7 +29,7 @@ Note that calling `EXPIRE`/`PEXPIRE` with a non-positive timeout or
 will be `del`, not `expired`).
 
 [del]: del.md
-[ntf]: /topics/notifications
+[ntf]: ../topics/notifications.md
 
 ## Options
 

@@ -189,10 +189,10 @@ This is an array containing all of the command's subcommands, if any.
 Some Valkey commands have subcommands (e.g., the `REWRITE` subcommand of `CONFIG`).
 Each element in the array represents one subcommand and follows the same specifications as those of `COMMAND`'s reply.
 
-[ta]: /topics/acl
-[tb]: /topics/command-tips
-[td]: /topics/key-specs
-[tr]: /topics/key-specs
+[ta]: ../topics/acl.md
+[tb]: ../topics/command-tips.md
+[td]: ../topics/key-specs.md
+[tr]: ../topics/key-specs.md
 
 ## Examples
 

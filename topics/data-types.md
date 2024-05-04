@@ -103,6 +103,6 @@ The [HyperLogLog](hyperloglogs.md) data structures provide probabilistic estimat
 To extend the features provided by the included data types, use one of these options:
 
 1. Write your own custom [server-side functions in Lua](programmability.md).
-1. Write your own Valkey module using the [modules API](modules-intro.md) or check out the [community-supported modules](../resources/modules/).
+1. Write your own Valkey module using the [modules API](modules-intro.md) or check out the [community-supported modules](../modules/).
 
 <hr>

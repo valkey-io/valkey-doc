@@ -57,4 +57,4 @@ in the lower row) is the minimum, and a # in the higher row is the maximum.
 
 For more information refer to the [Latency Monitoring Framework page][lm].
 
-[lm]: /topics/latency-monitor
+[lm]: ../topics/latency-monitor.md

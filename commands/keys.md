@@ -14,7 +14,7 @@ Don't use `KEYS` in your regular application code.
 If you're looking for a way to find keys in a subset of your keyspace, consider
 using `SCAN` or [sets][tdts].
 
-[tdts]: /topics/data-types#sets
+[tdts]: ../topics/data-types.md#sets
 
 Supported glob-style patterns:
 

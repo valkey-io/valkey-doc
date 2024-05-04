@@ -16,11 +16,13 @@ The examples in this article refer to a simple bicycle inventory.
 
 ## Setup
 
-See the [installation guides](/docs/install/install-redis/) to install Valkey on your local machine.
+See the [installation guides](installation.md) to install Valkey on your local machine.
 
 ## Connect
 
-The first step is to connect to Valkey. You can find further details about the connection options in this documentation site's [connection section](/docs/connect/). The following example shows how to connect to a Valkey server that runs on localhost (`-h 127.0.0.1`) and listens on the default port (`-p 6379`): 
+The first step is to connect to Valkey. There are client connectors for [most programming languages](../clients/).
+You can also connect using [valkey-cli][cli.md], the command line interface.
+The following example shows how to connect to a Valkey server that runs on localhost (`-h 127.0.0.1`) and listens on the default port (`-p 6379`):
 
 ```sh
 $ valkey-cli -h 127.0.0.1 -p 6379
@@ -59,7 +61,7 @@ Hashes are the equivalent of dictionaries (dicts or hash maps). Among other thin
 8) "4972"
 ```
 
-You can get a complete overview of available data types in this documentation site's [data types section](/docs/data-types/). Each data type has commands allowing you to manipulate or retrieve data. The [commands reference](../commands/) provides a sophisticated explanation.
+You can get a complete overview of available data types in this documentation site's [data types section](data-types.md). Each data type has commands allowing you to manipulate or retrieve data. The [commands reference](../commands/) provides a sophisticated explanation.
 
 ## Scan the keyspace
 

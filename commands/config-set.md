@@ -24,7 +24,7 @@ It is possible to switch persistence from RDB snapshotting to append-only file
 For more information about how to do that please check the [persistence
 page][tp].
 
-[tp]: /topics/persistence
+[tp]: ../topics/persistence.md
 
 In general what you should know is that setting the `appendonly` parameter to
 `yes` will start a background process to save the initial append-only file

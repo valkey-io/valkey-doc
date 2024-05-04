@@ -7,4 +7,4 @@ stream from the master. It has been replaced in newer versions of Valkey by
 For more information about replication in Valkey please check the
 [replication page][tr].
 
-[tr]: /topics/replication
+[tr]: ../topics/replication.md

@@ -27,4 +27,4 @@ OK
 
 For more information refer to the [Latency Monitoring Framework page][lm].
 
-[lm]: /topics/latency-monitor
+[lm]: ../topics/latency-monitor.md
