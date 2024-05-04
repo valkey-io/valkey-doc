@@ -21,7 +21,7 @@ If you'd like to try a comprehensive tutorial for each data structure, see their
 For more information, see:
 
 * [Overview of Strings](strings.md)
-* [String command reference](../commands/?group=string)
+* [String command reference](../commands/#string)
 
 ## Lists
 
@@ -29,7 +29,7 @@ For more information, see:
 For more information, see:
 
 * [Overview of Lists](lists.md)
-* [List command reference](../commands/?group=list)
+* [List command reference](../commands/#list)
 
 ## Sets
 
@@ -38,7 +38,7 @@ With a Set, you can add, remove, and test for existence in O(1) time (in other w
 For more information, see:
 
 * [Overview of Sets](sets.md)
-* [Set command reference](../commands/?group=set)
+* [Set command reference](../commands/#set)
 
 ## Hashes
 
@@ -47,7 +47,7 @@ As such, Hashes resemble [Python dictionaries](https://docs.python.org/3/tutoria
 For more information, see:
 
 * [Overview of Hashes](hashes.md)
-* [Hashes command reference](../commands/?group=hash)
+* [Hashes command reference](../commands/#hash)
 
 ## Sorted sets
 
@@ -55,7 +55,7 @@ For more information, see:
 For more information, see:
 
 * [Overview of Sorted Sets](sorted-sets.md)
-* [Sorted Set command reference](../commands/?group=sorted-set)
+* [Sorted Set command reference](../commands/#sorted-set)
 
 ## Streams
 
@@ -64,7 +64,7 @@ Streams help record events in the order they occur and then syndicate them for p
 For more information, see:
 
 * [Overview of Streams](streams-intro.md)
-* [Streams command reference](../commands/?group=stream)
+* [Streams command reference](../commands/#stream)
 
 ## Geospatial indexes
 
@@ -72,7 +72,7 @@ For more information, see:
 For more information, see:
 
 * [Overview of Geospatial indexes](geospatial.md)
-* [Geospatial indexes command reference](../commands/?group=geo)
+* [Geospatial indexes command reference](../commands/#geo)
 
 ## Bitmaps
 
@@ -80,7 +80,7 @@ For more information, see:
 For more information, see:
 
 * [Overview of Bitmaps](bitmaps.md)
-* [Bitmap command reference](../commands/?group=bitmap)
+* [Bitmap command reference](../commands/#bitmap)
 
 ## Bitfields
 
@@ -96,7 +96,7 @@ For more information, see:
 The [HyperLogLog](hyperloglogs.md) data structures provide probabilistic estimates of the cardinality (i.e., number of elements) of large sets. For more information, see:
 
 * [Overview of HyperLogLog](hyperloglogs.md)
-* [HyperLogLog command reference](../commands/?group=hyperloglog)
+* [HyperLogLog command reference](../commands/#hyperloglog)
 
 ## Extensions
 

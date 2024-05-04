@@ -30,7 +30,7 @@ For example:
 * `BLMOVE` atomically moves elements from a source list to a target list.
   If the source list is empty, the command will block until a new element becomes available.
 
-See the [complete series of list commands](../commands/?group=list).
+See the [complete series of list commands](../commands/#list).
 
 ## Examples
 
