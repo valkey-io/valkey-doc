@@ -64,7 +64,7 @@ This is the simplest model possible; however, there are some exceptions:
 * The `MONITOR` command.
   Invoking the `MONITOR` command switches the connection to an ad-hoc push mode.
   The protocol of this mode is not specified but is obvious to parse.
-* [Protected mode](/docs/management/security/#protected-mode).
+* [Protected mode](security.md#protected-mode).
   Connections opened from a non-loopback address to a Valkey while in protected mode are denied and terminated by the server.
   Before terminating the connection, Valkey unconditionally sends a `-DENIED` reply, regardless of whether the client writes to the socket.
 * The [RESP3 Push type](#resp3-pushes).

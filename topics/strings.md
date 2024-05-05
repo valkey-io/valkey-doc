@@ -115,7 +115,7 @@ By default, a single String can be a maximum of 512 MB.
 
 To perform bitwise operations on a string, see the [bitmaps data type](bitmaps.md) docs.
 
-See the [complete list of string commands](../commands/?group=string).
+See the [complete list of string commands](../commands/#string).
 
 ## Performance
 

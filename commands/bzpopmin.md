@@ -12,7 +12,7 @@ See the [BLPOP documentation][cl] for the exact semantics, since `BZPOPMIN` is
 identical to `BLPOP` with the only difference being the data structure being
 popped from.
 
-[cl]: /commands/blpop
+[cl]: blpop.md
 
 ## Examples
 

@@ -18,7 +18,7 @@ When `key` already holds a value, no operation is performed.
 
 **Please note that:**
 
-1. The following pattern is discouraged in favor of [the Redlock algorithm](https://valkey.io/topics/distlock) which is only a bit more complex to implement, but offers better guarantees and is fault tolerant.
+1. The following pattern is discouraged in favor of [the Redlock algorithm](../topics/distlock.md) which is only a bit more complex to implement, but offers better guarantees and is fault tolerant.
 2. We document the old pattern anyway because certain existing implementations link to this page as a reference. Moreover it is an interesting example of how Valkey commands can be used in order to mount programming primitives.
 3. Anyway even assuming a single-instance locking primitive, starting with 2.6.12 it is possible to create a much simpler locking primitive, equivalent to the one discussed here, using the `SET` command to acquire the lock, and a simple Lua script to release the lock. The pattern is documented in the `SET` command page.
 

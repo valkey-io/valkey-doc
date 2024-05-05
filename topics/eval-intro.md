@@ -177,7 +177,7 @@ For example:
 ```
 
 In this case, the application should first load it with `SCRIPT LOAD` and then call `EVALSHA` once more to run the cached script by its SHA1 sum.
-Most of [Valkey' clients](/clients/) already provide utility APIs for doing that automatically.
+Most of [Valkey' clients](../clients/) already provide utility APIs for doing that automatically.
 Please consult your client's documentation regarding the specific details.
 
 ### `!EVALSHA` in the context of pipelining

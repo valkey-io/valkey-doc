@@ -35,7 +35,7 @@ OK
 
 ## Patterns
 
-**Note:** The following pattern is discouraged in favor of [the Redlock algorithm](https://valkey.io/topics/distlock) which is only a bit more complex to implement, but offers better guarantees and is fault tolerant.
+**Note:** The following pattern is discouraged in favor of [the Redlock algorithm](../topics/distlock.md) which is only a bit more complex to implement, but offers better guarantees and is fault tolerant.
 
 The command `SET resource-name anystring NX EX max-lock-time` is a simple way to implement a locking system with Valkey.
 
