@@ -36,6 +36,9 @@ Here is the meaning of the fields:
 * `resp`: client RESP protocol version.
 * `lib-name`: The client library name as set by `CLIENT SETINFO`
 * `lib-version`: The client library version as set by `CLIENT SETINFO`
+* `tot-net-in`: Total network input bytes read from this client. Added in Valkey 8.0
+* `tot-net-out`: Total network output bytes sent to this client. Added in Valkey 8.0
+* `tot-cmds`: Total count of commands this client executed. Added in Valkey 8.0
 
 The client flags can be a combination of:
 
