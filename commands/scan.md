@@ -197,6 +197,25 @@ OK
    2) "b"
 ```
 
+## The NOSCORES option
+
+When using `ZSCAN`, you can use the `NOSCORES` option to make Valkey return only the members in the sorted set without their corresponding scores.
+
+```
+127.0.0.1:6379> ZADD myzset 1 a 2 b
+(integer) 2
+127.0.0.1:6379> ZSCAN myzset 0
+1) "0"
+2) 1) "a"
+   2) "1"
+   3) "b"
+   4) "2"
+127.0.0.1:6379> ZSCAN myzset 0 NOSCORES
+1) "0"
+2) 1) "a"
+   2) "b"
+```
+
 ## Multiple parallel iterations
 
 It is possible for an infinite number of clients to iterate the same collection at the same time, as the full state of the iterator is in the cursor, that is obtained and returned to the client at every call. No server side state is taken at all.
