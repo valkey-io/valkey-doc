@@ -215,7 +215,7 @@ To monitor over time the RSS memory size it's possible to use the following comm
 ## Mass insertion of data using `valkey-cli`
 
 Mass insertion using `valkey-cli` is covered in a separate page as it is a
-worthwhile topic itself. Please refer to our [mass insertion guide]().
+worthwhile topic itself. Please refer to our [mass insertion guide](mass-insertion.md).
 
 ## CSV output
 
