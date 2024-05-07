@@ -184,7 +184,7 @@ When using `HSCAN`, you can use the `NOVALUES` option to make Valkey return only
 
 ```
 127.0.0.1:6379> HSET myhash a 1 b 2
-OK
+(integer) 2
 127.0.0.1:6379> HSCAN myhash 0
 1) "0"
 2) 1) "a"
