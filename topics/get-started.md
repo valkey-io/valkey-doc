@@ -11,8 +11,6 @@ aliases:
 
 Valkey can be used as a database, cache, streaming engine, message broker, and more. The following quick start guides will show you how to use Valkey for the following specific purposes:
 
-1. [Data structure store](data-store.md)
-
-Please select the guide that aligns best with your specific usage scenario.
+1. [Quick start](quickstart.md)
 
 You can find answers to frequently asked questions in the [FAQ](faq.md).

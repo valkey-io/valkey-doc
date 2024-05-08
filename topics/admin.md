@@ -45,7 +45,7 @@ aliases: [
 
 ### Security
 
-* By default, Valkey does not require any authentication and listens to all the network interfaces. This is a big security issue if you leave Valkey exposed on the internet or other places where attackers can reach it. See for example [this attack](http://antirez.com/news/96) to see how dangerous it can be. Please check our [security page](security.md) and the [quick start]() for information about how to secure Valkey.
+* By default, Valkey does not require any authentication and listens to all the network interfaces. This is a big security issue if you leave Valkey exposed on the internet or other places where attackers can reach it. See for example [this attack](http://antirez.com/news/96) to see how dangerous it can be. Please check our [security page](security.md) and the [quick start](quickstart.md) for information about how to secure Valkey.
 
 ## Running Valkey on EC2
 

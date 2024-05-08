@@ -21,7 +21,7 @@ See the [installation guides](installation.md) to install Valkey on your local m
 ## Connect
 
 The first step is to connect to Valkey. There are client connectors for [most programming languages](../clients/).
-You can also connect using [valkey-cli][cli.md], the command line interface.
+You can also connect using [valkey-cli](cli.md), the command line interface.
 The following example shows how to connect to a Valkey server that runs on localhost (`-h 127.0.0.1`) and listens on the default port (`-p 6379`):
 
 ```sh

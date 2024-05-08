@@ -77,6 +77,7 @@ Performance
 Tutorials & FAQ
 ---
 
+* [Quick start](quickstart.md): Get started with Valkey.
 * [Mass insertion of data](mass-insertion.md): How to add a big amount of data to a Valkey instance in a short time.
 * [Distributed locks](distlock.md): Implementing a distributed lock manager.
 * [Secondary indexes](indexing.md): How to simulate secondary indexes, composed indexes and traverse graphs using various data structures.
