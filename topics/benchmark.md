@@ -11,41 +11,187 @@ aliases: [
 ]
 ---
 
+## Usage
+
+**`valkey-benchmark`** [ _OPTIONS_ ] [ _COMMAND_ _ARGS_... ]
+
+## Description
+
 Valkey includes the `valkey-benchmark` utility that simulates running commands done
 by N clients while at the same time sending M total queries. The utility provides
 a default set of tests, or you can supply a custom set of tests.
 
-The following options are supported:
+## Options
 
-    Usage: valkey-benchmark [-h <host>] [-p <port>] [-c <clients>] [-n <requests]> [-k <boolean>]
+**`-h`** _hostname_
+: Server hostname (default 127.0.0.1)
 
-     -h <hostname>      Server hostname (default 127.0.0.1)
-     -p <port>          Server port (default 6379)
-     -s <socket>        Server socket (overrides host and port)
-     -a <password>      Password for Valkey Auth
-     -c <clients>       Number of parallel connections (default 50)
-     -n <requests>      Total number of requests (default 100000)
-     -d <size>          Data size of SET/GET value in bytes (default 3)
-     --dbnum <db>       SELECT the specified db number (default 0)
-     -k <boolean>       1=keep alive 0=reconnect (default 1)
-     -r <keyspacelen>   Use random keys for SET/GET/INCR, random values for SADD
-      Using this option the benchmark will expand the string __rand_int__
-      inside an argument with a 12 digits number in the specified range
-      from 0 to keyspacelen-1. The substitution changes every time a command
-      is executed. Default tests use this to hit random keys in the
-      specified range.
-     -P <numreq>        Pipeline <numreq> requests. Default 1 (no pipeline).
-     -q                 Quiet. Just show query/sec values
-     --csv              Output in CSV format
-     -l                 Loop. Run the tests forever
-     -t <tests>         Only run the comma separated list of tests. The test
-                        names are the same as the ones produced as output.
-     -I                 Idle mode. Just open N idle connections and wait.
+**`-p`** _port_
+: Server port (default 6379)
 
-You need to have a running Valkey instance before launching the benchmark.
-You can run the benchmarking utility like so:
+**`-s`** _socket_
+: Server socket (overrides host and port)
 
-    valkey-benchmark -q -n 100000
+**`-a`** _password_
+: Password for Valkey Auth
+
+**`--user`** _username_
+: Used to send ACL style 'AUTH username pass'. Needs -a.
+
+**`-u`** _uri_
+: Server URI on format `valkey://user:password@host:port/dbnum`.
+  User, password and dbnum are optional. For authentication
+  without a username, use username 'default'. For TLS, use
+  the scheme 'valkeys'.
+
+**`-c`** _clients_
+: Number of parallel connections (default 50).
+  Note: If `--cluster` is used then number of clients has to be
+  the same or higher than the number of nodes.
+
+**`-n`** _requests_
+: Total number of requests (default 100000)
+
+**`-d`** _size_
+: Data size of SET/GET value in bytes (default 3)
+
+**`--dbnum`** _db_
+: SELECT the specified db number (default 0)
+
+**`-3`**
+: Start session in RESP3 protocol mode.
+
+**`--threads`** _num_
+: Enable multi-thread mode.
+
+**`--cluster`**
+: Enable cluster mode.
+  If the command is supplied on the command line in cluster
+  mode, the key must contain "{tag}". Otherwise, the
+  command will not be sent to the right cluster node.
+
+**`--enable-tracking`**
+: Send CLIENT TRACKING ON before starting benchmark.
+
+**`-k`** _boolean_
+: 1=keep alive 0=reconnect (default 1)
+
+**`-r`** _keyspacelen_
+: Use random keys for SET/GET/INCR, random values for SADD,
+  random members and scores for ZADD.
+  Using this option the benchmark will expand the string
+  `__rand_int__` inside an argument with a 12 digits number in
+  the specified range from 0 to keyspacelen - 1. The
+  substitution changes every time a command is executed.
+  Default tests use this to hit random keys in the specified
+  range.
+  Note: If `-r` is omitted, all commands in a benchmark will
+  use the same key.
+
+**`-P`** _numreq_
+: Pipeline _numreq_ requests. Default 1 (no pipeline).
+
+**`-q`**
+: Quiet. Just show query/sec values
+
+**`--precision`**
+: Number of decimal places to display in latency output (default 0)
+
+**`--csv`**
+: Output in CSV format
+
+**`-l`**
+: Loop. Run the tests forever
+
+**`-t`** _tests_
+: Only run the comma separated list of tests. The test
+  names are the same as the ones produced as output.
+  The `-t` option is ignored if a specific command is supplied
+  on the command line.
+
+**`-I`**
+: Idle mode. Just open N idle connections and wait.
+
+**`-x`**
+: Read last argument from STDIN.
+
+**`--seed`** _num_
+: Set the seed for random number generator. Default seed is based on time.
+
+**`--tls`**
+: Establish a secure TLS connection.
+
+**`--sni`** _host_
+: Server name indication for TLS.
+
+**`--cacert`** _file_
+: CA Certificate file to verify with.
+
+**`--cacertdir`** _dir_
+: Directory where trusted CA certificates are stored.
+  If neither cacert nor cacertdir are specified, the default
+  system-wide trusted root certs configuration will apply.
+
+**`--insecure`**
+: Allow insecure TLS connection by skipping cert validation.
+
+**`--cert`** _file_
+: Client certificate to authenticate with.
+
+**`--key`** _file_
+: Private key file to authenticate with.
+
+**`--tls-ciphers`** _list_
+: Sets the list of preferred ciphers (TLSv1.2 and below)
+  in order of preference from highest to lowest separated by colon (":").
+  See the **ciphers**(1ssl) manpage for more information about the syntax of this string.
+
+**`--tls-ciphersuites`** _list_
+: Sets the list of preferred ciphersuites (TLSv1.3)
+  in order of preference from highest to lowest separated by colon (":").
+  See the **ciphers**(1ssl) manpage for more information about the syntax of this string,
+  and specifically for TLSv1.3 ciphersuites.
+
+**`--help`**
+: Output help and exit.
+
+**`--version`**
+: Output version and exit.
+
+## Examples
+
+Run the benchmark with the default configuration against 127.0.0.1:6379. You
+need to have a running Valkey instance before launching the benchmark:
+
+    $ valkey-benchmark
+
+Rung a benchmark with 20 parallel clients, pipelining 10 commands at a time,
+using 2 threads and less verbose output:
+
+    $ valkey-benchmark -c 20 -P 10 --threads 2 -q
+
+Use 20 parallel clients, for a total of 100k requests, against 192.168.1.1:
+
+    $ valkey-benchmark -h 192.168.1.1 -p 6379 -n 100000 -c 20
+
+Fill 127.0.0.1:6379 with about 1 million keys only using the SET test:
+
+    $ valkey-benchmark -t set -n 1000000 -r 100000000
+
+Benchmark 127.0.0.1:6379 for a few commands producing CSV output:
+
+    $ valkey-benchmark -t ping,set,get -n 100000 --csv
+
+Benchmark a specific command line:
+
+    $ valkey-benchmark -r 10000 -n 10000 eval 'return redis.call("ping")' 0
+
+Fill a list with 10000 random elements:
+
+    $ valkey-benchmark -r 10000 -n 10000 lpush mylist __rand_int__
+
+On user specified command lines `__rand_int__` is replaced with a random integer
+with a range of values selected by the `-r` option.
 
 ### Running only a subset of the tests
 
@@ -282,6 +428,11 @@ the generated log file on a remote filesystem.
 + Avoid using monitoring tools which can alter the result of the benchmark. For
 instance using INFO at regular interval to gather statistics is probably fine,
 but MONITOR will impact the measured performance significantly.
++ When running `valkey-benchmark` on the same machine as the `valkey-server`
+being tested, you may need to run the benchmark with at least two threads
+(`--threads 2`) to prevent the benchmarking tool itself from being the
+bottleneck, i.e. prevent that `valkey-benchmark` is running on 100% CPU while
+`valkey-server` is using less than 100% CPU.
 
 ### Other Valkey benchmarking tools
 
@@ -291,3 +442,7 @@ documentation for more information about its goals and capabilities.
 * [memtier_benchmark](https://github.com/redislabs/memtier_benchmark) from [Redis Ltd.](https://twitter.com/RedisInc) is a NoSQL Valkey, Redis and Memcache traffic generation and benchmarking tool.
 * [rpc-perf](https://github.com/twitter/rpc-perf) from [Twitter](https://twitter.com/twitter) is a tool for benchmarking RPC services that supports Valkey and Memcache.
 * [YCSB](https://github.com/brianfrankcooper/YCSB) from [Yahoo @Yahoo](https://twitter.com/Yahoo) is a benchmarking framework with clients to many databases, including Valkey. 
+
+## See also
+
+[valkey-cli](cli.md), [valkey-server](server.md)
