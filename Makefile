@@ -26,6 +26,10 @@ ifeq ("$(wildcard $(VALKEY_ROOT))","")
     $(error Please provide the VALKEY_ROOT variable pointing to the Valkey source code)
 endif
 
+ifeq ("$(shell which pandoc)","")
+    $(error Please install pandoc)
+endif
+
 # ---- Source files ----
 
 topics   = $(wildcard topics/*)
