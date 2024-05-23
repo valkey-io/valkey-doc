@@ -1,9 +1,11 @@
 #!/usr/bin/perl
 
-#
+# Copyright 2024 Viktor Söderqvist <viktor.soderqvist@est.tech>
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause#
+
 # Checks for intenal broken links. Checks some other things too, like orphan
 # pages (nobody links to the orphan page) and the number of external links.
-#
 
 use warnings;
 use strict;

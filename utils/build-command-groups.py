@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 
+# Copyright 2024 Viktor Söderqvist <viktor.soderqvist@est.tech>
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+
 import json
 import argparse
 import sys
