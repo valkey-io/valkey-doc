@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Copyright 2024 Viktor Söderqvist <viktor.soderqvist@est.tech>
+# Copyright (C) 2024, The Valkey contributors
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 

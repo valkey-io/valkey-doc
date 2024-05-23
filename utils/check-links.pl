@@ -1,16 +1,14 @@
 #!/usr/bin/perl
 
-# Copyright 2024 Viktor Söderqvist <viktor.soderqvist@est.tech>
+# Copyright (C) 2024, The Valkey contributors
 # All rights reserved.
-# SPDX-License-Identifier: BSD-3-Clause#
+# SPDX-License-Identifier: BSD-3-Clause
 
 # Checks for intenal broken links. Checks some other things too, like orphan
 # pages (nobody links to the orphan page) and the number of external links.
 
 use warnings;
 use strict;
-
-my $dry = 1; # dry run (enable for debugging)
 
 my $root = __FILE__ =~ s![^/]*$!!r . "../";
 $root =~ s%[^/\.]+/\.\./$%%;
@@ -22,9 +20,10 @@ for (@files) {
     $targets{$_} = 0;
 }
 
-my %generated_targets = ("commands/" => 0,
+my %directory_targets = ("commands/" => 0,
                          "clients/" => 0,
-                         "modules/" => 0);
+                         "modules/" => 0,
+                         "topics/" => 0);
 
 my ($num_abs_url, $num_abs_path, $num_broken, $num_valid, $num_generated) = (0,0,0,0,0);
 for (@files) {
@@ -32,11 +31,7 @@ for (@files) {
     next unless m!([^/]*)/([^/]*\.md)$!;
     my ($dir, $basename) = ($1, $2);
 
-    #print "$dir / $basename\n";
-    #exit;
-
     open(my $in, "<", $filename) or die "Can't open $filename: $!";
-    open(my $out, ">", "$filename~~~") or die "Can't create $filename~~~: $!" unless $dry;
     my $n = 0;
     for my $line (<$in>) {
         $n++;
@@ -66,15 +61,17 @@ for (@files) {
                 exit;
             }
             my $target;
-            if (m!^../(.*)$!) {
+            if (m!^\.\./(.*)$!) {
                 $target = $1;
+            } elsif (m!^\./$!) {
+                $target = "$dir/";
             } else {
                 $target = "$dir/$_";
             }
 
             if (!defined $targets{$target}) {
-                if (defined $generated_targets{$target}) {
-                    $generated_targets{$target}++;
+                if (defined $directory_targets{$target}) {
+                    $directory_targets{$target}++;
                     $num_generated++;
                     next;
                 }
@@ -87,8 +84,6 @@ for (@files) {
         }
     }
     close $in;
-    close $out unless $dry;
-    rename "$filename~~~", $filename unless $dry;
 }
 
 # Count orphans
@@ -106,8 +101,8 @@ print "---\n",
     "Orphan pages             : $num_orphans\n";
 print "---\n";
 print "Links to generated pages (not in this repo):\n";
-for (sort keys %generated_targets) {
-    printf("[%2d] %s\n", $generated_targets{$_}, $_);
+for (sort keys %directory_targets) {
+    printf("[%2d] %s\n", $directory_targets{$_}, $_);
 }
 if ($num_orphans) {
     print "---\n";

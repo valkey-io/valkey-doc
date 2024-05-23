@@ -133,7 +133,7 @@ Please use the following formatting rules (aiming for smaller diffs that are eas
 
 (This section may not be up do date.)
 
-    After making changes to the documentation, you can use the [spellchecker-cli package](https://www.npmjs.com/package/spellchecker-cli)
+After making changes to the documentation, you can use the [spellchecker-cli package](https://www.npmjs.com/package/spellchecker-cli)
 to validate your spelling as well as some minor grammatical errors. You can install the spellchecker locally by running:
 
 ```bash
