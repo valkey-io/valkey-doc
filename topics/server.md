@@ -16,7 +16,9 @@ description: >
 
 ## Description
 
-`valkey-server` is the Valkey database program. It's typically started by an init script, rather than manually.
+`valkey-server` is the Valkey database program.
+
+What is Valkey? See [Introduction](introduction.md).
 
 ## Options
 
@@ -78,4 +80,4 @@ the config file:
 
 ## See also
 
-[Valkey documentation](./), [Configuration](valkey.conf.md), [Installation](installation.md), [valkey-cli](cli.md)
+[Valkey documentation](./), [Introduction](introduction.md), [Configuration](valkey.conf.md), [Installation](installation.md), [valkey-cli](cli.md)

@@ -31,7 +31,7 @@ point directly to the `.md` files as they are stored in this repo. Don't start
 links with `/`. This makes sure the links point to existing files regardless of
 where in the file system the docs are located, which makes it easier to find
 broken links. In text editors and in the GitHub user inteface, it's possible to
-click on the links to open the corresponding Markdown page. Here's a [starting point](
+click on the links to open the corresponding Markdown page.
 
 Examples: `../commands/get.md` or `replication.md`.
 
@@ -132,8 +132,6 @@ Please use the following formatting rules (aiming for smaller diffs that are eas
 * Start every sentence on a new line.
 
 ### Checking your work
-
-(This section may not be up do date.)
 
 After making changes to the documentation, you can use the [spellchecker-cli package](https://www.npmjs.com/package/spellchecker-cli)
 to validate your spelling as well as some minor grammatical errors. You can install the spellchecker locally by running:

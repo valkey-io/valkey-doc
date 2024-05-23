@@ -1,5 +1,5 @@
 ---
-title: "Documentation"
+title: "Valkey Documentation"
 linkTitle: "Documentation"
 weight: 20
 aliases:
@@ -13,6 +13,8 @@ The Valkey documentation is managed in markdown files in the
 [valkey-doc repository](http://github.com/valkey-io/valkey-doc).
 It's released under the
 [Creative Commons Attribution-ShareAlike 4.0 International license](https://creativecommons.org/licenses/by-sa/4.0/).
+
+What is Valkey? See [Introduction](introduction.md).
 
 Programming with Valkey
 ---
