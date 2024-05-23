@@ -661,6 +661,7 @@ OR-ing
 ORed
 ORM
 OSGEO:41001
+OSS
 overcommit
 p50
 p999
@@ -1045,6 +1046,7 @@ UTF-8
 utf8
 utils
 v9
+Valkey
 value-ptr
 ValueN
 Variadic
