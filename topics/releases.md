@@ -1,144 +1,98 @@
 ---
-title: "Valkey release cycle"
-linkTitle: "Release cycle"
+title: "Valkey releases and versioning"
+linkTitle: "Valkey releases"
 weight: 4
-description: How are new versions of Valkey released?
+description: How new versions of Valkey released and supported
 aliases:
     - /topics/releases
 ---
 
-Valkey is system software and a type of system software that holds user data, so
-it is among the most critical pieces of a software stack.
+Valkey is usually among the most critical pieces of a software stack.
+For this reason, Valkey's release cycle prioritizes highly stable releases at the cost of slower release cycles.
 
-For this reason, Valkey's release cycle is such that it ensures highly stable
-releases, even at the cost of slower cycles.
-
-New releases are published in the [Valkey GitHub repository](https://github.com/valkey-io/valkey/releases).
-
-## Release cycle
-
-A given version of Valkey can be at three different levels of stability:
-
-* Unstable
-* Release Candidate
-* Stable
-
-### Unstable tree
-
-The unstable version of Valkey is located in the `unstable` branch in the
-[Valkey GitHub repository](https://github.com/valkey-io/valkey).
-
-This branch is the source tree where most of the new features are under
-development. `unstable` is not considered production-ready: it may contain
-critical bugs, incomplete features, and is potentially unstable.
-
-However, we try hard to make sure that even the unstable branch is usable most
-of the time in a development environment without significant issues.
-
-### Release candidate
-
-New minor and major versions of Valkey begin by branching off the `unstable`
-branch. The branch name is the target release on the form *major.minor*.
-Subsequent patch releases are made on the same branch.
-
-For example, when Valkey 7.2.5 was released, the release was made on the `7.2`
-branch, which had been branched off from `unstable` earlier.
-
-Bug fixes and new features that can be stabilized during the release's time
-frame are committed to the unstable branch and backported to the release
-candidate branch. The `unstable` branch may include additional work that is not
-a part of the release candidate and scheduled for future releases.
-
-The first release candidate, or RC1, is released once it can be used for
-development purposes and for testing the new version. At this stage, most of
-the new features and changes the new version brings are ready for review, and
-the release's purpose is collecting the public's feedback.
-
-Subsequent release candidates are released every three weeks or so, primarily
-for fixing bugs. These may also add new features and introduce changes, but at
-a decreasing rate and decreasing potential risk towards the final release
-candidate.
-
-### Stable tree
-
-Once development has ended and the frequency of critical bug reports for the
-release candidate wanes, it is ready for the final release. At this point, the
-release is marked as stable and is released with "0" as its patch-level
-version.
+All Valkey releases are published in the [Valkey GitHub repository](https://github.com/valkey-io/valkey/releases).
 
 ## Versioning
 
-Stable releases liberally follow the usual `major.minor.patch` semantic
-versioning schema. The primary goal is to provide explicit guarantees regarding
-backward compatibility.
+Valkey stable releases will follow generally `major.minor.patch` [semantic versioning schema](https://semver.org/).
+We follow semantic versioning to provide explicit guarantees regarding backward compatibility.
 
-### Patch-Level versions
+### Patch versions
 
-Patches primarily consist of bug fixes and very rarely introduce any
-compatibility issues.
+PATCH versions are released with backwards compatible bug fixes and should not introduce new features.
 
-Upgrading from a previous patch-level version is almost always safe and
-seamless.
+Upgrading from a previous patch version should be safe and seamless.
+It should be safe to run a Valkey cluster with servers running on different patch versions.
 
-New features and configuration directives may be added, or default values
-changed, as long as these don’t carry significant impacts or introduce
-operations-related issues.
+PATCH versions may also introduce small improvements such as performance or memory optimizations that don't come with any tradeoffs.
 
 ### Minor versions
 
-Minor versions usually deliver maturity and extended functionality.
+MINOR version are released with new functionality that is added in a backward compatible manner.
+Examples of new functionality include new commands, info fields, or configuration parameters.
 
-Upgrading between minor versions does not introduce any application-level
-compatibility issues.
+Upgrading from a previous minor version should be safe, and will not introduce incompatibilities between servers in the cluster.
 
-Minor releases may include new commands and data types that introduce
-operations-related incompatibilities, including changes in data persistence
-format and replication protocol.
+**NOTE:** Minor releases may include new commands and data types that can introduce incompatibility between servers in the cluster, but users need to opt-in to these features to cause this type of incompatibility.
+For this reason, it is not recommended to run a Valkey cluster with servers running on different minor versions.
+Users should also avoid new features until all servers in the cluster have been upgrades.
+
+Commands may also be deprecated in minor versions.
+If a command is deprecated, a replacement command or an alternative to using the command will be defined in the same minor version.
 
 ### Major versions
 
-Major versions introduce new capabilities and significant changes.
+MAJOR versions are released with significant functionality that may break backwards compatibility or alter key performance characteristics.
+Examples of significant functionality include altering the behavior of an existing command, removing previously deprecated commands, changing the default value of configs, and significant refactoring for performance improvements.
 
-Ideally, these don't introduce application-level compatibility issues.
+Upgrading from a previous major version is intended to be safe, but should be approached with caution. 
+You should carefully read the release notes before performing a major version upgrade.
+Major version upgrades do not guarantee backwards compatibility, which means you should always upgrade replicas before upgrading primaries in order to ensure data consistency.
+
+The Valkey community strives to make as few backwards breaking changes as possible.
+When breaking changes are required, we will also strive to provide a way to mitigate the impact without incuring downtime to your application.
 
 ## Release schedule
 
-A new major version is planned for release once a year.
+The Valkey community strives to release a stable major version once a year.
+Stable minor versions are created as needed in between major releases, and we aim to release at least one minor version a year.
 
-Generally, every major release is followed by a minor version after six months.
+### Release candidate
 
-Patches are released as needed to fix high-urgency issues, or once a stable
-version accumulates enough fixes to justify it.
+New minor and major versions of Valkey begin by branching off the `unstable` branch as an initial release candidate branch, which take the form *major.minor.patch-R#*.
+The first release candidate, or RC1, is released once it can be used for development purposes and for testing the new version.
+At this stage, most of the new features and changes in the new version are ready for review, and the version is released for the purpose of collecting the public's feedback.
+Subsequent release candidates are released every coupe of weeks, primarily for fixing bugs and refining features based off of user input.
 
-For contacting the core team on sensitive matters and security issues, please
-see [SECURITY.md](https://github.com/valkey-io/valkey/blob/unstable/SECURITY.md).
+### Stable release
+
+Once development has ended and the feedback for release candidate slows down, it is ready for the final release. 
+At this point, the release is marked as stable and is released with "0" as its patch-level version.
+
+Patches are released as needed to fix high-urgency issues, or once a stable version accumulates enough fixes to justify it.
 
 ## Support
 
-As a rule, older versions are not supported as we try very hard to make the
-API mostly backward compatible.
-
-Upgrading to newer versions is the recommended approach and is usually trivial.
-
 The latest stable release is always fully supported and maintained.
 
-Two additional versions receive maintenance only, meaning that only fixes for
-critical bugs and major security issues are committed and released as patches:
+The Valkey community will provide maintanence support, providing patch releases for bug fixes and all security fixes, for 3 years from when a version was first released.
 
-* The previous minor version of the latest stable release.
-* The previous stable major release.
- 
-For example, consider the following hypothetical versions: 1.2, 2.0, 2.2, 3.0,
-3.2.
+The Valkey community will also provide extended security security support for the latest minor version of each major version for 5 years from when a version was first released.
+The Valkey community will only backport security issues we believe to be possible to exploit, which will be up to the discretion of the TSC.
 
-When version 2.2 is the latest stable release, both 2.0 and 1.2 are maintained.
+For contacting the core team on sensitive matters and security issues, please see [SECURITY.md](https://github.com/valkey-io/valkey/blob/unstable/SECURITY.md).
 
-Once version 3.0.0 replaces 2.2 as the latest stable, versions 2.0 and 2.2 are
-maintained, whereas version 1.x reaches its end of life.
+### List of supported versions
 
-This process repeats with version 3.2.0, after which only versions 2.2 and 3.0
-are maintained.
+| Version | Initial release | Maintenence support end | Extended Security support end |
+| -- | -- | -- | -- |
+| 7.2 | 2024-04-16 | 2027-04-16 | 2029-04-16 |
 
-The above are guidelines rather than rules set in stone and will not replace
-common sense.
+## Unstable tree
 
+The unstable development tree of Valkey is located in the `unstable` branch in the [Valkey GitHub repository](https://github.com/valkey-io/valkey).
+
+This branch is the source tree where most of the new features are under development.
+`unstable` is not considered production-ready: it may contain critical bugs, incomplete features, and is potentially unstable.
+
+However, we try hard to make sure that even the unstable branch is usable most of the time in a development environment without significant issues.
