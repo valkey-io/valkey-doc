@@ -310,6 +310,8 @@ def main():
         pagename = name0
     elif args.page_type == 'topic' and name0 == 'index':
         pagename = 'valkey'
+    elif args.page_type == 'config' and name0 == 'valkey.conf':
+        pagename = name0
     else:
         pagename = 'valkey-' + name0
     data = {
