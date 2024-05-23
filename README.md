@@ -10,8 +10,9 @@ This repo comes with a Makefile to build and install man pages.
     make VALKEY_ROOT=path/to/valkey
     sudo make install INSTALL_MAN_DIR=/usr/local/share/man
 
-Prerequisites: GNU Make, Python 3, Pandoc. Additionally, the scripts need access
-to the valkey code repo, where metadata files about the commands are stored.
+Prerequisites: GNU Make, Python 3, Python 3 YAML (pyyaml), Pandoc.
+Additionally, the scripts need access to the valkey code repo,
+where metadata files about the commands are stored.
 
 The pages are generated under `_build/man/` by default. The default install
 location is `/usr/local/share/man` (in the appropriate subdirectories).
@@ -128,6 +129,7 @@ Please use the following formatting rules (aiming for smaller diffs that are eas
 * Single linebreaks are not significant in Markdown, so when editing an existing
   sentence or paragraph, don't change the existing linebreaks. That just makes
   reviewing harder.
+* Start every sentence on a new line.
 
 ### Checking your work
 

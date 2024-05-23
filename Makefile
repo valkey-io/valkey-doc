@@ -35,6 +35,9 @@ endif
 topics   = $(wildcard topics/*)
 commands = $(wildcard commands/*.md)
 
+topics_md   = $(filter %.md,$(topics))
+topics_pics = $(filter-out %.md,$(topics))
+
 # ---- Temp files ----
 
 # JSON files for the commands that have a .md file (excluding undocumented commands).
@@ -81,8 +84,8 @@ $(md_commands_dir)/%.md: commands/%.md $(VALKEY_ROOT)/src/commands/%.json $(BUIL
 # ---- HTML (make html) ----
 
 html_topics_dir = $(HTML_DIR)/topics
-html_topics     = $(topics:topics/%.md=$(html_topics_dir)/%.html)
-html_topics_pics = $(topics:topics/%.png=$(html_topics_dir)/%.png) $(topics:topics/%.gif=$(html_topics_dir)/%.gif)
+html_topics     = $(topics_md:topics/%.md=$(html_topics_dir)/%.html)
+html_topics_pics = $(topics_pics:topics/%=$(html_topics_dir)/%)
 $(html_topics): | $(html_topics_dir)
 
 html_commands_dir = $(HTML_DIR)/commands
@@ -120,10 +123,10 @@ progs = valkey-cli valkey-server valkey-benchmark valkey-sentinel valkey-check-r
 programs = $(progs:valkey-%=topics/%.md)
 configs = topics/valkey.conf.md
 
-man1_src = $(filter $(programs),$(topics))
+man1_src = $(filter $(programs),$(topics_md))
 man3_src = $(commands)
-man4_src = $(filter $(configs),$(topics))
-man7_src = $(filter-out $(programs) $(configs) topics/index.md,$(topics))
+man4_src = $(filter $(configs),$(topics_md))
+man7_src = $(filter-out $(programs) $(configs) topics/index.md,$(topics_md))
 
 # Target man pages
 man1     = $(man1_src:topics/%.md=$(MAN_DIR)/man1/valkey-%.1)
