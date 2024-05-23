@@ -33,7 +33,6 @@ if args.man:
     print("title: VALKEY-COMMANDS(7)")
     print('header: Valkey Command Manual')
     print('footer: Valkey Documentation')
-    #print('date: %s' % self.date)
     print('adjusting: left')
     print("---")
     print('# NAME', end="\n\n")

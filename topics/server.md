@@ -9,7 +9,6 @@ description: >
 ## Usage
 
 **`valkey-server`** [ _/path/to/valkey.conf_ ] [ _OPTIONS_ ] [**`-`**]\
-**`valkey-server`** **`-`**\
 **`valkey-server`** **`-v`** | **`--version`**\
 **`valkey-server`** **`-h`** | **`--help`**\
 **`valkey-server`** **`--test-memory`** _megabytes_\
@@ -21,7 +20,7 @@ description: >
 
 ## Options
 
-The configuration file and the configuration directives are in documented in
+The configuration file and the configuration directives are documented in
 [Configuration](valkey.conf.md). Use `-` to read configuration from stdin.
 
 Each of the configuration directives can be provided on the command line
@@ -63,7 +62,7 @@ Start with configuration as command line options:
 
     valkey-server --port 7777
 
-Start as a replica of another node running on the same machine:
+Start as a replica of another Valkey server that can accessed at 127.0.0.1:8888:
 
     valkey-server --port 7777 --replicaof 127.0.0.1 8888
 
@@ -76,10 +75,6 @@ Start with a config file and some additional options overriding the ones in
 the config file:
 
     valkey-server /etc/myvalkey.conf --loglevel verbose
-
-Start in [sentinel](sentinel.md) mode:
-
-    valkey-server /etc/sentinel.conf --sentinel
 
 ## See also
 
