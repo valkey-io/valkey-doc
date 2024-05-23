@@ -28,15 +28,15 @@ The content of this doc repo is backing the documentation on the website, man
 pages and potentially other formats. Links between pages are *relative* and
 point directly to the `.md` files as they are stored in this repo. Don't start
 links with `/`. This makes sure the links point to existing files regardless of
-where in the file system they docs are located, which makes it easier find
+where in the file system the docs are located, which makes it easier to find
 broken links. In text editors and in the GitHub user inteface, it's possible to
 click on the links to open the corresponding Markdown page. Here's a [starting point](
 
 Examples: `../commands/get.md` or `replication.md`.
 
-A few exeptions are links to the `topics/`, `commands/`, `clients/` and
+A few exceptions are links to the `topics/`, `commands/`, `clients/` and
 `modules/` directories, which end with a slash. These pages are generated (with
-the exeption of `topics/` which is in `topics/index.md`).
+the exception of `topics/` which is in `topics/index.md`).
 
 Examples: `../commands/#sorted-set`, `../topics/`, `./`.
 
@@ -45,13 +45,13 @@ Examples: `../commands/#sorted-set`, `../topics/`, `./`.
 The files under `topics/` are generic documentation pages. The `index.md` page is a starting point.
 
 In the top of these files, there's a frontmatter metadata section, between two
-linkes of three dashes (`---`). These are YAML fields of which we use only the
+lines of three dashes (`---`). These are YAML fields of which we use only the
 `title` field (and possibly `linkTitle`). The title field is used instead of an
 H1 heading in each of the pages.
 
 ### Clients, modules, libraries, tools
 
-We maintain links to clients, module, libraries and tool in various langauges in
+We maintain links to clients, modules, libraries and tools in various langauges in
 JSON files stored under `clients/`, `modules/`, `libraries/` and `tools/`
 respectively.
 
@@ -89,13 +89,13 @@ See: https://github.com/valkey-io/valkey/tree/unstable/src/commands/
 
 For each command there's a Markdown file with a complete, human-readable
 description.
-We process this files to provide a better experience.
+We process these files to provide a better experience.
 
 *   Inside text, all commands should be written in all caps, in between
     backticks.
     For example: `INCR`.
 
-The reply types and descriptsions are stored in separate JSON files in this doc repo.
+The reply types and descriptions are stored in separate JSON files in this doc repo.
 Each command will have a description and both RESP2 and RESP3 return values.
 When adding or editing return values, be sure to edit both files. Use the following
 links for the reply type.
@@ -127,7 +127,7 @@ Please use the following formatting rules (aiming for smaller diffs that are eas
   That makes the diff harder to review when only one word is changed.
 * Single linebreaks are not significant in Markdown, so when editing an existing
   sentence or paragraph, don't change the existing linebreaks. That just makes
-  reviewing harding.
+  reviewing harder.
 
 ### Checking your work
 

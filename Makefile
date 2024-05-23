@@ -23,7 +23,7 @@ all: man
 # ---- Sanity check ----
 
 ifeq ("$(wildcard $(VALKEY_ROOT))","")
-    $(error Please proved the VALKEY_ROOT variable pointing to the Valkey source code)
+    $(error Please provide the VALKEY_ROOT variable pointing to the Valkey source code)
 endif
 
 # ---- Source files ----
@@ -41,7 +41,7 @@ $(BUILD_DIR)/.commands-per-group.json: $(VALKEY_ROOT)/src/commands/. utils/build
 $(BUILD_DIR):
 	mkdir -p $@
 
-# ---- Pre-processed mardown files (make md) ----
+# ---- Pre-processed markdown files (make md) ----
 
 md_topics_dir = $(MD_DIR)/topics
 md_topics = $(topics:topics/%=$(md_topics_dir)/%)

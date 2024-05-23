@@ -165,7 +165,7 @@ need to have a running Valkey instance before launching the benchmark:
 
     $ valkey-benchmark
 
-Rung a benchmark with 20 parallel clients, pipelining 10 commands at a time,
+Run a benchmark with 20 parallel clients, pipelining 10 commands at a time,
 using 2 threads and less verbose output:
 
     $ valkey-benchmark -c 20 -P 10 --threads 2 -q
