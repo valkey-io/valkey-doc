@@ -34,11 +34,11 @@ Programming with Valkey
 Server-side scripting in Valkey
 ---
 
-* [Programability overview](programmability.md): An overview of programmability in Valkey.
-* [Valkey Lua API](lua-api.md): The embedded [Lua 5.1](https://lua.org) interepreter runtime environment and APIs.
+* [Programmability overview](programmability.md): An overview of programmability in Valkey.
+* [Valkey Lua API](lua-api.md): The embedded [Lua 5.1](https://lua.org) interpreter runtime environment and APIs.
 * [Introduction to Eval Scripts](eval-intro.md): An introduction about using cached scripts.
 * [Introduction to Valkey Functions](functions-intro.md): An introduction about using functions.
-* [Debugging Lua scripts](ldb.md): An overveiw of the native Valkey Lua debugger for cached scripts.
+* [Debugging Lua scripts](ldb.md): An overview of the native Valkey Lua debugger for cached scripts.
 
 Administration
 ---

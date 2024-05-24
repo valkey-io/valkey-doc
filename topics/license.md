@@ -55,7 +55,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 Files in the Valkey distribution that were originally created for Redis when
 Redis was still under the three-clause BSD license contain the following license
-(which differes from the above text only in one occurrence of "Redis" in the 3rd
+(which differs from the above text only in one occurrence of "Redis" in the 3rd
 clause):
 
 ```

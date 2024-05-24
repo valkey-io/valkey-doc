@@ -1,18 +1,12 @@
-name: Spellcheck
-on:
-  push:
-    branches: [master]
-  pull_request:
-    branches: [master]
+on: [push, pull_request]
+permissions:
+  contents: read
 jobs:
   spellcheck:
     runs-on: ubuntu-latest
+    name: Spellcheck
     steps:
-      - uses: actions/checkout@v2
-      - name: Spellcheck
-        uses: redis-stack/github-actions/spellcheck@main
-        env:
-          DICTIONARY: wordlist
-          DOCS_DIRECTORY: .
-          CONFIGURATION_FILE: .spellcheck.yml
-          COMMANDS_FILES: commands.json
+      - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
+      - uses: tbroadley/spellchecker-cli-action@v1
+        with:
+          config: .spellcheckerrc.yml
