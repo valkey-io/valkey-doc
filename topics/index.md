@@ -1,5 +1,5 @@
 ---
-title: "Documentation"
+title: "Valkey Documentation"
 linkTitle: "Documentation"
 weight: 20
 aliases:
@@ -13,6 +13,8 @@ The Valkey documentation is managed in markdown files in the
 [valkey-doc repository](http://github.com/valkey-io/valkey-doc).
 It's released under the
 [Creative Commons Attribution-ShareAlike 4.0 International license](https://creativecommons.org/licenses/by-sa/4.0/).
+
+What is Valkey? See [Introduction](introduction.md).
 
 Programming with Valkey
 ---
@@ -42,6 +44,7 @@ Administration
 ---
 * [Installation](installation.md): How to install and configure Valkey. This targets people without prior experience with Valkey.
 * [valkey-cli](cli.md): The Valkey command line interface, used for administration, troubleshooting and experimenting with Valkey.
+* [valkey-server](server.md): How to run the Valkey server.
 * [Configuration](valkey.conf.md): How to configure Valkey.
 * [Replication](replication.md): What you need to know to set up primary-replica replication.
 * [Persistence](persistence.md): Options for configuring durability using disk backups.

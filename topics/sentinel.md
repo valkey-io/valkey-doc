@@ -10,6 +10,14 @@ aliases: [
 ]
 ---
 
+## Usage
+
+**`valkey-sentinel`** _/path/to/sentinel.conf_
+
+**`valkey-server`** _/path/to/sentinel.conf_ **`--sentinel`**
+
+## Description
+
 Valkey Sentinel provides high availability for Valkey when not using [Valkey Cluster](cluster-tutorial.md). 
 
 Valkey Sentinel also provides other collateral tasks such as monitoring,
