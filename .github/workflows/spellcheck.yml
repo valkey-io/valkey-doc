@@ -9,4 +9,8 @@ jobs:
       - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
       - uses: tbroadley/spellchecker-cli-action@v1
         with:
+          files:
+            - 'commands/*.md'
+            - 'topics/*.md'
+            - '!topics/modules-api-ref.md'
           config: .spellcheckerrc.yml
