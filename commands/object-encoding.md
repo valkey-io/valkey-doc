@@ -13,7 +13,7 @@ Valkey objects can be encoded in different ways:
 
     - `linkedlist`, simple list encoding. No longer used, an old list encoding.
     - `listpack`, a space-efficient encoding used for small lists.
-    - `quicklist`, encoded as linkedlist of ziplists or listpacks.
+    - `quicklist`, encoded as linked list of ziplists or listpacks.
 
 * Sets can be encoded as:
 

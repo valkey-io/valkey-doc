@@ -1,0 +1,11 @@
+files:
+  - 'topics/*.md'
+  - 'commands/*.md'
+  - '!topics/modules-api-ref.md'
+dictionaries:
+  - wordlist
+noSuggestions: true
+quiet: true
+plugins:
+  - spell
+  - frontmatter

@@ -143,7 +143,10 @@ npm install --global spellchecker-cli
 You can than validate your spelling by running the following
 
 ```
-spellchecker --no-suggestions -f '**/*.md' -l en-US -q -d wordlist
+spellchecker
 ```
 
 Any exceptions you need for spelling can be added to the `wordlist` file.
+Text within backticks is not checked, so using backticks for command names,
+parameter values and similar is a good idea to avoid getting spelling errors for
+things like that.
