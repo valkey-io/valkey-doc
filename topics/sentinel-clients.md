@@ -1,10 +1,7 @@
 ---
 title: "Sentinel client spec"
 linkTitle: "Sentinel clients"
-weight: 2
 description: How to build clients for Valkey Sentinel
-aliases:
-  - /topics/sentinel-clients
 ---
 
 Valkey Sentinel is a monitoring solution for Valkey instances that handles

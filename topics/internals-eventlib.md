@@ -1,11 +1,7 @@
 ﻿---
 title: "Event library"
 linkTitle: "Event library"
-weight: 1
 description: What's an event library, and how was the original Valkey event library implemented?
-aliases:
-  - /topics/internals-eventlib
-  - /topics/internals-rediseventlib
 ---
 
 **Note: this document was written by the creator of Valkey, Salvatore Sanfilippo, early in the development of Valkey (c. 2010), and does not necessarily reflect the latest Valkey implementation.**

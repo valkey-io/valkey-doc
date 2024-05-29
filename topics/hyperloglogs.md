@@ -1,11 +1,8 @@
 ---
 title: "HyperLogLog"
 linkTitle: "HyperLogLog"
-weight: 1
 description: >
     HyperLogLog is a probabilistic data structure that estimates the cardinality of a set.
-aliases:
-    - /docs/data-types/hyperloglogs/
 ---
 
 HyperLogLog is a probabilistic data structure that estimates the cardinality of a set. As a probabilistic data structure, HyperLogLog trades perfect accuracy for efficient space utilization.

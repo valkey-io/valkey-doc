@@ -1,12 +1,8 @@
 ---
 title: "Valkey functions"
 linkTitle: "Functions"
-weight: 1
 description: >
    Scripting with Redis OSS 7 and beyond
-aliases:
-    - /topics/functions-intro
-    - /docs/manual/programmability/functions-intro/
 ---
 
 Valkey Functions is an API for managing code to be executed on the server. This feature, which became available in Redis OSS 7, supersedes the use of [EVAL](eval-intro.md) in prior versions of Valkey.

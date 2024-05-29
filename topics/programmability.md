@@ -1,12 +1,8 @@
 ---
 title: "Valkey programmability"
 linkTitle: "Programmability"
-weight: 20
 description: >
    Extending Valkey with Lua and Valkey Functions
-aliases:
-    - /topics/programmability
-    - /docs/manual/programmability/
 ---
 
 Valkey provides a programming interface that lets you execute custom scripts on the server itself. In Redis OSS 7 and beyond, you can use [Valkey Functions](functions-intro.md) to manage and run your scripts. In Redis OSS 6.2 and below, you use [Lua scripting with the EVAL command](eval-intro.md) to program the server.

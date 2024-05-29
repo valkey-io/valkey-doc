@@ -1,11 +1,8 @@
 ---
 title: "Valkey modules API"
 linkTitle: "Modules API"
-weight: 2
 description: >
     Introduction to writing Valkey modules
-aliases:
-    - /topics/modules-intro
 ---
 
 The modules documentation is composed of the following pages:

@@ -1,11 +1,8 @@
 ---
 title: "Valkey license"
 linkTitle: "License"
-weight: 5
 description: >
     License and trademark information
-aliases:
-    - /topics/license
 ---
 
 

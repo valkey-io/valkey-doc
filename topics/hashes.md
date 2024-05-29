@@ -1,7 +1,6 @@
 ﻿---
 title: "Hashes"
 linkTitle: "Hashes"
-weight: 40
 description: >
     Introduction to Hashes
 ---

@@ -1,7 +1,6 @@
 ﻿---
 title: "Sets"
 linkTitle: "Sets"
-weight: 30
 description: >
     Introduction to Sets
 ---

@@ -1,10 +1,7 @@
 ---
 title: "Valkey pipelining"
 linkTitle: "Pipelining"
-weight: 2
 description: How to optimize round-trip times by batching Valkey commands
-aliases:
-  - /topics/pipelining
 ---
 
 Valkey pipelining is a technique for improving performance by issuing multiple commands at once without waiting for the response to each individual command. Pipelining is supported by most Valkey clients. This document describes the problem that pipelining is designed to solve and how pipelining works in Valkey.

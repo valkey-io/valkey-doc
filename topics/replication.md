@@ -1,14 +1,7 @@
 ---
 title: Valkey replication
 linkTitle: Replication
-weight: 5
 description: How Valkey supports high availability and failover with replication
-aliases: [
-    /topics/replication,
-    /topics/replication.md,
-    /docs/manual/replication,
-    /docs/manual/replication.md
-]
 ---
 
 At the base of Valkey replication (excluding the high availability features provided as an additional layer by Valkey Cluster or Valkey Sentinel) there is a *leader follower* (master-replica) replication that is simple to use and configure. It allows replica Valkey instances to be exact copies of master instances. The replica will automatically reconnect to the master every time the link breaks, and will attempt to be an exact copy of it *regardless* of what happens to the master.

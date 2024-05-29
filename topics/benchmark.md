@@ -1,14 +1,8 @@
 ---
 title: "Valkey benchmark"
 linkTitle: "Benchmarking"
-weight: 1
 description: >
     Using the valkey-benchmark utility on a Valkey server
-aliases: [
-    /topics/benchmarks,
-    /docs/reference/optimization/benchmarks,
-    /docs/reference/optimization/benchmarks.md
-]
 ---
 
 ## Usage

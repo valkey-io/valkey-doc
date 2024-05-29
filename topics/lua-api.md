@@ -1,12 +1,8 @@
 ---
 title: "Valkey Lua API reference"
 linkTitle: "Lua API"
-weight: 3
 description: >
    Executing Lua in Valkey
-aliases:
-    - /topics/lua-api
-    - /docs/manual/programmability/lua-api/
 ---
 
 Valkey includes an embedded [Lua 5.1](https://www.lua.org/) interpreter.

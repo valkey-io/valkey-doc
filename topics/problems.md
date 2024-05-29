@@ -1,13 +1,7 @@
 ---
 title: "Troubleshooting Valkey"
 linkTitle: "Troubleshooting"
-weight: 9
 description: Problems with Valkey? Start here.
-aliases: [
-    /topics/problems,
-    /docs/manual/troubleshooting,
-    /docs/manual/troubleshooting.md
-]
 ---
 
 This page tries to help you with what to do if you have issues with Valkey. Part of the Valkey project is helping people that are experiencing problems because we don't like to leave people alone with their issues.

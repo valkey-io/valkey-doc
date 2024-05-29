@@ -1,11 +1,8 @@
 ---
 title: Valkey cluster specification
 linkTitle: Cluster spec
-weight: 9
 description: >
     Detailed specification for Valkey cluster
-aliases:
-  - /topics/cluster-spec
 ---
 
 Welcome to the **Valkey Cluster Specification**. Here you'll find information

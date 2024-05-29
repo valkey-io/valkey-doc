@@ -1,11 +1,7 @@
 ---
 title: Transactions
 linkTitle: Transactions
-weight: 30
 description: How transactions work in Valkey
-aliases:
-  - /topics/transactions
-  - /docs/manual/transactions/
 ---
 
 Valkey Transactions allow the execution of a group of commands

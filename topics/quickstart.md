@@ -1,7 +1,6 @@
 ---
 title: "Valkey as an in-memory data structure store quick start guide"
 linkTitle: "Data structure store"
-weight: 1
 description: Understand how to use basic Valkey data types
 ---
 
