@@ -13,4 +13,6 @@ master node. This may happen because:
 
 1. The client sent a command about hash slots never served by the master of this replica.
 2. The cluster was reconfigured (for example resharded) and the replica is no longer able to serve commands for a given hash slot.
-3. A slot migration is ongoing. In this case the replica can return an ASK redirect or a TRYAGAIN error reply.
+3. Since Valkey 8.0, if a slot migration is ongoing.
+   In this case the replica can return an ASK redirect or a TRYAGAIN error reply.
+   In earlier versions, replicas are not aware of ongoing slot migrations.
