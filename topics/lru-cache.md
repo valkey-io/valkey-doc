@@ -57,7 +57,7 @@ The following policies are available:
 
 The policies **volatile-lru**, **volatile-lfu**, **volatile-random**, and **volatile-ttl** behave like **noeviction** if there are no keys to evict matching the prerequisites.
 
-Both **LRU**, **LFU** and **volatile-ttl** are implemented using approximated randomized algorithms.
+**LRU**, **LFU** and **volatile-ttl** are implemented using approximated randomized algorithms.
 
 Picking the right eviction policy is important depending on the access pattern
 of your application, however you can reconfigure the policy at runtime while
