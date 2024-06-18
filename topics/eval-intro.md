@@ -1,12 +1,8 @@
 ---
 title: "Scripting with Lua"
 linkTitle: "Lua scripting"
-weight: 2
 description: >
    Executing Lua in Valkey
-aliases:
-    - /topics/eval-intro
-    - /docs/manual/programmability/eval-intro/
 ---
 
 Valkey lets users upload and execute Lua scripts on the server.

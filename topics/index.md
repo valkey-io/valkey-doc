@@ -1,12 +1,6 @@
 ---
 title: "Valkey Documentation"
 linkTitle: "Documentation"
-weight: 20
-aliases:
-    - /documentation
-    - /documentation/
-    - /topics
-    - /topics/
 ---
 
 The Valkey documentation is managed in markdown files in the

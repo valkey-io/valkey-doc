@@ -1,13 +1,7 @@
 ---
 title: "ACL"
 linkTitle: "ACL"
-weight: 1
 description: Valkey Access Control List
-aliases: [
-    /topics/acl,
-    /docs/manual/security/acl,
-    /docs/manual/security/acl.md
-]
 ---
 
 The Valkey ACL, short for Access Control List, is a feature that allows certain connections to be limited in terms of the commands that can be executed and the keys that can be accessed.

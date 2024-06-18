@@ -1,7 +1,6 @@
 ---
 title: "Bitmaps"
 linkTitle: "Bitmaps"
-weight: 120
 description: >
     Introduction to Bitmaps
 ---

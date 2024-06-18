@@ -1,10 +1,7 @@
 ---
 title: "Valkey release cycle"
 linkTitle: "Release cycle"
-weight: 4
 description: How are new versions of Valkey released?
-aliases:
-    - /topics/releases
 ---
 
 Valkey is system software and a type of system software that holds user data, so

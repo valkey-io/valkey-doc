@@ -1,14 +1,7 @@
 ---
 title: Valkey persistence
 linkTitle: Persistence
-weight: 7
 description: How Valkey writes data to disk
-aliases: [
-    /topics/persistence,
-    /topics/persistence.md,
-    /docs/manual/persistence,
-    /docs/manual/persistence.md
-]
 ---
 
 Persistence refers to the writing of data to durable storage, such as a solid-state disk (SSD). Valkey provides a range of persistence options. These include:

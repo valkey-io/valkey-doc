@@ -1,7 +1,6 @@
 ﻿---
 title: "Strings"
 linkTitle: "Strings"
-weight: 10
 description: >
     Introduction to Strings
 ---

@@ -1,13 +1,7 @@
 ---
 title: Key eviction
 linkTitle: Eviction
-weight: 6
 description: Overview of Valkey key eviction policies (LRU, LFU, etc.)
-aliases: [
-    /topics/lru_cache,
-    /topics/lru_cache.md,
-    /docs/manual/eviction
-]
 ---
 
 When Valkey is used as a cache, it is often convenient to let it automatically

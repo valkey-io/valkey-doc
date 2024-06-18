@@ -1,13 +1,8 @@
 ---
 title: "Valkey CPU profiling"
 linkTitle: "CPU profiling"
-weight: 1
 description: >
     Performance engineering guide for on-CPU profiling and tracing
-aliases: [
-    /topics/performance-on-cpu,
-    /docs/reference/optimization/cpu-profiling
-]
 ---
 
 ## Filling the performance checklist

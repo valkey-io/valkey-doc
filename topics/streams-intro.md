@@ -1,13 +1,8 @@
 ---
 title: "Streams"
 linkTitle: "Streams"
-weight: 60
 description: >
     Introduction to Streams
-aliases:
-    - /topics/streams-intro
-    - /docs/manual/data-types/streams    
-    - /docs/data-types/streams-tutorial/ 
 ---
 
 A Stream is a data structure that acts like an append-only log but also implements several operations to overcome some of the limits of a typical append-only log. These include random access in O(1) time and complex consumption strategies, such as consumer groups.

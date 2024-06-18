@@ -1,12 +1,7 @@
 ---
 title: Valkey Pub/Sub
 linkTitle: "Pub/sub"
-weight: 40
 description: How to use pub/sub channels in Valkey
-aliases:
-  - /topics/pubsub
-  - /docs/manual/pub-sub
-  - /docs/manual/pubsub
 ---
 
 `SUBSCRIBE`, `UNSUBSCRIBE` and `PUBLISH` implement the [Publish/Subscribe messaging paradigm](https://en.wikipedia.org/wiki/Publish/subscribe) where publishers send their messages to channels, without knowledge of what receivers (subscribers) there may be.

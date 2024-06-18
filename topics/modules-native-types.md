@@ -1,11 +1,8 @@
 ---
 title: "Modules API for native types"
 linkTitle: "Native types API"
-weight: 1
 description: >
     How to use native types in a Valkey module
-aliases:
-    - /topics/modules-native-types
 ---
 
 Valkey modules can access Valkey built-in data structures both at high level,

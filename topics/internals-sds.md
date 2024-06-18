@@ -1,10 +1,7 @@
 ---
 title: "String internals"
 linkTitle: "String internals"
-weight: 1
 description: Guide to the original implementation of Strings
-aliases:
-  - /topics/internals-sds
 ---
 
 **Note: this document was written by the creator of Valkey, Salvatore Sanfilippo, early in the development of Valkey (c. 2010). Virtual Memory has been deprecated since Redis OSS 2.6, so this documentation

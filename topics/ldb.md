@@ -2,10 +2,6 @@
 title: Debugging Lua scripts in Valkey
 linkTitle: Debugging Lua
 description: How to use the built-in Lua debugger
-weight: 4
-aliases:
-  - /topics/ldb
-  - /docs/manual/programmability/lua-debugging/
 ---
 
 Valkey includes a complete Lua debugger, that can be

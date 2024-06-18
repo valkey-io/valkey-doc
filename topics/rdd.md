@@ -1,12 +1,7 @@
 ---
 title: "Valkey design draft #2 (historical)"
 linkTitle: "Valkey design draft"
-weight: 2
 description: A design for the RDB format written in the early days of Valkey
-aliases:
-  - /topics/rdd
-  - /topics/rdd-1
-  - /topics/rdd-2
 ---
 
 **Note: this document was written by the creator of Valkey, Salvatore Sanfilippo, early in the development of Valkey (c. 2013), as part of a series of design drafts. This is preserved for historical interest.**

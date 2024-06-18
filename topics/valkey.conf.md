@@ -1,12 +1,8 @@
 ---
 title: "Valkey configuration"
 linkTitle: "Configuration"
-weight: 2
 description: >
     Overview of valkey.conf, the Valkey configuration file
-aliases: [
-    /docs/manual/config
-    ]
 
 ---
 

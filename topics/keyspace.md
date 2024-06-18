@@ -1,11 +1,8 @@
 ---
 title: "Keyspace"
 linkTitle: "Keyspace"
-weight: 1
 description: >
     Managing keys in Valkey: Key expiration, scanning, altering and querying the key space
-aliases:
-  - /docs/manual/the-redis-keyspace    
 ---
 
 Valkey keys are binary safe; this means that you can use any binary sequence as a

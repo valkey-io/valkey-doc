@@ -1,11 +1,7 @@
 ---
 title: "Virtual memory (deprecated)"
 linkTitle: "Virtual memory"
-weight: 1
 description: A description of the Valkey virtual memory system that was deprecated in 2.6. This document exists for historical interest.
-aliases:
-  - /topics/internals-vm
-  - /topics/virtual-memory
 ---
 
 **Note: this document was written by the creator of Valkey, Salvatore Sanfilippo, early in the development of Valkey (c. 2010). Virtual Memory has been deprecated since Redis OSS 2.6, so this documentation

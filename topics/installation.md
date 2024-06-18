@@ -1,10 +1,8 @@
 ---
 title: "Install Valkey"
 linkTitle: "Install Valkey"
-weight: 1
 description: >
     Install Valkey on Linux, macOS, and Windows
-aliases:
 - /docs/getting-started/installation
 - /docs/getting-started/tutorial
 ---

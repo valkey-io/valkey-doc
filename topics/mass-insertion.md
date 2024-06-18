@@ -1,13 +1,8 @@
 ---
 title: "Bulk loading"
 linkTitle: "Bulk loading"
-weight: 1
 description: >
     Writing data in bulk using the Valkey protocol
-aliases: [
-    /topics/mass-insertion,
-    /docs/reference/patterns/bulk-loading
-]
 ---
 
 Bulk loading is the process of loading Valkey with a large amount of pre-existing data. Ideally, you want to perform this operation quickly and efficiently. This document describes some strategies for bulk loading data in Valkey.
