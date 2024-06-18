@@ -9,7 +9,7 @@ aliases:
   - /docs/manual/pubsub
 ---
 
-`SUBSCRIBE`, `UNSUBSCRIBE` and `PUBLISH` implement the [Publish/Subscribe messaging paradigm](https://en.wikipedia.org/wiki/Publish/subscribe) where publishers send their messages to channels, without knowlege of what receivers (subscribers) there may be.
+`SUBSCRIBE`, `UNSUBSCRIBE` and `PUBLISH` implement the [Publish/Subscribe messaging paradigm](https://en.wikipedia.org/wiki/Publish/subscribe) where publishers send their messages to channels, without knowledge of what receivers (subscribers) there may be.
 Subscribers express interest in one or more channels and only receive messages that are of interest, without knowledge of what (if any) publishers there are.
 This decoupling of publishers and subscribers allows for greater scalability and a more dynamic network topology.
 
