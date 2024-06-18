@@ -59,7 +59,7 @@ You should carefully read the release notes before performing a major version up
 Major version upgrades do not guarantee backwards compatibility, which means you should always upgrade replicas before upgrading primaries in order to ensure data consistency.
 
 The Valkey community strives to make as few backwards breaking changes as possible.
-When breaking changes are required, we will also strive to provide a way to mitigate the impact without incuring downtime to your application.
+When breaking changes are required, we will also strive to provide a way to mitigate the impact without incurring downtime to your application.
 
 ## Release schedule
 
@@ -85,17 +85,17 @@ Patches are released as needed to fix high-urgency issues, or once a stable vers
 
 The latest stable release is always fully supported and maintained.
 
-The Valkey community will provide maintanence support, providing patch releases for bug fixes and all security fixes, for 3 years from when a version was first released.
+The Valkey community will provide maintenance support, providing patch releases for bug fixes and all security fixes, for 3 years from when a version was first released.
 
 The Valkey community will also provide extended security security support for the latest minor version of each major version for 5 years from when a version was first released.
 The minor version to be used for this extended security support will be decided once the next major version has been launched.
-The Valkey community will only backport security issues we believe to be possible to exploit, which will be up to the discretion of the TSC.
+The Valkey community will only patch security issues we believe to be possible to exploit, which will be up to the discretion of the TSC.
 
 For contacting the TSC on sensitive matters and security issues, please see [SECURITY.md](https://github.com/valkey-io/valkey/blob/unstable/SECURITY.md).
 
 ### List of supported versions
 
-| Version | Initial release | Maintenence support end | Extended Security support end |
+| Version | Initial release | Maintenance support end | Extended Security support end |
 | -- | -- | -- | -- |
 | 7.2 | 2024-04-16 | 2027-04-16 | 2029-04-16 |
 
