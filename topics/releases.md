@@ -57,7 +57,8 @@ Examples of significant functionality includes altering the behavior of an exist
 
 Upgrading from a previous major version is intended to be safe, but should be approached with caution.
 You should carefully read the release notes before performing a major version upgrade.
-Major version upgrades only guarantee backwards compatibility, which means you should always upgrade replicas before upgrading primaries in order to ensure data consistency.
+Although Major versions can introduce breaking changes, data replicated from primaries to replicas will always be sent in a backward compatible format.
+You should always upgrade replicas before upgrading primaries in order to ensure data consistency.
 
 The Valkey community strives to make as few backwards breaking changes as possible.
 When breaking changes are required, we will also strive to provide a way to mitigate the impact without incurring downtime to your application.
