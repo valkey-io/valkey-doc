@@ -25,6 +25,7 @@ When discussing compatibility, we refer to the following API contracts:
 4. The protocol used to establish and replicate data from primaries to replicas
 5. The protocol between nodes within a Valkey cluster
 6. The Valkey Module API interface
+7. The AOF on disk format
 
 ### Patch versions
 
@@ -40,23 +41,23 @@ It should be safe to run a Valkey cluster with servers running on different patc
 *Minor* versions are released with new functionality that is added in a backward compatible manner.
 Examples of new functionality include new commands, info fields, or configuration parameters.
 
-Upgrading from a previous minor version should be safe, and will not introduce incompatibilities between servers in the cluster.
+Upgrading from a previous minor version should be safe, and will not introduce incompatibilities between servers in the cluster when default server configurations are used.
 
 **NOTE:** Minor releases may include new commands and data types that can introduce incompatibility between servers in the cluster, but users need to opt-in to these features to cause this type of incompatibility.
 For this reason, it is not recommended to run a Valkey cluster with servers running on different minor versions.
 Users should avoid new features until all servers in the cluster have been upgraded.
 
-Commands may also be deprecated in minor versions.
-If a command is deprecated, a replacement command or an alternative to using the command will be defined in the same minor version.
+Commands may also be marked as **deprecated** in minor versions.
+Deprecated commands are not removed, instead a replacement command or an alternative to using the command will be defined in the same minor version.
 
 ### Major versions
 
 *Major* versions are released with significant functionality that may break backwards compatibility or alter key performance characteristics.
 Examples of significant functionality includes altering the behavior of an existing command, removing previously deprecated commands, changing the default value of configs, and significant refactoring for performance improvements.
 
-Upgrading from a previous major version is intended to be safe, but should be approached with caution. 
+Upgrading from a previous major version is intended to be safe, but should be approached with caution.
 You should carefully read the release notes before performing a major version upgrade.
-Major version upgrades do not guarantee backwards compatibility, which means you should always upgrade replicas before upgrading primaries in order to ensure data consistency.
+Major version upgrades only guarantee backwards compatibility, which means you should always upgrade replicas before upgrading primaries in order to ensure data consistency.
 
 The Valkey community strives to make as few backwards breaking changes as possible.
 When breaking changes are required, we will also strive to provide a way to mitigate the impact without incurring downtime to your application.
@@ -71,12 +72,12 @@ Stable minor versions are created as needed in between major releases, and we ai
 New minor and major versions of Valkey begin by branching off the `unstable` branch as an initial release candidate branch with a name that takes the form of `*major.minor*`, example `7.2`.
 The first release candidate, or rc1, is released once it can be used for development purposes and for testing the new version.
 Release candidate versions will start with a patch version of "0" and will take the form `*major.minor.patch-rcN*`, example `7.2.0-rc1` followed by `7.2.0-rc2`.
-At this stage, most of the new features and changes in the new version are ready for review, and the version is released for the purpose of collecting the public's feedback.
+At this stage, most of the new features and changes in the new version are ready for review, and the version is released for the purpose of collecting public feedback.
 Subsequent release candidates are released every couple of weeks, primarily for fixing bugs and refining features based off of user input.
 
 ### Stable release
 
-Once development has ended and the feedback for release candidate slows down, it is ready for the final release. 
+Once development has ended and the feedback for release candidate slows down, it is ready for the final release.
 At this point, the release is marked as stable and is released with "0" as its patch-level version.
 
 Patches are released as needed to fix high-urgency issues, or once a stable version accumulates enough fixes to justify it.
@@ -85,9 +86,9 @@ Patches are released as needed to fix high-urgency issues, or once a stable vers
 
 The latest stable release is always fully supported and maintained.
 
-The Valkey community will provide maintenance support, providing patch releases for bug fixes and all security fixes, for 3 years from when a version was first released.
+The Valkey community will provide maintenance support, providing patch releases for bug fixes and all security fixes, for 3 years from when a minor version was first released.
 
-The Valkey community will also provide extended security security support for the latest minor version of each major version for 5 years from when a version was first released.
+The Valkey community will also provide extended security support for the latest minor version of each major version for 5 years from when a version was first released.
 The minor version to be used for this extended security support will be decided once the next major version has been launched.
 The Valkey community will only patch security issues we believe to be possible to exploit, which will be up to the discretion of the TSC.
 
