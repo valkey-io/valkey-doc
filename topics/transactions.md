@@ -208,10 +208,8 @@ like expiration or eviction. If keys were modified between when they were
 `WATCH`ed and when the `EXEC` was received, the entire transaction will be aborted
 instead.
 
-**NOTE**
-* In Redis OSS versions before 6.0.9, an expired key would not cause a transaction
-to be aborted. [More on this](https://github.com/redis/redis/pull/7920)
-* Commands within a transaction won't trigger the `WATCH` condition since they
+**NOTE:**
+Commands within a transaction won't trigger the `WATCH` condition since they
 are only queued until the `EXEC` is sent.
 
 `WATCH` can be called multiple times. Simply all the `WATCH` calls will
@@ -231,14 +229,12 @@ of the keys we don't want to proceed.  When this happens we just call
 `UNWATCH` so that the connection can already be used freely for new
 transactions.
 
-### Using WATCH to implement ZPOP
+### Using WATCH to implement ZPOPMIN
 
-A good example to illustrate how `WATCH` can be used to create new
-atomic operations otherwise not supported by Valkey is to implement ZPOP
-(`ZPOPMIN`, `ZPOPMAX` and their blocking variants have only been added
-in version 5.0), that is a command that pops the element with the lower
-score from a sorted set in an atomic way. This is the simplest
-implementation:
+An example to illustrate how `WATCH` can be used to create
+atomic operations is to implement `ZPOPMIN`,
+that is a command that pops the element with the lower
+score from a sorted set in an atomic way. This is a possible implementation:
 
 ```
 WATCH zset
@@ -252,7 +248,6 @@ If `EXEC` fails (i.e. returns a [Null reply](protocol.md#nil-reply)) we just rep
 
 ## Valkey scripting and transactions
 
-Something else to consider for transaction like operations in redis are
-[redis scripts](../commands/eval.md) which are transactional. Everything
-you can do with a Valkey Transaction, you can also do with a script, and
-usually the script will be both simpler and faster.
+Something else to consider for transaction-like operations are
+[scripts](../commands/eval.md) which are transactional. Everything
+you can do with a Valkey Transaction, you can also do with a script.
