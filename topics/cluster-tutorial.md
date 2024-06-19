@@ -325,16 +325,16 @@ You can also test your Valkey Cluster using the `valkey-cli` command line utilit
 
 ```
 $ valkey-cli -c -p 7000
-valkey 127.0.0.1:7000> set foo bar
+127.0.0.1:7000> set foo bar
 -> Redirected to slot [12182] located at 127.0.0.1:7002
 OK
-valkey 127.0.0.1:7002> set hello world
+127.0.0.1:7002> set hello world
 -> Redirected to slot [866] located at 127.0.0.1:7000
 OK
-valkey 127.0.0.1:7000> get foo
+127.0.0.1:7000> get foo
 -> Redirected to slot [12182] located at 127.0.0.1:7002
 "bar"
-valkey 127.0.0.1:7002> get hello
+127.0.0.1:7002> get hello
 -> Redirected to slot [866] located at 127.0.0.1:7000
 "world"
 ```
@@ -370,44 +370,44 @@ The first is the following, and is the
 [`example.rb`](https://github.com/antirez/redis-rb-cluster/blob/master/example.rb)
 file inside the redis-rb-cluster distribution:
 
-```
-   1  require './cluster'
-   2
-   3  if ARGV.length != 2
-   4      startup_nodes = [
-   5          {:host => "127.0.0.1", :port => 7000},
-   6          {:host => "127.0.0.1", :port => 7001}
-   7      ]
-   8  else
-   9      startup_nodes = [
-  10          {:host => ARGV[0], :port => ARGV[1].to_i}
-  11      ]
-  12  end
-  13
-  14  rc = RedisCluster.new(startup_nodes,32,:timeout => 0.1)
-  15
-  16  last = false
-  17
-  18  while not last
-  19      begin
-  20          last = rc.get("__last__")
-  21          last = 0 if !last
-  22      rescue => e
-  23          puts "error #{e.to_s}"
-  24          sleep 1
-  25      end
-  26  end
-  27
-  28  ((last.to_i+1)..1000000000).each{|x|
-  29      begin
-  30          rc.set("foo#{x}",x)
-  31          puts rc.get("foo#{x}")
-  32          rc.set("__last__",x)
-  33      rescue => e
-  34          puts "error #{e.to_s}"
-  35      end
-  36      sleep 0.1
-  37  }
+```ruby
+require './cluster'
+
+if ARGV.length != 2
+    startup_nodes = [
+        {:host => "127.0.0.1", :port => 7000},
+        {:host => "127.0.0.1", :port => 7001}
+    ]
+else
+    startup_nodes = [
+        {:host => ARGV[0], :port => ARGV[1].to_i}
+    ]
+end
+
+rc = RedisCluster.new(startup_nodes,32,:timeout => 0.1)
+
+last = false
+
+while not last
+    begin
+        last = rc.get("__last__")
+        last = 0 if !last
+    rescue => e
+        puts "error #{e.to_s}"
+        sleep 1
+    end
+end
+
+((last.to_i+1)..1000000000).each{|x|
+    begin
+        rc.set("foo#{x}",x)
+        puts rc.get("foo#{x}")
+        rc.set("__last__",x)
+    rescue => e
+        puts "error #{e.to_s}"
+    end
+    sleep 0.1
+}
 ```
 
 The application does a very simple thing, it sets keys in the form `foo<number>` to `number`, one after the other. So if you run the program the result is the
