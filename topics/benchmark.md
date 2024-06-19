@@ -325,12 +325,7 @@ world scenarios, Valkey throughput is limited by the network well before being
 limited by the CPU. To consolidate several high-throughput Valkey instances
 on a single server, it worth considering putting a 10 Gbit/s NIC
 or multiple 1 Gbit/s NICs with TCP/IP bonding.
-+ CPU is another very important factor. Being single-threaded, Valkey favors
-fast CPUs with large caches and not many cores. At this game, Intel CPUs are
-currently the winners. It is not uncommon to get only half the performance on
-an AMD Opteron CPU compared to similar Nehalem EP/Westmere EP/Sandy Bridge
-Intel CPUs with Valkey. When client and server run on the same box, the CPU is
-the limiting factor with valkey-benchmark.
++ CPU is another important factor.
 + Speed of RAM and memory bandwidth seem less critical for global performance
 especially for small objects. For large objects (>10 KB), it may become
 noticeable though. Usually, it is not really cost-effective to buy expensive
