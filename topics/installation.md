@@ -3,8 +3,6 @@ title: "Install Valkey"
 linkTitle: "Install Valkey"
 description: >
     Install Valkey on Linux, macOS, and Windows
-- /docs/getting-started/installation
-- /docs/getting-started/tutorial
 ---
 
 This is a an installation guide. You'll learn how to install, run, and experiment with the Valkey server process.
