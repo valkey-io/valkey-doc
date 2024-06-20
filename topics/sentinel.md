@@ -460,7 +460,7 @@ Once you start the three Sentinels, you'll see a few messages they log, like:
     +monitor master mymaster 127.0.0.1 6379 quorum 2
 
 This is a Sentinel event, and you can receive this kind of events via Pub/Sub
-if you `SUBSCRIBE` to the event name as specified later in [_Pub/Sub Messages_ section](#pubsub-messages).
+if you `SUBSCRIBE` to the event name as specified later in [_Pubsub Messages_ section](#pubsub-messages).
 
 Sentinel generates and logs different events during failure detection and
 failover.
@@ -599,7 +599,7 @@ The `SENTINEL` command is the main API for Sentinel. The following is the list o
 * **SENTINEL FLUSHCONFIG** Force Sentinel to rewrite its configuration on disk, including the current Sentinel state. Normally Sentinel rewrites the configuration every time something changes in its state (in the context of the subset of the state which is persisted on disk across restart). However sometimes it is possible that the configuration file is lost because of operation errors, disk failures, package upgrade scripts or configuration managers. In those cases a way to force Sentinel to rewrite the configuration file is handy. This command works even if the previous configuration file is completely missing.
 * **SENTINEL FAILOVER `<master name>`** Force a failover as if the master was not reachable, and without asking for agreement to other Sentinels (however a new version of the configuration will be published so that the other Sentinels will update their configurations).
 * **SENTINEL GET-MASTER-ADDR-BY-NAME `<master name>`** Return the ip and port number of the master with that name. If a failover is in progress or terminated successfully for this master it returns the address and port of the promoted replica.
-* **SENTINEL INFO-CACHE** (`>= 3.2`) Return cached `INFO` output from masters and replicas.
+* **SENTINEL INFO-CACHE** Return cached `INFO` output from masters and replicas.
 * **SENTINEL IS-MASTER-DOWN-BY-ADDR <ip> <port> <current-epoch> <runid>** Check if the master specified by ip:port is down from current Sentinel's point of view. This command is mostly for internal use.
 * **SENTINEL MASTER `<master name>`** Show the state and info of the specified master.
 * **SENTINEL MASTERS** Show a list of monitored masters and their state.
@@ -607,16 +607,16 @@ The `SENTINEL` command is the main API for Sentinel. The following is the list o
 * **SENTINEL MYID** (`>= 6.2`) Return the ID of the Sentinel instance.
 * **SENTINEL PENDING-SCRIPTS** This command returns information about pending scripts.
 * **SENTINEL REMOVE** Stop Sentinel's monitoring. Refer to the [_Reconfiguring Sentinel at Runtime_ section](#reconfiguring-sentinel-at-runtime) for more information.
-* **SENTINEL REPLICAS `<master name>`** (`>= 5.0`) Show a list of replicas for this master, and their state.
+* **SENTINEL REPLICAS `<master name>`** Show a list of replicas for this master, and their state.
 * **SENTINEL SENTINELS `<master name>`** Show a list of sentinel instances for this master, and their state.
 * **SENTINEL SET** Set Sentinel's monitoring configuration. Refer to the [_Reconfiguring Sentinel at Runtime_ section](#reconfiguring-sentinel-at-runtime) for more information.
-* **SENTINEL SIMULATE-FAILURE (crash-after-election|crash-after-promotion|help)** (`>= 3.2`) This command simulates different Sentinel crash scenarios.
+* **SENTINEL SIMULATE-FAILURE (crash-after-election|crash-after-promotion|help)** This command simulates different Sentinel crash scenarios.
 * **SENTINEL RESET `<pattern>`** This command will reset all the masters with matching name. The pattern argument is a glob-style pattern. The reset process clears any previous state in a master (including a failover in progress), and removes every replica and sentinel already discovered and associated with the master.
 
 For connection management and administration purposes, Sentinel supports the following subset of Valkey's commands:
 
 * **ACL** (`>= 6.2`) This command manages the Sentinel Access Control List. For more information refer to the [ACL](acl.md) documentation page and the [_Sentinel Access Control List authentication_](#sentinel-access-control-list-authentication).
-* **AUTH** (`>= 5.0.1`) Authenticate a client connection. For more information refer to the `AUTH` command and the [_Configuring Sentinel instances with authentication_ section](#configuring-sentinel-instances-with-authentication).
+* **AUTH** Authenticate a client connection. For more information refer to the `AUTH` command and the [_Configuring Sentinel instances with authentication_ section](#configuring-sentinel-instances-with-authentication).
 * **CLIENT** This command manages client connections. For more information refer to its subcommands' pages.
 * **COMMAND** (`>= 6.2`) This command returns information about commands. For more information refer to the `COMMAND` command and its various subcommands.
 * **HELLO** (`>= 6.0`) Switch the connection's protocol. For more information refer to the `HELLO` command.
@@ -647,7 +647,7 @@ As already stated, `SENTINEL SET` can be used to set all the configuration param
 
 Note that there is no equivalent GET command since `SENTINEL MASTER` provides all the configuration parameters in a simple to parse format (as a field/value pairs array).
 
-Starting with Valkey OSS 6.2, Sentinel also allows getting and setting global configuration parameters which were only supported in the configuration file prior to that.
+Sentinel also allows getting and setting global configuration parameters which were only supported in the configuration file prior to that.
 
 * **SENTINEL CONFIG GET `<name>`** Get the current value of a global Sentinel configuration parameter. The specified name may be a wildcard, similar to the Valkey `CONFIG GET` command.
 * **SENTINEL CONFIG SET `<name>` `<value>`** Set the value of a global Sentinel configuration parameter.
@@ -707,7 +707,7 @@ to all the Sentinels: they'll refresh the list of replicas within the next
 10 seconds, only adding the ones listed as correctly replicating from the
 current master `INFO` output.
 
-### Pub/Sub messages
+### Pubsub messages
 
 A client can use a Sentinel as a Valkey-compatible Pub/Sub server
 (but you can't use `PUBLISH`) in order to `SUBSCRIBE` or `PSUBSCRIBE` to
@@ -793,7 +793,7 @@ used for the asynchronous replication protocol.
 
 ## Valkey Access Control List authentication
 
-Starting with Valkey OSS 6, user authentication and permission is managed with the [Access Control List (ACL)](acl.md).
+User authentication and permission is managed with the [Access Control List (ACL)](acl.md).
 
 In order for Sentinels to connect to Valkey server instances when they are
 configured with ACL, the Sentinel configuration must include the
@@ -808,7 +808,7 @@ Where `<username>` and `<password>` are the username and password for accessing 
 
 ### Valkey password-only authentication
 
-Until Valkey OSS 6, authentication is achieved using the following configuration directives:
+Before ACL was introduced, authentication could be achieved using the following configuration directives:
 
 * `requirepass` in the master, in order to set the authentication password, and to make sure the instance will not process requests for non authenticated clients.
 * `masterauth` in the replicas in order for the replicas to authenticate with the master in order to correctly replicate data from it.
@@ -837,7 +837,7 @@ configured with `requirepass`, the Sentinel configuration must include the
 Configuring Sentinel instances with authentication
 ---
 
-Sentinel instances themselves can be secured by requiring clients to authenticate via the `AUTH` command. Starting with Valkey OSS 6.2, the [Access Control List (ACL)](acl.md) is available, whereas previous versions (starting with Valkey OSS 5.0.1) support password-only authentication.
+Sentinel instances themselves can be secured by requiring clients to authenticate via the `AUTH` command. Starting with Redis OSS 6.2, the [Access Control List (ACL)](acl.md) is available, whereas older versions support password-only authentication.
 
 Note that Sentinel's authentication configuration should be **applied to each of the instances** in your deployment, and **all instances should use the same configuration**. Furthermore, ACL and password-only authentication should not be used together.
 
@@ -1165,7 +1165,7 @@ replication and the discarding nature of the "virtual" merge function of the sys
 1. Use synchronous replication (and a proper consensus algorithm to run a replicated state machine).
 2. Use an eventually consistent system where different versions of the same object can be merged.
 
-Valkey (like it's predecessor Valkey OSS) is currently not able to use any of the above systems, and using them is currently outside the development goals. However, there are proxies implementing solution "2" on top of Valkey OSS stores such as SoundCloud [Roshi](https://github.com/soundcloud/roshi), or Netflix [Dynomite](https://github.com/Netflix/dynomite).
+Valkey (like it's predecessor Redis OSS) is currently not able to use any of the above systems, and using them is currently outside the development goals. However, there are proxies implementing solution "2" on top of Redis OSS stores such as SoundCloud [Roshi](https://github.com/soundcloud/roshi), or Netflix [Dynomite](https://github.com/Netflix/dynomite).
 
 Sentinel persistent state
 ---
@@ -1227,4 +1227,4 @@ API that many kernels offer. However it is not still clear if this is a good
 solution since the current system avoids issues in case the process is just
 suspended or not executed by the scheduler for a long time.
 
-**A note about the word slave used in this man page**: Starting with Valkey OSS 5, if not for backward compatibility, the Valkey project no longer uses the word slave. Unfortunately in this command the word slave is part of the protocol, so we'll be able to remove such occurrences only when this API will be naturally deprecated.
+**A note about the word slave used in this man page**: If not for backward compatibility, the Valkey project no longer uses the word slave. Unfortunately in this command the word slave is part of the protocol, so we'll be able to remove such occurrences only when this API will be naturally deprecated.
