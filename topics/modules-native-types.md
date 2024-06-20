@@ -47,22 +47,24 @@ to declare a global variable that will hold a reference to the data type.
 The API to register the data type will return a data type reference that will
 be stored in the global variable.
 
-    static ValkeyModuleType *MyType;
-    #define MYTYPE_ENCODING_VERSION 0
+```C
+static ValkeyModuleType *MyType;
+#define MYTYPE_ENCODING_VERSION 0
 
-    int ValkeyModule_OnLoad(ValkeyModuleCtx *ctx) {
-	ValkeyModuleTypeMethods tm = {
-	    .version = VALKEYMODULE_TYPE_METHOD_VERSION,
-	    .rdb_load = MyTypeRDBLoad,
-	    .rdb_save = MyTypeRDBSave,
-	    .aof_rewrite = MyTypeAOFRewrite,
-	    .free = MyTypeFree
-	};
+int ValkeyModule_OnLoad(ValkeyModuleCtx *ctx) {
+ValkeyModuleTypeMethods tm = {
+    .version = VALKEYMODULE_TYPE_METHOD_VERSION,
+    .rdb_load = MyTypeRDBLoad,
+    .rdb_save = MyTypeRDBSave,
+    .aof_rewrite = MyTypeAOFRewrite,
+    .free = MyTypeFree
+};
 
-        MyType = ValkeyModule_CreateDataType(ctx, "MyType-AZ",
-		MYTYPE_ENCODING_VERSION, &tm);
-        if (MyType == NULL) return VALKEYMODULE_ERR;
-    }
+    MyType = ValkeyModule_CreateDataType(ctx, "MyType-AZ",
+	MYTYPE_ENCODING_VERSION, &tm);
+    if (MyType == NULL) return VALKEYMODULE_ERR;
+}
+```
 
 As you can see from the example above, a single API call is needed in order to
 register the new type. However a number of function pointers are passed as
@@ -108,12 +110,14 @@ The last argument is a structure used in order to pass the type methods to the
 registration function: `rdb_load`, `rdb_save`, `aof_rewrite`, `digest` and
 `free` and `mem_usage` are all callbacks with the following prototypes and uses:
 
-    typedef void *(*ValkeyModuleTypeLoadFunc)(ValkeyModuleIO *rdb, int encver);
-    typedef void (*ValkeyModuleTypeSaveFunc)(ValkeyModuleIO *rdb, void *value);
-    typedef void (*ValkeyModuleTypeRewriteFunc)(ValkeyModuleIO *aof, ValkeyModuleString *key, void *value);
-    typedef size_t (*ValkeyModuleTypeMemUsageFunc)(void *value);
-    typedef void (*ValkeyModuleTypeDigestFunc)(ValkeyModuleDigest *digest, void *value);
-    typedef void (*ValkeyModuleTypeFreeFunc)(void *value);
+```C
+typedef void *(*ValkeyModuleTypeLoadFunc)(ValkeyModuleIO *rdb, int encver);
+typedef void (*ValkeyModuleTypeSaveFunc)(ValkeyModuleIO *rdb, void *value);
+typedef void (*ValkeyModuleTypeRewriteFunc)(ValkeyModuleIO *aof, ValkeyModuleString *key, void *value);
+typedef size_t (*ValkeyModuleTypeMemUsageFunc)(void *value);
+typedef void (*ValkeyModuleTypeDigestFunc)(ValkeyModuleDigest *digest, void *value);
+typedef void (*ValkeyModuleTypeFreeFunc)(void *value);
+```
 
 * `rdb_load` is called when loading data from the RDB file. It loads data in the same format as `rdb_save` produces.
 * `rdb_save` is called when saving data to the RDB file.
@@ -189,9 +193,11 @@ The API uses the normal modules `ValkeyModule_OpenKey()` low level key access
 interface in order to deal with this. This is an example of setting a
 native type private data structure to a Valkey key:
 
-    ValkeyModuleKey *key = ValkeyModule_OpenKey(ctx,keyname,VALKEYMODULE_WRITE);
-    struct some_private_struct *data = createMyDataStructure();
-    ValkeyModule_ModuleTypeSetValue(key,MyType,data);
+```C
+ValkeyModuleKey *key = ValkeyModule_OpenKey(ctx,keyname,VALKEYMODULE_WRITE);
+struct some_private_struct *data = createMyDataStructure();
+ValkeyModule_ModuleTypeSetValue(key,MyType,data);
+```
 
 The function `ValkeyModule_ModuleTypeSetValue()` is used with a key handle open
 for writing, and gets three arguments: the key handle, the reference to the
@@ -204,43 +210,51 @@ to perform operations on the type.
 
 Similarly we can retrieve the private data from a key using this function:
 
-    struct some_private_struct *data;
-    data = ValkeyModule_ModuleTypeGetValue(key);
+```
+struct some_private_struct *data;
+data = ValkeyModule_ModuleTypeGetValue(key);
+```
 
 We can also test for a key to have our native type as value:
 
-    if (ValkeyModule_ModuleTypeGetType(key) == MyType) {
-        /* ... do something ... */
-    }
+```C
+if (ValkeyModule_ModuleTypeGetType(key) == MyType) {
+    /* ... do something ... */
+}
+```
 
 However for the calls to do the right thing, we need to check if the key
 is empty, if it contains a value of the right kind, and so forth. So
 the idiomatic code to implement a command writing to our native type
 is along these lines:
 
-    ValkeyModuleKey *key = ValkeyModule_OpenKey(ctx,argv[1],
-        VALKEYMODULE_READ|VALKEYMODULE_WRITE);
-    int type = ValkeyModule_KeyType(key);
-    if (type != VALKEYMODULE_KEYTYPE_EMPTY &&
-        ValkeyModule_ModuleTypeGetType(key) != MyType)
-    {
-        return ValkeyModule_ReplyWithError(ctx,VALKEYMODULE_ERRORMSG_WRONGTYPE);
-    }
+```C
+ValkeyModuleKey *key = ValkeyModule_OpenKey(ctx,argv[1],
+    VALKEYMODULE_READ|VALKEYMODULE_WRITE);
+int type = ValkeyModule_KeyType(key);
+if (type != VALKEYMODULE_KEYTYPE_EMPTY &&
+    ValkeyModule_ModuleTypeGetType(key) != MyType)
+{
+    return ValkeyModule_ReplyWithError(ctx,VALKEYMODULE_ERRORMSG_WRONGTYPE);
+}
+```
 
 Then if we successfully verified the key is not of the wrong type, and
 we are going to write to it, we usually want to create a new data structure if
 the key is empty, or retrieve the reference to the value associated to the
 key if there is already one:
 
-    /* Create an empty value object if the key is currently empty. */
-    struct some_private_struct *data;
-    if (type == VALKEYMODULE_KEYTYPE_EMPTY) {
-        data = createMyDataStructure();
-        ValkeyModule_ModuleTypeSetValue(key,MyTyke,data);
-    } else {
-        data = ValkeyModule_ModuleTypeGetValue(key);
-    }
-    /* Do something with 'data'... */
+```C
+/* Create an empty value object if the key is currently empty. */
+struct some_private_struct *data;
+if (type == VALKEYMODULE_KEYTYPE_EMPTY) {
+    data = createMyDataStructure();
+    ValkeyModule_ModuleTypeSetValue(key,MyTyke,data);
+} else {
+    data = ValkeyModule_ModuleTypeGetValue(key);
+}
+/* Do something with 'data'... */
+```
 
 Free method
 ---
@@ -249,14 +263,18 @@ As already mentioned, when Valkey needs to free a key holding a native type
 value, it needs help from the module in order to release the memory. This
 is the reason why we pass a `free` callback during the type registration:
 
-    typedef void (*ValkeyModuleTypeFreeFunc)(void *value);
+```C
+typedef void (*ValkeyModuleTypeFreeFunc)(void *value);
+```
 
 A trivial implementation of the free method can be something like this,
 assuming our data structure is composed of a single allocation:
 
-    void MyTypeFreeCallback(void *value) {
-        ValkeyModule_Free(value);
-    }
+```C
+void MyTypeFreeCallback(void *value) {
+    ValkeyModule_Free(value);
+}
+```
 
 However a more real world one will call some function that performs a more
 complex memory reclaiming, by casting the void pointer to some structure
@@ -282,16 +300,18 @@ have to care those details yourself.
 
 This is the list of functions performing RDB saving and loading:
 
-    void ValkeyModule_SaveUnsigned(ValkeyModuleIO *io, uint64_t value);
-    uint64_t ValkeyModule_LoadUnsigned(ValkeyModuleIO *io);
-    void ValkeyModule_SaveSigned(ValkeyModuleIO *io, int64_t value);
-    int64_t ValkeyModule_LoadSigned(ValkeyModuleIO *io);
-    void ValkeyModule_SaveString(ValkeyModuleIO *io, ValkeyModuleString *s);
-    void ValkeyModule_SaveStringBuffer(ValkeyModuleIO *io, const char *str, size_t len);
-    ValkeyModuleString *ValkeyModule_LoadString(ValkeyModuleIO *io);
-    char *ValkeyModule_LoadStringBuffer(ValkeyModuleIO *io, size_t *lenptr);
-    void ValkeyModule_SaveDouble(ValkeyModuleIO *io, double value);
-    double ValkeyModule_LoadDouble(ValkeyModuleIO *io);
+```C
+void ValkeyModule_SaveUnsigned(ValkeyModuleIO *io, uint64_t value);
+uint64_t ValkeyModule_LoadUnsigned(ValkeyModuleIO *io);
+void ValkeyModule_SaveSigned(ValkeyModuleIO *io, int64_t value);
+int64_t ValkeyModule_LoadSigned(ValkeyModuleIO *io);
+void ValkeyModule_SaveString(ValkeyModuleIO *io, ValkeyModuleString *s);
+void ValkeyModule_SaveStringBuffer(ValkeyModuleIO *io, const char *str, size_t len);
+ValkeyModuleString *ValkeyModule_LoadString(ValkeyModuleIO *io);
+char *ValkeyModule_LoadStringBuffer(ValkeyModuleIO *io, size_t *lenptr);
+void ValkeyModule_SaveDouble(ValkeyModuleIO *io, double value);
+double ValkeyModule_LoadDouble(ValkeyModuleIO *io);
+```
 
 The functions don't require any error checking from the module, that can
 always assume calls succeed.
@@ -299,39 +319,45 @@ always assume calls succeed.
 As an example, imagine I've a native type that implements an array of
 double values, with the following structure:
 
-    struct double_array {
-        size_t count;
-        double *values;
-    };
+```C
+struct double_array {
+    size_t count;
+    double *values;
+};
+```
 
 My `rdb_save` method may look like the following:
 
-    void DoubleArrayRDBSave(ValkeyModuleIO *io, void *ptr) {
-        struct dobule_array *da = ptr;
-        ValkeyModule_SaveUnsigned(io,da->count);
-        for (size_t j = 0; j < da->count; j++)
-            ValkeyModule_SaveDouble(io,da->values[j]);
-    }
+```C
+void DoubleArrayRDBSave(ValkeyModuleIO *io, void *ptr) {
+    struct dobule_array *da = ptr;
+    ValkeyModule_SaveUnsigned(io,da->count);
+    for (size_t j = 0; j < da->count; j++)
+        ValkeyModule_SaveDouble(io,da->values[j]);
+}
+```
 
 What we did was to store the number of elements followed by each double
 value. So when later we'll have to load the structure in the `rdb_load`
 method we'll do something like this:
 
-    void *DoubleArrayRDBLoad(ValkeyModuleIO *io, int encver) {
-        if (encver != DOUBLE_ARRAY_ENC_VER) {
-            /* We should actually log an error here, or try to implement
-               the ability to load older versions of our data structure. */
-            return NULL;
-        }
-
-        struct double_array *da;
-        da = ValkeyModule_Alloc(sizeof(*da));
-        da->count = ValkeyModule_LoadUnsigned(io);
-        da->values = ValkeyModule_Alloc(da->count * sizeof(double));
-        for (size_t j = 0; j < da->count; j++)
-            da->values[j] = ValkeyModule_LoadDouble(io);
-        return da;
+```C
+void *DoubleArrayRDBLoad(ValkeyModuleIO *io, int encver) {
+    if (encver != DOUBLE_ARRAY_ENC_VER) {
+        /* We should actually log an error here, or try to implement
+           the ability to load older versions of our data structure. */
+        return NULL;
     }
+
+    struct double_array *da;
+    da = ValkeyModule_Alloc(sizeof(*da));
+    da->count = ValkeyModule_LoadUnsigned(io);
+    da->values = ValkeyModule_Alloc(da->count * sizeof(double));
+    for (size_t j = 0; j < da->count; j++)
+        da->values[j] = ValkeyModule_LoadDouble(io);
+    return da;
+}
+```
 
 The load callback just reconstruct back the data structure from the data
 we stored in the RDB file.
@@ -343,12 +369,9 @@ it reads does not look correct. Valkey will just panic in that case.
 AOF rewriting
 ---
 
-    void ValkeyModule_EmitAOF(ValkeyModuleIO *io, const char *cmdname, const char *fmt, ...);
-
-Handling multiple encodings
----
-
-    WORK IN PROGRESS
+```C
+void ValkeyModule_EmitAOF(ValkeyModuleIO *io, const char *cmdname, const char *fmt, ...);
+```
 
 Allocating memory
 ---
@@ -371,10 +394,12 @@ to avoid replacing manually all the calls with the Valkey Modules API calls,
 an approach could be to use simple macros in order to replace the libc calls
 with the Valkey API calls. Something like this could work:
 
-    #define malloc ValkeyModule_Alloc
-    #define realloc ValkeyModule_Realloc
-    #define free ValkeyModule_Free
-    #define strdup ValkeyModule_Strdup
+```C
+#define malloc ValkeyModule_Alloc
+#define realloc ValkeyModule_Realloc
+#define free ValkeyModule_Free
+#define strdup ValkeyModule_Strdup
+```
 
 However take in mind that mixing libc calls with Valkey API calls will result
 into troubles and crashes, so if you replace calls using macros, you need to
