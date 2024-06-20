@@ -5,11 +5,13 @@ description: >
    Extending Valkey with Lua and Valkey Functions
 ---
 
-Valkey provides a programming interface that lets you execute custom scripts on the server itself. In Redis OSS 7 and beyond, you can use [Valkey Functions](functions-intro.md) to manage and run your scripts. In Redis OSS 6.2 and below, you use [Lua scripting with the EVAL command](eval-intro.md) to program the server.
+Valkey provides a programming interface that lets you execute custom scripts on the server itself.
+You can use [Functions](functions-intro.md) to create, manage and run scripts.
+You can also use [Lua scripting with the EVAL command](eval-intro.md) to program the server.
 
 ## Background
 
-Valkey is, by [definition](https://github.com/valkey-io/valkey/blob/unstable/MANIFESTO#L7), a _"domain-specific language for abstract data types"_.
+Valkey is a _"domain-specific language for abstract data types"_.
 The language that Valkey speaks consists of its [commands](../commands/).
 Most the commands specialize at manipulating core [data types](data-types.md) in different ways.
 In many cases, these commands provide all the functionality that a developer requires for managing application data in Valkey.
@@ -30,7 +32,7 @@ Please refer to the [Valkey Lua API Reference](lua-api.md) page for complete doc
 
 Valkey provides two means for running scripts.
 
-Firstly, and ever since Redis OSS 2.6.0, the `EVAL` command enables running server-side scripts.
+Firstly, the `EVAL` command enables running server-side scripts.
 Eval scripts provide a quick and straightforward way to have Valkey run your scripts ad-hoc.
 However, using them means that the scripted logic is a part of your application (not an extension of the Valkey server).
 Every applicative instance that runs a script must have the script's source code readily available for loading at any time.
@@ -64,7 +66,7 @@ They have the following properties:
 
 * They can always be executed on replicas.
 * They can always be killed by the `SCRIPT KILL` command. 
-* They never fail with OOM error when redis is over the memory limit.
+* They never fail with OOM error when Valkey is over the memory limit.
 * They are not blocked during write pauses, such as those that occur during coordinated failovers.
 * They cannot execute any command that may modify the data set.
 * Currently `PUBLISH`, `SPUBLISH` and `PFCOUNT` are also considered write commands in scripts, because they could attempt to propagate commands to replicas and AOF file.
