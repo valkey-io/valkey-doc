@@ -94,7 +94,7 @@ reaches 10 times the baseline obtained without pipelining, as shown in this figu
 ## A real world code example
 
 
-In the following benchmark we'll use the Valkey Ruby client, supporting pipelining, to test the speed improvement due to pipelining:
+In the following benchmark we'll use a Ruby client, supporting pipelining, to test the speed improvement due to pipelining:
 
 ```ruby
 require 'rubygems'
@@ -130,7 +130,7 @@ bench('with pipelining') do
 end
 ```
 
-Running the above simple script yields the following figures on my Mac OS X system, running over the loopback interface, where pipelining will provide the smallest improvement as the RTT is already pretty low:
+Running the above simple script yields the following figures on my MacOS system, running over the loopback interface, where pipelining will provide the smallest improvement as the RTT is already pretty low:
 
 ```
 without pipelining 1.185238 seconds
