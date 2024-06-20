@@ -178,7 +178,7 @@ Evaluating this script with more than one argument will return:
 * Available in scripts: yes
 * Available in functions: yes
 
-This is a helper function that returns an [error reply](protocol.md#resp-errors).
+This is a helper function that returns an [error reply](protocol.md#simply-errors).
 The helper accepts a single string argument and returns a Lua table with the _err_ field set to that string.
 
 The outcome of the following code is that _error1_ and _error2_ are identical for all intents and purposes:
@@ -211,7 +211,7 @@ Scripts are advised to follow this convention, as shown in the example above, bu
 * Available in scripts: yes
 * Available in functions: yes
 
-This is a helper function that returns a [simple string reply](protocol.md#resp-simple-strings).
+This is a helper function that returns a [simple string reply](protocol.md#simple-strings).
 "OK" is an example of a standard Valkey status reply.
 The Lua API represents status replies as tables with a single field, _ok_, set with a simple status string.
 
@@ -547,27 +547,27 @@ The following sections describe the type conversion rules between Lua and Valkey
 
 The following type conversion rules apply to the execution's context by default as well as after calling `server.setresp(2)`:
 
-* [RESP2 integer reply](protocol.md#resp-integers) -> Lua number
-* [RESP2 bulk string reply](protocol.md#resp-bulk-strings) -> Lua string
-* [RESP2 array reply](protocol.md#resp-arrays) -> Lua table (may have other Valkey data types nested)
-* [RESP2 status reply](protocol.md#resp-simple-strings) -> Lua table with a single _ok_ field containing the status string
-* [RESP2 error reply](protocol.md#resp-errors) -> Lua table with a single _err_ field containing the error string
-* [RESP2 null bulk reply](protocol.md#null-elements-in-arrays) and [null multi bulk reply](protocol.md#resp-arrays) -> Lua false boolean type
+* [RESP2 integer reply](protocol.md#integers) -> Lua number
+* [RESP2 bulk string reply](protocol.md#bulk-strings) -> Lua string
+* [RESP2 array reply](protocol.md#arrays) -> Lua table (may have other Valkey data types nested)
+* [RESP2 status reply](protocol.md#simple-strings) -> Lua table with a single _ok_ field containing the status string
+* [RESP2 error reply](protocol.md#simple-errors) -> Lua table with a single _err_ field containing the error string
+* [RESP2 null bulk reply and null multi bulk reply](protocol.md#nulls) -> Lua false boolean type
 
 ## Lua to RESP2 type conversion
 
 The following type conversion rules apply by default as well as after the user had called `HELLO 2`:
 
-* Lua number -> [RESP2 integer reply](protocol.md#resp-integers) (the number is converted into an integer)
-* Lua string -> [RESP bulk string reply](protocol.md#resp-bulk-strings)
-* Lua table (indexed, non-associative array) -> [RESP2 array reply](protocol.md#resp-arrays) (truncated at the first Lua `nil` value encountered in the table, if any)
-* Lua table with a single _ok_ field -> [RESP2 status reply](protocol.md#resp-simple-strings)
-* Lua table with a single _err_ field -> [RESP2 error reply](protocol.md#resp-errors)
-* Lua boolean false -> [RESP2 null bulk reply](protocol.md#null-elements-in-arrays)
+* Lua number -> [RESP2 integer reply](protocol.md#integers) (the number is converted into an integer)
+* Lua string -> [RESP bulk string reply](protocol.md#bulk-strings)
+* Lua table (indexed, non-associative array) -> [RESP2 array reply](protocol.md#arrays) (truncated at the first Lua `nil` value encountered in the table, if any)
+* Lua table with a single _ok_ field -> [RESP2 status reply](protocol.md#simple-strings)
+* Lua table with a single _err_ field -> [RESP2 error reply](protocol.md#simple-errors)
+* Lua boolean false -> [RESP2 null bulk reply](protocol.md#nulls)
 
 There is an additional Lua-to-Valkey conversion rule that has no corresponding Valkey-to-Lua conversion rule:
 
-* Lua Boolean `true` -> [RESP2 integer reply](protocol.md#resp-integers) with value of 1.
+* Lua Boolean `true` -> [RESP2 integer reply](protocol.md#integers) with value of 1.
 
 There are three additional rules to note about converting Lua to Valkey data types:
 
@@ -613,24 +613,24 @@ As you can see, the float value of _3.333_ gets converted to an integer _3_, the
 
 ### RESP3 to Lua type conversion
 
-[RESP3](https://github.com/redis/redis-specifications/blob/master/protocol/RESP3.md) is a newer version of the [Valkey Serialization Protocol](protocol.md).
-It is available as an opt-in choice as of Redis OSS v6.0.
+RESP3 is a newer version of Valkey's [Serialization Protocol](protocol.md).
+It is available as an opt-in choice.
 
 An executing script may call the [`server.setresp`](#server.setresp) function during its execution and switch the protocol version that's used for returning replies from Valkey' commands (that can be invoked via [`server.call()`](#server.call) or [`server.pcall()`](#server.pcall)).
 
 Once Valkey' replies are in RESP3 protocol, all of the [RESP2 to Lua conversion](#resp2-to-lua-type-conversion) rules apply, with the following additions:
 
-* [RESP3 map reply](https://github.com/redis/redis-specifications/blob/master/protocol/RESP3.md#map-type) -> Lua table with a single _map_ field containing a Lua table representing the fields and values of the map.
-* [RESP set reply](https://github.com/redis/redis-specifications/blob/master/protocol/RESP3.md#set-reply) -> Lua table with a single _set_ field containing a Lua table representing the elements of the set as fields, each with the Lua Boolean value of `true`.
-* [RESP3 null](https://github.com/redis/redis-specifications/blob/master/protocol/RESP3.md#null-reply) -> Lua `nil`.
-* [RESP3 true reply](https://github.com/redis/redis-specifications/blob/master/protocol/RESP3.md#boolean-reply) -> Lua true boolean value.
-* [RESP3 false reply](https://github.com/redis/redis-specifications/blob/master/protocol/RESP3.md#boolean-reply) -> Lua false boolean value.
-* [RESP3 double reply](https://github.com/redis/redis-specifications/blob/master/protocol/RESP3.md#double-type) -> Lua table with a single _double_ field containing a Lua number representing the double value.
-* [RESP3 big number reply](https://github.com/redis/redis-specifications/blob/master/protocol/RESP3.md#big-number-type) -> Lua table with a single _big_number_ field containing a Lua string representing the big number value.
-* [Valkey verbatim string reply](https://github.com/redis/redis-specifications/blob/master/protocol/RESP3.md#verbatim-string-type) -> Lua table with a single _verbatim_string_ field containing a Lua table with two fields, _string_ and _format_, representing the verbatim string and its format, respectively.
+* [Map reply](protocol.md#maps) -> Lua table with a single _map_ field containing a Lua table representing the fields and values of the map.
+* [Set reply](protocol.md#sets) -> Lua table with a single _set_ field containing a Lua table representing the elements of the set as fields, each with the Lua Boolean value of `true`.
+* [Null](protocol.md#nulls) -> Lua `nil`.
+* [True reply](protocol.md#booleans) -> Lua true boolean value.
+* [False reply](protocol.md#booleans) -> Lua false boolean value.
+* [Double reply](protocol.md#doubles) -> Lua table with a single _double_ field containing a Lua number representing the double value.
+* [Big number reply](protocol.md#big-numbers) -> Lua table with a single _big_number_ field containing a Lua string representing the big number value.
+* [Verbatim string reply](protocol.md#verbatim-strings) -> Lua table with a single _verbatim_string_ field containing a Lua table with two fields, _string_ and _format_, representing the verbatim string and its format, respectively.
 
 **Note:**
-the RESP3 [big number](https://github.com/redis/redis-specifications/blob/master/protocol/RESP3.md#big-number-type) and [verbatim strings](https://github.com/redis/redis-specifications/blob/master/protocol/RESP3.md#verbatim-string-type) replies are only supported as of Redis OSS v7.0 and greater. 
+the RESP3 [big number](protocol.md#big-numbers) and [verbatim strings](protocol.md#verbatim-strings) replies are supported since Redis OSS 7.0.
 Also, presently, RESP3's [attributes](https://github.com/redis/redis-specifications/blob/master/protocol/RESP3.md#attribute-type), [streamed strings](https://github.com/redis/redis-specifications/blob/master/protocol/RESP3.md#streamed-strings) and [streamed aggregate data types](https://github.com/redis/redis-specifications/blob/master/protocol/RESP3.md#streamed-aggregate-data-types) are not supported by the Valkey Lua API.
 
 ### Lua to RESP3 type conversion
@@ -638,11 +638,11 @@ Also, presently, RESP3's [attributes](https://github.com/redis/redis-specificati
 Regardless of the script's choice of protocol version set for replies with the [`server.setresp()` function] when it calls `server.call()` or `server.pcall()`, the user may opt-in to using RESP3 (with the `HELLO 3` command) for the connection.
 Although the default protocol for incoming client connections is RESP2, the script should honor the user's preference and return adequately-typed RESP3 replies, so the following rules apply on top of those specified in the [Lua to RESP2 type conversion](#lua-to-resp2-type-conversion) section when that is the case.
 
-* Lua Boolean -> [RESP3 Boolean reply](https://github.com/redis/redis-specifications/blob/master/protocol/RESP3.md#boolean-reply) (note that this is a change compared to the RESP2, in which returning a Boolean Lua `true` returned the number 1 to the Valkey client, and returning a `false` used to return a `null`.
-* Lua table with a single _map_ field set to an associative Lua table -> [RESP3 map reply](https://github.com/redis/redis-specifications/blob/master/protocol/RESP3.md#map-type).
-* Lua table with a single _set_ field set to an associative Lua table -> [RESP3 set reply](https://github.com/redis/redis-specifications/blob/master/protocol/RESP3.md#set-type). Values can be set to anything and are discarded anyway.
-* Lua table with a single _double_ field to an associative Lua table -> [RESP3 double reply](https://github.com/redis/redis-specifications/blob/master/protocol/RESP3.md#double-type).
-* Lua nil -> [RESP3 null](https://github.com/redis/redis-specifications/blob/master/protocol/RESP3.md#null-reply).
+* Lua Boolean -> [RESP3 Boolean reply](protocol.md#booleans) (note that this is a change compared to the RESP2, in which returning a Boolean Lua `true` returned the number 1 to the Valkey client, and returning a `false` used to return a `null`.
+* Lua table with a single _map_ field set to an associative Lua table -> [RESP3 map reply](protocol.md#maps).
+* Lua table with a single _set_ field set to an associative Lua table -> [RESP3 set reply](protocol.md#sets). Values can be set to anything and are discarded anyway.
+* Lua table with a single _double_ field to an associative Lua table -> [RESP3 double reply](protocol.md#doubles).
+* Lua nil -> [RESP3 null](protocol.md#nulls).
 
 However, if the connection is set use the RESP2 protocol, and even if the script replies with RESP3-typed responses, Valkey will automatically perform a RESP3 to RESP2 conversion of the reply as is the case for regular commands.
 That means, for example, that returning the RESP3 map type to a RESP2 connection will result in the reply being converted to a flat RESP2 array that consists of alternating field names and their values, rather than a RESP3 map.

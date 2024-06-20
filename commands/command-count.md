@@ -1,4 +1,4 @@
-Returns @integer-reply of number of total commands in this Valkey server.
+Returns the total number of commands in this Valkey server.
 
 ## Examples
 

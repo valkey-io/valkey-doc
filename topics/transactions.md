@@ -104,7 +104,7 @@ EXEC
 -WRONGTYPE Operation against a key holding the wrong kind of value
 ```
 
-`EXEC` returned two-element [bulk string reply](protocol.md#bulk-string-reply) where one is an `OK` code and
+`EXEC` returned two-element [bulk string reply](protocol.md#bulk-strings) where one is an `OK` code and
 the other an error reply. It's up to the client library to find a
 sensible way to provide the error to the user.
 
