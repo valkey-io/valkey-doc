@@ -24,9 +24,9 @@ that can be used in order to model blocking commands.
 How blocking and resuming works.
 ---
 
-_Note: You may want to check the `helloblock.c` example in the Valkey source tree
+**Note:** You may want to check the `helloblock.c` example in the Valkey source tree
 inside the `src/modules` directory, for a simple to understand example
-on how the blocking API is applied._
+on how the blocking API is applied.
 
 In Valkey modules, commands are implemented by callback functions that
 are invoked by the Valkey core when the specific command is called
@@ -35,7 +35,13 @@ some reply to the client. Using the following function instead, the
 function implementing the module command may request that the client
 is put into the blocked state:
 
-    ValkeyModuleBlockedClient *ValkeyModule_BlockClient(ValkeyModuleCtx *ctx, ValkeyModuleCmdFunc reply_callback, ValkeyModuleCmdFunc timeout_callback, void (*free_privdata)(void*), long long timeout_ms);
+```C
+ValkeyModuleBlockedClient *ValkeyModule_BlockClient(ValkeyModuleCtx *ctx,
+                                                    ValkeyModuleCmdFunc reply_callback,
+                                                    ValkeyModuleCmdFunc timeout_callback,
+                                                    void (*free_privdata)(void*),
+                                                    long long timeout_ms);
+```
 
 The function returns a `ValkeyModuleBlockedClient` object, which is later
 used in order to unblock the client. The arguments have the following
@@ -49,7 +55,9 @@ meaning:
 
 Once a client is blocked, it can be unblocked with the following API:
 
-    int ValkeyModule_UnblockClient(ValkeyModuleBlockedClient *bc, void *privdata);
+```C
+int ValkeyModule_UnblockClient(ValkeyModuleBlockedClient *bc, void *privdata);
+```
 
 The function takes as argument the blocked client object returned by
 the previous call to `ValkeyModule_BlockClient()`, and unblock the client.
@@ -73,41 +81,45 @@ that blocks a client for one second, and then send as reply "Hello!".
 Note: arity checks and other non important things are not implemented
 int his command, in order to take the example simple.
 
-    int Example_ValkeyCommand(ValkeyModuleCtx *ctx, ValkeyModuleString **argv,
-                             int argc)
-    {
-        ValkeyModuleBlockedClient *bc =
-            ValkeyModule_BlockClient(ctx,reply_func,timeout_func,NULL,0);
+```C
+int Example_ValkeyCommand(ValkeyModuleCtx *ctx, ValkeyModuleString **argv,
+                         int argc)
+{
+    ValkeyModuleBlockedClient *bc =
+        ValkeyModule_BlockClient(ctx,reply_func,timeout_func,NULL,0);
 
-        pthread_t tid;
-        pthread_create(&tid,NULL,threadmain,bc);
+    pthread_t tid;
+    pthread_create(&tid,NULL,threadmain,bc);
 
-        return VALKEYMODULE_OK;
-    }
+    return VALKEYMODULE_OK;
+}
 
-    void *threadmain(void *arg) {
-        ValkeyModuleBlockedClient *bc = arg;
+void *threadmain(void *arg) {
+    ValkeyModuleBlockedClient *bc = arg;
 
-        sleep(1); /* Wait one second and unblock. */
-        ValkeyModule_UnblockClient(bc,NULL);
-    }
+    sleep(1); /* Wait one second and unblock. */
+    ValkeyModule_UnblockClient(bc,NULL);
+}
+```
 
 The above command blocks the client ASAP, spawning a thread that will
 wait a second and will unblock the client. Let's check the reply and
 timeout callbacks, which are in our case very similar, since they
 just reply the client with a different reply type.
 
-    int reply_func(ValkeyModuleCtx *ctx, ValkeyModuleString **argv,
-                   int argc)
-    {
-        return ValkeyModule_ReplyWithSimpleString(ctx,"Hello!");
-    }
+```C
+int reply_func(ValkeyModuleCtx *ctx, ValkeyModuleString **argv,
+               int argc)
+{
+    return ValkeyModule_ReplyWithSimpleString(ctx,"Hello!");
+}
 
-    int timeout_func(ValkeyModuleCtx *ctx, ValkeyModuleString **argv,
-                   int argc)
-    {
-        return ValkeyModule_ReplyWithNull(ctx);
-    }
+int timeout_func(ValkeyModuleCtx *ctx, ValkeyModuleString **argv,
+               int argc)
+{
+    return ValkeyModule_ReplyWithNull(ctx);
+}
+```
 
 The reply callback just sends the "Hello!" string to the client.
 The important bit here is that the reply callback is called when the
@@ -130,41 +142,49 @@ actually expansive operation of some kind. Then this random number
 can be passed to the reply function so that we return it to the command
 caller. In order to make this working, we modify the functions as follow:
 
-    void *threadmain(void *arg) {
-        ValkeyModuleBlockedClient *bc = arg;
+```C
+void *threadmain(void *arg) {
+    ValkeyModuleBlockedClient *bc = arg;
 
-        sleep(1); /* Wait one second and unblock. */
+    sleep(1); /* Wait one second and unblock. */
 
-        long *mynumber = ValkeyModule_Alloc(sizeof(long));
-        *mynumber = rand();
-        ValkeyModule_UnblockClient(bc,mynumber);
-    }
+    long *mynumber = ValkeyModule_Alloc(sizeof(long));
+    *mynumber = rand();
+    ValkeyModule_UnblockClient(bc,mynumber);
+}
+```
 
 As you can see, now the unblocking call is passing some private data,
 that is the `mynumber` pointer, to the reply callback. In order to
 obtain this private data, the reply callback will use the following
 function:
 
-    void *ValkeyModule_GetBlockedClientPrivateData(ValkeyModuleCtx *ctx);
+```C
+void *ValkeyModule_GetBlockedClientPrivateData(ValkeyModuleCtx *ctx);
+```
 
 So our reply callback is modified like that:
 
-    int reply_func(ValkeyModuleCtx *ctx, ValkeyModuleString **argv,
-                   int argc)
-    {
-        long *mynumber = ValkeyModule_GetBlockedClientPrivateData(ctx);
-        /* IMPORTANT: don't free mynumber here, but in the
-         * free privdata callback. */
-        return ValkeyModule_ReplyWithLongLong(ctx,mynumber);
-    }
+```C
+int reply_func(ValkeyModuleCtx *ctx, ValkeyModuleString **argv,
+               int argc)
+{
+    long *mynumber = ValkeyModule_GetBlockedClientPrivateData(ctx);
+    /* IMPORTANT: don't free mynumber here, but in the
+     * free privdata callback. */
+    return ValkeyModule_ReplyWithLongLong(ctx,mynumber);
+}
+```
 
 Note that we also need to pass a `free_privdata` function when blocking
 the client with `ValkeyModule_BlockClient()`, since the allocated
 long value must be freed. Our callback will look like the following:
 
-    void free_privdata(void *privdata) {
-        ValkeyModule_Free(privdata);
-    }
+```C
+void free_privdata(void *privdata) {
+    ValkeyModule_Free(privdata);
+}
+```
 
 NOTE: It is important to stress that the private data is best freed in the
 `free_privdata` callback because the reply function may not be called
@@ -185,24 +205,28 @@ because this will trigger the reply callback to be called.
 
 In this case the best thing to do is to use the following function:
 
-    int ValkeyModule_AbortBlock(ValkeyModuleBlockedClient *bc);
+```C
+int ValkeyModule_AbortBlock(ValkeyModuleBlockedClient *bc);
+```
 
 Practically this is how to use it:
 
-    int Example_ValkeyCommand(ValkeyModuleCtx *ctx, ValkeyModuleString **argv,
-                             int argc)
-    {
-        ValkeyModuleBlockedClient *bc =
-            ValkeyModule_BlockClient(ctx,reply_func,timeout_func,NULL,0);
+```C
+int Example_ValkeyCommand(ValkeyModuleCtx *ctx, ValkeyModuleString **argv,
+                         int argc)
+{
+    ValkeyModuleBlockedClient *bc =
+        ValkeyModule_BlockClient(ctx,reply_func,timeout_func,NULL,0);
 
-        pthread_t tid;
-        if (pthread_create(&tid,NULL,threadmain,bc) != 0) {
-            ValkeyModule_AbortBlock(bc);
-            ValkeyModule_ReplyWithError(ctx,"Sorry can't create a thread");
-        }
-
-        return VALKEYMODULE_OK;
+    pthread_t tid;
+    if (pthread_create(&tid,NULL,threadmain,bc) != 0) {
+        ValkeyModule_AbortBlock(bc);
+        ValkeyModule_ReplyWithError(ctx,"Sorry can't create a thread");
     }
+
+    return VALKEYMODULE_OK;
+}
+```
 
 The client will be unblocked but the reply callback will not be called.
 
@@ -213,33 +237,37 @@ The following functions can be used in order to implement the reply and
 callback with the same function that implements the primary command
 function:
 
-    int ValkeyModule_IsBlockedReplyRequest(ValkeyModuleCtx *ctx);
-    int ValkeyModule_IsBlockedTimeoutRequest(ValkeyModuleCtx *ctx);
+```C
+int ValkeyModule_IsBlockedReplyRequest(ValkeyModuleCtx *ctx);
+int ValkeyModule_IsBlockedTimeoutRequest(ValkeyModuleCtx *ctx);
+```
 
 So I could rewrite the example command without using a separated
 reply and timeout callback:
 
-    int Example_ValkeyCommand(ValkeyModuleCtx *ctx, ValkeyModuleString **argv,
-                             int argc)
-    {
-        if (ValkeyModule_IsBlockedReplyRequest(ctx)) {
-            long *mynumber = ValkeyModule_GetBlockedClientPrivateData(ctx);
-            return ValkeyModule_ReplyWithLongLong(ctx,mynumber);
-        } else if (ValkeyModule_IsBlockedTimeoutRequest) {
-            return ValkeyModule_ReplyWithNull(ctx);
-        }
-
-        ValkeyModuleBlockedClient *bc =
-            ValkeyModule_BlockClient(ctx,reply_func,timeout_func,NULL,0);
-
-        pthread_t tid;
-        if (pthread_create(&tid,NULL,threadmain,bc) != 0) {
-            ValkeyModule_AbortBlock(bc);
-            ValkeyModule_ReplyWithError(ctx,"Sorry can't create a thread");
-        }
-
-        return VALKEYMODULE_OK;
+```C
+int Example_ValkeyCommand(ValkeyModuleCtx *ctx, ValkeyModuleString **argv,
+                         int argc)
+{
+    if (ValkeyModule_IsBlockedReplyRequest(ctx)) {
+        long *mynumber = ValkeyModule_GetBlockedClientPrivateData(ctx);
+        return ValkeyModule_ReplyWithLongLong(ctx,mynumber);
+    } else if (ValkeyModule_IsBlockedTimeoutRequest) {
+        return ValkeyModule_ReplyWithNull(ctx);
     }
+
+    ValkeyModuleBlockedClient *bc =
+        ValkeyModule_BlockClient(ctx,reply_func,timeout_func,NULL,0);
+
+    pthread_t tid;
+    if (pthread_create(&tid,NULL,threadmain,bc) != 0) {
+        ValkeyModule_AbortBlock(bc);
+        ValkeyModule_ReplyWithError(ctx,"Sorry can't create a thread");
+    }
+
+    return VALKEYMODULE_OK;
+}
+```
 
 Functionally is the same but there are people that will prefer the less
 verbose implementation that concentrates most of the command logic in a
@@ -255,16 +283,13 @@ the old version. However when the thread terminated its work, the
 representations are swapped and the new, processed version, is used.
 
 An example of this approach is the
-[Neural Valkey module](https://github.com/antirez/neural-redis)
+[Neural Redis module](https://github.com/antirez/neural-redis)
 where neural networks are trained in different threads while the
 user can still execute and inspect their older versions.
 
-Future work
+Thread safe contexts
 ---
 
-An API is work in progress right now in order to allow Valkey modules APIs
-to be called in a safe way from threads, so that the threaded command
-can access the data space and do incremental operations.
-
-There is no ETA for this feature but it may appear in the course of the
-Redis OSS 4.0 release at some point.
+See [Thread Safe Contexts](modules-api-ref.md#section-thread-safe-contexts) in
+the Modules API reference for how Valkey modules APIs can be called in a safe
+way from threads.
