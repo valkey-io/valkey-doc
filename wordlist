@@ -635,7 +635,7 @@ race:france
 race:italy
 race:usa
 radix
-rc
+rc[0-9]*
 RC[0-9]+
 rdb-preamble
 RDB-saving
