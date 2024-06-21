@@ -70,9 +70,9 @@ Stable minor versions are created as needed in between major releases, and we ai
 
 ### Release candidate
 
-New minor and major versions of Valkey begin by branching off the `unstable` branch as an initial release candidate branch with a name that takes the form of `*major.minor*`, example `7.2`.
+New minor and major versions of Valkey begin by branching off the `unstable` branch as an initial release candidate branch with a name that takes the form of *`major.minor`*, example `7.2`.
 The first release candidate, or rc1, is released once it can be used for development purposes and for testing the new version.
-Release candidate versions will start with a patch version of "0" and will take the form `*major.minor.patch-rcN*`, example `7.2.0-rc1` followed by `7.2.0-rc2`.
+Release candidate versions will start with a patch version of "0" and will take the form *`major.minor.patch-rcN`*, example `7.2.0-rc1` followed by `7.2.0-rc2`.
 At this stage, most of the new features and changes in the new version are ready for review, and the version is released for the purpose of collecting public feedback.
 Subsequent release candidates are released every couple of weeks, primarily for fixing bugs and refining features based off of user input.
 
