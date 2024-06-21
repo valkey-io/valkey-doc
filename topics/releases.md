@@ -32,7 +32,7 @@ When discussing compatibility, we refer to the following API contracts:
 *Patch* versions are released with backwards compatible bug fixes and should not introduce new features.
 
 Upgrading from a previous patch version should be safe and seamless.
-It should be safe to run a Valkey cluster with servers running on different patch versions.
+It should be safe to run a primary-replica pair or a Valkey cluster with servers running on different patch versions.
 
 *Patch* versions may also introduce small improvements such as performance or memory optimizations that are easy to verify as safe.
 
