@@ -29,7 +29,7 @@ When discussing compatibility, we refer to the following API contracts:
 *Patch* versions are released with backwards compatible bug fixes and should not introduce new features.
 
 Upgrading from a previous patch version should be safe and seamless.
-It should be safe to run a Valkey cluster with servers running on different patch versions.
+It should be safe to run a primary-replica pair or a Valkey cluster with servers running on different patch versions.
 
 *Patch* versions may also introduce small improvements such as performance or memory optimizations that are easy to verify as safe.
 
@@ -67,9 +67,9 @@ Stable minor versions are created as needed in between major releases, and we ai
 
 ### Release candidate
 
-New minor and major versions of Valkey begin by branching off the `unstable` branch as an initial release candidate branch with a name that takes the form of `*major.minor*`, example `7.2`.
+New minor and major versions of Valkey begin by branching off the `unstable` branch as an initial release candidate branch with a name that takes the form of *`major.minor`*, example `7.2`.
 The first release candidate, or rc1, is released once it can be used for development purposes and for testing the new version.
-Release candidate versions will start with a patch version of "0" and will take the form `*major.minor.patch-rcN*`, example `7.2.0-rc1` followed by `7.2.0-rc2`.
+Release candidate versions will start with a patch version of "0" and will take the form *`major.minor.patch-rcN`*, example `7.2.0-rc1` followed by `7.2.0-rc2`.
 At this stage, most of the new features and changes in the new version are ready for review, and the version is released for the purpose of collecting public feedback.
 Subsequent release candidates are released every couple of weeks, primarily for fixing bugs and refining features based off of user input.
 
