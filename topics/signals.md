@@ -1,10 +1,7 @@
 ---
 title: "Valkey signal handling"
 linkTitle: "Signal handling"
-weight: 8
 description: How Valkey handles common Unix signals
-aliases:
-    - /topics/signals
 ---
 
 This document provides information about how Valkey reacts to different POSIX signals such as `SIGTERM` and `SIGSEGV`.

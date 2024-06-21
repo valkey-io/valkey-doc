@@ -1,11 +1,8 @@
 ---
 title: Valkey cluster specification
 linkTitle: Cluster spec
-weight: 9
 description: >
     Detailed specification for Valkey cluster
-aliases:
-  - /topics/cluster-spec
 ---
 
 Welcome to the **Valkey Cluster Specification**. Here you'll find information
@@ -350,9 +347,7 @@ A node will accept another node as part of the cluster only in two ways:
 
 * If a node presents itself with a `MEET` message (`CLUSTER MEET` command). A meet message is exactly
 like a `PING` message, but forces the receiver to accept the node as part of
-the cluster. Nodes will send `MEET` messages to other nodes **only if** the system administrator requests this via the following command:
-
-    CLUSTER MEET ip port
+the cluster. Nodes will send `MEET` messages to other nodes **only if** the system administrator requests this via `CLUSTER MEET ip port`.
 
 * A node will also register another node as part of the cluster if a node that is already trusted will gossip about this other node. So if A knows B, and B knows C, eventually B will send gossip messages to A about C. When this happens, A will register C as part of the network, and will try to connect with C.
 

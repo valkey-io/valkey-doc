@@ -1,10 +1,7 @@
 ---
 title: "Valkey serialization protocol specification"
 linkTitle: "Protocol spec"
-weight: 4
 description: Valkey serialization protocol (RESP) is the wire protocol that clients implement
-aliases:
-    - /topics/protocol
 ---
 
 To communicate with the Valkey server, Valkey clients use a protocol called REdis Serialization Protocol (RESP).

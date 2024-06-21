@@ -1,7 +1,6 @@
 ---
 title: "Bitfields"
 linkTitle: "Bitfields"
-weight: 130
 description: >
     Introduction to Bitfields
 ---

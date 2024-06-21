@@ -1,11 +1,8 @@
 ---
 title: "Valkey FAQ"
 linkTitle: "FAQ"
-weight: 100
 description: >
     Commonly asked questions when getting started with Valkey
-aliases:
-    - /docs/getting-started/faq
 ---
 ## How is Valkey different from other key-value stores?
 

@@ -1,14 +1,8 @@
 ---
 title: "Debugging"
 linkTitle: "Debugging"
-weight: 10
 description: >
     A guide to debugging Valkey server processes
-aliases: [
-    /topics/debugging,
-    /docs/reference/debugging,
-    /docs/reference/debugging.md
-]
 ---
 
 Valkey is developed with an emphasis on stability. We do our best with

@@ -1,7 +1,6 @@
 ﻿---
 title: "Valkey geospatial"
 linkTitle: "Geospatial"
-weight: 80
 description: >
     Introduction to the Valkey Geospatial data type
 ---

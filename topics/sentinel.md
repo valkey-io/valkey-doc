@@ -1,13 +1,7 @@
 ---
 title: "High availability with Valkey Sentinel"
 linkTitle: "High availability with Sentinel"
-weight: 4
 description: High availability for non-clustered Valkey
-aliases: [
-    /topics/sentinel,
-    /docs/manual/sentinel,
-    /docs/manual/sentinel.md
-]
 ---
 
 ## Usage

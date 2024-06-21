@@ -1,11 +1,8 @@
 ---
 title: "Valkey keyspace notifications"
 linkTitle: "Keyspace notifications"
-weight: 4
 description: >
     Monitor changes to Valkey keys and values in real time
-aliases:
-    - /topics/notifications
 ---
 
 Keyspace notifications allow clients to subscribe to Pub/Sub channels in order

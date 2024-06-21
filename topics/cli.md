@@ -1,13 +1,8 @@
 ---
 title: "Valkey CLI"
 linkTitle: "CLI"
-weight: 1
 description: >
     Valkey command line interface
-aliases:
-    - /docs/manual/cli
-    - /docs/management/cli
-    - /docs/ui/cli
 ---
 
 ## Usage

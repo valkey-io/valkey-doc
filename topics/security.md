@@ -1,13 +1,7 @@
 ---
 title: "Valkey security"
 linkTitle: "Security"
-weight: 1
 description: Security model and features in Valkey
-aliases: [
-    /topics/security,
-    /docs/manual/security,
-    /docs/manual/security.md
-]
 ---
 
 This document provides an introduction to the topic of security from the point of

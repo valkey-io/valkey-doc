@@ -1,11 +1,7 @@
 ---
 title: Introduction to Valkey
 linkTitle: "About"
-weight: 10
 description: Learn about the Valkey open source project
-aliases:
-  - /topics/introduction
-  - /buzz
 ---
 
 Valkey is an open source (BSD licensed), in-memory __data structure store__ used as a database, cache, message broker, and streaming engine. Valkey provides [data structures](data-types.md) such as

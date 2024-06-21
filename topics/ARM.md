@@ -1,11 +1,8 @@
 ---
 title: "ARM support"
 linkTitle: "ARM support"
-weight: 11
 description: >
     Exploring Valkey on the ARM CPU Architecture
-aliases:
-    - /topics/ARM
 ---
 
 Valkey supports the ARM processor, for example

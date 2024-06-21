@@ -1,11 +1,8 @@
 ---
 title: "Valkey client handling"
 linkTitle: "Client handling"
-weight: 5
 description: >
     How the Valkey server manages client connections
-aliases:
-    - /topics/clients
 ---
 
 This document provides information about how Valkey handles clients at the network layer level: connections, timeouts, buffers, and other similar topics are covered here.

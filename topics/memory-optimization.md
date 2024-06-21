@@ -2,11 +2,6 @@
 title: Memory optimization
 linkTitle: Memory optimization
 description: Strategies for optimizing memory usage in Valkey
-weight: 1
-aliases: [
-    /topics/memory-optimization,
-    /docs/reference/optimization/memory-optimization
-]
 ---
 
 ## Special encoding of small aggregate data types

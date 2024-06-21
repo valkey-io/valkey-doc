@@ -1,14 +1,7 @@
 ---
 title: Scale with Valkey Cluster
 linkTitle: Scale with Valkey Cluster
-weight: 6
 description: Horizontal scaling with Valkey Cluster
-aliases: [
-    /topics/cluster-tutorial,
-    /topics/partitioning,
-    /docs/manual/scaling,
-    /docs/manual/scaling.md
-]
 ---
 
 Valkey scales horizontally with a deployment topology called Valkey Cluster. 

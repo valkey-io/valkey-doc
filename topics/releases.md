@@ -1,10 +1,7 @@
 ---
 title: "Valkey releases and versioning"
 linkTitle: "Valkey releases"
-weight: 4
 description: How new versions of Valkey are released and supported
-aliases:
-    - /topics/releases
 ---
 
 Valkey is usually among the most critical pieces of a software stack.

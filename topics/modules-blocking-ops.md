@@ -1,11 +1,8 @@
 ---
 title: "Valkey modules and blocking commands"
 linkTitle: "Blocking commands"
-weight: 1
 description: >
     How to implement blocking commands in a Valkey module
-aliases:
-    - /topics/modules-blocking-ops
 ---
 
 Valkey has a few blocking commands among the built-in set of commands.
