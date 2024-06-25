@@ -3095,6 +3095,87 @@
             "nondeterministic_output"
         ]
     },
+    "CLUSTER SLOT-STATS": {
+        "summary": "Returns an array of slot usage statistics for slots assigned to the current shard.",
+        "since": "8.0.0",
+        "group": "cluster",
+        "complexity": "O(N) where N is the total number of slots based on arguments. O(N log N) with ORDERBY subcommand.",
+        "history": [
+            [
+                "8.0.0",
+                "Initial release with key-count metric support."
+            ]
+        ],
+        "acl_categories": [
+            "@slow"
+        ],
+        "arity": -4,
+        "command_flags": [
+            "stale",
+            "loading"
+        ],
+        "hints": [
+            "nondeterministic_output",
+            "request_policy:all_shards"
+        ],
+        "arguments": [
+            {
+                "name": "filter",
+                "type": "oneof",
+                "arguments": [
+                    {
+                        "token": "SLOTSRANGE",
+                        "name": "slotsrange",
+                        "type": "block",
+                        "arguments": [
+                            {
+                                "name": "start-slot",
+                                "type": "integer"
+                            },
+                            {
+                                "name": "end-slot",
+                                "type": "integer"
+                            }
+                        ]
+                    },
+                    {
+                        "token": "ORDERBY",
+                        "name": "orderby",
+                        "type": "block",
+                        "arguments": [
+                            {
+                                "name": "metric",
+                                "type": "string"
+                            },
+                            {
+                                "token": "LIMIT",
+                                "name": "limit",
+                                "type": "integer",
+                                "optional": true
+                            },
+                            {
+                                "name": "order",
+                                "type": "oneof",
+                                "optional": true,
+                                "arguments": [
+                                    {
+                                        "name": "asc",
+                                        "type": "pure-token",
+                                        "token": "ASC"
+                                    },
+                                    {
+                                        "name": "desc",
+                                        "type": "pure-token",
+                                        "token": "DESC"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
     "COMMAND": {
         "summary": "Returns detailed information about all commands.",
         "since": "2.8.13",
