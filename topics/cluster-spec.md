@@ -20,8 +20,6 @@ Valkey Cluster is a distributed implementation of Valkey with the following goal
 * Acceptable degree of write safety: the system tries (in a best-effort way) to retain all the writes originating from clients connected with the majority of the master nodes. Usually there are small windows where acknowledged writes can be lost. Windows to lose acknowledged writes are larger when clients are in a minority partition.
 * Availability: Valkey Cluster is able to survive partitions where the majority of the master nodes are reachable and there is at least one reachable replica for every master node that is no longer reachable. Moreover using *replicas migration*, masters no longer replicated by any replica will receive one from a master which is covered by multiple replicas.
 
-What is described in this document is implemented in Redis OSS 3.0 or greater.
-
 ### Implemented subset
 
 Valkey Cluster implements all the single key commands available in the
@@ -1206,7 +1204,7 @@ The cluster makes sure the published shard messages are forwarded to all nodes i
 
     /*
      * Copyright 2001-2010 Georges Menie (www.menie.org)
-     * Copyright 2010 Salvatore Sanfilippo (adapted to Valkey coding style)
+     * Copyright 2010 Salvatore Sanfilippo (adapted to Redis coding style)
      * All rights reserved.
      * Redistribution and use in source and binary forms, with or without
      * modification, are permitted provided that the following conditions are met:

@@ -22,7 +22,7 @@ This shutdown process includes the following actions:
 
 * If there are any replicas lagging behind in replication:
   * Pause clients attempting to write with `CLIENT PAUSE` and the `WRITE` option.
-  * Wait up to the configured `shutdown-timeout` (default 10 seconds) for replicas to catch up with the master's replication offset.
+  * Wait up to the configured `shutdown-timeout` (default 10 seconds) for replicas to catch up with the primary's replication offset.
 * If a background child is saving the RDB file or performing an AOF rewrite, the child process is killed.
 * If the AOF is active, Valkey calls the `fsync` system call on the AOF file descriptor to flush the buffers on disk.
 * If Valkey is configured to persist on disk using RDB files, a synchronous (blocking) save is performed. Since the save is synchronous, it doesn't use any additional memory.
@@ -36,8 +36,8 @@ No further attempt to shut down will be made unless a new `SIGTERM` is received 
 
 Since Redis OSS 7.0, the server waits for lagging replicas up to a configurable `shutdown-timeout`, 10 seconds by default, before shutting down.
 This provides a best effort to minimize the risk of data loss in a situation where no save points are configured and AOF is deactivated.
-Before version 7.0, shutting down a heavily loaded master node in a diskless setup was more likely to result in data loss.
-To minimize the risk of data loss in such setups, trigger a manual `FAILOVER` (or `CLUSTER FAILOVER`) to demote the master to a replica and promote one of the replicas to a new master before shutting down a master node.
+Before version 7.0, shutting down a heavily loaded primary node in a diskless setup was more likely to result in data loss.
+To minimize the risk of data loss in such setups, trigger a manual `FAILOVER` (or `CLUSTER FAILOVER`) to demote the primary to a replica and promote one of the replicas to a new primary before shutting down a primary node.
 
 ## SIGSEGV, SIGBUS, SIGFPE and SIGILL
 
@@ -51,7 +51,7 @@ The following signals are handled as a Valkey crash:
 Once one of these signals is trapped, Valkey stops any current operation and performs the following actions:
 
 * Adds a bug report to the log file. This includes a stack trace, dump of registers, and information about the state of clients.
-* Since Redis OSS 2.8, a fast memory test is performed as a first check of the reliability of the crashing system.
+* A fast memory test is performed as a first check of the reliability of the crashing system.
 * If the server was daemonized, the PID file is removed.
 * Finally the server unregisters its own signal handler for the received signal and resends the same signal to itself to make sure that the default action is performed, such as dumping the core on the file system.
 

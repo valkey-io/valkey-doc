@@ -104,7 +104,7 @@ The following attempts to demonstrate the distribution of input arguments betwee
 ```
 
 **Note:**
-as can been seen above, Lua's table arrays are returned as [RESP2 array replies](protocol.md#resp-arrays), so it is likely that your client's library will convert it to the native array data type in your programming language.
+as can been seen above, Lua's table arrays are returned as [RESP2 array replies](protocol.md#arrays), so it is likely that your client's library will convert it to the native array data type in your programming language.
 Please refer to the rules that govern [data type conversion](lua-api.md#data-type-conversion) for more pertinent information.
 
 ## Interacting with Valkey from a script

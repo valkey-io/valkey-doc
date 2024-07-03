@@ -8,8 +8,8 @@ This article describes the design and implementation of a [very simple Twitter c
 
 Note: the original version of this article was written in 2009 when Redis OSS was
 released. It was not exactly clear at that time that the data model was
-suitable to write entire applications. After 5 years there were many cases of
-applications using Redis OSS as their main store, so the goal of the article today
+suitable to write entire applications. There were many cases of
+applications using Valkeyt as their main store, so the goal of the article today
 is to be a tutorial for newcomers. You'll learn how to design a simple
 data layout using Valkey, and how to apply different data structures.
 
@@ -249,27 +249,29 @@ In order to authenticate a user we'll do these simple steps (see the `login.php`
 
 This is the actual code:
 
-    include("retwis.php");
+```php
+include("retwis.php");
 
-    # Form sanity checks
-    if (!gt("username") || !gt("password"))
-        goback("You need to enter both username and password to login.");
+# Form sanity checks
+if (!gt("username") || !gt("password"))
+    goback("You need to enter both username and password to login.");
 
-    # The form is ok, check if the username is available
-    $username = gt("username");
-    $password = gt("password");
-    $r = redisLink();
-    $userid = $r->hget("users",$username);
-    if (!$userid)
-        goback("Wrong username or password");
-    $realpassword = $r->hget("user:$userid","password");
-    if ($realpassword != $password)
-        goback("Wrong username or password");
+# The form is ok, check if the username is available
+$username = gt("username");
+$password = gt("password");
+$r = redisLink();
+$userid = $r->hget("users",$username);
+if (!$userid)
+    goback("Wrong username or password");
+$realpassword = $r->hget("user:$userid","password");
+if ($realpassword != $password)
+    goback("Wrong username or password");
 
-    # Username / password OK, set the cookie and redirect to index.php
-    $authsecret = $r->hget("user:$userid","auth");
-    setcookie("auth",$authsecret,time()+3600*24*365);
-    header("Location: index.php");
+# Username / password OK, set the cookie and redirect to index.php
+$authsecret = $r->hget("user:$userid","auth");
+setcookie("auth",$authsecret,time()+3600*24*365);
+header("Location: index.php");
+```
 
 This happens every time a user logs in, but we also need a function `isLoggedIn` in order to check if a given user is already authenticated or not. These are the logical steps preformed by the `isLoggedIn` function:
 
@@ -280,53 +282,57 @@ This happens every time a user logs in, but we also need a function `isLoggedIn`
 
 The code is simpler than the description, possibly:
 
-    function isLoggedIn() {
-        global $User, $_COOKIE;
+```php
+function isLoggedIn() {
+    global $User, $_COOKIE;
 
-        if (isset($User)) return true;
+    if (isset($User)) return true;
 
-        if (isset($_COOKIE['auth'])) {
-            $r = redisLink();
-            $authcookie = $_COOKIE['auth'];
-            if ($userid = $r->hget("auths",$authcookie)) {
-                if ($r->hget("user:$userid","auth") != $authcookie) return false;
-                loadUserInfo($userid);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    function loadUserInfo($userid) {
-        global $User;
-
+    if (isset($_COOKIE['auth'])) {
         $r = redisLink();
-        $User['id'] = $userid;
-        $User['username'] = $r->hget("user:$userid","username");
-        return true;
+        $authcookie = $_COOKIE['auth'];
+        if ($userid = $r->hget("auths",$authcookie)) {
+            if ($r->hget("user:$userid","auth") != $authcookie) return false;
+            loadUserInfo($userid);
+            return true;
+        }
     }
+    return false;
+}
+
+function loadUserInfo($userid) {
+    global $User;
+
+    $r = redisLink();
+    $User['id'] = $userid;
+    $User['username'] = $r->hget("user:$userid","username");
+    return true;
+}
+```
 
 Having `loadUserInfo` as a separate function is overkill for our application, but it's a good approach in a complex application. The only thing that's missing from all the authentication is the logout. What do we do on logout? That's simple, we'll just change the random string in user:1000 `auth` field, remove the old authentication secret from the `auths` Hash, and add the new one.
 
 *Important:* the logout procedure explains why we don't just authenticate the user after looking up the authentication secret in the `auths` Hash, but double check it against user:1000 `auth` field. The true authentication string is the latter, while the `auths` Hash is just an authentication field that may even be volatile, or, if there are bugs in the program or a script gets interrupted, we may even end with multiple entries in the `auths` key pointing to the same user ID. The logout code is the following (`logout.php`):
 
-    include("retwis.php");
+```php
+include("retwis.php");
 
-    if (!isLoggedIn()) {
-        header("Location: index.php");
-        exit;
-    }
-
-    $r = redisLink();
-    $newauthsecret = getrand();
-    $userid = $User['id'];
-    $oldauthsecret = $r->hget("user:$userid","auth");
-
-    $r->hset("user:$userid","auth",$newauthsecret);
-    $r->hset("auths",$newauthsecret,$userid);
-    $r->hdel("auths",$oldauthsecret);
-
+if (!isLoggedIn()) {
     header("Location: index.php");
+    exit;
+}
+
+$r = redisLink();
+$newauthsecret = getrand();
+$userid = $User['id'];
+$oldauthsecret = $r->hget("user:$userid","auth");
+
+$r->hset("user:$userid","auth",$newauthsecret);
+$r->hset("auths",$newauthsecret,$userid);
+$r->hdel("auths",$oldauthsecret);
+
+header("Location: index.php");
+```
 
 That is just what we described and should be simple to understand.
 
@@ -342,29 +348,31 @@ As you can see each post is just represented by a Hash with three fields. The ID
 
 After we create a post and we obtain the post ID, we need to LPUSH the ID in the timeline of every user that is following the author of the post, and of course in the list of posts of the author itself (everybody is virtually following herself/himself). This is the file `post.php` that shows how this is performed:
 
-    include("retwis.php");
+```php
+include("retwis.php");
 
-    if (!isLoggedIn() || !gt("status")) {
-        header("Location:index.php");
-        exit;
-    }
+if (!isLoggedIn() || !gt("status")) {
+    header("Location:index.php");
+    exit;
+}
 
-    $r = redisLink();
-    $postid = $r->incr("next_post_id");
-    $status = str_replace("\n"," ",gt("status"));
-    $r->hmset("post:$postid","user_id",$User['id'],"time",time(),"body",$status);
-    $followers = $r->zrange("followers:".$User['id'],0,-1);
-    $followers[] = $User['id']; /* Add the post to our own posts too */
+$r = redisLink();
+$postid = $r->incr("next_post_id");
+$status = str_replace("\n"," ",gt("status"));
+$r->hmset("post:$postid","user_id",$User['id'],"time",time(),"body",$status);
+$followers = $r->zrange("followers:".$User['id'],0,-1);
+$followers[] = $User['id']; /* Add the post to our own posts too */
 
-    foreach($followers as $fid) {
-        $r->lpush("posts:$fid",$postid);
-    }
-    # Push the post on the timeline, and trim the timeline to the
-    # newest 1000 elements.
-    $r->lpush("timeline",$postid);
-    $r->ltrim("timeline",0,1000);
+foreach($followers as $fid) {
+    $r->lpush("posts:$fid",$postid);
+}
+# Push the post on the timeline, and trim the timeline to the
+# newest 1000 elements.
+$r->lpush("timeline",$postid);
+$r->ltrim("timeline",0,1000);
 
-    header("Location: index.php");
+header("Location: index.php");
+```
 
 The core of the function is the `foreach` loop. We use `ZRANGE` to get all the followers of the current user, then the loop will `LPUSH` the push the post in every follower timeline List.
 
@@ -383,36 +391,38 @@ Paginating updates
 
 Now it should be pretty clear how we can use `LRANGE` in order to get ranges of posts, and render these posts on the screen. The code is simple:
 
-    function showPost($id) {
-        $r = redisLink();
-        $post = $r->hgetall("post:$id");
-        if (empty($post)) return false;
+```php
+function showPost($id) {
+    $r = redisLink();
+    $post = $r->hgetall("post:$id");
+    if (empty($post)) return false;
 
-        $userid = $post['user_id'];
-        $username = $r->hget("user:$userid","username");
-        $elapsed = strElapsed($post['time']);
-        $userlink = "<a class=\"username\" href=\"profile.php?u=".urlencode($username)."\">".utf8entities($username)."</a>";
+    $userid = $post['user_id'];
+    $username = $r->hget("user:$userid","username");
+    $elapsed = strElapsed($post['time']);
+    $userlink = "<a class=\"username\" href=\"profile.php?u=".urlencode($username)."\">".utf8entities($username)."</a>";
 
-        echo('<div class="post">'.$userlink.' '.utf8entities($post['body'])."<br>");
-        echo('<i>posted '.$elapsed.' ago via web</i></div>');
-        return true;
+    echo('<div class="post">'.$userlink.' '.utf8entities($post['body'])."<br>");
+    echo('<i>posted '.$elapsed.' ago via web</i></div>');
+    return true;
+}
+
+function showUserPosts($userid,$start,$count) {
+    $r = redisLink();
+    $key = ($userid == -1) ? "timeline" : "posts:$userid";
+    $posts = $r->lrange($key,$start,$start+$count);
+    $c = 0;
+    foreach($posts as $p) {
+        if (showPost($p)) $c++;
+        if ($c == $count) break;
     }
-
-    function showUserPosts($userid,$start,$count) {
-        $r = redisLink();
-        $key = ($userid == -1) ? "timeline" : "posts:$userid";
-        $posts = $r->lrange($key,$start,$start+$count);
-        $c = 0;
-        foreach($posts as $p) {
-            if (showPost($p)) $c++;
-            if ($c == $count) break;
-        }
-        return count($posts) == $count+1;
-    }
+    return count($posts) == $count+1;
+}
+```
 
 `showPost` will simply convert and print a Post in HTML while `showUserPosts` gets a range of posts and then passes them to `showPosts`.
 
-*Note: `LRANGE` is not very efficient if the list of posts start to be very
+**Note:** `LRANGE` is not very efficient if the list of posts start to be very
 big, and we want to access elements which are in the middle of the list, since Lists are backed by linked lists. If a system is designed for
 deep pagination of million of items, it is better to resort to Sorted Sets
 instead.*
@@ -422,8 +432,8 @@ Following users
 
 It is not hard, but we did not yet check how we create following / follower relationships. If user ID 1000 (antirez) wants to follow user ID 5000 (pippo), we need to create both a following and a follower relationship. We just need to `ZADD` calls:
 
-        ZADD following:1000 5000
-        ZADD followers:5000 1000
+    ZADD following:1000 5000
+    ZADD followers:5000 1000
 
 Note the same pattern again and again. In theory with a relational database, the list of following and followers would be contained in a single table with fields like `following_id` and `follower_id`. You can extract the followers or following of every user using an SQL query. With a key-value DB things are a bit different since we need to set both the `1000 is following 5000` and `5000 is followed by 1000` relations. This is the price to pay, but on the other hand accessing the data is simpler and extremely fast. Having these things as separate sets allows us to do interesting stuff. For example, using `ZINTERSTORE` we can have the intersection of `following` of two different users, so we may add a feature to our Twitter clone so that it is able to tell you very quickly when you visit somebody else's profile, "you and Alice have 34 followers in common", and things like that.
 

@@ -28,9 +28,6 @@ run with a specific version of Valkey. For this reason, the module will
 register to the Valkey core using a specific API version. The current API
 version is "1".
 
-This document is about an alpha version of Valkey modules. API, functionalities
-and other details may change in the future.
-
 ## Loading modules
 
 In order to test the module you are developing, you can load the module
@@ -62,25 +59,27 @@ uses to register itself into the Valkey core.
 In order to show the different parts of a module, here we'll show a very
 simple module that implements a command that outputs a random number.
 
-    #include "valkeymodule.h"
-    #include <stdlib.h>
+```C
+#include "valkeymodule.h"
+#include <stdlib.h>
 
-    int HelloworldRand_ValkeyCommand(ValkeyModuleCtx *ctx, ValkeyModuleString **argv, int argc) {
-        ValkeyModule_ReplyWithLongLong(ctx,rand());
-        return VALKEYMODULE_OK;
-    }
+int HelloworldRand_ValkeyCommand(ValkeyModuleCtx *ctx, ValkeyModuleString **argv, int argc) {
+    ValkeyModule_ReplyWithLongLong(ctx,rand());
+    return VALKEYMODULE_OK;
+}
 
-    int ValkeyModule_OnLoad(ValkeyModuleCtx *ctx, ValkeyModuleString **argv, int argc) {
-        if (ValkeyModule_Init(ctx,"helloworld",1,VALKEYMODULE_APIVER_1)
-            == VALKEYMODULE_ERR) return VALKEYMODULE_ERR;
+int ValkeyModule_OnLoad(ValkeyModuleCtx *ctx, ValkeyModuleString **argv, int argc) {
+    if (ValkeyModule_Init(ctx,"helloworld",1,VALKEYMODULE_APIVER_1)
+        == VALKEYMODULE_ERR) return VALKEYMODULE_ERR;
 
-        if (ValkeyModule_CreateCommand(ctx,"helloworld.rand",
-            HelloworldRand_ValkeyCommand, "fast random",
-            0, 0, 0) == VALKEYMODULE_ERR)
-            return VALKEYMODULE_ERR;
+    if (ValkeyModule_CreateCommand(ctx,"helloworld.rand",
+        HelloworldRand_ValkeyCommand, "fast random",
+        0, 0, 0) == VALKEYMODULE_ERR)
+        return VALKEYMODULE_ERR;
 
-        return VALKEYMODULE_OK;
-    }
+    return VALKEYMODULE_OK;
+}
+```
 
 The example module has two functions. One implements a command called
 HELLOWORLD.RAND. This function is specific of that module. However the
@@ -105,8 +104,10 @@ The above example shows the usage of the function `ValkeyModule_Init()`.
 It should be the first function called by the module `OnLoad` function.
 The following is the function prototype:
 
-    int ValkeyModule_Init(ValkeyModuleCtx *ctx, const char *modulename,
-                         int module_version, int api_version);
+```C
+int ValkeyModule_Init(ValkeyModuleCtx *ctx, const char *modulename,
+                     int module_version, int api_version);
+```
 
 The `Init` function announces the Valkey core that the module has a given
 name, its version (that is reported by `MODULE LIST`), and that is willing
@@ -122,9 +123,11 @@ otherwise the module will segfault and the Valkey instance will crash.
 The second function called, `ValkeyModule_CreateCommand`, is used in order
 to register commands into the Valkey core. The following is the prototype:
 
-    int ValkeyModule_CreateCommand(ValkeyModuleCtx *ctx, const char *name,
-                                  ValkeyModuleCmdFunc cmdfunc, const char *strflags,
-                                  int firstkey, int lastkey, int keystep);
+```C
+int ValkeyModule_CreateCommand(ValkeyModuleCtx *ctx, const char *name,
+                              ValkeyModuleCmdFunc cmdfunc, const char *strflags,
+                              int firstkey, int lastkey, int keystep);
+```
 
 As you can see, most Valkey modules API calls all take as first argument
 the `context` of the module, so that they have a reference to the module
@@ -136,7 +139,9 @@ and the positions of key names in the command's arguments.
 
 The function that implements the command must have the following prototype:
 
-    int mycommand(ValkeyModuleCtx *ctx, ValkeyModuleString **argv, int argc);
+```C
+int mycommand(ValkeyModuleCtx *ctx, ValkeyModuleString **argv, int argc);
+```
 
 The command function arguments are just the context, that will be passed
 to all the other API calls, the command argument vector, and total number
@@ -148,7 +153,9 @@ functions to access and use, direct access to its fields is never needed.
 
 Zooming into the example command implementation, we can find another call:
 
-    int ValkeyModule_ReplyWithLongLong(ValkeyModuleCtx *ctx, long long integer);
+```C
+int ValkeyModule_ReplyWithLongLong(ValkeyModuleCtx *ctx, long long integer);
+```
 
 This function returns an integer to the client that invoked the command,
 exactly like other Valkey commands do, like for example `INCR` or `SCARD`.
@@ -165,7 +172,9 @@ If a module provides this function, it will be invoked during the module unload
 process.
 The following is the function prototype:
 
-    int ValkeyModule_OnUnload(ValkeyModuleCtx *ctx);
+```C
+int ValkeyModule_OnUnload(ValkeyModuleCtx *ctx);
+```
 
 The `OnUnload` function may prevent module unloading by returning
 `VALKEYMODULE_ERR`.
@@ -186,9 +195,11 @@ A module can be designed to support both newer and older Redis OSS versions wher
 If an API function is not implemented in the currently running Redis OSS version, the function pointer is set to NULL.
 This allows the module to check if a function exists before using it:
 
-    if (ValkeyModule_SetCommandInfo != NULL) {
-        ValkeyModule_SetCommandInfo(cmd, &info);
-    }
+```C
+if (ValkeyModule_SetCommandInfo != NULL) {
+    ValkeyModule_SetCommandInfo(cmd, &info);
+}
+```
 
 In recent versions of `valkeymodule.h`, a convenience macro `RMAPI_FUNC_SUPPORTED(funcname)` is defined.
 Using the macro or just comparing with NULL is a matter of personal preference.
@@ -221,7 +232,9 @@ you may need to directly access the string object.
 
 There are a few functions in order to work with string objects:
 
-    const char *ValkeyModule_StringPtrLen(ValkeyModuleString *string, size_t *len);
+```C
+const char *ValkeyModule_StringPtrLen(ValkeyModuleString *string, size_t *len);
+```
 
 The above function accesses a string by returning its pointer and setting its
 length in `len`.
@@ -231,12 +244,16 @@ You should never write to a string object pointer, as you can see from the
 However, if you want, you can create new string objects using the following
 API:
 
-    ValkeyModuleString *ValkeyModule_CreateString(ValkeyModuleCtx *ctx, const char *ptr, size_t len);
+```C
+ValkeyModuleString *ValkeyModule_CreateString(ValkeyModuleCtx *ctx, const char *ptr, size_t len);
+```
 
 The string returned by the above command must be freed using a corresponding
 call to `ValkeyModule_FreeString()`:
 
-    void ValkeyModule_FreeString(ValkeyModuleString *str);
+```C
+void ValkeyModule_FreeString(ValkeyModuleString *str);
+```
 
 However if you want to avoid having to free strings, the automatic memory
 management, covered later in this document, can be a good alternative, by
@@ -252,14 +269,18 @@ be freed.
 Creating a new string from an integer is a very common operation, so there
 is a function to do this:
 
-    ValkeyModuleString *mystr = ValkeyModule_CreateStringFromLongLong(ctx,10);
+```C
+ValkeyModuleString *mystr = ValkeyModule_CreateStringFromLongLong(ctx,10);
+```
 
 Similarly in order to parse a string as a number:
 
-    long long myval;
-    if (ValkeyModule_StringToLongLong(ctx,argv[1],&myval) == VALKEYMODULE_OK) {
-        /* Do something with 'myval' */
-    }
+```C
+long long myval;
+if (ValkeyModule_StringToLongLong(ctx,argv[1],&myval) == VALKEYMODULE_OK) {
+    /* Do something with 'myval' */
+}
+```
 
 ## Accessing Valkey keys from modules
 
@@ -305,8 +326,10 @@ of ValkeyModuleString object pointers, and a C string representing the
 number "10" as second argument (the increment), I'll use the following
 function call:
 
-    ValkeyModuleCallReply *reply;
-    reply = ValkeyModule_Call(ctx,"INCRBY","sc",argv[1],"10");
+```C
+ValkeyModuleCallReply *reply;
+reply = ValkeyModule_Call(ctx,"INCRBY","sc",argv[1],"10");
+```
 
 The first argument is the context, and the second is always a null terminated
 C string with the command name. The third argument is the format specifier
@@ -344,11 +367,13 @@ In order to obtain the type or reply (corresponding to one of the data types
 supported by the Valkey protocol), the function `ValkeyModule_CallReplyType()`
 is used:
 
-    reply = ValkeyModule_Call(ctx,"INCRBY","sc",argv[1],"10");
-    if (ValkeyModule_CallReplyType(reply) == VALKEYMODULE_REPLY_INTEGER) {
-        long long myval = ValkeyModule_CallReplyInteger(reply);
-        /* Do something with myval. */
-    }
+```C
+reply = ValkeyModule_Call(ctx,"INCRBY","sc",argv[1],"10");
+if (ValkeyModule_CallReplyType(reply) == VALKEYMODULE_REPLY_INTEGER) {
+    long long myval = ValkeyModule_CallReplyInteger(reply);
+    /* Do something with myval. */
+}
+```
 
 Valid reply types are:
 
@@ -363,19 +388,25 @@ the length corresponds to the length of the string. For arrays the length
 is the number of elements. To obtain the reply length the following function
 is used:
 
-    size_t reply_len = ValkeyModule_CallReplyLength(reply);
+```C
+size_t reply_len = ValkeyModule_CallReplyLength(reply);
+```
 
 In order to obtain the value of an integer reply, the following function is used, as already shown in the example above:
 
-    long long reply_integer_val = ValkeyModule_CallReplyInteger(reply);
+```C
+long long reply_integer_val = ValkeyModule_CallReplyInteger(reply);
+```
 
 Called with a reply object of the wrong type, the above function always
 returns `LLONG_MIN`.
 
 Sub elements of array replies are accessed this way:
 
-    ValkeyModuleCallReply *subreply;
-    subreply = ValkeyModule_CallReplyArrayElement(reply,idx);
+```C
+ValkeyModuleCallReply *subreply;
+subreply = ValkeyModule_CallReplyArrayElement(reply,idx);
+```
 
 The above function returns NULL if you try to access out of range elements.
 
@@ -384,8 +415,10 @@ be accessed using in the following way, making sure to never write to
 the resulting pointer (that is returned as a `const` pointer so that
 misusing must be pretty explicit):
 
-    size_t len;
-    char *ptr = ValkeyModule_CallReplyStringPtr(reply,&len);
+```C
+size_t len;
+char *ptr = ValkeyModule_CallReplyStringPtr(reply,&len);
+```
 
 If the reply type is not a string or an error, NULL is returned.
 
@@ -398,7 +431,9 @@ API could be a simpler way to implement your command, or you can use
 the following function in order to create a new string object from a
 call reply of type string, error or integer:
 
-    ValkeyModuleString *mystr = ValkeyModule_CreateStringFromCallReply(myreply);
+```C
+ValkeyModuleString *mystr = ValkeyModule_CreateStringFromCallReply(myreply);
+```
 
 If the reply is not of the right type, NULL is returned.
 The returned string object should be released with `ValkeyModule_FreeString()`
@@ -433,7 +468,9 @@ All the functions to send a reply to the client are called
 
 To return an error, use:
 
-    ValkeyModule_ReplyWithError(ValkeyModuleCtx *ctx, const char *err);
+```C
+ValkeyModule_ReplyWithError(ValkeyModuleCtx *ctx, const char *err);
+```
 
 There is a predefined error string for key of wrong type errors:
 
@@ -441,23 +478,31 @@ There is a predefined error string for key of wrong type errors:
 
 Example usage:
 
-    ValkeyModule_ReplyWithError(ctx,"ERR invalid arguments");
+```C
+ValkeyModule_ReplyWithError(ctx,"ERR invalid arguments");
+```
 
 We already saw how to reply with a `long long` in the examples above:
 
-    ValkeyModule_ReplyWithLongLong(ctx,12345);
+```C
+ValkeyModule_ReplyWithLongLong(ctx,12345);
+```
 
 To reply with a simple string, that can't contain binary values or newlines,
 (so it's suitable to send small words, like "OK") we use:
 
-    ValkeyModule_ReplyWithSimpleString(ctx,"OK");
+```C
+ValkeyModule_ReplyWithSimpleString(ctx,"OK");
+```
 
 It's possible to reply with "bulk strings" that are binary safe, using
 two different functions:
 
-    int ValkeyModule_ReplyWithStringBuffer(ValkeyModuleCtx *ctx, const char *buf, size_t len);
+```C
+int ValkeyModule_ReplyWithStringBuffer(ValkeyModuleCtx *ctx, const char *buf, size_t len);
 
-    int ValkeyModule_ReplyWithString(ValkeyModuleCtx *ctx, ValkeyModuleString *str);
+int ValkeyModule_ReplyWithString(ValkeyModuleCtx *ctx, ValkeyModuleString *str);
+```
 
 The first function gets a C pointer and length. The second a ValkeyModuleString
 object. Use one or the other depending on the source type you have at hand.
@@ -466,9 +511,11 @@ In order to reply with an array, you just need to use a function to emit the
 array length, followed by as many calls to the above functions as the number
 of elements of the array are:
 
-    ValkeyModule_ReplyWithArray(ctx,2);
-    ValkeyModule_ReplyWithStringBuffer(ctx,"age",3);
-    ValkeyModule_ReplyWithLongLong(ctx,22);
+```C
+ValkeyModule_ReplyWithArray(ctx,2);
+ValkeyModule_ReplyWithStringBuffer(ctx,"age",3);
+ValkeyModule_ReplyWithLongLong(ctx,22);
+```
 
 To return nested arrays is easy, your nested array element just uses another
 call to `ValkeyModule_ReplyWithArray()` followed by the calls to emit the
@@ -484,24 +531,30 @@ later produce the command reply, a better solution is to start an array
 reply where the length is not known, and set it later. This is accomplished
 with a special argument to `ValkeyModule_ReplyWithArray()`:
 
-    ValkeyModule_ReplyWithArray(ctx, VALKEYMODULE_POSTPONED_LEN);
+```C
+ValkeyModule_ReplyWithArray(ctx, VALKEYMODULE_POSTPONED_LEN);
+```
 
 The above call starts an array reply so we can use other `ReplyWith` calls
 in order to produce the array items. Finally in order to set the length,
 use the following call:
 
-    ValkeyModule_ReplySetArrayLength(ctx, number_of_items);
+```C
+ValkeyModule_ReplySetArrayLength(ctx, number_of_items);
+```
 
 In the case of the FACTOR command, this translates to some code similar
 to this:
 
-    ValkeyModule_ReplyWithArray(ctx, VALKEYMODULE_POSTPONED_LEN);
-    number_of_factors = 0;
-    while(still_factors) {
-        ValkeyModule_ReplyWithLongLong(ctx, some_factor);
-        number_of_factors++;
-    }
-    ValkeyModule_ReplySetArrayLength(ctx, number_of_factors);
+```C
+ValkeyModule_ReplyWithArray(ctx, VALKEYMODULE_POSTPONED_LEN);
+number_of_factors = 0;
+while(still_factors) {
+    ValkeyModule_ReplyWithLongLong(ctx, some_factor);
+    number_of_factors++;
+}
+ValkeyModule_ReplySetArrayLength(ctx, number_of_factors);
+```
 
 Another common use case for this feature is iterating over the arrays of
 some collection and only returning the ones passing some kind of filtering.
@@ -510,12 +563,14 @@ It is possible to have multiple nested arrays with postponed reply.
 Each call to `SetArray()` will set the length of the latest corresponding
 call to `ReplyWithArray()`:
 
-    ValkeyModule_ReplyWithArray(ctx, VALKEYMODULE_POSTPONED_LEN);
-    ... generate 100 elements ...
-    ValkeyModule_ReplyWithArray(ctx, VALKEYMODULE_POSTPONED_LEN);
-    ... generate 10 elements ...
-    ValkeyModule_ReplySetArrayLength(ctx, 10);
-    ValkeyModule_ReplySetArrayLength(ctx, 100);
+```C
+ValkeyModule_ReplyWithArray(ctx, VALKEYMODULE_POSTPONED_LEN);
+// ... generate 100 elements ...
+ValkeyModule_ReplyWithArray(ctx, VALKEYMODULE_POSTPONED_LEN);
+// ... generate 10 elements ...
+ValkeyModule_ReplySetArrayLength(ctx, 10);
+ValkeyModule_ReplySetArrayLength(ctx, 100);
+```
 
 This creates a 100 items array having as last element a 10 items array.
 
@@ -525,20 +580,24 @@ Often commands need to check that the number of arguments and type of the key
 is correct. In order to report a wrong arity, there is a specific function
 called `ValkeyModule_WrongArity()`. The usage is trivial:
 
-    if (argc != 2) return ValkeyModule_WrongArity(ctx);
+```C
+if (argc != 2) return ValkeyModule_WrongArity(ctx);
+```
 
 Checking for the wrong type involves opening the key and checking the type:
 
-    ValkeyModuleKey *key = ValkeyModule_OpenKey(ctx,argv[1],
-        VALKEYMODULE_READ|VALKEYMODULE_WRITE);
+```C
+ValkeyModuleKey *key = ValkeyModule_OpenKey(ctx,argv[1],
+    VALKEYMODULE_READ|VALKEYMODULE_WRITE);
 
-    int keytype = ValkeyModule_KeyType(key);
-    if (keytype != VALKEYMODULE_KEYTYPE_STRING &&
-        keytype != VALKEYMODULE_KEYTYPE_EMPTY)
-    {
-        ValkeyModule_CloseKey(key);
-        return ValkeyModule_ReplyWithError(ctx,VALKEYMODULE_ERRORMSG_WRONGTYPE);
-    }
+int keytype = ValkeyModule_KeyType(key);
+if (keytype != VALKEYMODULE_KEYTYPE_STRING &&
+    keytype != VALKEYMODULE_KEYTYPE_EMPTY)
+{
+    ValkeyModule_CloseKey(key);
+    return ValkeyModule_ReplyWithError(ctx,VALKEYMODULE_ERRORMSG_WRONGTYPE);
+}
+```
 
 Note that you often want to proceed with a command both if the key
 is of the expected type, or if it's empty.
@@ -563,8 +622,10 @@ In order to open a key the `ValkeyModule_OpenKey` function is used. It returns
 a key pointer, that we'll use with all the next calls to access and modify
 the value:
 
-    ValkeyModuleKey *key;
-    key = ValkeyModule_OpenKey(ctx,argv[1],VALKEYMODULE_READ);
+```C
+ValkeyModuleKey *key;
+key = ValkeyModule_OpenKey(ctx,argv[1],VALKEYMODULE_READ);
+```
 
 The second argument is the key name, that must be a `ValkeyModuleString` object.
 The third argument is the mode: `VALKEYMODULE_READ` or `VALKEYMODULE_WRITE`.
@@ -580,7 +641,9 @@ exist.
 
 Once you are done using a key, you can close it with:
 
-    ValkeyModule_CloseKey(key);
+```C
+ValkeyModule_CloseKey(key);
+```
 
 Note that if automatic memory management is enabled, you are not forced to
 close keys. When the module function returns, Valkey will take care to close
@@ -590,7 +653,9 @@ all the keys which are still open.
 
 In order to obtain the value of a key, use the `ValkeyModule_KeyType()` function:
 
-    int keytype = ValkeyModule_KeyType(key);
+```C
+int keytype = ValkeyModule_KeyType(key);
+```
 
 It returns one of the following values:
 
@@ -610,17 +675,21 @@ does not yet exists.
 To create a new key, open it for writing and then write to it using one
 of the key writing functions. Example:
 
-    ValkeyModuleKey *key;
-    key = ValkeyModule_OpenKey(ctx,argv[1],VALKEYMODULE_WRITE);
-    if (ValkeyModule_KeyType(key) == VALKEYMODULE_KEYTYPE_EMPTY) {
-        ValkeyModule_StringSet(key,argv[2]);
-    }
+```C
+ValkeyModuleKey *key;
+key = ValkeyModule_OpenKey(ctx,argv[1],VALKEYMODULE_WRITE);
+if (ValkeyModule_KeyType(key) == VALKEYMODULE_KEYTYPE_EMPTY) {
+    ValkeyModule_StringSet(key,argv[2]);
+}
+```
 
 ## Deleting keys
 
 Just use:
 
-    ValkeyModule_DeleteKey(key);
+```C
+ValkeyModule_DeleteKey(key);
+```
 
 The function returns `VALKEYMODULE_ERR` if the key is not open for writing.
 Note that after a key gets deleted, it is setup in order to be targeted
@@ -635,7 +704,9 @@ modify, get, and unset the time to live associated with a key.
 
 One function is used in order to query the current expire of an open key:
 
-    mstime_t ValkeyModule_GetExpire(ValkeyModuleKey *key);
+```C
+mstime_t ValkeyModule_GetExpire(ValkeyModuleKey *key);
+```
 
 The function returns the time to live of the key in milliseconds, or
 `VALKEYMODULE_NO_EXPIRE` as a special value to signal the key has no associated
@@ -644,7 +715,9 @@ if the key type is `VALKEYMODULE_KEYTYPE_EMPTY`).
 
 In order to change the expire of a key the following function is used instead:
 
-    int ValkeyModule_SetExpire(ValkeyModuleKey *key, mstime_t expire);
+```C
+int ValkeyModule_SetExpire(ValkeyModuleKey *key, mstime_t expire);
+```
 
 When called on a non existing key, `VALKEYMODULE_ERR` is returned, because
 the function can only associate expires to existing open keys (non existing
@@ -667,7 +740,9 @@ associated to an open key. The returned length is value-specific, and is
 the string length for strings, and the number of elements for the aggregated
 data types (how many elements there is in a list, set, sorted set, hash).
 
-    size_t len = ValkeyModule_ValueLength(key);
+```C
+size_t len = ValkeyModule_ValueLength(key);
+```
 
 If the key does not exist, 0 is returned by the function:
 
@@ -676,7 +751,9 @@ If the key does not exist, 0 is returned by the function:
 Setting a new string value, like the Valkey `SET` command does, is performed
 using:
 
-    int ValkeyModule_StringSet(ValkeyModuleKey *key, ValkeyModuleString *str);
+```C
+int ValkeyModule_StringSet(ValkeyModuleKey *key, ValkeyModuleString *str);
+```
 
 The function works exactly like the Valkey `SET` command itself, that is, if
 there is a prior value (of any type) it will be deleted.
@@ -685,9 +762,11 @@ Accessing existing string values is performed using DMA (direct memory
 access) for speed. The API will return a pointer and a length, so that's
 possible to access and, if needed, modify the string directly.
 
-    size_t len, j;
-    char *myptr = ValkeyModule_StringDMA(key,&len,VALKEYMODULE_WRITE);
-    for (j = 0; j < len; j++) myptr[j] = 'A';
+```C
+size_t len, j;
+char *myptr = ValkeyModule_StringDMA(key,&len,VALKEYMODULE_WRITE);
+for (j = 0; j < len; j++) myptr[j] = 'A';
+```
 
 In the above example we write directly on the string. Note that if you want
 to write, you must be sure to ask for `WRITE` mode.
@@ -699,7 +778,9 @@ Sometimes when we want to manipulate strings directly, we need to change
 their size as well. For this scope, the `ValkeyModule_StringTruncate` function
 is used. Example:
 
-    ValkeyModule_StringTruncate(mykey,1024);
+```C
+ValkeyModule_StringTruncate(mykey,1024);
+```
 
 The function truncates, or enlarges the string as needed, padding it with
 zero bytes if the previous length is smaller than the new length we request.
@@ -709,12 +790,18 @@ a string value is created and associated to the key.
 Note that every time `StringTruncate()` is called, we need to re-obtain
 the DMA pointer again, since the old may be invalid.
 
+For a complete list of string type functions, see [Key API for String
+type](modules-api-ref.md#section-key-api-for-string-type) in the Modules API
+reference.
+
 ## List type API
 
 It's possible to push and pop values from list values:
 
-    int ValkeyModule_ListPush(ValkeyModuleKey *key, int where, ValkeyModuleString *ele);
-    ValkeyModuleString *ValkeyModule_ListPop(ValkeyModuleKey *key, int where);
+```C
+int ValkeyModule_ListPush(ValkeyModuleKey *key, int where, ValkeyModuleString *ele);
+ValkeyModuleString *ValkeyModule_ListPop(ValkeyModuleKey *key, int where);
+```
 
 In both the APIs the `where` argument specifies if to push or pop from tail
 or head, using the following macros:
@@ -726,43 +813,25 @@ Elements returned by `ValkeyModule_ListPop()` are like strings created with
 `ValkeyModule_CreateString()`, they must be released with
 `ValkeyModule_FreeString()` or by enabling automatic memory management.
 
+For a complete list of set type functions, see [Key API for List
+type](modules-api-ref.md#section-key-api-for-list-type) in the Modules API
+reference.
+
 ## Set type API
 
-Work in progress.
+A direct API to set type keys is not yet implemented.
+Use the `ValkeyModule_Call` API with set commands like SADD to access keys of type set.
 
 ## Sorted set type API
 
-Documentation missing, please refer to the top comments inside `module.c`
-for the following functions:
-
-* `ValkeyModule_ZsetAdd`
-* `ValkeyModule_ZsetIncrby`
-* `ValkeyModule_ZsetScore`
-* `ValkeyModule_ZsetRem`
-
-And for the sorted set iterator:
-
-* `ValkeyModule_ZsetRangeStop`
-* `ValkeyModule_ZsetFirstInScoreRange`
-* `ValkeyModule_ZsetLastInScoreRange`
-* `ValkeyModule_ZsetFirstInLexRange`
-* `ValkeyModule_ZsetLastInLexRange`
-* `ValkeyModule_ZsetRangeCurrentElement`
-* `ValkeyModule_ZsetRangeNext`
-* `ValkeyModule_ZsetRangePrev`
-* `ValkeyModule_ZsetRangeEndReached`
+See the [Key API for Sorted Set
+type](modules-api-ref.md#section-key-api-for-sorted-set-type) section in the
+Modules API reference.
 
 ## Hash type API
 
-Documentation missing, please refer to the top comments inside `module.c`
-for the following functions:
-
-* `ValkeyModule_HashSet`
-* `ValkeyModule_HashGet`
-
-## Iterating aggregated values
-
-Work in progress.
+See [Key API for Hash type](modules-api-ref.md#section-key-api-for-hash-type) in
+the Modules API reference.
 
 ## Replicating commands
 
@@ -775,7 +844,9 @@ When using the higher level APIs to invoke commands, replication happens
 automatically if you use the "!" modifier in the format string of
 `ValkeyModule_Call()` as in the following example:
 
-    reply = ValkeyModule_Call(ctx,"INCRBY","!sc",argv[1],"10");
+```C
+reply = ValkeyModule_Call(ctx,"INCRBY","!sc",argv[1],"10");
+```
 
 As you can see the format specifier is `"!sc"`. The bang is not parsed as a
 format specifier, but it internally flags the command as "must replicate".
@@ -787,7 +858,9 @@ it consistently always performs the same work, what is possible to do is to
 replicate the command verbatim as the user executed it. To do that, you just
 need to call the following function:
 
-    ValkeyModule_ReplicateVerbatim(ctx);
+```C
+ValkeyModule_ReplicateVerbatim(ctx);
+```
 
 When you use the above API, you should not use any other replication function
 since they are not guaranteed to mix well.
@@ -797,7 +870,9 @@ Valkey what commands to replicate as the effect of the command execution, using
 an API similar to `ValkeyModule_Call()` but that instead of calling the command
 sends it to the AOF / replicas stream. Example:
 
-    ValkeyModule_Replicate(ctx,"INCRBY","cl","foo",my_increment);
+```C
+ValkeyModule_Replicate(ctx,"INCRBY","cl","foo",my_increment);
+```
 
 It's possible to call `ValkeyModule_Replicate` multiple times, and each
 will emit a command. All the sequence emitted is wrapped between a
@@ -834,7 +909,9 @@ you may still want to free strings no longer used.
 In order to enable automatic memory management, just call the following
 function at the start of the command implementation:
 
-    ValkeyModule_AutoMemory(ctx);
+```C
+ValkeyModule_AutoMemory(ctx);
+```
 
 Automatic memory management is usually the way to go, however experienced
 C programmers may not use it in order to gain some speed and memory usage
@@ -848,11 +925,13 @@ not technically forbidden, it is a lot better to use the Valkey Modules
 specific functions, that are exact replacements for `malloc`, `free`,
 `realloc` and `strdup`. These functions are:
 
-    void *ValkeyModule_Alloc(size_t bytes);
-    void* ValkeyModule_Realloc(void *ptr, size_t bytes);
-    void ValkeyModule_Free(void *ptr);
-    void ValkeyModule_Calloc(size_t nmemb, size_t size);
-    char *ValkeyModule_Strdup(const char *str);
+```C
+void *ValkeyModule_Alloc(size_t bytes);
+void* ValkeyModule_Realloc(void *ptr, size_t bytes);
+void ValkeyModule_Free(void *ptr);
+void ValkeyModule_Calloc(size_t nmemb, size_t size);
+char *ValkeyModule_Strdup(const char *str);
+```
 
 They work exactly like their `libc` equivalent calls, however they use
 the same allocator Valkey uses, and the memory allocated using these
@@ -876,7 +955,9 @@ execution, but are just functional to execute the command itself.
 
 This work can be more easily accomplished using the Valkey pool allocator:
 
-    void *ValkeyModule_PoolAlloc(ValkeyModuleCtx *ctx, size_t bytes);
+```C
+void *ValkeyModule_PoolAlloc(ValkeyModuleCtx *ctx, size_t bytes);
+```
 
 It works similarly to `malloc()`, and returns memory aligned to the
 next power of two of greater or equal to `bytes` (for a maximum alignment
@@ -889,7 +970,7 @@ allocator.
 
 ## Writing commands compatible with Valkey Cluster
 
-Documentation missing, please check the following functions inside `module.c`:
+See the Modules API reference for the following commands:
 
-    ValkeyModule_IsKeysPositionRequest(ctx);
-    ValkeyModule_KeyAtPos(ctx,pos);
+* [`ValkeyModule_IsKeysPositionRequest(ctx)`](modules-api-ref.md#ValkeyModule_IsKeysPositionRequest)
+* [`ValkeyModule_KeyAtPos(ctx, pos)`](modules-api-ref.md#ValkeyModule_KeyAtPos)

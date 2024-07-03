@@ -53,7 +53,7 @@ It's important that you ensure that:
 
 You can do it as follows within redis main repo:
 
-    $ make REDIS_CFLAGS="-g -fno-omit-frame-pointer"
+    $ make SERVER_CFLAGS="-g -fno-omit-frame-pointer"
 
 ## A set of instruments to identify performance regressions and/or potential **on-CPU performance** improvements 
 
@@ -119,9 +119,9 @@ Specifically, for perf we need to convert the generated perf.data into the
 captured stacks, and fold each of them into single lines. You can then render
 the on-CPU flame graph with:
 
-    $ perf script > redis.perf.stacks
-    $ stackcollapse-perf.pl redis.perf.stacks > redis.folded.stacks
-    $ flamegraph.pl redis.folded.stacks > redis.svg
+    $ perf script > valkey.perf.stacks
+    $ stackcollapse-perf.pl valkey.perf.stacks > valkey.folded.stacks
+    $ flamegraph.pl valkey.folded.stacks > valkey.svg
 
 By default, perf script will generate a perf.data file in the current working
 directory. See the [perf script](https://linux.die.net/man/1/perf-script)
@@ -158,12 +158,12 @@ removed the perf.data and intermediate steps if stack traces analysis is our
 main goal. You can use bcc's profile tool to output folded format directly, for
 flame graph generation:
 
-    $ /usr/share/bcc/tools/profile -F 999 -f --pid $(pgrep valkey-server) --duration 60 > redis.folded.stacks
+    $ /usr/share/bcc/tools/profile -F 999 -f --pid $(pgrep valkey-server) --duration 60 > valkey.folded.stacks
 
 In that manner, we've remove any preprocessing and can render the on-CPU flame
 graph with a single command:
 
-    $ flamegraph.pl redis.folded.stacks > redis.svg
+    $ flamegraph.pl valkey.folded.stacks > valkey.svg
 
 ### Visualizing the recorded profile information using Flame Graphs
 
@@ -203,7 +203,7 @@ your CPU supported counters and features by using `perf list`.
 To calculate the number of instructions per cycle, the number of micro ops
 executed, the number of cycles during which no micro ops were dispatched, the
 number stalled cycles on memory, including a per memory type stalls, for the
-duration of 60s, specifically for redis process: 
+duration of 60s, specifically for the valkey-server process: 
 
     $ perf stat -e "cpu-clock,cpu-cycles,instructions,uops_executed.core,uops_executed.stall_cycles,cache-references,cache-misses,cycle_activity.stalls_total,cycle_activity.stalls_mem_any,cycle_activity.stalls_l3_miss,cycle_activity.stalls_l2_miss,cycle_activity.stalls_l1d_miss" --pid $(pgrep valkey-server) -- sleep 60
 

@@ -918,10 +918,3 @@ A few remarks:
 
 * Here we processed up to 10k messages per iteration, this means that the `COUNT` parameter of `XREADGROUP` was set to 10000. This adds a lot of latency but is needed in order to allow the slow consumers to be able to keep with the message flow. So you can expect a real world latency that is a lot smaller.
 * The system used for this benchmark is very slow compared to today's standards.
-
-
-
-
-## Learn more
-
-* The [Streams Tutorial](streams-intro.md) explains Streams with many examples.
