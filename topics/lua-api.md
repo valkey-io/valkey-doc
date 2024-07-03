@@ -292,7 +292,7 @@ will produce a line similar to the following in your server's log:
 * Available in scripts: yes
 * Available in functions: yes
 
-This function allows the executing script to switch between [Redis Serialization Protocol (RESP)](protocol.md) versions for the replies returned by [`server.call()`](#server.call) and [`server.pcall()`](#server.pcall).
+This function allows the executing script to switch between [RESP](protocol.md) protocol versions for the replies returned by [`server.call()`](#server.call) and [`server.pcall()`](#server.pcall).
 It expects a single numerical argument as the protocol's version.
 The default protocol version is _2_, but it can be switched to version _3_.
 
@@ -502,7 +502,7 @@ You can use the following flags and instruct the server to treat the scripts' ex
 
 Please refer to [Function Flags](functions-intro.md#function-flags) and [Eval Flags](eval-intro.md#eval-flags) for a detailed example.
 
-### <a name="server.server_version"></a> `server.SERVER_VERISON`
+### <a name="server.server_version"></a> `server.SERVER_VERSION`
 
 * Available in scripts: yes
 * Available in functions: yes
@@ -516,6 +516,7 @@ The reply's format is `MM.mm.PP`, where:
 
 ### <a name="server.redis_version"></a> `server.REDIS_VERSION`
 
+* Since version: 7.0.0 (if accessed as `redis.REDIS_VERSION`)
 * Available in scripts: yes
 * Available in functions: yes
 
@@ -540,6 +541,7 @@ The reply is a hexadecimal value structured as `0x00MMmmPP`, where:
 
 ### <a name="server.redis_version_num"></a> `server.REDIS_VERSION_NUM`
 
+* Since version: 7.0.0 (if accessed as `redis.REDIS_VERSION_NUM`)
 * Available in scripts: yes
 * Available in functions: yes
 
@@ -561,7 +563,7 @@ that reply is automatically converted to Valkey' protocol.
 Put differently; there's a one-to-one mapping between Valkey' replies and Lua's data types and a one-to-one mapping between Lua's data types and the [Valkey Protocol](protocol.md) data types.
 The underlying design is such that if a Valkey type is converted into a Lua type and converted back into a Valkey type, the result is the same as the initial value.
 
-Type conversion from Valkey protocol replies (i.e., the replies from `server.call()` and `server.pcall()`) to Lua data types depends on the Redis Serialization Protocol version used by the script.
+Type conversion from Valkey replies (i.e. the replies from `server.call()` and `server.pcall()`) to Lua data types depends on the RESP protocol version used by the script.
 The default protocol version during script executions is RESP2.
 The script may switch the replies' protocol versions by calling the `server.setresp()` function.
 
