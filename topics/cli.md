@@ -1,14 +1,17 @@
 ---
 title: "Valkey CLI"
 linkTitle: "CLI"
-weight: 1
 description: >
-    Overview of valkey-cli, the Valkey command line interface
-aliases:
-    - /docs/manual/cli
-    - /docs/management/cli
-    - /docs/ui/cli
+    Valkey command line interface
 ---
+
+## Usage
+
+**`valkey-cli`** [_OPTIONS_] [_cmd_ [_arg_...]]
+
+## Description
+
+The Valkey command line interface is used for administration, troubleshooting and experimenting with Valkey.
 
 In interactive mode, `valkey-cli` has basic line editing capabilities to provide a familiar typing experience.
 
@@ -19,6 +22,296 @@ To launch the program in special modes, you can use several options, including:
 * Request ASCII-art spectrogram of latency samples and frequencies.
 
 This topic covers the different aspects of `valkey-cli`, starting from the simplest and ending with the more advanced features.
+
+## Options
+
+**`-h`** _hostname_
+: Server hostname (default: 127.0.0.1).
+
+**`-p`** _port_
+: Server port (default: 6379).
+
+**`-t`** _timeout_
+: Server connection timeout in seconds (decimals allowed).
+  Default timeout is 0, meaning no limit, depending on the OS.
+
+**`-s`** _socket_
+: Server socket (overrides hostname and port).
+
+**`-a`** _password_
+: Password to use when connecting to the server.
+  You can also use the `REDISCLI_AUTH` environment
+  variable to pass this password more safely.
+  (If both are used, this argument takes precedence.)
+
+**`--user`** _username_
+: Used to send ACL style 'AUTH username pass'. Needs `-a`.
+
+**`--pass`** _password_
+: Alias of -a for consistency with the new --user option.
+
+**`--askpass`**
+: Force user to input password with mask from STDIN.
+  If this argument is used, `-a` and the `REDISCLI_AUTH`
+  environment variable will be ignored.
+
+**`-u`** _uri_
+: Server URI on format `valkey://user:password@host:port/dbnum`.
+  User, password and dbnum are optional. For authentication
+  without a username, use username 'default'. For TLS, use
+  the scheme 'valkeys'.
+
+**`-r`** _repeat_
+: Execute specified command N times.
+
+**`-i`** _interval_
+: When `-r` is used, waits _interval_ seconds per command.
+  It is possible to specify sub-second times like `-i 0.1`.
+  This interval is also used in `--scan` and `--stat` per cycle.
+  and in `--bigkeys`, `--memkeys`, and `--hotkeys` per 100 cycles.
+
+**`-n`** _db_
+: Database number.
+
+**`-2`**
+: Start session in RESP2 protocol mode.
+
+**`-3`**
+: Start session in RESP3 protocol mode.
+
+**`-x`**
+: Read last argument from STDIN (see example below).
+
+**`-X`**
+: Read <tag> argument from STDIN (see example below).
+
+**`-d`** _delimiter_
+: Delimiter between response bulks for raw formatting (default: `\n`).
+
+**`-D`** _delimiter_
+: Delimiter between responses for raw formatting (default: `\n`).
+
+**`-c`**
+: Enable cluster mode (follow -ASK and -MOVED redirections).
+
+**`-e`**
+: Return exit error code when command execution fails.
+
+**`-4`**
+: Prefer IPv4 over IPv6 on DNS lookup.
+
+**`-6`**
+: Prefer IPv6 over IPv4 on DNS lookup.'
+
+**`--tls`**
+: Establish a secure TLS connection.
+
+**`--sni`** _host_
+: Server name indication for TLS.
+
+**`--cacert`** _file_
+: CA Certificate file to verify with.
+
+**`--cacertdir`** _dir_
+: Directory where trusted CA certificates are stored.
+  If neither cacert nor cacertdir are specified, the default
+  system-wide trusted root certs configuration will apply.
+
+**`--insecure`**
+: Allow insecure TLS connection by skipping cert validation.
+
+**`--cert`** _file_
+: Client certificate to authenticate with.
+
+**`--key`** _file_
+: Private key file to authenticate with.
+
+**`--tls-ciphers`** _list_
+: Sets the list of preferred ciphers (TLSv1.2 and below)
+  in order of preference from highest to lowest separated by colon (":").
+  See the **ciphers**(1ssl) manpage for more information about the syntax of this string.
+
+**`--tls-ciphersuites`** _list_
+: Sets the list of preferred ciphersuites (TLSv1.3)
+  in order of preference from highest to lowest separated by colon (":").
+  See the **ciphers**(1ssl) manpage for more information about the syntax of this string,
+  and specifically for TLSv1.3 ciphersuites.
+
+**`--raw`**
+: Use raw formatting for replies (default when STDOUT is
+  not a tty).
+
+**`--no-raw`**
+: Force formatted output even when STDOUT is not a tty.
+
+**`--quoted-input`**
+: Force input to be handled as quoted strings.
+
+**`--csv`**
+: Output in CSV format.
+
+**`--json`**
+: Output in JSON format (default RESP3, use -2 if you want to use with RESP2).
+
+**`--quoted-json`**
+: Same as --json, but produce ASCII-safe quoted strings, not Unicode.
+
+**`--show-pushes`** **`yes`**|**`no`**
+: Whether to print RESP3 PUSH messages.  Enabled by default when
+  STDOUT is a tty but can be overridden with --show-pushes no.
+
+**`--stat`**
+: Print rolling stats about server: mem, clients, ...
+
+**`--latency`**
+: Enter a special mode continuously sampling latency.
+  If you use this mode in an interactive session it runs
+  forever displaying real-time stats. Otherwise if `--raw` or
+  `--csv` is specified, or if you redirect the output to a non
+  TTY, it samples the latency for 1 second (you can use
+  `-i` to change the interval), then produces a single output
+  and exits.
+
+**`--latency-history`**
+: Like `--latency` but tracking latency changes over time.
+  Default time interval is 15 sec. Change it using `-i`.
+
+**`--latency-dist`**
+: Shows latency as a spectrum, requires xterm 256 colors.
+  Default time interval is 1 sec. Change it using `-i`.
+
+**`--lru-test`** _keys_
+: Simulate a cache workload with an 80-20 distribution.
+
+**`--replica`**
+: Simulate a replica showing commands received from the master.
+
+**`--rdb`** _filename_
+: Transfer an RDB dump from remote server to local file.
+  Use filename of "-" to write to stdout.
+
+**`--functions-rdb`** _filename_
+: Like `--rdb` but only get the functions (not the keys)
+  when getting the RDB dump file.
+
+**`--pipe`**
+: Transfer raw RESP protocol from stdin to server.
+
+**`--pipe-timeout`** _n_
+: In `--pipe` mode, abort with error if after sending all data.
+  no reply is received within _n_ seconds.
+  Default timeout: 30. Use 0 to wait forever.
+
+**`--bigkeys`**
+: Sample keys looking for keys with many elements (complexity).
+
+**`--memkeys`**
+: Sample keys looking for keys consuming a lot of memory.
+
+**`--memkeys-samples`** _n_
+: Sample keys looking for keys consuming a lot of memory.
+  And define number of key elements to sample
+
+**`--hotkeys`**
+: Sample keys looking for hot keys.
+  only works when maxmemory-policy is `*lfu`.
+
+**`--scan`**
+: List all keys using the SCAN command.
+
+**`--pattern`** _pat_
+: Keys pattern when using the `--scan`, `--bigkeys` or `--hotkeys`
+  options (default: `*`).
+
+**`--count`** _count_
+: Count option when using the `--scan`, `--bigkeys` or `--hotkeys` (default: 10).
+
+**`--quoted-pattern`** _pat_
+: Same as `--pattern`, but the specified string can be
+  quoted, in order to pass an otherwise non binary-safe string.
+
+**`--intrinsic-latency`** _sec_
+: Run a test to measure intrinsic system latency.
+  The test will run for the specified amount of seconds.
+
+**`--eval`** _file_
+: Send an EVAL command using the Lua script at _file_.
+
+**`--ldb`**
+: Used with `--eval` enable the Server Lua debugger.
+
+**`--ldb-sync-mode`**
+: Like `--ldb` but uses the synchronous Lua debugger, in
+  this mode the server is blocked and script changes are
+  not rolled back from the server memory.
+
+**`--cluster`** _command_ [_args_...] [_opts_...]
+: Cluster Manager command and arguments (see below).
+
+**`--verbose`**
+: Verbose mode.
+
+**`--no-auth-warning`**
+: Don't show warning message when using password on command
+  line interface.
+
+**`--help`**
+: Output help and exit.
+
+**`--version`**
+: Output version and exit.
+
+## Cluster Manager commands
+
+For management of [Valkey Cluster](cluster-tutorial.md), the following syntax is used:
+
+**`valkey-cli`** **`--cluster`** _command_ [_args_...] [_opts_...]
+
+```
+  Command        Args
+  --------------------------------------------------------------------------------
+  create         host1:port1 ... hostN:portN
+                 --cluster-replicas <arg>
+  check          <host:port> or <host> <port> - separated by either colon or space
+                 --cluster-search-multiple-owners
+  info           <host:port> or <host> <port> - separated by either colon or space
+  fix            <host:port> or <host> <port> - separated by either colon or space
+                 --cluster-search-multiple-owners
+                 --cluster-fix-with-unreachable-masters
+  reshard        <host:port> or <host> <port> - separated by either colon or space
+                 --cluster-from <arg>
+                 --cluster-to <arg>
+                 --cluster-slots <arg>
+                 --cluster-yes
+                 --cluster-timeout <arg>
+                 --cluster-pipeline <arg>
+                 --cluster-replace
+  rebalance      <host:port> or <host> <port> - separated by either colon or space
+                 --cluster-weight <node1=w1...nodeN=wN>
+                 --cluster-use-empty-masters
+                 --cluster-timeout <arg>
+                 --cluster-simulate
+                 --cluster-pipeline <arg>
+                 --cluster-threshold <arg>
+                 --cluster-replace
+  add-node       new_host:new_port existing_host:existing_port
+                 --cluster-slave
+                 --cluster-master-id <arg>
+  del-node       host:port node_id
+  call           host:port command arg arg .. arg
+                 --cluster-only-masters
+                 --cluster-only-replicas
+  set-timeout    host:port milliseconds
+  import         host:port
+                 --cluster-from <arg>
+                 --cluster-from-user <arg>
+                 --cluster-from-pass <arg>
+                 --cluster-from-askpass
+                 --cluster-copy
+                 --cluster-replace
+  backup         host:port backup_directory
+  help
+```
 
 ## Command line usage
 
@@ -215,7 +508,7 @@ To monitor over time the RSS memory size it's possible to use the following comm
 ## Mass insertion of data using `valkey-cli`
 
 Mass insertion using `valkey-cli` is covered in a separate page as it is a
-worthwhile topic itself. Please refer to our [mass insertion guide]().
+worthwhile topic itself. Please refer to our [mass insertion guide](mass-insertion.md).
 
 ## CSV output
 

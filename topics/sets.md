@@ -1,7 +1,6 @@
 ﻿---
 title: "Sets"
 linkTitle: "Sets"
-weight: 30
 description: >
     Introduction to Sets
 ---
@@ -21,7 +20,7 @@ You can use Sets to efficiently:
 * `SINTER` returns the set of members that two or more sets have in common (i.e., the intersection).
 * `SCARD` returns the size (a.k.a. cardinality) of a set.
 
-See the [complete list of set commands](../commands/?group=set).
+See the [complete list of set commands](../commands/#set).
 
 ## Examples
 

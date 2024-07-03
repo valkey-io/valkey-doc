@@ -1,18 +1,14 @@
 ---
-title: "Documentation"
+title: "Valkey Documentation"
 linkTitle: "Documentation"
-weight: 20
-aliases:
-    - /documentation
-    - /documentation/
-    - /topics
-    - /topics/
 ---
 
 The Valkey documentation is managed in markdown files in the
 [valkey-doc repository](http://github.com/valkey-io/valkey-doc).
 It's released under the
 [Creative Commons Attribution-ShareAlike 4.0 International license](https://creativecommons.org/licenses/by-sa/4.0/).
+
+What is Valkey? See [Introduction](introduction.md).
 
 Programming with Valkey
 ---
@@ -32,16 +28,17 @@ Programming with Valkey
 Server-side scripting in Valkey
 ---
 
-* [Programability overview](programmability.md): An overview of programmability in Valkey.
-* [Valkey Lua API](lua-api.md): The embedded [Lua 5.1](https://lua.org) interepreter runtime environment and APIs.
+* [Programmability overview](programmability.md): An overview of programmability in Valkey.
+* [Valkey Lua API](lua-api.md): The embedded [Lua 5.1](https://lua.org) interpreter runtime environment and APIs.
 * [Introduction to Eval Scripts](eval-intro.md): An introduction about using cached scripts.
 * [Introduction to Valkey Functions](functions-intro.md): An introduction about using functions.
-* [Debugging Lua scripts](ldb.md): An overveiw of the native Valkey Lua debugger for cached scripts.
+* [Debugging Lua scripts](ldb.md): An overview of the native Valkey Lua debugger for cached scripts.
 
 Administration
 ---
 * [Installation](installation.md): How to install and configure Valkey. This targets people without prior experience with Valkey.
 * [valkey-cli](cli.md): The Valkey command line interface, used for administration, troubleshooting and experimenting with Valkey.
+* [valkey-server](server.md): How to run the Valkey server.
 * [Configuration](valkey.conf.md): How to configure Valkey.
 * [Replication](replication.md): What you need to know to set up primary-replica replication.
 * [Persistence](persistence.md): Options for configuring durability using disk backups.
@@ -77,6 +74,7 @@ Performance
 Tutorials & FAQ
 ---
 
+* [Quick start](quickstart.md): Get started with Valkey.
 * [Mass insertion of data](mass-insertion.md): How to add a big amount of data to a Valkey instance in a short time.
 * [Distributed locks](distlock.md): Implementing a distributed lock manager.
 * [Secondary indexes](indexing.md): How to simulate secondary indexes, composed indexes and traverse graphs using various data structures.

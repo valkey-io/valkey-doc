@@ -1,10 +1,7 @@
 ---
 title: "Valkey command arguments"
 linkTitle: "Command arguments"
-weight: 7
 description: How Valkey commands expose their documentation programmatically
-aliases:
-    - /topics/command-arguments
 ---
 
 The `COMMAND DOCS` command returns documentation-focused information about available Valkey commands.
@@ -49,7 +46,7 @@ Every element in the _arguments_ array is a map with the following fields:
   For arguments types other than _oneof_ and _block_, this is a string that describes the value in the command's syntax.
   For the _oneof_ and _block_ types, this is an array of nested arguments, each being a map as described in this section.
 
-[tr]: /topics/key-specs
+[tr]: key-specs.md
 
 ## Example
 

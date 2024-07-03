@@ -1,13 +1,8 @@
 ---
 title: Secondary indexing
 linkTitle: Secondary indexing
-weight: 1
 description: >
     Building secondary indexes in Valkey
-aliases: [
-    /topics/indexing,
-    /docs/reference/patterns/indexes
-]
 ---
 
 Valkey is not exactly a key-value store, since values can be complex data structures. However it has an external key-value shell: at API level data is addressed by the key name. It is fair to say that, natively, Valkey only offers *primary key access*. However since Valkey is a data structures server, its capabilities can be used for indexing, in order to create secondary indexes of different kinds, including composite (multi-column) indexes.
@@ -83,9 +78,9 @@ with the indexed field, it is possible to store just the ID of the object.
 For example I may have Hashes representing users. Each user is
 represented by a single key, directly accessible by ID:
 
-    HMSET user:1 id 1 username antirez ctime 1444809424 age 38
-    HMSET user:2 id 2 username maria ctime 1444808132 age 42
-    HMSET user:3 id 3 username jballard ctime 1443246218 age 33
+    HSET user:1 id 1 username antirez ctime 1444809424 age 38
+    HSET user:2 id 2 username maria ctime 1444808132 age 42
+    HSET user:3 id 3 username jballard ctime 1443246218 age 33
 
 If I want to create an index in order to query users by their age, I
 could do:

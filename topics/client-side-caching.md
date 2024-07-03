@@ -1,11 +1,8 @@
 ---
 title: "Client-side caching in Valkey"
 linkTitle: "Client-side caching"
-weight: 2
 description: >
     Server-assisted, client-side caching in Valkey
-aliases:
-    - /topics/client-side-caching
 ---
 
 Client-side caching is a technique used to create high performance services.

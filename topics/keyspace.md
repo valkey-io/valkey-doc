@@ -1,11 +1,8 @@
 ---
 title: "Keyspace"
 linkTitle: "Keyspace"
-weight: 1
 description: >
     Managing keys in Valkey: Key expiration, scanning, altering and querying the key space
-aliases:
-  - /docs/manual/the-redis-keyspace    
 ---
 
 Valkey keys are binary safe; this means that you can use any binary sequence as a
@@ -131,7 +128,7 @@ Don't use `KEYS` in your regular application code.
 If you're looking for a way to find keys in a subset of your keyspace, consider
 using `SCAN` or [sets][tdts].
 
-[tdts]: /topics/data-types#sets
+[tdts]: data-types.md#sets
 
 Supported glob-style patterns:
 

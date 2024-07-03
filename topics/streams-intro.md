@@ -1,13 +1,8 @@
 ---
 title: "Streams"
 linkTitle: "Streams"
-weight: 60
 description: >
     Introduction to Streams
-aliases:
-    - /topics/streams-intro
-    - /docs/manual/data-types/streams    
-    - /docs/data-types/streams-tutorial/ 
 ---
 
 A Stream is a data structure that acts like an append-only log but also implements several operations to overcome some of the limits of a typical append-only log. These include random access in O(1) time and complex consumption strategies, such as consumer groups.
@@ -29,7 +24,7 @@ Streams support several trimming strategies (to prevent streams from growing unb
 * `XRANGE` returns a range of entries between two supplied entry IDs.
 * `XLEN` returns the length of a stream.
  
-See the [complete list of stream commands](../commands/?group=stream).
+See the [complete list of stream commands](../commands/#stream).
 
 
 ## Examples
@@ -923,10 +918,3 @@ A few remarks:
 
 * Here we processed up to 10k messages per iteration, this means that the `COUNT` parameter of `XREADGROUP` was set to 10000. This adds a lot of latency but is needed in order to allow the slow consumers to be able to keep with the message flow. So you can expect a real world latency that is a lot smaller.
 * The system used for this benchmark is very slow compared to today's standards.
-
-
-
-
-## Learn more
-
-* The [Streams Tutorial](streams-intro.md) explains Streams with many examples.

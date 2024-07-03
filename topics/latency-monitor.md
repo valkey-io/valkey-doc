@@ -1,12 +1,7 @@
 ---
 title: "Valkey latency monitoring"
 linkTitle: "Latency monitoring"
-weight: 1
 description: Discovering slow server events in Valkey
-aliases: [
-    /topics/latency-monitor,
-    /docs/reference/optimization/latency-monitor
-]
 ---
 
 Valkey is often used for demanding use cases, where it

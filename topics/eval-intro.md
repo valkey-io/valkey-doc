@@ -1,12 +1,8 @@
 ---
 title: "Scripting with Lua"
 linkTitle: "Lua scripting"
-weight: 2
 description: >
    Executing Lua in Valkey
-aliases:
-    - /topics/eval-intro
-    - /docs/manual/programmability/eval-intro/
 ---
 
 Valkey lets users upload and execute Lua scripts on the server.
@@ -108,7 +104,7 @@ The following attempts to demonstrate the distribution of input arguments betwee
 ```
 
 **Note:**
-as can been seen above, Lua's table arrays are returned as [RESP2 array replies](protocol.md#resp-arrays), so it is likely that your client's library will convert it to the native array data type in your programming language.
+as can been seen above, Lua's table arrays are returned as [RESP2 array replies](protocol.md#arrays), so it is likely that your client's library will convert it to the native array data type in your programming language.
 Please refer to the rules that govern [data type conversion](lua-api.md#data-type-conversion) for more pertinent information.
 
 ## Interacting with Valkey from a script
@@ -177,7 +173,7 @@ For example:
 ```
 
 In this case, the application should first load it with `SCRIPT LOAD` and then call `EVALSHA` once more to run the cached script by its SHA1 sum.
-Most of [Valkey' clients](/clients/) already provide utility APIs for doing that automatically.
+Most of [Valkey' clients](../clients/) already provide utility APIs for doing that automatically.
 Please consult your client's documentation regarding the specific details.
 
 ### `!EVALSHA` in the context of pipelining
@@ -399,7 +395,7 @@ Note: an important part of this behavior is that the PRNG that Valkey implements
 ## Debugging Eval scripts
 
 Starting with Redis OSS 3.2, Valkey has support for native Lua debugging.
-The Valkey Lua debugger is a remote debugger consisting of a server, which is Valkey itself, and a client, which is by default [`valkey-cli`]().
+The Valkey Lua debugger is a remote debugger consisting of a server, which is Valkey itself, and a client, which is by default [`valkey-cli`](cli.md).
 
 The Lua debugger is described in the [Lua scripts debugging](ldb.md) section of the Valkey documentation.
 

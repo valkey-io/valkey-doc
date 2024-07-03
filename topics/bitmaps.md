@@ -1,7 +1,6 @@
 ---
 title: "Bitmaps"
 linkTitle: "Bitmaps"
-weight: 120
 description: >
     Introduction to Bitmaps
 ---
@@ -22,7 +21,7 @@ Some examples of bitmap use cases include:
 * `SETBIT` sets a bit at the provided offset to 0 or 1.
 * `GETBIT` returns the value of a bit at a given offset.
 
-See the [complete list of bitmap commands](../commands/?group=bitmap).
+See the [complete list of bitmap commands](../commands/#bitmap).
 
 
 ## Example

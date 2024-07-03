@@ -26,7 +26,7 @@ I have a few advices for you:
     use 'CONFIG SET slowlog-log-slower-than 1000'.
 - Check your Slow Log to understand what are the commands you are
     running which are too slow to execute. Please check
-    http://Valkey.io/commands/slowlog for more information.
+    [SLOWLOG](slowlog.md) for more information.
 - Deleting, expiring or evicting (because of maxmemory policy)
     large objects is a blocking operation. If you have very large
     objects that are often deleted, expired, or evicted, try to
@@ -37,4 +37,4 @@ I have a few advices for you:
 
 For more information refer to the [Latency Monitoring Framework page][lm].
 
-[lm]: /topics/latency-monitor
+[lm]: ../topics/latency-monitor.md

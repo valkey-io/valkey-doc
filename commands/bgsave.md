@@ -17,5 +17,5 @@ command.
 
 Please refer to the [persistence documentation][tp] for detailed information.
 
-[tp]: /topics/persistence
+[tp]: ../topics/persistence.md
 

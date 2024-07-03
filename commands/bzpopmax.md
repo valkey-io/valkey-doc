@@ -12,7 +12,7 @@ See the [BZPOPMIN documentation][cb] for the exact semantics, since `BZPOPMAX`
 is identical to `BZPOPMIN` with the only difference being that it pops members
 with the highest scores instead of popping the ones with the lowest scores.
 
-[cb]: /commands/bzpopmin
+[cb]: bzpopmin.md
 
 ## Examples
 

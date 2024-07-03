@@ -1,11 +1,7 @@
 ---
 title: Introduction to Valkey
 linkTitle: "About"
-weight: 10
 description: Learn about the Valkey open source project
-aliases:
-  - /topics/introduction
-  - /buzz
 ---
 
 Valkey is an open source (BSD licensed), in-memory __data structure store__ used as a database, cache, message broker, and streaming engine. Valkey provides [data structures](data-types.md) such as
@@ -34,7 +30,7 @@ Valkey also includes:
 * [LRU eviction of keys](lru-cache.md)
 * [Automatic failover](sentinel.md)
 
-You can use Valkey from [most programming languages](/clients/).
+You can use Valkey from [most programming languages](../clients/).
 
 Valkey is written in **ANSI C** and works on most POSIX systems like Linux,
 \*BSD, and Mac OS X, without external dependencies. Linux and OS X are the two operating systems where Valkey is developed and tested the most, and we **recommend using Linux for deployment**. Valkey may work in Solaris-derived systems like SmartOS, but support is *best effort*.

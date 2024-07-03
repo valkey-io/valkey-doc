@@ -1,11 +1,8 @@
 ---
 title: "Modules API reference"
 linkTitle: "API reference"
-weight: 1
 description: >
     Reference for the Valkey Modules API
-aliases:
-    - /topics/modules-api-ref
 ---
 
 <!-- This file is generated from module.c using
@@ -27,7 +24,7 @@ aliases:
 * [Key API for Sorted Set iterator](#section-key-api-for-sorted-set-iterator)
 * [Key API for Hash type](#section-key-api-for-hash-type)
 * [Key API for Stream type](#section-key-api-for-stream-type)
-* [Calling Valkey commands from modules](#section-calling-valkey-commands-from-modules)
+* [Calling commands from modules](#section-calling-commands-from-modules)
 * [Modules data types](#section-modules-data-types)
 * [RDB loading and saving functions](#section-rdb-loading-and-saving-functions)
 * [Key digest API (DEBUG DIGEST interface for modules types)](#section-key-digest-api-debug-digest-interface-for-modules-types)
@@ -60,8 +57,8 @@ aliases:
 
 ## Heap allocation raw functions
 
-Memory allocated with these functions are taken into account by Valkey key
-eviction algorithms and are reported in Valkey memory usage information.
+Memory allocated with these functions are taken into account by key
+eviction algorithms and are reported in memory usage information.
 
 <span id="ValkeyModule_Alloc"></span>
 
@@ -72,8 +69,8 @@ eviction algorithms and are reported in Valkey memory usage information.
 **Available since:** 4.0.0
 
 Use like `malloc()`. Memory allocated with this function is reported in
-Valkey INFO memory, used for keys eviction according to maxmemory settings
-and in general is taken into account as memory allocated by Valkey.
+INFO memory, used for keys eviction according to maxmemory settings
+and in general is taken into account as memory allocated by the server.
 You should avoid using `malloc()`.
 This function panics if unable to allocate enough memory.
 
@@ -97,9 +94,20 @@ of panicking.
 **Available since:** 4.0.0
 
 Use like `calloc()`. Memory allocated with this function is reported in
-Valkey INFO memory, used for keys eviction according to maxmemory settings
-and in general is taken into account as memory allocated by Valkey.
+INFO memory, used for keys eviction according to maxmemory settings
+and in general is taken into account as memory allocated by the server.
 You should avoid using `calloc()` directly.
+
+<span id="ValkeyModule_TryCalloc"></span>
+
+### `ValkeyModule_TryCalloc`
+
+    void *ValkeyModule_TryCalloc(size_t nmemb, size_t size);
+
+**Available since:** unreleased
+
+Similar to [`ValkeyModule_Calloc`](#ValkeyModule_Calloc), but returns NULL in case of allocation failure, instead
+of panicking.
 
 <span id="ValkeyModule_Realloc"></span>
 
@@ -110,6 +118,17 @@ You should avoid using `calloc()` directly.
 **Available since:** 4.0.0
 
 Use like `realloc()` for memory obtained with [`ValkeyModule_Alloc()`](#ValkeyModule_Alloc).
+
+<span id="ValkeyModule_TryRealloc"></span>
+
+### `ValkeyModule_TryRealloc`
+
+    void *ValkeyModule_TryRealloc(void *ptr, size_t bytes);
+
+**Available since:** unreleased
+
+Similar to [`ValkeyModule_Realloc`](#ValkeyModule_Realloc), but returns NULL in case of allocation failure,
+instead of panicking.
 
 <span id="ValkeyModule_Free"></span>
 
@@ -158,7 +177,7 @@ The function returns NULL if `bytes` is 0.
 
 ## Commands API
 
-These functions are used to implement custom Valkey commands.
+These functions are used to implement custom commands.
 
 For examples, see [https://valkey.io/topics/modules-intro](https://valkey.io/topics/modules-intro).
 
@@ -230,8 +249,8 @@ and not to get executed. Otherwise zero is returned.
 ### `ValkeyModule_ChannelAtPosWithFlags`
 
     void ValkeyModule_ChannelAtPosWithFlags(ValkeyModuleCtx *ctx,
-                                           int pos,
-                                           int flags);
+                                            int pos,
+                                            int flags);
 
 **Available since:** 7.0.0
 
@@ -247,8 +266,8 @@ The supported flags are:
 * `VALKEYMODULE_CMD_CHANNEL_PUBLISH`: This command will publish to this channel.
 * `VALKEYMODULE_CMD_CHANNEL_PATTERN`: Instead of acting on a specific channel, will act on any 
                                    channel specified by the pattern. This is the same access
-                                   used by the PSUBSCRIBE and PUNSUBSCRIBE commands available 
-                                   in Valkey. Not intended to be used with PUBLISH permissions.
+                                   used by the PSUBSCRIBE and PUNSUBSCRIBE commands.
+                                   Not intended to be used with PUBLISH permissions.
 
 The following is an example of how it could be used:
 
@@ -267,16 +286,16 @@ it allows the ACLs to be checked before the command is executed.
 ### `ValkeyModule_CreateCommand`
 
     int ValkeyModule_CreateCommand(ValkeyModuleCtx *ctx,
-                                  const char *name,
-                                  ValkeyModuleCmdFunc cmdfunc,
-                                  const char *strflags,
-                                  int firstkey,
-                                  int lastkey,
-                                  int keystep);
+                                   const char *name,
+                                   ValkeyModuleCmdFunc cmdfunc,
+                                   const char *strflags,
+                                   int firstkey,
+                                   int lastkey,
+                                   int keystep);
 
 **Available since:** 4.0.0
 
-Register a new command in the Valkey server, that will be handled by
+Register a new command in the server, that will be handled by
 calling the function pointer 'cmdfunc' using the ValkeyModule calling
 convention.
 
@@ -294,7 +313,7 @@ of the initialization function is not defined.
 
 The command function type is the following:
 
-     int MyCommand_ValkeyCommand(ValkeyModuleCtx *ctx, ValkeyModuleString **argv, int argc);
+     int MyCommand_RedisCommand(ValkeyModuleCtx *ctx, ValkeyModuleString **argv, int argc);
 
 And is supposed to always return `VALKEYMODULE_OK`.
 
@@ -334,7 +353,7 @@ example "write deny-oom". The set of flags are:
 * **"getkeys-api"**: The command implements the interface to return
                      the arguments that are keys. Used when start/stop/step
                      is not enough because of the command syntax.
-* **"no-cluster"**: The command should not register in Valkey Cluster
+* **"no-cluster"**: The command should not register in Cluster
                     since is not designed to work with it because, for
                     example, is unable to report the position of the
                     keys, programmatically creates key names, or any
@@ -353,7 +372,7 @@ example "write deny-oom". The set of flags are:
                          the arguments that are channels.
 
 The last three parameters specify which arguments of the new command are
-Valkey keys. See [https://redis.io/commands/command](https://redis.io/commands/command) for more information.
+keys. See [https://valkey.io/commands/command](https://valkey.io/commands/command) for more information.
 
 * `firstkey`: One-based index of the first argument that's a key.
               Position 0 is always the command name itself.
@@ -371,14 +390,14 @@ NOTE: The scheme described above serves a limited purpose and can
 only be used to find keys that exist at constant indices.
 For non-trivial key arguments, you may pass 0,0,0 and use
 [`ValkeyModule_SetCommandInfo`](#ValkeyModule_SetCommandInfo) to set key specs using a more advanced scheme and use
-[`ValkeyModule_SetCommandACLCategories`](#ValkeyModule_SetCommandACLCategories) to set Valkey ACL categories of the commands.
+[`ValkeyModule_SetCommandACLCategories`](#ValkeyModule_SetCommandACLCategories) to set ACL categories of the commands.
 
 <span id="ValkeyModule_GetCommand"></span>
 
 ### `ValkeyModule_GetCommand`
 
     ValkeyModuleCommand *ValkeyModule_GetCommand(ValkeyModuleCtx *ctx,
-                                               const char *name);
+                                                 const char *name);
 
 **Available since:** 7.0.0
 
@@ -396,12 +415,12 @@ NULL is returned in case of the following errors:
 ### `ValkeyModule_CreateSubcommand`
 
     int ValkeyModule_CreateSubcommand(ValkeyModuleCommand *parent,
-                                     const char *name,
-                                     ValkeyModuleCmdFunc cmdfunc,
-                                     const char *strflags,
-                                     int firstkey,
-                                     int lastkey,
-                                     int keystep);
+                                      const char *name,
+                                      ValkeyModuleCmdFunc cmdfunc,
+                                      const char *strflags,
+                                      int firstkey,
+                                      int lastkey,
+                                      int keystep);
 
 **Available since:** 7.0.0
 
@@ -432,12 +451,34 @@ Returns `VALKEYMODULE_OK` on success and `VALKEYMODULE_ERR` in case of the follo
 * `parent` already has a subcommand called `name`
 * Creating a subcommand is called outside of `ValkeyModule_OnLoad`.
 
+<span id="ValkeyModule_AddACLCategory"></span>
+
+### `ValkeyModule_AddACLCategory`
+
+    int ValkeyModule_AddACLCategory(ValkeyModuleCtx *ctx, const char *name);
+
+**Available since:** unreleased
+
+[`ValkeyModule_AddACLCategory`](#ValkeyModule_AddACLCategory) can be used to add new ACL command categories. Category names
+can only contain alphanumeric characters, underscores, or dashes. Categories can only be added
+during the `ValkeyModule_OnLoad` function. Once a category has been added, it can not be removed. 
+Any module can register a command to any added categories using [`ValkeyModule_SetCommandACLCategories`](#ValkeyModule_SetCommandACLCategories).
+
+Returns:
+- `VALKEYMODULE_OK` on successfully adding the new ACL category. 
+- `VALKEYMODULE_ERR` on failure.
+
+On error the errno is set to:
+- EINVAL if the name contains invalid characters.
+- EBUSY if the category name already exists.
+- ENOMEM if the number of categories reached the max limit of 64 categories.
+
 <span id="ValkeyModule_SetCommandACLCategories"></span>
 
 ### `ValkeyModule_SetCommandACLCategories`
 
     int ValkeyModule_SetCommandACLCategories(ValkeyModuleCommand *command,
-                                            const char *aclflags);
+                                             const char *aclflags);
 
 **Available since:** 7.2.0
 
@@ -458,7 +499,7 @@ outside of this function, an error is returned.
 ### `ValkeyModule_SetCommandInfo`
 
     int ValkeyModule_SetCommandInfo(ValkeyModuleCommand *command,
-                                   const ValkeyModuleCommandInfo *info);
+                                    const ValkeyModuleCommandInfo *info);
 
 **Available since:** 7.0.0
 
@@ -486,7 +527,7 @@ only be set once for each command and has the following structure:
 
 All fields except `version` are optional. Explanation of the fields:
 
-- `version`: This field enables compatibility with different Redis OSS versions.
+- `version`: This field enables compatibility with different server versions.
   Always set this field to `VALKEYMODULE_COMMAND_INFO_VERSION`.
 
 - `summary`: A short description of the command (optional).
@@ -494,7 +535,7 @@ All fields except `version` are optional. Explanation of the fields:
 - `complexity`: Complexity description (optional).
 
 - `since`: The version where the command was introduced (optional).
-  Note: The version specified should be the module's, not Redis OSS version.
+  Note: The version specified should be the module's, not the server version.
 
 - `history`: An array of `ValkeyModuleCommandHistoryEntry` (optional), which is
   a struct with the following fields:
@@ -511,7 +552,7 @@ All fields except `version` are optional. Explanation of the fields:
 
 - `arity`: Number of arguments, including the command name itself. A positive
   number specifies an exact number of arguments and a negative number
-  specifies a minimum number of arguments, so use -N to say >= N. Valkey
+  specifies a minimum number of arguments, so use -N to say >= N. The server
   validates a call before passing it to a module, so this can replace an
   arity check inside the module command implementation. A value of 0 (or an
   omitted arity field) is equivalent to -2 if the command has sub commands
@@ -528,7 +569,7 @@ All fields except `version` are optional. Explanation of the fields:
 
     Key-specs cause the triplet (firstkey, lastkey, keystep) given in
     ValkeyModule_CreateCommand to be recomputed, but it is still useful to provide
-    these three parameters in ValkeyModule_CreateCommand, to better support old Valkey
+    these three parameters in ValkeyModule_CreateCommand, to better support old server
     versions where ValkeyModule_SetCommandInfo is not available.
 
     Note that key-specs don't fully replace the "getkeys-api" (see
@@ -839,6 +880,9 @@ Within the same command, you can call multiple times
 to accumulate independent time intervals to the background duration.
 This method always return `VALKEYMODULE_OK`.
 
+This function is not thread safe, If used in module thread and blocked callback (possibly main thread)
+simultaneously, it's recommended to protect them with lock owned by caller instead of GIL.
+
 <span id="ValkeyModule_BlockedClientMeasureTimeEnd"></span>
 
 ### `ValkeyModule_BlockedClientMeasureTimeEnd`
@@ -853,29 +897,34 @@ On success `VALKEYMODULE_OK` is returned.
 This method only returns `VALKEYMODULE_ERR` if no start time was
 previously defined ( meaning [`ValkeyModule_BlockedClientMeasureTimeStart`](#ValkeyModule_BlockedClientMeasureTimeStart) was not called ).
 
+This function is not thread safe, If used in module thread and blocked callback (possibly main thread)
+simultaneously, it's recommended to protect them with lock owned by caller instead of GIL.
+
 <span id="ValkeyModule_Yield"></span>
 
 ### `ValkeyModule_Yield`
 
-    void ValkeyModule_Yield(ValkeyModuleCtx *ctx, int flags, const char *busy_reply);
+    void ValkeyModule_Yield(ValkeyModuleCtx *ctx,
+                            int flags,
+                            const char *busy_reply);
 
 **Available since:** 7.0.0
 
-This API allows modules to let Valkey process background tasks, and some
+This API allows modules to let the server process background tasks, and some
 commands during long blocking execution of a module command.
 The module can call this API periodically.
 The flags is a bit mask of these:
 
 - `VALKEYMODULE_YIELD_FLAG_NONE`: No special flags, can perform some background
                                  operations, but not process client commands.
-- `VALKEYMODULE_YIELD_FLAG_CLIENTS`: Valkey can also process client commands.
+- `VALKEYMODULE_YIELD_FLAG_CLIENTS`: The server can also process client commands.
 
 The `busy_reply` argument is optional, and can be used to control the verbose
 error string after the `-BUSY` error code.
 
-When the `VALKEYMODULE_YIELD_FLAG_CLIENTS` is used, Valkey will only start
+When the `VALKEYMODULE_YIELD_FLAG_CLIENTS` is used, the server will only start
 processing client commands after the time defined by the
-`busy-reply-threshold` config, in which case Valkey will start rejecting most
+`busy-reply-threshold` config, in which case the server will start rejecting most
 commands with `-BUSY` error, but allow the ones marked with the `allow-busy`
 flag to be executed.
 This API can also be used in thread safe context (while locked), and during
@@ -905,11 +954,11 @@ See [`ValkeyModule_SignalModifiedKey()`](#ValkeyModule_SignalModifiedKey).
 
 `VALKEYMODULE_OPTIONS_HANDLE_REPL_ASYNC_LOAD`:
 Setting this flag indicates module awareness of diskless async replication (repl-diskless-load=swapdb)
-and that valkey could be serving reads during replication instead of blocking with LOADING status.
+and that the server could be serving reads during replication instead of blocking with LOADING status.
 
 `VALKEYMODULE_OPTIONS_ALLOW_NESTED_KEYSPACE_NOTIFICATIONS`:
 Declare that the module wants to get nested key-space notifications.
-By default, Valkey will not fire key-space notifications that happened inside
+By default, the server will not fire key-space notifications that happened inside
 a key-space notification callback. This flag allows to change this behavior
 and fire nested key-space notifications. Notice: if enabled, the module
 should protected itself from infinite recursion.
@@ -919,7 +968,7 @@ should protected itself from infinite recursion.
 ### `ValkeyModule_SignalModifiedKey`
 
     int ValkeyModule_SignalModifiedKey(ValkeyModuleCtx *ctx,
-                                      ValkeyModuleString *keyname);
+                                       ValkeyModuleString *keyname);
 
 **Available since:** 6.0.0
 
@@ -948,7 +997,7 @@ The function must be called as the first function of a command implementation
 that wants to use automatic memory.
 
 When enabled, automatic memory management tracks and automatically frees
-keys, call replies and String objects once the command returns. In most
+keys, call replies and RedisModuleString objects once the command returns. In most
 cases this eliminates the need of calling the following functions:
 
 1. [`ValkeyModule_CloseKey()`](#ValkeyModule_CloseKey)
@@ -967,8 +1016,8 @@ to optimize loops that make numerous allocations for example.
 ### `ValkeyModule_CreateString`
 
     ValkeyModuleString *ValkeyModule_CreateString(ValkeyModuleCtx *ctx,
-                                                const char *ptr,
-                                                size_t len);
+                                                  const char *ptr,
+                                                  size_t len);
 
 **Available since:** 4.0.0
 
@@ -988,8 +1037,8 @@ managed manually.
 ### `ValkeyModule_CreateStringPrintf`
 
     ValkeyModuleString *ValkeyModule_CreateStringPrintf(ValkeyModuleCtx *ctx,
-                                                      const char *fmt,
-                                                      ...);
+                                                        const char *fmt,
+                                                        ...);
 
 **Available since:** 4.0.0
 
@@ -1007,7 +1056,7 @@ The passed context 'ctx' may be NULL if necessary, see the
 ### `ValkeyModule_CreateStringFromLongLong`
 
     ValkeyModuleString *ValkeyModule_CreateStringFromLongLong(ValkeyModuleCtx *ctx,
-                                                            long long ll);
+                                                              long long ll);
 
 **Available since:** 4.0.0
 
@@ -1025,7 +1074,7 @@ The passed context 'ctx' may be NULL if necessary, see the
 ### `ValkeyModule_CreateStringFromULongLong`
 
     ValkeyModuleString *ValkeyModule_CreateStringFromULongLong(ValkeyModuleCtx *ctx,
-                                                             unsigned long long ull);
+                                                               unsigned long long ull);
 
 **Available since:** 7.0.3
 
@@ -1043,7 +1092,7 @@ The passed context 'ctx' may be NULL if necessary, see the
 ### `ValkeyModule_CreateStringFromDouble`
 
     ValkeyModuleString *ValkeyModule_CreateStringFromDouble(ValkeyModuleCtx *ctx,
-                                                          double d);
+                                                            double d);
 
 **Available since:** 6.0.0
 
@@ -1058,8 +1107,8 @@ enabling automatic memory management.
 ### `ValkeyModule_CreateStringFromLongDouble`
 
     ValkeyModuleString *ValkeyModule_CreateStringFromLongDouble(ValkeyModuleCtx *ctx,
-                                                              long double ld,
-                                                              int humanfriendly);
+                                                                long double ld,
+                                                                int humanfriendly);
 
 **Available since:** 6.0.0
 
@@ -1077,7 +1126,7 @@ The passed context 'ctx' may be NULL if necessary, see the
 ### `ValkeyModule_CreateStringFromString`
 
     ValkeyModuleString *ValkeyModule_CreateStringFromString(ValkeyModuleCtx *ctx,
-                                                          const ValkeyModuleString *str);
+                                                            const ValkeyModuleString *str);
 
 **Available since:** 4.0.0
 
@@ -1095,7 +1144,7 @@ The passed context 'ctx' may be NULL if necessary, see the
 ### `ValkeyModule_CreateStringFromStreamID`
 
     ValkeyModuleString *ValkeyModule_CreateStringFromStreamID(ValkeyModuleCtx *ctx,
-                                                            const ValkeyModuleStreamID *id);
+                                                              const ValkeyModuleStreamID *id);
 
 **Available since:** 6.2.0
 
@@ -1113,7 +1162,7 @@ The passed context `ctx` may be NULL if necessary. See the
 
 **Available since:** 4.0.0
 
-Free a module string object obtained with one of the Valkey modules API calls
+Free a module string object obtained with one of the module API calls
 that return new string objects.
 
 It is possible to call this function even when automatic memory management
@@ -1125,6 +1174,9 @@ pass ctx as NULL when releasing the string (but passing a context will not
 create any issue). Strings created with a context should be freed also passing
 the context, so if you want to free a string out of context later, make sure
 to create it using a NULL context.
+
+This API is not thread safe, access to these retained strings (if they originated
+from a client command arguments) must be done with GIL locked.
 
 <span id="ValkeyModule_RetainString"></span>
 
@@ -1167,12 +1219,15 @@ Threaded modules that reference retained strings from other threads *must*
 explicitly trim the allocation as soon as the string is retained. Not doing
 so may result with automatic trimming which is not thread safe.
 
+This API is not thread safe, access to these retained strings (if they originated
+from a client command arguments) must be done with GIL locked.
+
 <span id="ValkeyModule_HoldString"></span>
 
 ### `ValkeyModule_HoldString`
 
     ValkeyModuleString* ValkeyModule_HoldString(ValkeyModuleCtx *ctx,
-                                              ValkeyModuleString *str);
+                                                ValkeyModuleString *str);
 
 **Available since:** 6.0.7
 
@@ -1204,12 +1259,15 @@ Threaded modules that reference held strings from other threads *must*
 explicitly trim the allocation as soon as the string is held. Not doing
 so may result with automatic trimming which is not thread safe.
 
+This API is not thread safe, access to these retained strings (if they originated
+from a client command arguments) must be done with GIL locked.
+
 <span id="ValkeyModule_StringPtrLen"></span>
 
 ### `ValkeyModule_StringPtrLen`
 
     const char *ValkeyModule_StringPtrLen(const ValkeyModuleString *str,
-                                         size_t *len);
+                                          size_t *len);
 
 **Available since:** 4.0.0
 
@@ -1221,7 +1279,8 @@ be used for read only accesses and never modified.
 
 ### `ValkeyModule_StringToLongLong`
 
-    int ValkeyModule_StringToLongLong(const ValkeyModuleString *str, long long *ll);
+    int ValkeyModule_StringToLongLong(const ValkeyModuleString *str,
+                                      long long *ll);
 
 **Available since:** 4.0.0
 
@@ -1235,7 +1294,7 @@ is returned.
 ### `ValkeyModule_StringToULongLong`
 
     int ValkeyModule_StringToULongLong(const ValkeyModuleString *str,
-                                      unsigned long long *ull);
+                                       unsigned long long *ull);
 
 **Available since:** 7.0.3
 
@@ -1261,7 +1320,7 @@ not a valid string representation of a double value.
 ### `ValkeyModule_StringToLongDouble`
 
     int ValkeyModule_StringToLongDouble(const ValkeyModuleString *str,
-                                       long double *ld);
+                                        long double *ld);
 
 **Available since:** 6.0.0
 
@@ -1274,7 +1333,7 @@ not a valid string representation of a double value.
 ### `ValkeyModule_StringToStreamID`
 
     int ValkeyModule_StringToStreamID(const ValkeyModuleString *str,
-                                     ValkeyModuleStreamID *id);
+                                      ValkeyModuleStreamID *id);
 
 **Available since:** 6.2.0
 
@@ -1288,7 +1347,7 @@ is not a valid string representation of a stream ID. The special IDs "+" and
 ### `ValkeyModule_StringCompare`
 
     int ValkeyModule_StringCompare(const ValkeyModuleString *a,
-                                  const ValkeyModuleString *b);
+                                   const ValkeyModuleString *b);
 
 **Available since:** 4.0.0
 
@@ -1301,9 +1360,9 @@ binary blobs without any encoding care / collation attempt.
 ### `ValkeyModule_StringAppendBuffer`
 
     int ValkeyModule_StringAppendBuffer(ValkeyModuleCtx *ctx,
-                                       ValkeyModuleString *str,
-                                       const char *buf,
-                                       size_t len);
+                                        ValkeyModuleString *str,
+                                        const char *buf,
+                                        size_t len);
 
 **Available since:** 4.0.0
 
@@ -1332,11 +1391,11 @@ no concurrent access to the string is guaranteed. Using it for an argv
 string in a module command before the string is potentially available
 to other threads is generally safe.
 
-Currently, Valkey may also automatically trim retained strings when a
+Currently, the server may also automatically trim retained strings when a
 module command returns. However, doing this explicitly should still be
 a preferred option:
 
-1. Future versions of Valkey may abandon auto-trimming.
+1. Future versions of the server may abandon auto-trimming.
 2. Auto-trimming as currently implemented is *not thread safe*.
    A background thread manipulating a recently retained string may end up
    in a race condition with the auto-trim, which could result with
@@ -1419,8 +1478,8 @@ The function always returns `VALKEYMODULE_OK`.
 ### `ValkeyModule_ReplyWithErrorFormat`
 
     int ValkeyModule_ReplyWithErrorFormat(ValkeyModuleCtx *ctx,
-                                         const char *fmt,
-                                         ...);
+                                          const char *fmt,
+                                          ...);
 
 **Available since:** 7.2.0
 
@@ -1479,7 +1538,7 @@ The function always returns `VALKEYMODULE_OK`.
 **Available since:** 7.0.0
 
 Reply with a RESP3 Map type of 'len' pairs.
-Visit [https://github.com/antirez/RESP3/blob/master/spec.md](https://github.com/antirez/RESP3/blob/master/spec.md) for more info about RESP3.
+Visit [https://valkey.io/topics/protocol](https://valkey.io/topics/protocol) for more info about RESP3.
 
 After starting a map reply, the module must make `len*2` calls to other
 `ReplyWith*` style functions in order to emit the elements of the map.
@@ -1501,7 +1560,7 @@ The function always returns `VALKEYMODULE_OK`.
 **Available since:** 7.0.0
 
 Reply with a RESP3 Set type of 'len' elements.
-Visit [https://github.com/antirez/RESP3/blob/master/spec.md](https://github.com/antirez/RESP3/blob/master/spec.md) for more info about RESP3.
+Visit [https://valkey.io/topics/protocol](https://valkey.io/topics/protocol) for more info about RESP3.
 
 After starting a set reply, the module must make `len` calls to other
 `ReplyWith*` style functions in order to emit the elements of the set.
@@ -1523,7 +1582,7 @@ The function always returns `VALKEYMODULE_OK`.
 **Available since:** 7.0.0
 
 Add attributes (metadata) to the reply. Should be done before adding the
-actual reply. see [https://github.com/antirez/RESP3/blob/master/spec.md](https://github.com/antirez/RESP3/blob/master/spec.md)#attribute-type
+actual reply. see [https://valkey.io/topics/protocol](https://valkey.io/topics/protocol)#attribute-type
 
 After starting an attribute's reply, the module must make `len*2` calls to other
 `ReplyWith*` style functions in order to emit the elements of the attribute map.
@@ -1608,7 +1667,7 @@ that is not easy to calculate in advance the number of elements.
 Very similar to [`ValkeyModule_ReplySetArrayLength`](#ValkeyModule_ReplySetArrayLength) except `len` should
 exactly half of the number of `ReplyWith*` functions called in the
 context of the map.
-Visit [https://github.com/antirez/RESP3/blob/master/spec.md](https://github.com/antirez/RESP3/blob/master/spec.md) for more info about RESP3.
+Visit [https://valkey.io/topics/protocol](https://valkey.io/topics/protocol) for more info about RESP3.
 
 <span id="ValkeyModule_ReplySetSetLength"></span>
 
@@ -1619,7 +1678,7 @@ Visit [https://github.com/antirez/RESP3/blob/master/spec.md](https://github.com/
 **Available since:** 7.0.0
 
 Very similar to [`ValkeyModule_ReplySetArrayLength`](#ValkeyModule_ReplySetArrayLength)
-Visit [https://github.com/antirez/RESP3/blob/master/spec.md](https://github.com/antirez/RESP3/blob/master/spec.md) for more info about RESP3.
+Visit [https://valkey.io/topics/protocol](https://valkey.io/topics/protocol) for more info about RESP3.
 
 <span id="ValkeyModule_ReplySetAttributeLength"></span>
 
@@ -1630,7 +1689,7 @@ Visit [https://github.com/antirez/RESP3/blob/master/spec.md](https://github.com/
 **Available since:** 7.0.0
 
 Very similar to [`ValkeyModule_ReplySetMapLength`](#ValkeyModule_ReplySetMapLength)
-Visit [https://github.com/antirez/RESP3/blob/master/spec.md](https://github.com/antirez/RESP3/blob/master/spec.md) for more info about RESP3.
+Visit [https://valkey.io/topics/protocol](https://valkey.io/topics/protocol) for more info about RESP3.
 
 Must not be called if [`ValkeyModule_ReplyWithAttribute`](#ValkeyModule_ReplyWithAttribute) returned an error.
 
@@ -1639,8 +1698,8 @@ Must not be called if [`ValkeyModule_ReplyWithAttribute`](#ValkeyModule_ReplyWit
 ### `ValkeyModule_ReplyWithStringBuffer`
 
     int ValkeyModule_ReplyWithStringBuffer(ValkeyModuleCtx *ctx,
-                                          const char *buf,
-                                          size_t len);
+                                           const char *buf,
+                                           size_t len);
 
 **Available since:** 4.0.0
 
@@ -1665,7 +1724,8 @@ The function always returns `VALKEYMODULE_OK`.
 
 ### `ValkeyModule_ReplyWithString`
 
-    int ValkeyModule_ReplyWithString(ValkeyModuleCtx *ctx, ValkeyModuleString *str);
+    int ValkeyModule_ReplyWithString(ValkeyModuleCtx *ctx,
+                                     ValkeyModuleString *str);
 
 **Available since:** 4.0.0
 
@@ -1690,9 +1750,9 @@ The function always returns `VALKEYMODULE_OK`.
 ### `ValkeyModule_ReplyWithVerbatimStringType`
 
     int ValkeyModule_ReplyWithVerbatimStringType(ValkeyModuleCtx *ctx,
-                                                const char *buf,
-                                                size_t len,
-                                                const char *ext);
+                                                 const char *buf,
+                                                 size_t len,
+                                                 const char *ext);
 
 **Available since:** 7.0.0
 
@@ -1706,8 +1766,8 @@ The function always returns `VALKEYMODULE_OK`.
 ### `ValkeyModule_ReplyWithVerbatimString`
 
     int ValkeyModule_ReplyWithVerbatimString(ValkeyModuleCtx *ctx,
-                                            const char *buf,
-                                            size_t len);
+                                             const char *buf,
+                                             size_t len);
 
 **Available since:** 6.0.0
 
@@ -1737,7 +1797,7 @@ The function always returns `VALKEYMODULE_OK`.
 **Available since:** 7.0.0
 
 Reply with a RESP3 Boolean type.
-Visit [https://github.com/antirez/RESP3/blob/master/spec.md](https://github.com/antirez/RESP3/blob/master/spec.md) for more info about RESP3.
+Visit [https://valkey.io/topics/protocol](https://valkey.io/topics/protocol) for more info about RESP3.
 
 In RESP3, this is boolean type
 In RESP2, it's a string response of "1" and "0" for true and false respectively.
@@ -1749,11 +1809,11 @@ The function always returns `VALKEYMODULE_OK`.
 ### `ValkeyModule_ReplyWithCallReply`
 
     int ValkeyModule_ReplyWithCallReply(ValkeyModuleCtx *ctx,
-                                       ValkeyModuleCallReply *reply);
+                                        ValkeyModuleCallReply *reply);
 
 **Available since:** 4.0.0
 
-Reply exactly what a Valkey command returned us with [`ValkeyModule_Call()`](#ValkeyModule_Call).
+Reply exactly what a command returned us with [`ValkeyModule_Call()`](#ValkeyModule_Call).
 This function is useful when we use [`ValkeyModule_Call()`](#ValkeyModule_Call) in order to
 execute some command, as we want to reply to the client exactly the
 same reply we obtained by the command.
@@ -1776,7 +1836,7 @@ Return:
 **Available since:** 4.0.0
 
 Reply with a RESP3 Double type.
-Visit [https://github.com/antirez/RESP3/blob/master/spec.md](https://github.com/antirez/RESP3/blob/master/spec.md) for more info about RESP3.
+Visit [https://valkey.io/topics/protocol](https://valkey.io/topics/protocol) for more info about RESP3.
 
 Send a string reply obtained converting the double 'd' into a bulk string.
 This function is basically equivalent to converting a double into
@@ -1793,13 +1853,13 @@ The function always returns `VALKEYMODULE_OK`.
 ### `ValkeyModule_ReplyWithBigNumber`
 
     int ValkeyModule_ReplyWithBigNumber(ValkeyModuleCtx *ctx,
-                                       const char *bignum,
-                                       size_t len);
+                                        const char *bignum,
+                                        size_t len);
 
 **Available since:** 7.0.0
 
 Reply with a RESP3 BigNumber type.
-Visit [https://github.com/antirez/RESP3/blob/master/spec.md](https://github.com/antirez/RESP3/blob/master/spec.md) for more info about RESP3.
+Visit [https://valkey.io/topics/protocol](https://valkey.io/topics/protocol) for more info about RESP3.
 
 In RESP3, this is a string of length `len` that is tagged as a BigNumber, 
 however, it's up to the caller to ensure that it's a valid BigNumber.
@@ -1833,9 +1893,9 @@ The function always returns `VALKEYMODULE_OK`.
 ### `ValkeyModule_Replicate`
 
     int ValkeyModule_Replicate(ValkeyModuleCtx *ctx,
-                              const char *cmdname,
-                              const char *fmt,
-                              ...);
+                               const char *cmdname,
+                               const char *fmt,
+                               ...);
 
 **Available since:** 4.0.0
 
@@ -1863,8 +1923,8 @@ Otherwise, by default, the command will be propagated in both channels.
 #### Note about calling this function from a thread safe context:
 
 Normally when you call this function from the callback implementing a
-module command, or any other callback provided by the Valkey Module API,
-Valkey will accumulate all the calls to this function in the context of
+module command, or any other callback provided by the Module API,
+The server will accumulate all the calls to this function in the context of
 the callback, and will propagate all the commands wrapped in a MULTI/EXEC
 transaction. However when calling this function from a threaded safe context
 that can live an undefined amount of time, and can be locked/unlocked in
@@ -1933,7 +1993,7 @@ is actually happening in the context of AOF loading, using this macro:
 ### `ValkeyModule_GetClientUserNameById`
 
     ValkeyModuleString *ValkeyModule_GetClientUserNameById(ValkeyModuleCtx *ctx,
-                                                         uint64_t id);
+                                                           uint64_t id);
 
 **Available since:** 6.2.1
 
@@ -1997,7 +2057,7 @@ returned:
 ### `ValkeyModule_GetClientNameById`
 
     ValkeyModuleString *ValkeyModule_GetClientNameById(ValkeyModuleCtx *ctx,
-                                                     uint64_t id);
+                                                       uint64_t id);
 
 **Available since:** 7.0.3
 
@@ -2028,8 +2088,8 @@ and errno is set as follows:
 ### `ValkeyModule_PublishMessage`
 
     int ValkeyModule_PublishMessage(ValkeyModuleCtx *ctx,
-                                   ValkeyModuleString *channel,
-                                   ValkeyModuleString *message);
+                                    ValkeyModuleString *channel,
+                                    ValkeyModuleString *message);
 
 **Available since:** 6.0.0
 
@@ -2040,8 +2100,8 @@ Publish a message to subscribers (see PUBLISH command).
 ### `ValkeyModule_PublishMessageShard`
 
     int ValkeyModule_PublishMessageShard(ValkeyModuleCtx *ctx,
-                                        ValkeyModuleString *channel,
-                                        ValkeyModuleString *message);
+                                         ValkeyModuleString *channel,
+                                         ValkeyModuleString *message);
 
 **Available since:** 7.0.0
 
@@ -2067,7 +2127,7 @@ Return the currently selected DB.
 
 Return the current context's flags. The flags provide information on the
 current request context (whether the client is a Lua script or in a MULTI),
-and about the Valkey instance in general, i.e replication and persistence.
+and about the instance in general, i.e replication and persistence.
 
 It is possible to call this function even with a NULL context, however
 in this case the following flags will not be reported:
@@ -2083,15 +2143,15 @@ Available flags and their meaning:
  * `VALKEYMODULE_CTX_FLAGS_REPLICATED`: The command was sent over the replication
    link by the MASTER
 
- * `VALKEYMODULE_CTX_FLAGS_MASTER`: The Valkey instance is a master
+ * `VALKEYMODULE_CTX_FLAGS_PRIMARY`: The instance is a primary
 
- * `VALKEYMODULE_CTX_FLAGS_SLAVE`: The Valkey instance is a slave
+ * `VALKEYMODULE_CTX_FLAGS_REPLICA`: The instance is a replica
 
- * `VALKEYMODULE_CTX_FLAGS_READONLY`: The Valkey instance is read-only
+ * `VALKEYMODULE_CTX_FLAGS_READONLY`: The instance is read-only
 
- * `VALKEYMODULE_CTX_FLAGS_CLUSTER`: The Valkey instance is in cluster mode
+ * `VALKEYMODULE_CTX_FLAGS_CLUSTER`: The instance is in cluster mode
 
- * `VALKEYMODULE_CTX_FLAGS_AOF`: The Valkey instance has AOF enabled
+ * `VALKEYMODULE_CTX_FLAGS_AOF`: The instance has AOF enabled
 
  * `VALKEYMODULE_CTX_FLAGS_RDB`: The instance has RDB enabled
 
@@ -2100,7 +2160,7 @@ Available flags and their meaning:
  * `VALKEYMODULE_CTX_FLAGS_EVICT`:  Maxmemory is set and has an eviction
    policy that may delete keys
 
- * `VALKEYMODULE_CTX_FLAGS_OOM`: Valkey is out of memory according to the
+ * `VALKEYMODULE_CTX_FLAGS_OOM`: The server is out of memory according to the
    maxmemory setting.
 
  * `VALKEYMODULE_CTX_FLAGS_OOM_WARNING`: Less than 25% of memory remains before
@@ -2126,13 +2186,13 @@ Available flags and their meaning:
  * `VALKEYMODULE_CTX_FLAGS_MULTI_DIRTY`: The next EXEC will fail due to dirty
                                       CAS (touched keys).
 
- * `VALKEYMODULE_CTX_FLAGS_IS_CHILD`: Valkey is currently running inside
+ * `VALKEYMODULE_CTX_FLAGS_IS_CHILD`: The server is currently running inside
                                    background child process.
 
  * `VALKEYMODULE_CTX_FLAGS_RESP3`: Indicate the that client attached to this
                                 context is using RESP3.
 
- * `VALKEYMODULE_CTX_FLAGS_SERVER_STARTUP`: The Valkey instance is starting
+ * `VALKEYMODULE_CTX_FLAGS_SERVER_STARTUP`: The instance is starting
 
 <span id="ValkeyModule_AvoidReplicaTraffic"></span>
 
@@ -2143,7 +2203,7 @@ Available flags and their meaning:
 **Available since:** 6.0.0
 
 Returns true if a client sent the CLIENT PAUSE command to the server or
-if Valkey Cluster does a manual failover, pausing the clients.
+if the Cluster does a manual failover, pausing the clients.
 This is needed when we have a master with replicas, and want to write,
 without adding further data to the replication channel, that the replicas
 replication offset, match the one of the master. When this happens, it is
@@ -2174,7 +2234,7 @@ Change the currently selected DB. Returns an error if the id
 is out of range.
 
 Note that the client will retain the currently selected DB even after
-the Valkey command implemented by the module calling this function
+the command implemented by the module calling this function
 returns.
 
 If the module command wishes to change something in a different DB and
@@ -2200,12 +2260,12 @@ calling [`ValkeyModule_CloseKey`](#ValkeyModule_CloseKey) on the opened key.
 ### `ValkeyModule_OpenKey`
 
     ValkeyModuleKey *ValkeyModule_OpenKey(ValkeyModuleCtx *ctx,
-                                        robj *keyname,
-                                        int mode);
+                                          robj *keyname,
+                                          int mode);
 
 **Available since:** 4.0.0
 
-Return a handle representing a Valkey key, so that it is possible
+Return a handle representing a key, so that it is possible
 to call other APIs with the key handle as argument to perform
 operations on the key.
 
@@ -2238,7 +2298,7 @@ Extra flags that can be pass to the API under the mode argument:
 
 Returns the full OpenKey modes mask, using the return value
 the module can check if a certain set of OpenKey modes are supported
-by the valkey server version in use.
+by the server version in use.
 Example:
 
        int supportedMode = ValkeyModule_GetOpenKeyModesAll();
@@ -2553,8 +2613,8 @@ See also [`ValkeyModule_ValueLength()`](#ValkeyModule_ValueLength), which return
 ### `ValkeyModule_ListPush`
 
     int ValkeyModule_ListPush(ValkeyModuleKey *key,
-                             int where,
-                             ValkeyModuleString *ele);
+                              int where,
+                              ValkeyModuleString *ele);
 
 **Available since:** 4.0.0
 
@@ -2621,8 +2681,8 @@ When no value is found at the given key and index, NULL is returned and
 ### `ValkeyModule_ListSet`
 
     int ValkeyModule_ListSet(ValkeyModuleKey *key,
-                            long index,
-                            ValkeyModuleString *value);
+                             long index,
+                             ValkeyModuleString *value);
 
 **Available since:** 7.0.0
 
@@ -2646,8 +2706,8 @@ returned and `errno` is set as follows:
 ### `ValkeyModule_ListInsert`
 
     int ValkeyModule_ListInsert(ValkeyModuleKey *key,
-                               long index,
-                               ValkeyModuleString *value);
+                                long index,
+                                ValkeyModuleString *value);
 
 **Available since:** 7.0.0
 
@@ -2696,9 +2756,9 @@ See also [`ValkeyModule_ValueLength()`](#ValkeyModule_ValueLength), which return
 ### `ValkeyModule_ZsetAdd`
 
     int ValkeyModule_ZsetAdd(ValkeyModuleKey *key,
-                            double score,
-                            ValkeyModuleString *ele,
-                            int *flagsptr);
+                             double score,
+                             ValkeyModuleString *ele,
+                             int *flagsptr);
 
 **Available since:** 4.0.0
 
@@ -2739,10 +2799,10 @@ On success the function returns `VALKEYMODULE_OK`. On the following errors
 ### `ValkeyModule_ZsetIncrby`
 
     int ValkeyModule_ZsetIncrby(ValkeyModuleKey *key,
-                               double score,
-                               ValkeyModuleString *ele,
-                               int *flagsptr,
-                               double *newscore);
+                                double score,
+                                ValkeyModuleString *ele,
+                                int *flagsptr,
+                                double *newscore);
 
 **Available since:** 4.0.0
 
@@ -2765,8 +2825,8 @@ is returned.
 ### `ValkeyModule_ZsetRem`
 
     int ValkeyModule_ZsetRem(ValkeyModuleKey *key,
-                            ValkeyModuleString *ele,
-                            int *deleted);
+                             ValkeyModuleString *ele,
+                             int *deleted);
 
 **Available since:** 4.0.0
 
@@ -2794,8 +2854,8 @@ Empty keys will be handled correctly by doing nothing.
 ### `ValkeyModule_ZsetScore`
 
     int ValkeyModule_ZsetScore(ValkeyModuleKey *key,
-                              ValkeyModuleString *ele,
-                              double *score);
+                               ValkeyModuleString *ele,
+                               double *score);
 
 **Available since:** 4.0.0
 
@@ -2836,10 +2896,10 @@ Return the "End of range" flag value to signal the end of the iteration.
 ### `ValkeyModule_ZsetFirstInScoreRange`
 
     int ValkeyModule_ZsetFirstInScoreRange(ValkeyModuleKey *key,
-                                          double min,
-                                          double max,
-                                          int minex,
-                                          int maxex);
+                                           double min,
+                                           double max,
+                                           int minex,
+                                           int maxex);
 
 **Available since:** 4.0.0
 
@@ -2864,10 +2924,10 @@ inclusive.
 ### `ValkeyModule_ZsetLastInScoreRange`
 
     int ValkeyModule_ZsetLastInScoreRange(ValkeyModuleKey *key,
-                                         double min,
-                                         double max,
-                                         int minex,
-                                         int maxex);
+                                          double min,
+                                          double max,
+                                          int minex,
+                                          int maxex);
 
 **Available since:** 4.0.0
 
@@ -2879,8 +2939,8 @@ the range is selected for the start of the iteration instead.
 ### `ValkeyModule_ZsetFirstInLexRange`
 
     int ValkeyModule_ZsetFirstInLexRange(ValkeyModuleKey *key,
-                                        ValkeyModuleString *min,
-                                        ValkeyModuleString *max);
+                                         ValkeyModuleString *min,
+                                         ValkeyModuleString *max);
 
 **Available since:** 4.0.0
 
@@ -2902,8 +2962,8 @@ ASAP after the iterator is setup.
 ### `ValkeyModule_ZsetLastInLexRange`
 
     int ValkeyModule_ZsetLastInLexRange(ValkeyModuleKey *key,
-                                       ValkeyModuleString *min,
-                                       ValkeyModuleString *max);
+                                        ValkeyModuleString *min,
+                                        ValkeyModuleString *max);
 
 **Available since:** 4.0.0
 
@@ -2915,7 +2975,7 @@ the range is selected for the start of the iteration instead.
 ### `ValkeyModule_ZsetRangeCurrentElement`
 
     ValkeyModuleString *ValkeyModule_ZsetRangeCurrentElement(ValkeyModuleKey *key,
-                                                           double *score);
+                                                             double *score);
 
 **Available since:** 4.0.0
 
@@ -2994,7 +3054,7 @@ set to `VALKEYMODULE_HASH_NONE` if no special behavior is needed.
                               strings instead of ValkeyModuleString objects.
     VALKEYMODULE_HASH_COUNT_ALL: Include the number of inserted fields in the
                                 returned number, in addition to the number of
-                                updated and deleted fields. (Added in Valkey
+                                updated and deleted fields. (Added in Redis OSS
                                 6.2.)
 
 Unless NX is specified, the command overwrites the old field value with
@@ -3026,7 +3086,7 @@ If the return value is zero, `errno` is set (since Redis OSS 6.2) as follows:
 
 NOTICE: The return value semantics of this function are very different
 between Redis OSS 6.2 and older versions. Modules that use it should determine
-the Redis OSS version and handle it accordingly.
+the server version and handle it accordingly.
 
 <span id="ValkeyModule_HashGet"></span>
 
@@ -3099,10 +3159,10 @@ conversion functions [`ValkeyModule_StringToStreamID()`](#ValkeyModule_StringToS
 ### `ValkeyModule_StreamAdd`
 
     int ValkeyModule_StreamAdd(ValkeyModuleKey *key,
-                              int flags,
-                              ValkeyModuleStreamID *id,
-                              ValkeyModuleString **argv,
-                              long numfields);
+                               int flags,
+                               ValkeyModuleStreamID *id,
+                               ValkeyModuleString **argv,
+                               long numfields);
 
 **Available since:** 6.2.0
 
@@ -3161,9 +3221,9 @@ iterating using a stream iterator.
 ### `ValkeyModule_StreamIteratorStart`
 
     int ValkeyModule_StreamIteratorStart(ValkeyModuleKey *key,
-                                        int flags,
-                                        ValkeyModuleStreamID *start,
-                                        ValkeyModuleStreamID *end);
+                                         int flags,
+                                         ValkeyModuleStreamID *start,
+                                         ValkeyModuleStreamID *end);
 
 **Available since:** 6.2.0
 
@@ -3241,8 +3301,8 @@ and `errno` is set as follows:
 ### `ValkeyModule_StreamIteratorNextID`
 
     int ValkeyModule_StreamIteratorNextID(ValkeyModuleKey *key,
-                                         ValkeyModuleStreamID *id,
-                                         long *numfields);
+                                          ValkeyModuleStreamID *id,
+                                          long *numfields);
 
 **Available since:** 6.2.0
 
@@ -3276,8 +3336,8 @@ See the example at [`ValkeyModule_StreamIteratorStart()`](#ValkeyModule_StreamIt
 ### `ValkeyModule_StreamIteratorNextField`
 
     int ValkeyModule_StreamIteratorNextField(ValkeyModuleKey *key,
-                                            ValkeyModuleString **field_ptr,
-                                            ValkeyModuleString **value_ptr);
+                                             ValkeyModuleString **field_ptr,
+                                             ValkeyModuleString **value_ptr);
 
 **Available since:** 6.2.0
 
@@ -3332,8 +3392,8 @@ and `errno` is set as follows:
 ### `ValkeyModule_StreamTrimByLength`
 
     long long ValkeyModule_StreamTrimByLength(ValkeyModuleKey *key,
-                                             int flags,
-                                             long long length);
+                                              int flags,
+                                              long long length);
 
 **Available since:** 6.2.0
 
@@ -3357,8 +3417,8 @@ returned and `errno` is set as follows:
 ### `ValkeyModule_StreamTrimByID`
 
     long long ValkeyModule_StreamTrimByID(ValkeyModuleKey *key,
-                                         int flags,
-                                         ValkeyModuleStreamID *id);
+                                          int flags,
+                                          ValkeyModuleStreamID *id);
 
 **Available since:** 6.2.0
 
@@ -3377,11 +3437,11 @@ returned and `errno` is set as follows:
 - ENOTSUP if the key is empty or of a type other than stream
 - EBADF if the key is not opened for writing
 
-<span id="section-calling-valkey-commands-from-modules"></span>
+<span id="section-calling-commands-from-modules"></span>
 
-## Calling Valkey commands from modules
+## Calling commands from modules
 
-[`ValkeyModule_Call()`](#ValkeyModule_Call) sends a command to Valkey. The remaining functions handle the reply.
+[`ValkeyModule_Call()`](#ValkeyModule_Call) sends a command to the server. The remaining functions handle the reply.
 
 <span id="ValkeyModule_FreeCallReply"></span>
 
@@ -3434,7 +3494,7 @@ Return the reply type length, where applicable.
 ### `ValkeyModule_CallReplyArrayElement`
 
     ValkeyModuleCallReply *ValkeyModule_CallReplyArrayElement(ValkeyModuleCallReply *reply,
-                                                            size_t idx);
+                                                              size_t idx);
 
 **Available since:** 4.0.0
 
@@ -3466,7 +3526,7 @@ Return the double value of a double reply.
 ### `ValkeyModule_CallReplyBigNumber`
 
     const char *ValkeyModule_CallReplyBigNumber(ValkeyModuleCallReply *reply,
-                                               size_t *len);
+                                                size_t *len);
 
 **Available since:** 7.0.0
 
@@ -3477,8 +3537,8 @@ Return the big number value of a big number reply.
 ### `ValkeyModule_CallReplyVerbatim`
 
     const char *ValkeyModule_CallReplyVerbatim(ValkeyModuleCallReply *reply,
-                                              size_t *len,
-                                              const char **format);
+                                               size_t *len,
+                                               const char **format);
 
 **Available since:** 7.0.0
 
@@ -3500,7 +3560,7 @@ Return the Boolean value of a Boolean reply.
 ### `ValkeyModule_CallReplySetElement`
 
     ValkeyModuleCallReply *ValkeyModule_CallReplySetElement(ValkeyModuleCallReply *reply,
-                                                          size_t idx);
+                                                            size_t idx);
 
 **Available since:** 7.0.0
 
@@ -3512,9 +3572,9 @@ if the reply type is wrong or the index is out of range.
 ### `ValkeyModule_CallReplyMapElement`
 
     int ValkeyModule_CallReplyMapElement(ValkeyModuleCallReply *reply,
-                                        size_t idx,
-                                        ValkeyModuleCallReply **key,
-                                        ValkeyModuleCallReply **val);
+                                         size_t idx,
+                                         ValkeyModuleCallReply **key,
+                                         ValkeyModuleCallReply **val);
 
 **Available since:** 7.0.0
 
@@ -3542,9 +3602,9 @@ Return the attribute of the given reply, or NULL if no attribute exists.
 ### `ValkeyModule_CallReplyAttributeElement`
 
     int ValkeyModule_CallReplyAttributeElement(ValkeyModuleCallReply *reply,
-                                              size_t idx,
-                                              ValkeyModuleCallReply **key,
-                                              ValkeyModuleCallReply **val);
+                                               size_t idx,
+                                               ValkeyModuleCallReply **key,
+                                               ValkeyModuleCallReply **val);
 
 **Available since:** 7.0.0
 
@@ -3562,8 +3622,8 @@ NULL if not required.
 ### `ValkeyModule_CallReplyPromiseSetUnblockHandler`
 
     void ValkeyModule_CallReplyPromiseSetUnblockHandler(ValkeyModuleCallReply *reply,
-                                                       ValkeyModuleOnUnblocked on_unblock,
-                                                       void *private_data);
+                                                        ValkeyModuleOnUnblocked on_unblock,
+                                                        void *private_data);
 
 **Available since:** 7.2.0
 
@@ -3575,7 +3635,7 @@ The given reply must be of promise type (`VALKEYMODULE_REPLY_PROMISE`).
 ### `ValkeyModule_CallReplyPromiseAbort`
 
     int ValkeyModule_CallReplyPromiseAbort(ValkeyModuleCallReply *reply,
-                                          void **private_data);
+                                           void **private_data);
 
 **Available since:** 7.2.0
 
@@ -3589,14 +3649,14 @@ so the caller will be able to release the private data.
 If the execution was aborted successfully, it is promised that the unblock handler will not be called.
 That said, it is possible that the abort operation will successes but the operation will still continue.
 This can happened if, for example, a module implements some blocking command and does not respect the
-disconnect callback. For pure Valkey commands this can not happened.
+disconnect callback. For server-provided commands this can not happened.
 
 <span id="ValkeyModule_CallReplyStringPtr"></span>
 
 ### `ValkeyModule_CallReplyStringPtr`
 
     const char *ValkeyModule_CallReplyStringPtr(ValkeyModuleCallReply *reply,
-                                               size_t *len);
+                                                size_t *len);
 
 **Available since:** 4.0.0
 
@@ -3618,7 +3678,7 @@ integer. Otherwise (wrong reply type) return NULL.
 ### `ValkeyModule_SetContextUser`
 
     void ValkeyModule_SetContextUser(ValkeyModuleCtx *ctx,
-                                    const ValkeyModuleUser *user);
+                                     const ValkeyModuleUser *user);
 
 **Available since:** 7.0.6
 
@@ -3629,15 +3689,15 @@ Modifies the user that [`ValkeyModule_Call`](#ValkeyModule_Call) will use (e.g. 
 ### `ValkeyModule_Call`
 
     ValkeyModuleCallReply *ValkeyModule_Call(ValkeyModuleCtx *ctx,
-                                           const char *cmdname,
-                                           const char *fmt,
-                                           ...);
+                                             const char *cmdname,
+                                             const char *fmt,
+                                             ...);
 
 **Available since:** 4.0.0
 
-Exported API to call any Valkey command from modules.
+Exported API to call any command from modules.
 
-* **cmdname**: The Valkey command to call.
+* **cmdname**: The command to call.
 * **fmt**: A format specifier string for the command's arguments. Each
   of the arguments should be specified by a valid type specification. The
   format specifier can also contain the modifiers `!`, `A`, `3` and `R` which
@@ -3649,7 +3709,7 @@ Exported API to call any Valkey command from modules.
     * `l` -- The argument is a `long long` integer.
     * `s` -- The argument is a ValkeyModuleString.
     * `v` -- The argument(s) is a vector of ValkeyModuleString.
-    * `!` -- Sends the Valkey command and its arguments to replicas and AOF.
+    * `!` -- Sends the command and its arguments to replicas and AOF.
     * `A` -- Suppress AOF propagation, send only to replicas (requires `!`).
     * `R` -- Suppress replicas propagation, send only to AOF (requires `!`).
     * `3` -- Return a RESP3 reply. This will change the command reply.
@@ -3667,7 +3727,7 @@ Exported API to call any Valkey command from modules.
              the command to run as the determined user, so that any future user
              dependent activity, such as ACL checks within scripts will proceed as
              expected.
-             Otherwise, the command will run as the Valkey unrestricted user.
+             Otherwise, the command will run as the unrestricted user.
     * `S` -- Run the command in a script mode, this means that it will raise
              an error if a command which are not allowed inside a script
              (flagged with the `deny-script` flag) is invoked (like SHUTDOWN).
@@ -3690,7 +3750,7 @@ Exported API to call any Valkey command from modules.
              The module can use this reply object to set a handler which will be called when
              the command gets unblocked using ValkeyModule_CallReplyPromiseSetUnblockHandler.
              The handler must be set immediately after the command invocation (without releasing
-             the Valkey lock in between). If the handler is not set, the blocking command will
+             the lock in between). If the handler is not set, the blocking command will
              still continue its execution but the reply will be ignored (fire and forget),
              notice that this is dangerous in case of role change, as explained below.
              The module can use ValkeyModule_CallReplyPromiseAbort to abort the command invocation
@@ -3698,21 +3758,21 @@ Exported API to call any Valkey command from modules.
              details). It is also the module's responsibility to abort the execution on role change, either by using
              server event (to get notified when the instance becomes a replica) or relying on the disconnect
              callback of the original client. Failing to do so can result in a write operation on a replica.
-             Unlike other call replies, promise call reply **must** be freed while the Valkey GIL is locked.
+             Unlike other call replies, promise call reply **must** be freed while the GIL is locked.
              Notice that on unblocking, the only promise is that the unblock handler will be called,
              If the blocking ValkeyModule_Call caused the module to also block some real client (using ValkeyModule_BlockClient),
              it is the module responsibility to unblock this client on the unblock handler.
              On the unblock handler it is only allowed to perform the following:
-             * Calling additional Valkey commands using ValkeyModule_Call
+             * Calling additional commands using ValkeyModule_Call
              * Open keys using ValkeyModule_OpenKey
              * Replicate data to the replica or AOF
 
-             Specifically, it is not allowed to call any Valkey module API which are client related such as:
+             Specifically, it is not allowed to call any module API which are client related such as:
              * ValkeyModule_Reply* API's
              * ValkeyModule_BlockClient
              * ValkeyModule_GetCurrentUserName
 
-* **...**: The actual arguments to the Valkey command.
+* **...**: The actual arguments to the command.
 
 On success a `ValkeyModuleCallReply` object is returned, otherwise
 NULL is returned and errno is set to the following values:
@@ -3744,7 +3804,7 @@ This API is documented here: [https://valkey.io/topics/modules-intro](https://va
 ### `ValkeyModule_CallReplyProto`
 
     const char *ValkeyModule_CallReplyProto(ValkeyModuleCallReply *reply,
-                                           size_t *len);
+                                            size_t *len);
 
 **Available since:** 4.0.0
 
@@ -3756,8 +3816,8 @@ that returned the reply object.
 ## Modules data types
 
 When String DMA or using existing data structures is not enough, it is
-possible to create new data types from scratch and export them to
-Valkey. The module must provide a set of callbacks for handling the
+possible to create new data types from scratch.
+The module must provide a set of callbacks for handling the
 new values exported (for example in order to provide RDB saving/loading,
 AOF rewrite, and so forth). In this section we define this API.
 
@@ -3766,9 +3826,9 @@ AOF rewrite, and so forth). In this section we define this API.
 ### `ValkeyModule_CreateDataType`
 
     moduleType *ValkeyModule_CreateDataType(ValkeyModuleCtx *ctx,
-                                           const char *name,
-                                           int encver,
-                                           void *typemethods_ptr);
+                                            const char *name,
+                                            int encver,
+                                            void *typemethods_ptr);
 
 **Available since:** 4.0.0
 
@@ -3776,7 +3836,7 @@ Register a new data type exported by the module. The parameters are the
 following. Please for in depth documentation check the modules API
 documentation, especially [https://valkey.io/topics/modules-native-types](https://valkey.io/topics/modules-native-types).
 
-* **name**: A 9 characters data type name that MUST be unique in the Valkey
+* **name**: A 9 characters data type name that MUST be unique in the
   Modules ecosystem. Be creative... and there will be no collisions. Use
   the charset A-Z a-z 9-0, plus the two "-_" characters. A good
   idea is to use, for example `<typename>-<vendor>`. For example
@@ -3836,7 +3896,7 @@ documentation, especially [https://valkey.io/topics/modules-native-types](https:
   freeing the value. for example: how many pointers are gonna be freed. Note that if it 
   returns 0, we'll always do an async free.
 * **unlink**: A callback function pointer that used to notifies the module that the key has 
-  been removed from the DB by valkey, and may soon be freed by a background thread. Note that 
+  been removed from the DB by the server, and may soon be freed by a background thread. Note that 
   it won't be called on FLUSHALL/FLUSHDB (both sync and async), and the module can use the 
   `ValkeyModuleEvent_FlushDB` to hook into that.
 * **copy**: A callback function pointer that is used to make a copy of the specified key.
@@ -3880,7 +3940,7 @@ happens to be pretty lame as well.
 If [`ValkeyModule_CreateDataType()`](#ValkeyModule_CreateDataType) is called outside of `ValkeyModule_OnLoad()` function,
 there is already a module registering a type with the same name,
 or if the module name or encver is invalid, NULL is returned.
-Otherwise the new type is registered into Valkey, and a reference of
+Otherwise the new type is registered into the server, and a reference of
 type `ValkeyModuleType` is returned: the caller of the function should store
 this reference into a global variable to make future use of it in the
 modules type API, since a single module may register multiple types.
@@ -3898,8 +3958,8 @@ Example code fragment:
 ### `ValkeyModule_ModuleTypeSetValue`
 
     int ValkeyModule_ModuleTypeSetValue(ValkeyModuleKey *key,
-                                       moduleType *mt,
-                                       void *value);
+                                        moduleType *mt,
+                                        void *value);
 
 **Available since:** 4.0.0
 
@@ -4017,8 +4077,8 @@ the RDB file.
 ### `ValkeyModule_SaveStringBuffer`
 
     void ValkeyModule_SaveStringBuffer(ValkeyModuleIO *io,
-                                      const char *str,
-                                      size_t len);
+                                       const char *str,
+                                       size_t len);
 
 **Available since:** 4.0.0
 
@@ -4137,8 +4197,8 @@ long double value saved by [`ValkeyModule_SaveLongDouble()`](#ValkeyModule_SaveL
 ### `ValkeyModule_DigestAddStringBuffer`
 
     void ValkeyModule_DigestAddStringBuffer(ValkeyModuleDigest *md,
-                                           const char *ele,
-                                           size_t len);
+                                            const char *ele,
+                                            size_t len);
 
 **Available since:** 4.0.0
 
@@ -4146,11 +4206,11 @@ Add a new element to the digest. This function can be called multiple times
 one element after the other, for all the elements that constitute a given
 data structure. The function call must be followed by the call to
 [`ValkeyModule_DigestEndSequence`](#ValkeyModule_DigestEndSequence) eventually, when all the elements that are
-always in a given order are added. See the Valkey Modules data types
-documentation for more info. However this is a quick example that uses Valkey
-data types as an example.
+always in a given order are added. See the Modules data types
+documentation for more info. However this is a quick example that uses the
+Set, Hash and List data types as an example.
 
-To add a sequence of unordered elements (for example in the case of a Valkey
+To add a sequence of unordered elements (for example in the case of a
 Set), the pattern to use is:
 
     foreach element {
@@ -4170,7 +4230,7 @@ use:
     }
 
 Because the key and value will be always in the above order, while instead
-the single key-value pairs, can appear in any position into a Hash.
+the single key-value pairs, can appear in any position into a hash.
 
 A list of ordered elements would be implemented with:
 
@@ -4205,8 +4265,8 @@ See the documentation for `ValkeyModule_DigestAddElement()`.
 ### `ValkeyModule_LoadDataTypeFromStringEncver`
 
     void *ValkeyModule_LoadDataTypeFromStringEncver(const ValkeyModuleString *str,
-                                                   const moduleType *mt,
-                                                   int encver);
+                                                    const moduleType *mt,
+                                                    int encver);
 
 **Available since:** 7.0.0
 
@@ -4215,13 +4275,13 @@ from string 'str' and return a newly allocated value, or NULL if decoding failed
 
 This call basically reuses the '`rdb_load`' callback which module data types
 implement in order to allow a module to arbitrarily serialize/de-serialize
-keys, similar to how the Valkey 'DUMP' and 'RESTORE' commands are implemented.
+keys, similar to how the 'DUMP' and 'RESTORE' commands are implemented.
 
 Modules should generally use the `VALKEYMODULE_OPTIONS_HANDLE_IO_ERRORS` flag and
 make sure the de-serialization code properly checks and handles IO errors
 (freeing allocated buffers and returning a NULL).
 
-If this is NOT done, Valkey will handle corrupted (or just truncated) serialized
+If this is NOT done, the server will handle corrupted (or just truncated) serialized
 data by producing an error message and terminating the process.
 
 <span id="ValkeyModule_LoadDataTypeFromString"></span>
@@ -4229,7 +4289,7 @@ data by producing an error message and terminating the process.
 ### `ValkeyModule_LoadDataTypeFromString`
 
     void *ValkeyModule_LoadDataTypeFromString(const ValkeyModuleString *str,
-                                             const moduleType *mt);
+                                              const moduleType *mt);
 
 **Available since:** 6.0.0
 
@@ -4241,8 +4301,8 @@ for backward compatibility.
 ### `ValkeyModule_SaveDataTypeToString`
 
     ValkeyModuleString *ValkeyModule_SaveDataTypeToString(ValkeyModuleCtx *ctx,
-                                                        void *data,
-                                                        const moduleType *mt);
+                                                          void *data,
+                                                          const moduleType *mt);
 
 **Available since:** 6.0.0
 
@@ -4251,7 +4311,7 @@ as a newly allocated `ValkeyModuleString`.
 
 This call basically reuses the '`rdb_save`' callback which module data types
 implement in order to allow a module to arbitrarily serialize/de-serialize
-keys, similar to how the Valkey 'DUMP' and 'RESTORE' commands are implemented.
+keys, similar to how the 'DUMP' and 'RESTORE' commands are implemented.
 
 <span id="ValkeyModule_GetKeyNameFromDigest"></span>
 
@@ -4282,9 +4342,9 @@ Returns the database id of the key currently being processed.
 ### `ValkeyModule_EmitAOF`
 
     void ValkeyModule_EmitAOF(ValkeyModuleIO *io,
-                             const char *cmdname,
-                             const char *fmt,
-                             ...);
+                              const char *cmdname,
+                              const char *fmt,
+                              ...);
 
 **Available since:** 4.0.0
 
@@ -4292,7 +4352,7 @@ Emits a command into the AOF during the AOF rewriting process. This function
 is only called in the context of the `aof_rewrite` method of data types exported
 by a module. The command works exactly like [`ValkeyModule_Call()`](#ValkeyModule_Call) in the way
 the parameters are passed, but it does not return anything as the error
-handling is performed by Valkey itself.
+handling is performed by the server itself.
 
 <span id="section-io-context-handling"></span>
 
@@ -4349,13 +4409,13 @@ There is no guarantee that this info is always available, so this may return -1.
 ### `ValkeyModule_Log`
 
     void ValkeyModule_Log(ValkeyModuleCtx *ctx,
-                         const char *levelstr,
-                         const char *fmt,
-                         ...);
+                          const char *levelstr,
+                          const char *fmt,
+                          ...);
 
 **Available since:** 4.0.0
 
-Produces a log message to the standard Valkey log, the format accepts
+Produces a log message to the standard server log, the format accepts
 printf-alike specifiers, while level is a string describing the log
 level to use when emitting the log, and must be one of the following:
 
@@ -4378,9 +4438,9 @@ will be used instead of the module name.
 ### `ValkeyModule_LogIOError`
 
     void ValkeyModule_LogIOError(ValkeyModuleIO *io,
-                                const char *levelstr,
-                                const char *fmt,
-                                ...);
+                                 const char *levelstr,
+                                 const char *fmt,
+                                 ...);
 
 **Available since:** 4.0.0
 
@@ -4398,13 +4458,13 @@ critical reason.
 
 **Available since:** 6.0.0
 
-Valkey-like assert function.
+Valkey assert function.
 
 The macro `ValkeyModule_Assert(expression)` is recommended, rather than
 calling this function directly.
 
 A failed assertion will shut down the server and produce logging information
-that looks identical to information generated by Valkey itself.
+that looks identical to information generated by the server itself.
 
 <span id="ValkeyModule_LatencyAddSample"></span>
 
@@ -4430,7 +4490,7 @@ For a guide about blocking commands in modules, see
 ### `ValkeyModule_RegisterAuthCallback`
 
     void ValkeyModule_RegisterAuthCallback(ValkeyModuleCtx *ctx,
-                                          ValkeyModuleAuthCallback cb);
+                                           ValkeyModuleAuthCallback cb);
 
 **Available since:** 7.2.0
 
@@ -4492,8 +4552,8 @@ The following is an example of how non-blocking module based authentication can 
 ### `ValkeyModule_BlockClient`
 
     ValkeyModuleBlockedClient *ValkeyModule_BlockClient(ValkeyModuleCtx *ctx,
-                                                      ValkeyModuleCmdFunc reply_callback,
-                                                      ;
+                                                        ValkeyModuleCmdFunc reply_callback,
+                                                        ;
 
 **Available since:** 4.0.0
 
@@ -4541,8 +4601,8 @@ or multiple times within the blocking command background work.
 ### `ValkeyModule_BlockClientOnAuth`
 
     ValkeyModuleBlockedClient *ValkeyModule_BlockClientOnAuth(ValkeyModuleCtx *ctx,
-                                                            ValkeyModuleAuthCallback reply_callback,
-                                                            ;
+                                                              ValkeyModuleAuthCallback reply_callback,
+                                                              ;
 
 **Available since:** 7.2.0
 
@@ -4566,7 +4626,7 @@ Get the private data that was previusely set on a blocked client
 ### `ValkeyModule_BlockClientSetPrivateData`
 
     void ValkeyModule_BlockClientSetPrivateData(ValkeyModuleBlockedClient *blocked_client,
-                                               void *private_data);
+                                                void *private_data);
 
 **Available since:** 7.2.0
 
@@ -4577,16 +4637,16 @@ Set private data on a blocked client
 ### `ValkeyModule_BlockClientOnKeys`
 
     ValkeyModuleBlockedClient *ValkeyModule_BlockClientOnKeys(ValkeyModuleCtx *ctx,
-                                                            ValkeyModuleCmdFunc reply_callback,
-                                                            ;
+                                                              ValkeyModuleCmdFunc reply_callback,
+                                                              ;
 
 **Available since:** 6.0.0
 
 This call is similar to [`ValkeyModule_BlockClient()`](#ValkeyModule_BlockClient), however in this case we
-don't just block the client, but also ask Valkey to unblock it automatically
+don't just block the client, but also ask the server to unblock it automatically
 once certain keys become "ready", that is, contain more data.
 
-Basically this is similar to what a typical Valkey command usually does,
+Basically this is similar to what a typical command usually does,
 like BLPOP or BZPOPMAX: the client blocks if it cannot be served ASAP,
 and later when the key receives new data (a list push for instance), the
 client is unblocked and served.
@@ -4625,7 +4685,7 @@ we pass the private data directly when blocking the client: it will
 be accessible later in the reply callback. Normally when blocking with
 [`ValkeyModule_BlockClient()`](#ValkeyModule_BlockClient) the private data to reply to the client is
 passed when calling [`ValkeyModule_UnblockClient()`](#ValkeyModule_UnblockClient) but here the unblocking
-is performed by Valkey itself, so we need to have some private data before
+is performed by the server itself, so we need to have some private data before
 hand. The private data is used to store any information about the specific
 unblocking operation that you are implementing. Such information will be
 freed using the `free_privdata` callback provided by the user.
@@ -4645,8 +4705,8 @@ Note: Under normal circumstances [`ValkeyModule_UnblockClient`](#ValkeyModule_Un
 ### `ValkeyModule_BlockClientOnKeysWithFlags`
 
     ValkeyModuleBlockedClient *ValkeyModule_BlockClientOnKeysWithFlags(ValkeyModuleCtx *ctx,
-                                                                     ValkeyModuleCmdFunc reply_callback,
-                                                                     ;
+                                                                       ValkeyModuleCmdFunc reply_callback,
+                                                                       ;
 
 **Available since:** 7.2.0
 
@@ -4663,7 +4723,8 @@ The flags is a bit mask of these:
 
 ### `ValkeyModule_SignalKeyAsReady`
 
-    void ValkeyModule_SignalKeyAsReady(ValkeyModuleCtx *ctx, ValkeyModuleString *key);
+    void ValkeyModule_SignalKeyAsReady(ValkeyModuleCtx *ctx,
+                                       ValkeyModuleString *key);
 
 **Available since:** 6.0.0
 
@@ -4715,7 +4776,7 @@ without firing any callback.
 ### `ValkeyModule_SetDisconnectCallback`
 
     void ValkeyModule_SetDisconnectCallback(ValkeyModuleBlockedClient *bc,
-                                           ValkeyModuleDisconnectFunc callback);
+                                            ValkeyModuleDisconnectFunc callback);
 
 **Available since:** 5.0.0
 
@@ -4815,8 +4876,8 @@ while it was blocked.
 
 **Available since:** 4.0.0
 
-Return a context which can be used inside threads to make Valkey context
-calls with certain modules APIs. If 'bc' is not NULL then the module will
+Return a context which can be used inside threads to make calls requiring a
+context with certain modules APIs. If 'bc' is not NULL then the module will
 be bound to a blocked client, and it will be possible to use the
 `ValkeyModule_Reply*` family of functions to accumulate a reply for when the
 client will be unblocked. Otherwise the thread safe context will be
@@ -4906,8 +4967,8 @@ Release the server lock after a thread safe API call was executed.
 ### `ValkeyModule_SubscribeToKeyspaceEvents`
 
     int ValkeyModule_SubscribeToKeyspaceEvents(ValkeyModuleCtx *ctx,
-                                              int types,
-                                              ValkeyModuleNotificationFunc callback);
+                                               int types,
+                                               ValkeyModuleNotificationFunc callback);
 
 **Available since:** 4.0.9
 
@@ -4958,9 +5019,9 @@ The subscriber signature is:
 
 `type` is the event type bit, that must match the mask given at registration
 time. The event string is the actual command being executed, and key is the
-relevant Valkey key.
+relevant key.
 
-Notification callback gets executed with a valkey context that can not be
+Notification callback gets executed with a context that can not be
 used to send anything to the client, and has the db number where the event
 occurred as its selected db number.
 
@@ -4968,11 +5029,11 @@ Notice that it is not necessary to enable notifications in valkey.conf for
 module notifications to work.
 
 Warning: the notification callbacks are performed in a synchronous manner,
-so notification callbacks must to be fast, or they would slow Valkey down.
+so notification callbacks must to be fast, or they would slow the server down.
 If you need to take long actions, use threads to offload them.
 
 Moreover, the fact that the notification is executed synchronously means
-that the notification code will be executed in the middle on Valkey logic
+that the notification code will be executed in the middle of server logic
 (commands logic, eviction, expire). Changing the key space while the logic
 runs is dangerous and discouraged. In order to react to key space events with
 write actions, please refer to [`ValkeyModule_AddPostNotificationJob`](#ValkeyModule_AddPostNotificationJob).
@@ -4984,15 +5045,15 @@ See [https://valkey.io/topics/notifications](https://valkey.io/topics/notificati
 ### `ValkeyModule_AddPostNotificationJob`
 
     int ValkeyModule_AddPostNotificationJob(ValkeyModuleCtx *ctx,
-                                           ValkeyModulePostNotificationJobFunc callback,
-                                           void *privdata,
-                                           void (*free_privdata)(void*));
+                                            ValkeyModulePostNotificationJobFunc callback,
+                                            void *privdata,
+                                            void (*free_privdata)(void*));
 
 **Available since:** 7.2.0
 
 When running inside a key space notification callback, it is dangerous and highly discouraged to perform any write
 operation (See [`ValkeyModule_SubscribeToKeyspaceEvents`](#ValkeyModule_SubscribeToKeyspaceEvents)). In order to still perform write actions in this scenario,
-Valkey provides [`ValkeyModule_AddPostNotificationJob`](#ValkeyModule_AddPostNotificationJob) API. The API allows to register a job callback which Valkey will call
+the server provides [`ValkeyModule_AddPostNotificationJob`](#ValkeyModule_AddPostNotificationJob) API. The API allows to register a job callback which the server will call
 when the following condition are promised to be fulfilled:
 1. It is safe to perform any write operation.
 2. The job will be called atomically along side the key space notification.
@@ -5001,7 +5062,7 @@ Notice, one job might trigger key space notifications that will trigger more job
 This raises a concerns of entering an infinite loops, we consider infinite loops
 as a logical bug that need to be fixed in the module, an attempt to protect against
 infinite loops by halting the execution could result in violation of the feature correctness
-and so Valkey will make no attempt to protect the module from infinite loops.
+and so the server will make no attempt to protect the module from infinite loops.
 
 '`free_pd`' can be NULL and in such case will not be used.
 
@@ -5024,9 +5085,9 @@ for additional filtering in `ValkeyModuleNotificationFunc`)
 ### `ValkeyModule_NotifyKeyspaceEvent`
 
     int ValkeyModule_NotifyKeyspaceEvent(ValkeyModuleCtx *ctx,
-                                        int type,
-                                        const char *event,
-                                        ValkeyModuleString *key);
+                                         int type,
+                                         const char *event,
+                                         ValkeyModuleString *key);
 
 **Available since:** 6.0.0
 
@@ -5041,8 +5102,8 @@ Expose notifyKeyspaceEvent to modules
 ### `ValkeyModule_RegisterClusterMessageReceiver`
 
     void ValkeyModule_RegisterClusterMessageReceiver(ValkeyModuleCtx *ctx,
-                                                    uint8_t type,
-                                                    ValkeyModuleClusterMessageReceiver callback);
+                                                     uint8_t type,
+                                                     ValkeyModuleClusterMessageReceiver callback);
 
 **Available since:** 5.0.0
 
@@ -5057,10 +5118,10 @@ is already a callback for this function, the callback is unregistered
 ### `ValkeyModule_SendClusterMessage`
 
     int ValkeyModule_SendClusterMessage(ValkeyModuleCtx *ctx,
-                                       const char *target_id,
-                                       uint8_t type,
-                                       const char *msg,
-                                       uint32_t len);
+                                        const char *target_id,
+                                        uint8_t type,
+                                        const char *msg,
+                                        uint32_t len);
 
 **Available since:** 5.0.0
 
@@ -5076,15 +5137,16 @@ known cluster node, `VALKEYMODULE_ERR` is returned.
 
 ### `ValkeyModule_GetClusterNodesList`
 
-    char **ValkeyModule_GetClusterNodesList(ValkeyModuleCtx *ctx, size_t *numnodes);
+    char **ValkeyModule_GetClusterNodesList(ValkeyModuleCtx *ctx,
+                                            size_t *numnodes);
 
 **Available since:** 5.0.0
 
 Return an array of string pointers, each string pointer points to a cluster
 node ID of exactly `VALKEYMODULE_NODE_ID_LEN` bytes (without any null term).
 The number of returned node IDs is stored into `*numnodes`.
-However if this function is called by a module not running an a Valkey
-instance with Valkey Cluster enabled, NULL is returned instead.
+However if this function is called by a module not running an an
+instance with Cluster enabled, NULL is returned instead.
 
 The IDs returned can be used with [`ValkeyModule_GetClusterNodeInfo()`](#ValkeyModule_GetClusterNodeInfo) in order
 to get more information about single node.
@@ -5141,11 +5203,11 @@ cluster mode, zero is returned.
 ### `ValkeyModule_GetClusterNodeInfo`
 
     int ValkeyModule_GetClusterNodeInfo(ValkeyModuleCtx *ctx,
-                                       const char *id,
-                                       char *ip,
-                                       char *master_id,
-                                       int *port,
-                                       int *flags);
+                                        const char *id,
+                                        char *ip,
+                                        char *master_id,
+                                        int *port,
+                                        int *flags);
 
 **Available since:** 5.0.0
 
@@ -5163,8 +5225,8 @@ and `master_id` are not null terminated.
 The list of flags reported is the following:
 
 * `VALKEYMODULE_NODE_MYSELF`:       This node
-* `VALKEYMODULE_NODE_MASTER`:       The node is a master
-* `VALKEYMODULE_NODE_SLAVE`:        The node is a replica
+* `VALKEYMODULE_NODE_PRIMARY`:      The node is a primary
+* `VALKEYMODULE_NODE_REPLICA`:      The node is a replica
 * `VALKEYMODULE_NODE_PFAIL`:        We see the node as failing
 * `VALKEYMODULE_NODE_FAIL`:         The cluster agrees the node is failing
 * `VALKEYMODULE_NODE_NOFAILOVER`:   The slave is configured to never failover
@@ -5177,10 +5239,10 @@ The list of flags reported is the following:
 
 **Available since:** 5.0.0
 
-Set Valkey Cluster flags in order to change the normal behavior of
-Valkey Cluster, especially with the goal of disabling certain functions.
+Set Cluster flags in order to change the normal behavior of
+Cluster, especially with the goal of disabling certain functions.
 This is useful for modules that use the Cluster API in order to create
-a different distributed system, but still want to use the Valkey Cluster
+a different distributed system, but still want to use the Cluster
 message bus. Flags that can be set:
 
 * `CLUSTER_MODULE_FLAG_NO_FAILOVER`
@@ -5188,13 +5250,36 @@ message bus. Flags that can be set:
 
 With the following effects:
 
-* `NO_FAILOVER`: prevent Valkey Cluster slaves from failing over a dead master.
+* `NO_FAILOVER`: prevent Cluster slaves from failing over a dead master.
                Also disables the replica migration feature.
 
 * `NO_REDIRECTION`: Every node will accept any key, without trying to perform
-                  partitioning according to the Valkey Cluster algorithm.
+                  partitioning according to the Cluster algorithm.
                   Slots information will still be propagated across the
                   cluster, but without effect.
+
+<span id="ValkeyModule_ClusterKeySlot"></span>
+
+### `ValkeyModule_ClusterKeySlot`
+
+    unsigned int ValkeyModule_ClusterKeySlot(ValkeyModuleString *key);
+
+**Available since:** unreleased
+
+Returns the cluster slot of a key, similar to the `CLUSTER KEYSLOT` command.
+This function works even if cluster mode is not enabled.
+
+<span id="ValkeyModule_ClusterCanonicalKeyNameInSlot"></span>
+
+### `ValkeyModule_ClusterCanonicalKeyNameInSlot`
+
+    const char *ValkeyModule_ClusterCanonicalKeyNameInSlot(unsigned int slot);
+
+**Available since:** unreleased
+
+Returns a short string that can be used as a key or as a hash tag in a key,
+such that the key maps to the given cluster slot. Returns NULL if slot is not
+a valid slot.
 
 <span id="section-modules-timers-api"></span>
 
@@ -5206,7 +5291,7 @@ the actual event loop will just have a single timer that is used to awake the
 module timers subsystem in order to process the next event.
 
 All the timers are stored into a radix tree, ordered by expire time, when
-the main Valkey event loop timer callback is called, we try to process all
+the main server event loop timer callback is called, we try to process all
 the timers already expired one after the other. Then we re-enter the event
 loop registering a timer that will expire when the next to process module
 timer will expire.
@@ -5220,9 +5305,9 @@ not used.
 ### `ValkeyModule_CreateTimer`
 
     ValkeyModuleTimerID ValkeyModule_CreateTimer(ValkeyModuleCtx *ctx,
-                                               mstime_t period,
-                                               ValkeyModuleTimerProc callback,
-                                               void *data);
+                                                 mstime_t period,
+                                                 ValkeyModuleTimerProc callback,
+                                                 void *data);
 
 **Available since:** 5.0.0
 
@@ -5244,8 +5329,8 @@ statements above mean the same)
 ### `ValkeyModule_StopTimer`
 
     int ValkeyModule_StopTimer(ValkeyModuleCtx *ctx,
-                              ValkeyModuleTimerID id,
-                              void **data);
+                               ValkeyModuleTimerID id,
+                               void **data);
 
 **Available since:** 5.0.0
 
@@ -5259,9 +5344,9 @@ the timer was created.
 ### `ValkeyModule_GetTimerInfo`
 
     int ValkeyModule_GetTimerInfo(ValkeyModuleCtx *ctx,
-                                 ValkeyModuleTimerID id,
-                                 uint64_t *remaining,
-                                 void **data);
+                                  ValkeyModuleTimerID id,
+                                  uint64_t *remaining,
+                                  void **data);
 
 **Available since:** 5.0.0
 
@@ -5281,9 +5366,9 @@ the caller does not need certain information.
 ### `ValkeyModule_EventLoopAdd`
 
     int ValkeyModule_EventLoopAdd(int fd,
-                                 int mask,
-                                 ValkeyModuleEventLoopFunc func,
-                                 void *user_data);
+                                  int mask,
+                                  ValkeyModuleEventLoopFunc func,
+                                  void *user_data);
 
 **Available since:** 7.0.0
 
@@ -5298,7 +5383,7 @@ Add a pipe / socket event to the event loop.
 On success `VALKEYMODULE_OK` is returned, otherwise
 `VALKEYMODULE_ERR` is returned and errno is set to the following values:
 
-* ERANGE: `fd` is negative or higher than `maxclients` Valkey config.
+* ERANGE: `fd` is negative or higher than `maxclients` server config.
 * EINVAL: `callback` is NULL or `mask` value is invalid.
 
 `errno` might take other values in case of an internal error.
@@ -5331,7 +5416,7 @@ Delete a pipe / socket event from the event loop.
 On success `VALKEYMODULE_OK` is returned, otherwise
 `VALKEYMODULE_ERR` is returned and errno is set to the following values:
 
-* ERANGE: `fd` is negative or higher than `maxclients` Valkey config.
+* ERANGE: `fd` is negative or higher than `maxclients` server config.
 * EINVAL: `mask` value is invalid.
 
 <span id="ValkeyModule_EventLoopAddOneShot"></span>
@@ -5339,11 +5424,11 @@ On success `VALKEYMODULE_OK` is returned, otherwise
 ### `ValkeyModule_EventLoopAddOneShot`
 
     int ValkeyModule_EventLoopAddOneShot(ValkeyModuleEventLoopOneShotFunc func,
-                                        void *user_data);
+                                         void *user_data);
 
 **Available since:** 7.0.0
 
-This function can be called from other threads to trigger callback on Valkey
+This function can be called from other threads to trigger callback on the server
 main thread. On success `VALKEYMODULE_OK` is returned. If `func` is NULL
 `VALKEYMODULE_ERR` is returned and errno is set to EINVAL.
 
@@ -5351,7 +5436,7 @@ main thread. On success `VALKEYMODULE_OK` is returned. If `func` is NULL
 
 ## Modules ACL API
 
-Implements a hook into the authentication and authorization within Valkey.
+Implements a hook into the authentication and authorization within the server.
 
 <span id="ValkeyModule_CreateModuleUser"></span>
 
@@ -5361,7 +5446,7 @@ Implements a hook into the authentication and authorization within Valkey.
 
 **Available since:** 6.0.0
 
-Creates a Valkey ACL user that the module can use to authenticate a client.
+Creates an ACL user that the module can use to authenticate a client.
 After obtaining the user, the module should set what such user can do
 using the `ValkeyModule_SetUserACL()` function. Once configured, the user
 can be used in order to authenticate a connection, with the specified
@@ -5373,7 +5458,7 @@ Note that:
 * Users created here are not checked for duplicated name, so it's up to
   the module calling this function to take care of not creating users
   with the same name.
-* The created user can be used to authenticate multiple Valkey connections.
+* The created user can be used to authenticate multiple connections.
 
 The caller can later free the user using the function
 [`ValkeyModule_FreeModuleUser()`](#ValkeyModule_FreeModuleUser). When this function is called, if there are
@@ -5401,7 +5486,7 @@ authenticated with it. See [`ValkeyModule_CreateModuleUser`](#ValkeyModule_Creat
 
 **Available since:** 6.0.0
 
-Sets the permissions of a user created through the valkey module
+Sets the permissions of a user created through the module
 interface. The syntax is the same as ACL SETUSER, so refer to the
 documentation in acl.c for more information. See [`ValkeyModule_CreateModuleUser`](#ValkeyModule_CreateModuleUser)
 for detailed usage.
@@ -5414,14 +5499,14 @@ and will set an errno describing why the operation failed.
 ### `ValkeyModule_SetModuleUserACLString`
 
     int ValkeyModule_SetModuleUserACLString(ValkeyModuleCtx *ctx,
-                                           ValkeyModuleUser *user,
-                                           const char *acl,
-                                           ValkeyModuleString **error);
+                                            ValkeyModuleUser *user,
+                                            const char *acl,
+                                            ValkeyModuleString **error);
 
 **Available since:** 7.0.6
 
 Sets the permission of a user with a complete ACL string, such as one
-would use on the valkey ACL SETUSER command line API. This differs from
+would use on the ACL SETUSER command line API. This differs from
 [`ValkeyModule_SetModuleUserACL`](#ValkeyModule_SetModuleUserACL), which only takes single ACL operations at a time.
 
 Returns `VALKEYMODULE_OK` on success and `VALKEYMODULE_ERR` on failure
@@ -5479,8 +5564,8 @@ The caller should later free the user using the function [`ValkeyModule_FreeModu
 ### `ValkeyModule_ACLCheckCommandPermissions`
 
     int ValkeyModule_ACLCheckCommandPermissions(ValkeyModuleUser *user,
-                                               ValkeyModuleString **argv,
-                                               int argc);
+                                                ValkeyModuleString **argv,
+                                                int argc);
 
 **Available since:** 7.0.0
 
@@ -5497,8 +5582,8 @@ On success a `VALKEYMODULE_OK` is returned, otherwise
 ### `ValkeyModule_ACLCheckKeyPermissions`
 
     int ValkeyModule_ACLCheckKeyPermissions(ValkeyModuleUser *user,
-                                           ValkeyModuleString *key,
-                                           int flags);
+                                            ValkeyModuleString *key,
+                                            int flags);
 
 **Available since:** 7.0.0
 
@@ -5522,8 +5607,8 @@ If the user is able to access the key then `VALKEYMODULE_OK` is returned, otherw
 ### `ValkeyModule_ACLCheckChannelPermissions`
 
     int ValkeyModule_ACLCheckChannelPermissions(ValkeyModuleUser *user,
-                                               ValkeyModuleString *ch,
-                                               int flags);
+                                                ValkeyModuleString *ch,
+                                                int flags);
 
 **Available since:** 7.0.0
 
@@ -5542,46 +5627,46 @@ If the user is able to access the pubsub channel then `VALKEYMODULE_OK` is retur
 ### `ValkeyModule_ACLAddLogEntry`
 
     int ValkeyModule_ACLAddLogEntry(ValkeyModuleCtx *ctx,
-                                   ValkeyModuleUser *user,
-                                   ValkeyModuleString *object,
-                                   ValkeyModuleACLLogEntryReason reason);
+                                    ValkeyModuleUser *user,
+                                    ValkeyModuleString *object,
+                                    ValkeyModuleACLLogEntryReason reason);
 
 **Available since:** 7.0.0
 
 Adds a new entry in the ACL log.
 Returns `VALKEYMODULE_OK` on success and `VALKEYMODULE_ERR` on error.
 
-For more information about ACL log, please refer to [https://redis.io/commands/acl-log](https://redis.io/commands/acl-log)
+For more information about ACL log, please refer to [https://valkey.io/commands/acl-log](https://valkey.io/commands/acl-log)
 
 <span id="ValkeyModule_ACLAddLogEntryByUserName"></span>
 
 ### `ValkeyModule_ACLAddLogEntryByUserName`
 
     int ValkeyModule_ACLAddLogEntryByUserName(ValkeyModuleCtx *ctx,
-                                             ValkeyModuleString *username,
-                                             ValkeyModuleString *object,
-                                             ValkeyModuleACLLogEntryReason reason);
+                                              ValkeyModuleString *username,
+                                              ValkeyModuleString *object,
+                                              ValkeyModuleACLLogEntryReason reason);
 
 **Available since:** 7.2.0
 
 Adds a new entry in the ACL log with the `username` `ValkeyModuleString` provided.
 Returns `VALKEYMODULE_OK` on success and `VALKEYMODULE_ERR` on error.
 
-For more information about ACL log, please refer to [https://redis.io/commands/acl-log](https://redis.io/commands/acl-log)
+For more information about ACL log, please refer to [https://valkey.io/commands/acl-log](https://valkey.io/commands/acl-log)
 
 <span id="ValkeyModule_AuthenticateClientWithUser"></span>
 
 ### `ValkeyModule_AuthenticateClientWithUser`
 
     int ValkeyModule_AuthenticateClientWithUser(ValkeyModuleCtx *ctx,
-                                               ValkeyModuleUser *module_user,
-                                               ValkeyModuleUserChangedFunc callback,
-                                               void *privdata,
-                                               uint64_t *client_id);
+                                                ValkeyModuleUser *module_user,
+                                                ValkeyModuleUserChangedFunc callback,
+                                                void *privdata,
+                                                uint64_t *client_id);
 
 **Available since:** 6.0.0
 
-Authenticate the current context's user with the provided valkey acl user.
+Authenticate the current context's user with the provided acl user.
 Returns `VALKEYMODULE_ERR` if the user is disabled.
 
 See authenticateClientWithUser for information about callback, `client_id`,
@@ -5592,15 +5677,15 @@ and general usage for authentication.
 ### `ValkeyModule_AuthenticateClientWithACLUser`
 
     int ValkeyModule_AuthenticateClientWithACLUser(ValkeyModuleCtx *ctx,
-                                                  const char *name,
-                                                  size_t len,
-                                                  ValkeyModuleUserChangedFunc callback,
-                                                  void *privdata,
-                                                  uint64_t *client_id);
+                                                   const char *name,
+                                                   size_t len,
+                                                   ValkeyModuleUserChangedFunc callback,
+                                                   void *privdata,
+                                                   uint64_t *client_id);
 
 **Available since:** 6.0.0
 
-Authenticate the current context's user with the provided valkey acl user.
+Authenticate the current context's user with the provided acl user.
 Returns `VALKEYMODULE_ERR` if the user is disabled or the user does not exist.
 
 See authenticateClientWithUser for information about callback, `client_id`,
@@ -5611,7 +5696,7 @@ and general usage for authentication.
 ### `ValkeyModule_DeauthenticateAndCloseClient`
 
     int ValkeyModule_DeauthenticateAndCloseClient(ValkeyModuleCtx *ctx,
-                                                 uint64_t client_id);
+                                                  uint64_t client_id);
 
 **Available since:** 6.0.0
 
@@ -5652,7 +5737,7 @@ argument range.
 ### `ValkeyModule_GetClientCertificate`
 
     ValkeyModuleString *ValkeyModule_GetClientCertificate(ValkeyModuleCtx *ctx,
-                                                        uint64_t client_id);
+                                                          uint64_t client_id);
 
 **Available since:** 6.0.9
 
@@ -5724,9 +5809,9 @@ Return the size of the dictionary (number of keys).
 ### `ValkeyModule_DictSetC`
 
     int ValkeyModule_DictSetC(ValkeyModuleDict *d,
-                             void *key,
-                             size_t keylen,
-                             void *ptr);
+                              void *key,
+                              size_t keylen,
+                              void *ptr);
 
 **Available since:** 5.0.0
 
@@ -5740,9 +5825,9 @@ exists the function returns `VALKEYMODULE_ERR`.
 ### `ValkeyModule_DictReplaceC`
 
     int ValkeyModule_DictReplaceC(ValkeyModuleDict *d,
-                                 void *key,
-                                 size_t keylen,
-                                 void *ptr);
+                                  void *key,
+                                  size_t keylen,
+                                  void *ptr);
 
 **Available since:** 5.0.0
 
@@ -5753,7 +5838,9 @@ value if the key already exists.
 
 ### `ValkeyModule_DictSet`
 
-    int ValkeyModule_DictSet(ValkeyModuleDict *d, ValkeyModuleString *key, void *ptr);
+    int ValkeyModule_DictSet(ValkeyModuleDict *d,
+                             ValkeyModuleString *key,
+                             void *ptr);
 
 **Available since:** 5.0.0
 
@@ -5764,8 +5851,8 @@ Like [`ValkeyModule_DictSetC()`](#ValkeyModule_DictSetC) but takes the key as a 
 ### `ValkeyModule_DictReplace`
 
     int ValkeyModule_DictReplace(ValkeyModuleDict *d,
-                                ValkeyModuleString *key,
-                                void *ptr);
+                                 ValkeyModuleString *key,
+                                 void *ptr);
 
 **Available since:** 5.0.0
 
@@ -5776,9 +5863,9 @@ Like [`ValkeyModule_DictReplaceC()`](#ValkeyModule_DictReplaceC) but takes the k
 ### `ValkeyModule_DictGetC`
 
     void *ValkeyModule_DictGetC(ValkeyModuleDict *d,
-                               void *key,
-                               size_t keylen,
-                               int *nokey);
+                                void *key,
+                                size_t keylen,
+                                int *nokey);
 
 **Available since:** 5.0.0
 
@@ -5793,8 +5880,8 @@ exists.
 ### `ValkeyModule_DictGet`
 
     void *ValkeyModule_DictGet(ValkeyModuleDict *d,
-                              ValkeyModuleString *key,
-                              int *nokey);
+                               ValkeyModuleString *key,
+                               int *nokey);
 
 **Available since:** 5.0.0
 
@@ -5805,9 +5892,9 @@ Like [`ValkeyModule_DictGetC()`](#ValkeyModule_DictGetC) but takes the key as a 
 ### `ValkeyModule_DictDelC`
 
     int ValkeyModule_DictDelC(ValkeyModuleDict *d,
-                             void *key,
-                             size_t keylen,
-                             void *oldval);
+                              void *key,
+                              size_t keylen,
+                              void *oldval);
 
 **Available since:** 5.0.0
 
@@ -5824,8 +5911,8 @@ having to call [`ValkeyModule_DictGet()`](#ValkeyModule_DictGet) before deleting
 ### `ValkeyModule_DictDel`
 
     int ValkeyModule_DictDel(ValkeyModuleDict *d,
-                            ValkeyModuleString *key,
-                            void *oldval);
+                             ValkeyModuleString *key,
+                             void *oldval);
 
 **Available since:** 5.0.0
 
@@ -5836,9 +5923,9 @@ Like [`ValkeyModule_DictDelC()`](#ValkeyModule_DictDelC) but gets the key as a `
 ### `ValkeyModule_DictIteratorStartC`
 
     ValkeyModuleDictIter *ValkeyModule_DictIteratorStartC(ValkeyModuleDict *d,
-                                                        const char *op,
-                                                        void *key,
-                                                        size_t keylen);
+                                                          const char *op,
+                                                          void *key,
+                                                          size_t keylen);
 
 **Available since:** 5.0.0
 
@@ -5867,8 +5954,8 @@ key and operator passed, [`ValkeyModule_DictNext()`](#ValkeyModule_DictNext) / P
 ### `ValkeyModule_DictIteratorStart`
 
     ValkeyModuleDictIter *ValkeyModule_DictIteratorStart(ValkeyModuleDict *d,
-                                                       const char *op,
-                                                       ValkeyModuleString *key);
+                                                         const char *op,
+                                                         ValkeyModuleString *key);
 
 **Available since:** 5.0.0
 
@@ -5891,9 +5978,9 @@ is mandatory otherwise a memory leak is introduced in the module.
 ### `ValkeyModule_DictIteratorReseekC`
 
     int ValkeyModule_DictIteratorReseekC(ValkeyModuleDictIter *di,
-                                        const char *op,
-                                        void *key,
-                                        size_t keylen);
+                                         const char *op,
+                                         void *key,
+                                         size_t keylen);
 
 **Available since:** 5.0.0
 
@@ -5910,8 +5997,8 @@ element. It is possible to reseek an iterator as many times as you want.
 ### `ValkeyModule_DictIteratorReseek`
 
     int ValkeyModule_DictIteratorReseek(ValkeyModuleDictIter *di,
-                                       const char *op,
-                                       ValkeyModuleString *key);
+                                        const char *op,
+                                        ValkeyModuleString *key);
 
 **Available since:** 5.0.0
 
@@ -5923,8 +6010,8 @@ Like [`ValkeyModule_DictIteratorReseekC()`](#ValkeyModule_DictIteratorReseekC) b
 ### `ValkeyModule_DictNextC`
 
     void *ValkeyModule_DictNextC(ValkeyModuleDictIter *di,
-                                size_t *keylen,
-                                void **dataptr);
+                                 size_t *keylen,
+                                 void **dataptr);
 
 **Available since:** 5.0.0
 
@@ -5959,8 +6046,8 @@ iterator is released.
 ### `ValkeyModule_DictPrevC`
 
     void *ValkeyModule_DictPrevC(ValkeyModuleDictIter *di,
-                                size_t *keylen,
-                                void **dataptr);
+                                 size_t *keylen,
+                                 void **dataptr);
 
 **Available since:** 5.0.0
 
@@ -5973,8 +6060,8 @@ element (lexicographically smaller) instead of the next one.
 ### `ValkeyModule_DictNext`
 
     ValkeyModuleString *ValkeyModule_DictNext(ValkeyModuleCtx *ctx,
-                                            ValkeyModuleDictIter *di,
-                                            void **dataptr);
+                                              ValkeyModuleDictIter *di,
+                                              void **dataptr);
 
 **Available since:** 5.0.0
 
@@ -5991,8 +6078,8 @@ or by using a context that has automatic memory management active.
 ### `ValkeyModule_DictPrev`
 
     ValkeyModuleString *ValkeyModule_DictPrev(ValkeyModuleCtx *ctx,
-                                            ValkeyModuleDictIter *di,
-                                            void **dataptr);
+                                              ValkeyModuleDictIter *di,
+                                              void **dataptr);
 
 **Available since:** 5.0.0
 
@@ -6005,9 +6092,9 @@ smaller) instead of the next one.
 ### `ValkeyModule_DictCompareC`
 
     int ValkeyModule_DictCompareC(ValkeyModuleDictIter *di,
-                                 const char *op,
-                                 void *key,
-                                 size_t keylen);
+                                  const char *op,
+                                  void *key,
+                                  size_t keylen);
 
 **Available since:** 5.0.0
 
@@ -6029,8 +6116,8 @@ end of elements condition as well.
 ### `ValkeyModule_DictCompare`
 
     int ValkeyModule_DictCompare(ValkeyModuleDictIter *di,
-                                const char *op,
-                                ValkeyModuleString *key);
+                                 const char *op,
+                                 ValkeyModuleString *key);
 
 **Available since:** 5.0.0
 
@@ -6058,7 +6145,8 @@ When return value is `VALKEYMODULE_ERR`, the section should and will be skipped.
 
 ### `ValkeyModule_InfoBeginDictField`
 
-    int ValkeyModule_InfoBeginDictField(ValkeyModuleInfoCtx *ctx, const char *name);
+    int ValkeyModule_InfoBeginDictField(ValkeyModuleInfoCtx *ctx,
+                                        const char *name);
 
 **Available since:** 6.0.0
 
@@ -6081,8 +6169,8 @@ Ends a dict field, see [`ValkeyModule_InfoBeginDictField`](#ValkeyModule_InfoBeg
 ### `ValkeyModule_InfoAddFieldString`
 
     int ValkeyModule_InfoAddFieldString(ValkeyModuleInfoCtx *ctx,
-                                       const char *field,
-                                       ValkeyModuleString *value);
+                                        const char *field,
+                                        ValkeyModuleString *value);
 
 **Available since:** 6.0.0
 
@@ -6095,8 +6183,8 @@ Field names or values must not include `\r\n` or `:`.
 ### `ValkeyModule_InfoAddFieldCString`
 
     int ValkeyModule_InfoAddFieldCString(ValkeyModuleInfoCtx *ctx,
-                                        const char *field,
-                                        const char *value);
+                                         const char *field,
+                                         const char *value);
 
 **Available since:** 6.0.0
 
@@ -6107,8 +6195,8 @@ See [`ValkeyModule_InfoAddFieldString()`](#ValkeyModule_InfoAddFieldString).
 ### `ValkeyModule_InfoAddFieldDouble`
 
     int ValkeyModule_InfoAddFieldDouble(ValkeyModuleInfoCtx *ctx,
-                                       const char *field,
-                                       double value);
+                                        const char *field,
+                                        double value);
 
 **Available since:** 6.0.0
 
@@ -6119,8 +6207,8 @@ See [`ValkeyModule_InfoAddFieldString()`](#ValkeyModule_InfoAddFieldString).
 ### `ValkeyModule_InfoAddFieldLongLong`
 
     int ValkeyModule_InfoAddFieldLongLong(ValkeyModuleInfoCtx *ctx,
-                                         const char *field,
-                                         long long value);
+                                          const char *field,
+                                          long long value);
 
 **Available since:** 6.0.0
 
@@ -6131,8 +6219,8 @@ See [`ValkeyModule_InfoAddFieldString()`](#ValkeyModule_InfoAddFieldString).
 ### `ValkeyModule_InfoAddFieldULongLong`
 
     int ValkeyModule_InfoAddFieldULongLong(ValkeyModuleInfoCtx *ctx,
-                                          const char *field,
-                                          unsigned long long value);
+                                           const char *field,
+                                           unsigned long long value);
 
 **Available since:** 6.0.0
 
@@ -6142,7 +6230,8 @@ See [`ValkeyModule_InfoAddFieldString()`](#ValkeyModule_InfoAddFieldString).
 
 ### `ValkeyModule_RegisterInfoFunc`
 
-    int ValkeyModule_RegisterInfoFunc(ValkeyModuleCtx *ctx, ValkeyModuleInfoFunc cb);
+    int ValkeyModule_RegisterInfoFunc(ValkeyModuleCtx *ctx,
+                                      ValkeyModuleInfoFunc cb);
 
 **Available since:** 6.0.0
 
@@ -6154,7 +6243,7 @@ by calling the `ValkeyModule_InfoAddField*()` functions.
 ### `ValkeyModule_GetServerInfo`
 
     ValkeyModuleServerInfoData *ValkeyModule_GetServerInfo(ValkeyModuleCtx *ctx,
-                                                         const char *section);
+                                                           const char *section);
 
 **Available since:** 6.0.0
 
@@ -6170,7 +6259,7 @@ automatic memory management mechanism if enabled.
 ### `ValkeyModule_FreeServerInfo`
 
     void ValkeyModule_FreeServerInfo(ValkeyModuleCtx *ctx,
-                                    ValkeyModuleServerInfoData *data);
+                                     ValkeyModuleServerInfoData *data);
 
 **Available since:** 6.0.0
 
@@ -6183,8 +6272,8 @@ context instead of passing NULL.
 ### `ValkeyModule_ServerInfoGetField`
 
     ValkeyModuleString *ValkeyModule_ServerInfoGetField(ValkeyModuleCtx *ctx,
-                                                      ValkeyModuleServerInfoData *data,
-                                                      const char* field);
+                                                        ValkeyModuleServerInfoData *data,
+                                                        const char* field);
 
 **Available since:** 6.0.0
 
@@ -6198,7 +6287,7 @@ field was not found.
 ### `ValkeyModule_ServerInfoGetFieldC`
 
     const char *ValkeyModule_ServerInfoGetFieldC(ValkeyModuleServerInfoData *data,
-                                                const char* field);
+                                                 const char* field);
 
 **Available since:** 6.0.0
 
@@ -6209,8 +6298,8 @@ Similar to [`ValkeyModule_ServerInfoGetField`](#ValkeyModule_ServerInfoGetField)
 ### `ValkeyModule_ServerInfoGetFieldSigned`
 
     long long ValkeyModule_ServerInfoGetFieldSigned(ValkeyModuleServerInfoData *data,
-                                                   const char* field,
-                                                   int *out_err);
+                                                    const char* field,
+                                                    int *out_err);
 
 **Available since:** 6.0.0
 
@@ -6223,8 +6312,8 @@ field is not found, or is not numerical or out of range, return value will be
 ### `ValkeyModule_ServerInfoGetFieldUnsigned`
 
     unsigned long long ValkeyModule_ServerInfoGetFieldUnsigned(ValkeyModuleServerInfoData *data,
-                                                              const char* field,
-                                                              int *out_err);
+                                                               const char* field,
+                                                               int *out_err);
 
 **Available since:** 6.0.0
 
@@ -6237,8 +6326,8 @@ field is not found, or is not numerical or out of range, return value will be
 ### `ValkeyModule_ServerInfoGetFieldDouble`
 
     double ValkeyModule_ServerInfoGetFieldDouble(ValkeyModuleServerInfoData *data,
-                                                const char* field,
-                                                int *out_err);
+                                                 const char* field,
+                                                 int *out_err);
 
 **Available since:** 6.0.0
 
@@ -6284,8 +6373,8 @@ hex charset [0-9a-f].
 ### `ValkeyModule_ExportSharedAPI`
 
     int ValkeyModule_ExportSharedAPI(ValkeyModuleCtx *ctx,
-                                    const char *apiname,
-                                    void *func);
+                                     const char *apiname,
+                                     void *func);
 
 **Available since:** 5.0.4
 
@@ -6352,43 +6441,43 @@ And the function registerAPI() is:
 ### `ValkeyModule_RegisterCommandFilter`
 
     ValkeyModuleCommandFilter *ValkeyModule_RegisterCommandFilter(ValkeyModuleCtx *ctx,
-                                                                ValkeyModuleCommandFilterFunc callback,
-                                                                int flags);
+                                                                  ValkeyModuleCommandFilterFunc callback,
+                                                                  int flags);
 
 **Available since:** 5.0.5
 
 Register a new command filter function.
 
-Command filtering makes it possible for modules to extend Valkey by plugging
+Command filtering makes it possible for modules to extend the server by plugging
 into the execution flow of all commands.
 
-A registered filter gets called before Valkey executes *any* command.  This
-includes both core Valkey commands and commands registered by any module.  The
+A registered filter gets called before the server executes *any* command.  This
+includes both core server commands and commands registered by any module.  The
 filter applies in all execution paths including:
 
 1. Invocation by a client.
 2. Invocation through [`ValkeyModule_Call()`](#ValkeyModule_Call) by any module.
-3. Invocation through Lua `server.call()`.
+3. Invocation through Lua `redis.call()`.
 4. Replication of a command from a master.
 
 The filter executes in a special filter context, which is different and more
 limited than a `ValkeyModuleCtx`.  Because the filter affects any command, it
 must be implemented in a very efficient way to reduce the performance impact
-on Valkey.  All Valkey Module API calls that require a valid context (such as
+on the server.  All Module API calls that require a valid context (such as
 [`ValkeyModule_Call()`](#ValkeyModule_Call), [`ValkeyModule_OpenKey()`](#ValkeyModule_OpenKey), etc.) are not supported in a
 filter context.
 
 The `ValkeyModuleCommandFilterCtx` can be used to inspect or modify the
-executed command and its arguments.  As the filter executes before Valkey
+executed command and its arguments.  As the filter executes before the server
 begins processing the command, any change will affect the way the command is
-processed.  For example, a module can override Valkey commands this way:
+processed.  For example, a module can override server commands this way:
 
 1. Register a `MODULE.SET` command which implements an extended version of
-   the Valkey `SET` command.
+   the `SET` command.
 2. Register a command filter which detects invocation of `SET` on a specific
    pattern of keys.  Once detected, the filter will replace the first
    argument from `SET` to `MODULE.SET`.
-3. When filter execution is complete, Valkey considers the new command name
+3. When filter execution is complete, the server considers the new command name
    and therefore executes the module's own command.
 
 Note that in the above use case, if `MODULE.SET` itself uses
@@ -6413,7 +6502,7 @@ are executed in the order of registration.
 ### `ValkeyModule_UnregisterCommandFilter`
 
     int ValkeyModule_UnregisterCommandFilter(ValkeyModuleCtx *ctx,
-                                            ValkeyModuleCommandFilter *filter);
+                                             ValkeyModuleCommandFilter *filter);
 
 **Available since:** 5.0.5
 
@@ -6435,7 +6524,7 @@ arguments include the command itself.
 ### `ValkeyModule_CommandFilterArgGet`
 
     ValkeyModuleString *ValkeyModule_CommandFilterArgGet(ValkeyModuleCommandFilterCtx *fctx,
-                                                       int pos);
+                                                         int pos);
 
 **Available since:** 5.0.5
 
@@ -6447,13 +6536,13 @@ the command itself, and the rest are user-provided args.
 ### `ValkeyModule_CommandFilterArgInsert`
 
     int ValkeyModule_CommandFilterArgInsert(ValkeyModuleCommandFilterCtx *fctx,
-                                           int pos,
-                                           ValkeyModuleString *arg);
+                                            int pos,
+                                            ValkeyModuleString *arg);
 
 **Available since:** 5.0.5
 
 Modify the filtered command by inserting a new argument at the specified
-position.  The specified `ValkeyModuleString` argument may be used by Valkey
+position.  The specified `ValkeyModuleString` argument may be used by the server
 after the filter context is destroyed, so it must not be auto-memory
 allocated, freed or used elsewhere.
 
@@ -6462,13 +6551,13 @@ allocated, freed or used elsewhere.
 ### `ValkeyModule_CommandFilterArgReplace`
 
     int ValkeyModule_CommandFilterArgReplace(ValkeyModuleCommandFilterCtx *fctx,
-                                            int pos,
-                                            ValkeyModuleString *arg);
+                                             int pos,
+                                             ValkeyModuleString *arg);
 
 **Available since:** 5.0.5
 
 Modify the filtered command by replacing an existing argument with a new one.
-The specified `ValkeyModuleString` argument may be used by Valkey after the
+The specified `ValkeyModuleString` argument may be used by the server after the
 filter context is destroyed, so it must not be auto-memory allocated, freed
 or used elsewhere.
 
@@ -6477,7 +6566,7 @@ or used elsewhere.
 ### `ValkeyModule_CommandFilterArgDelete`
 
     int ValkeyModule_CommandFilterArgDelete(ValkeyModuleCommandFilterCtx *fctx,
-                                           int pos);
+                                            int pos);
 
 **Available since:** 5.0.5
 
@@ -6550,7 +6639,7 @@ it does not include the allocation size of the keys and values.
 **Available since:** 6.0.0
 
 Return the a number between 0 to 1 indicating the amount of memory
-currently used, relative to the Valkey "maxmemory" configuration.
+currently used, relative to the server "maxmemory" configuration.
 
 * 0 - No memory limit configured.
 * Between 0 and 1 - The percentage of the memory used normalized in 0-1 range.
@@ -6596,9 +6685,9 @@ Destroy the cursor struct.
 ### `ValkeyModule_Scan`
 
     int ValkeyModule_Scan(ValkeyModuleCtx *ctx,
-                         ValkeyModuleScanCursor *cursor,
-                         ValkeyModuleScanCB fn,
-                         void *privdata);
+                          ValkeyModuleScanCursor *cursor,
+                          ValkeyModuleScanCB fn,
+                          void *privdata);
 
 **Available since:** 6.0.0
 
@@ -6610,7 +6699,7 @@ Callback for scan implementation.
     void scan_callback(ValkeyModuleCtx *ctx, ValkeyModuleString *keyname,
                        ValkeyModuleKey *key, void *privdata);
 
-- `ctx`: the valkey module context provided to for the scan.
+- `ctx`: the module context provided to for the scan.
 - `keyname`: owned by the caller and need to be retained if used after this
   function.
 - `key`: holds info on the key and value, it is provided as best effort, in
@@ -6643,7 +6732,7 @@ The function will return 1 if there are more elements to scan and
 
 It is also possible to restart an existing cursor using [`ValkeyModule_ScanCursorRestart`](#ValkeyModule_ScanCursorRestart).
 
-IMPORTANT: This API is very similar to the Valkey SCAN command from the
+IMPORTANT: This API is very similar to the SCAN command from the
 point of view of the guarantees it provides. This means that the API
 may report duplicated keys, but guarantees to report at least one time
 every key that was there from the start to the end of the scanning process.
@@ -6652,7 +6741,7 @@ NOTE: If you do database changes within the callback, you should be aware
 that the internal state of the database may change. For instance it is safe
 to delete or modify the current key, but may not be safe to delete any
 other key.
-Moreover playing with the Valkey keyspace while iterating may have the
+Moreover playing with the keyspace while iterating may have the
 effect of returning more duplicates. A safe pattern is to store the keys
 names you want to modify elsewhere, and perform the actions on the keys
 later when the iteration is complete. However this can cost a lot of
@@ -6664,9 +6753,9 @@ possible during the iteration, given that this is safe.
 ### `ValkeyModule_ScanKey`
 
     int ValkeyModule_ScanKey(ValkeyModuleKey *key,
-                            ValkeyModuleScanCursor *cursor,
-                            ValkeyModuleScanKeyCB fn,
-                            void *privdata);
+                             ValkeyModuleScanCursor *cursor,
+                             ValkeyModuleScanKeyCB fn,
+                             void *privdata);
 
 **Available since:** 6.0.0
 
@@ -6676,7 +6765,7 @@ Callback for scan implementation.
 
     void scan_callback(ValkeyModuleKey *key, ValkeyModuleString* field, ValkeyModuleString* value, void *privdata);
 
-- key - the valkey key context provided to for the scan.
+- key - the key context provided to for the scan.
 - field - field name, owned by the caller and need to be retained if used
   after this function.
 - value - value string or NULL for set type, owned by the caller and need to
@@ -6734,7 +6823,7 @@ the key you are iterating is not safe.
 Create a background child process with the current frozen snapshot of the
 main process where you can do some processing in the background without
 affecting / freezing the traffic and no need for threads and GIL locking.
-Note that Valkey allows for only one concurrent fork.
+Note that the server allows for only one concurrent fork.
 When the child wants to exit, it should call [`ValkeyModule_ExitFromChild`](#ValkeyModule_ExitFromChild).
 If the parent wants to kill the child it should call [`ValkeyModule_KillForkChild`](#ValkeyModule_KillForkChild)
 The done handler callback will be executed on the parent process when the
@@ -6786,8 +6875,8 @@ Can be used to kill the forked child process from the parent process.
 ### `ValkeyModule_SubscribeToServerEvent`
 
     int ValkeyModule_SubscribeToServerEvent(ValkeyModuleCtx *ctx,
-                                           ValkeyModuleEvent event,
-                                           ValkeyModuleEventCallback callback);
+                                            ValkeyModuleEvent event,
+                                            ValkeyModuleEventCallback callback);
 
 **Available since:** 6.0.0
 
@@ -6808,7 +6897,7 @@ The callback must be of this type:
                                     uint64_t subevent,
                                     void *data);
 
-The 'ctx' is a normal Valkey module context that the callback can use in
+The 'ctx' is a normal module context that the callback can use in
 order to call other modules APIs. The 'eid' is the event itself, this
 is only useful in the case the module subscribed to multiple events: using
 the 'id' field of this structure it is possible to check if the event
@@ -6829,7 +6918,7 @@ Here is a list of events you can use as 'eid' and related sub events:
 
     The following sub events are available:
 
-    * `VALKEYMODULE_SUBEVENT_REPLROLECHANGED_NOW_MASTER`
+    * `VALKEYMODULE_SUBEVENT_REPLROLECHANGED_NOW_PRIMARY`
     * `VALKEYMODULE_SUBEVENT_REPLROLECHANGED_NOW_REPLICA`
 
     The 'data' field can be casted by the callback to a
@@ -6931,15 +7020,15 @@ Here is a list of events you can use as 'eid' and related sub events:
     * `VALKEYMODULE_SUBEVENT_REPLICA_CHANGE_OFFLINE`
 
     No additional information is available so far: future versions
-    of Valkey will have an API in order to enumerate the replicas
+    of the server will have an API in order to enumerate the replicas
     connected and their state.
 
 * `ValkeyModuleEvent_CronLoop`
 
-    This event is called every time Valkey calls the serverCron()
+    This event is called every time the server calls the serverCron()
     function in order to do certain bookkeeping. Modules that are
     required to do operations from time to time may use this callback.
-    Normally Valkey calls this function 10 times per second, but
+    Normally the server calls this function 10 times per second, but
     this changes depending on the "hz" configuration.
     No sub events are available.
 
@@ -6948,7 +7037,7 @@ Here is a list of events you can use as 'eid' and related sub events:
 
         int32_t hz;  // Approximate number of events per second.
 
-* `ValkeyModuleEvent_MasterLinkChange`
+* `ValkeyModuleEvent_PrimaryLinkChange`
 
     This is called for replicas in order to notify when the
     replication link becomes functional (up) with our master,
@@ -6957,8 +7046,8 @@ Here is a list of events you can use as 'eid' and related sub events:
     replication is happening correctly.
     The following sub events are available:
 
-    * `VALKEYMODULE_SUBEVENT_MASTER_LINK_UP`
-    * `VALKEYMODULE_SUBEVENT_MASTER_LINK_DOWN`
+    * `VALKEYMODULE_SUBEVENT_PRIMARY_LINK_UP`
+    * `VALKEYMODULE_SUBEVENT_PRIMARY_LINK_DOWN`
 
 * `ValkeyModuleEvent_ModuleChange`
 
@@ -7009,7 +7098,7 @@ Here is a list of events you can use as 'eid' and related sub events:
     are now triggered when repl-diskless-load is set to swapdb.
 
     Called when repl-diskless-load config is set to swapdb,
-    And valkey needs to backup the current database for the
+    And the server needs to backup the current database for the
     possibility to be restored later. A module with global data and
     maybe with aux_load and aux_save callbacks may need to use this
     notification to backup / restore / discard its globals.
@@ -7023,7 +7112,7 @@ Here is a list of events you can use as 'eid' and related sub events:
 
     Called when repl-diskless-load config is set to swapdb and a replication with a master of same
     data set history (matching replication ID) occurs.
-    In which case valkey serves current data set while loading new database in memory from socket.
+    In which case the server serves current data set while loading new database in memory from socket.
     Modules must have declared they support this mechanism in order to activate it, through
     VALKEYMODULE_OPTIONS_HANDLE_REPL_ASYNC_LOAD flag.
     The following sub events are available:
@@ -7087,7 +7176,8 @@ is given then `VALKEYMODULE_ERR` is returned.
 
 ### `ValkeyModule_IsSubEventSupported`
 
-    int ValkeyModule_IsSubEventSupported(ValkeyModuleEvent event, int64_t subevent);
+    int ValkeyModule_IsSubEventSupported(ValkeyModuleEvent event,
+                                         int64_t subevent);
 
 **Available since:** 6.0.9
 
@@ -7104,21 +7194,21 @@ subevent is not supported and non-zero otherwise.
 ### `ValkeyModule_RegisterStringConfig`
 
     int ValkeyModule_RegisterStringConfig(ValkeyModuleCtx *ctx,
-                                         const char *name,
-                                         const char *default_val,
-                                         unsigned int flags,
-                                         ValkeyModuleConfigGetStringFunc getfn,
-                                         ValkeyModuleConfigSetStringFunc setfn,
-                                         ValkeyModuleConfigApplyFunc applyfn,
-                                         void *privdata);
+                                          const char *name,
+                                          const char *default_val,
+                                          unsigned int flags,
+                                          ValkeyModuleConfigGetStringFunc getfn,
+                                          ValkeyModuleConfigSetStringFunc setfn,
+                                          ValkeyModuleConfigApplyFunc applyfn,
+                                          void *privdata);
 
 **Available since:** 7.0.0
 
-Create a string config that Valkey users can interact with via the Valkey config file,
+Create a string config that users can interact with via the server config file,
 `CONFIG SET`, `CONFIG GET`, and `CONFIG REWRITE` commands.
 
 The actual config value is owned by the module, and the `getfn`, `setfn` and optional
-`applyfn` callbacks that are provided to Valkey in order to access or manipulate the
+`applyfn` callbacks that are provided to the server in order to access or manipulate the
 value. The `getfn` callback retrieves the value from the module, while the `setfn`
 callback provides a value to be stored into the module config.
 The optional `applyfn` callback is called after a `CONFIG SET` command modified one or
@@ -7129,7 +7219,7 @@ command, they will be deduplicated if their `applyfn` function and `privdata` po
 are identical, and the callback will only be run once.
 Both the `setfn` and `applyfn` can return an error if the provided value is invalid or
 cannot be used.
-The config also declares a type for the value that is validated by Valkey and
+The config also declares a type for the value that is validated by the server and
 provided to the module. The config system provides the following types:
 
 * String: Binary safe string data.
@@ -7140,7 +7230,7 @@ provided to the module. The config system provides the following types:
 The `setfn` callback is expected to return `VALKEYMODULE_OK` when the value is successfully
 applied. It can also return `VALKEYMODULE_ERR` if the value can't be applied, and the
 *err pointer can be set with a `ValkeyModuleString` error message to provide to the client.
-This `ValkeyModuleString` will be freed by valkey after returning from the set callback.
+This `ValkeyModuleString` will be freed by the server after returning from the set callback.
 
 All configs are registered with a name, a type, a default value, private data that is made
 available in the callbacks, as well as several flags that modify the behavior of the config.
@@ -7195,13 +7285,13 @@ errno is set:
 ### `ValkeyModule_RegisterBoolConfig`
 
     int ValkeyModule_RegisterBoolConfig(ValkeyModuleCtx *ctx,
-                                       const char *name,
-                                       int default_val,
-                                       unsigned int flags,
-                                       ValkeyModuleConfigGetBoolFunc getfn,
-                                       ValkeyModuleConfigSetBoolFunc setfn,
-                                       ValkeyModuleConfigApplyFunc applyfn,
-                                       void *privdata);
+                                        const char *name,
+                                        int default_val,
+                                        unsigned int flags,
+                                        ValkeyModuleConfigGetBoolFunc getfn,
+                                        ValkeyModuleConfigSetBoolFunc setfn,
+                                        ValkeyModuleConfigApplyFunc applyfn,
+                                        void *privdata);
 
 **Available since:** 7.0.0
 
@@ -7214,16 +7304,16 @@ Create a bool config that server clients can interact with via the
 ### `ValkeyModule_RegisterEnumConfig`
 
     int ValkeyModule_RegisterEnumConfig(ValkeyModuleCtx *ctx,
-                                       const char *name,
-                                       int default_val,
-                                       unsigned int flags,
-                                       const char **enum_values,
-                                       const int *int_values,
-                                       int num_enum_vals,
-                                       ValkeyModuleConfigGetEnumFunc getfn,
-                                       ValkeyModuleConfigSetEnumFunc setfn,
-                                       ValkeyModuleConfigApplyFunc applyfn,
-                                       void *privdata);
+                                        const char *name,
+                                        int default_val,
+                                        unsigned int flags,
+                                        const char **enum_values,
+                                        const int *int_values,
+                                        int num_enum_vals,
+                                        ValkeyModuleConfigGetEnumFunc getfn,
+                                        ValkeyModuleConfigSetEnumFunc setfn,
+                                        ValkeyModuleConfigApplyFunc applyfn,
+                                        void *privdata);
 
 **Available since:** 7.0.0
 
@@ -7231,8 +7321,8 @@ Create a bool config that server clients can interact with via the
 Create an enum config that server clients can interact with via the 
 `CONFIG SET`, `CONFIG GET`, and `CONFIG REWRITE` commands. 
 Enum configs are a set of string tokens to corresponding integer values, where 
-the string value is exposed to Valkey clients but the value passed Valkey and the
-module is the integer value. These values are defined in `enum_values`, an array
+the string value is exposed to clients but the inter value is passed to the server
+and the module. These values are defined in `enum_values`, an array
 of null-terminated c strings, and `int_vals`, an array of enum values who has an
 index partner in `enum_values`.
 Example Implementation:
@@ -7262,15 +7352,15 @@ See [`ValkeyModule_RegisterStringConfig`](#ValkeyModule_RegisterStringConfig) fo
 ### `ValkeyModule_RegisterNumericConfig`
 
     int ValkeyModule_RegisterNumericConfig(ValkeyModuleCtx *ctx,
-                                          const char *name,
-                                          long long default_val,
-                                          unsigned int flags,
-                                          long long min,
-                                          long long max,
-                                          ValkeyModuleConfigGetNumericFunc getfn,
-                                          ValkeyModuleConfigSetNumericFunc setfn,
-                                          ValkeyModuleConfigApplyFunc applyfn,
-                                          void *privdata);
+                                           const char *name,
+                                           long long default_val,
+                                           unsigned int flags,
+                                           long long min,
+                                           long long max,
+                                           ValkeyModuleConfigGetNumericFunc getfn,
+                                           ValkeyModuleConfigSetNumericFunc setfn,
+                                           ValkeyModuleConfigApplyFunc applyfn,
+                                           void *privdata);
 
 **Available since:** 7.0.0
 
@@ -7326,8 +7416,8 @@ Release an RDB stream object.
 ### `ValkeyModule_RdbLoad`
 
     int ValkeyModule_RdbLoad(ValkeyModuleCtx *ctx,
-                            ValkeyModuleRdbStream *stream,
-                            int flags);
+                             ValkeyModuleRdbStream *stream,
+                             int flags);
 
 **Available since:** 7.2.0
 
@@ -7350,8 +7440,8 @@ Example:
 ### `ValkeyModule_RdbSave`
 
     int ValkeyModule_RdbSave(ValkeyModuleCtx *ctx,
-                            ValkeyModuleRdbStream *stream,
-                            int flags);
+                             ValkeyModuleRdbStream *stream,
+                             int flags);
 
 **Available since:** 7.2.0
 
@@ -7438,7 +7528,7 @@ returns `VALKEYMODULE_OK` if when key is valid.
 
 Returns the full module options flags mask, using the return value
 the module can check if a certain set of module options are supported
-by the valkey server version in use.
+by the server version in use.
 Example:
 
        int supportedFlags = ValkeyModule_GetModuleOptionsAll();
@@ -7459,7 +7549,7 @@ Example:
 
 Returns the full ContextFlags mask, using the return value
 the module can check if a certain set of flags are supported
-by the valkey server version in use.
+by the server version in use.
 Example:
 
        int supportedFlags = ValkeyModule_GetContextFlagsAll();
@@ -7480,7 +7570,7 @@ Example:
 
 Returns the full KeyspaceNotification mask, using the return value
 the module can check if a certain set of flags are supported
-by the valkey server version in use.
+by the server version in use.
 Example:
 
        int supportedFlags = ValkeyModule_GetKeyspaceNotificationFlagsAll();
@@ -7499,7 +7589,7 @@ Example:
 **Available since:** 6.0.9
 
 
-Return the redis version in format of 0x00MMmmpp.
+Return the server version in format of 0x00MMmmpp.
 Example for 6.0.7 the return value will be 0x00060007.
 
 <span id="ValkeyModule_GetTypeMethodVersion"></span>
@@ -7511,7 +7601,7 @@ Example for 6.0.7 the return value will be 0x00060007.
 **Available since:** 6.2.0
 
 
-Return the current valkey-server runtime value of `VALKEYMODULE_TYPE_METHOD_VERSION`.
+Return the current server runtime value of `VALKEYMODULE_TYPE_METHOD_VERSION`.
 You can use that when calling [`ValkeyModule_CreateDataType`](#ValkeyModule_CreateDataType) to know which fields of
 `ValkeyModuleTypeMethods` are gonna be supported and which will be ignored.
 
@@ -7520,9 +7610,9 @@ You can use that when calling [`ValkeyModule_CreateDataType`](#ValkeyModule_Crea
 ### `ValkeyModule_ModuleTypeReplaceValue`
 
     int ValkeyModule_ModuleTypeReplaceValue(ValkeyModuleKey *key,
-                                           moduleType *mt,
-                                           void *new_value,
-                                           void **old_value);
+                                            moduleType *mt,
+                                            void *new_value,
+                                            void **old_value);
 
 **Available since:** 6.0.0
 
@@ -7548,10 +7638,10 @@ If `old_value` is non-NULL, the old value is returned by reference.
 ### `ValkeyModule_GetCommandKeysWithFlags`
 
     int *ValkeyModule_GetCommandKeysWithFlags(ValkeyModuleCtx *ctx,
-                                             ValkeyModuleString **argv,
-                                             int argc,
-                                             int *num_keys,
-                                             int **out_flags);
+                                              ValkeyModuleString **argv,
+                                              int argc,
+                                              int *num_keys,
+                                              int **out_flags);
 
 **Available since:** 7.0.0
 
@@ -7570,7 +7660,7 @@ as follows:
 * ENOENT: Specified command does not exist.
 * EINVAL: Invalid command arity specified.
 
-NOTE: The returned array is not a Valkey Module object so it does not
+NOTE: The returned array is not a Module object so it does not
 get automatically freed even when auto-memory is used. The caller
 must explicitly call [`ValkeyModule_Free()`](#ValkeyModule_Free) to free it, same as the `out_flags` pointer if
 used.
@@ -7580,9 +7670,9 @@ used.
 ### `ValkeyModule_GetCommandKeys`
 
     int *ValkeyModule_GetCommandKeys(ValkeyModuleCtx *ctx,
-                                    ValkeyModuleString **argv,
-                                    int argc,
-                                    int *num_keys);
+                                     ValkeyModuleString **argv,
+                                     int argc,
+                                     int *num_keys);
 
 **Available since:** 6.0.9
 
@@ -7607,7 +7697,7 @@ Return the name of the command currently running
 ### `ValkeyModule_RegisterDefragFunc`
 
     int ValkeyModule_RegisterDefragFunc(ValkeyModuleCtx *ctx,
-                                       ValkeyModuleDefragFunc cb);
+                                        ValkeyModuleDefragFunc cb);
 
 **Available since:** 6.2.0
 
@@ -7641,7 +7731,7 @@ so it generally makes sense to do small batches of work in between calls.
 ### `ValkeyModule_DefragCursorSet`
 
     int ValkeyModule_DefragCursorSet(ValkeyModuleDefragCtx *ctx,
-                                    unsigned long cursor);
+                                     unsigned long cursor);
 
 **Available since:** 6.2.0
 
@@ -7672,7 +7762,7 @@ not be performed.
 ### `ValkeyModule_DefragCursorGet`
 
     int ValkeyModule_DefragCursorGet(ValkeyModuleDefragCtx *ctx,
-                                    unsigned long *cursor);
+                                     unsigned long *cursor);
 
 **Available since:** 6.2.0
 
@@ -7706,9 +7796,9 @@ be used again.
 ### `ValkeyModule_DefragValkeyModuleString`
 
     ValkeyModuleString *ValkeyModule_DefragValkeyModuleString(ValkeyModuleDefragCtx *ctx,
-                                                           ValkeyModuleString *str);
+                                                              ValkeyModuleString *str);
 
-**Available since:** 6.2.0
+**Available since:** 7.2.5
 
 Defrag a `ValkeyModuleString` previously allocated by [`ValkeyModule_Alloc`](#ValkeyModule_Alloc), [`ValkeyModule_Calloc`](#ValkeyModule_Calloc), etc.
 See [`ValkeyModule_DefragAlloc()`](#ValkeyModule_DefragAlloc) for more information on how the defragmentation process
@@ -7718,7 +7808,7 @@ NOTE: It is only possible to defrag strings that have a single reference.
 Typically this means strings retained with [`ValkeyModule_RetainString`](#ValkeyModule_RetainString) or [`ValkeyModule_HoldString`](#ValkeyModule_HoldString)
 may not be defragmentable. One exception is command argvs which, if retained
 by the module, will end up with a single reference (because the reference
-on the Valkey side is dropped as soon as the command callback returns).
+on the server side is dropped as soon as the command callback returns).
 
 <span id="ValkeyModule_GetKeyNameFromDefragCtx"></span>
 
@@ -7752,6 +7842,7 @@ There is no guarantee that this info is always available, so this may return -1.
 * [`ValkeyModule_ACLCheckCommandPermissions`](#ValkeyModule_ACLCheckCommandPermissions)
 * [`ValkeyModule_ACLCheckKeyPermissions`](#ValkeyModule_ACLCheckKeyPermissions)
 * [`ValkeyModule_AbortBlock`](#ValkeyModule_AbortBlock)
+* [`ValkeyModule_AddACLCategory`](#ValkeyModule_AddACLCategory)
 * [`ValkeyModule_AddPostNotificationJob`](#ValkeyModule_AddPostNotificationJob)
 * [`ValkeyModule_Alloc`](#ValkeyModule_Alloc)
 * [`ValkeyModule_AuthenticateClientWithACLUser`](#ValkeyModule_AuthenticateClientWithACLUser)
@@ -7788,6 +7879,8 @@ There is no guarantee that this info is always available, so this may return -1.
 * [`ValkeyModule_Calloc`](#ValkeyModule_Calloc)
 * [`ValkeyModule_ChannelAtPosWithFlags`](#ValkeyModule_ChannelAtPosWithFlags)
 * [`ValkeyModule_CloseKey`](#ValkeyModule_CloseKey)
+* [`ValkeyModule_ClusterCanonicalKeyNameInSlot`](#ValkeyModule_ClusterCanonicalKeyNameInSlot)
+* [`ValkeyModule_ClusterKeySlot`](#ValkeyModule_ClusterKeySlot)
 * [`ValkeyModule_CommandFilterArgDelete`](#ValkeyModule_CommandFilterArgDelete)
 * [`ValkeyModule_CommandFilterArgGet`](#ValkeyModule_CommandFilterArgGet)
 * [`ValkeyModule_CommandFilterArgInsert`](#ValkeyModule_CommandFilterArgInsert)
@@ -7814,8 +7907,8 @@ There is no guarantee that this info is always available, so this may return -1.
 * [`ValkeyModule_DefragAlloc`](#ValkeyModule_DefragAlloc)
 * [`ValkeyModule_DefragCursorGet`](#ValkeyModule_DefragCursorGet)
 * [`ValkeyModule_DefragCursorSet`](#ValkeyModule_DefragCursorSet)
-* [`ValkeyModule_DefragValkeyModuleString`](#ValkeyModule_DefragValkeyModuleString)
 * [`ValkeyModule_DefragShouldStop`](#ValkeyModule_DefragShouldStop)
+* [`ValkeyModule_DefragValkeyModuleString`](#ValkeyModule_DefragValkeyModuleString)
 * [`ValkeyModule_DeleteKey`](#ValkeyModule_DeleteKey)
 * [`ValkeyModule_DictCompare`](#ValkeyModule_DictCompare)
 * [`ValkeyModule_DictCompareC`](#ValkeyModule_DictCompareC)
@@ -8076,6 +8169,8 @@ There is no guarantee that this info is always available, so this may return -1.
 * [`ValkeyModule_ThreadSafeContextUnlock`](#ValkeyModule_ThreadSafeContextUnlock)
 * [`ValkeyModule_TrimStringAllocation`](#ValkeyModule_TrimStringAllocation)
 * [`ValkeyModule_TryAlloc`](#ValkeyModule_TryAlloc)
+* [`ValkeyModule_TryCalloc`](#ValkeyModule_TryCalloc)
+* [`ValkeyModule_TryRealloc`](#ValkeyModule_TryRealloc)
 * [`ValkeyModule_UnblockClient`](#ValkeyModule_UnblockClient)
 * [`ValkeyModule_UnlinkKey`](#ValkeyModule_UnlinkKey)
 * [`ValkeyModule_UnregisterCommandFilter`](#ValkeyModule_UnregisterCommandFilter)

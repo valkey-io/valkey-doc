@@ -1,10 +1,7 @@
 ---
 title: "Valkey history"
 linkTitle: "History"
-weight: 4
 description: How the Valkey project started
-aliases:
-    - /topics/history
 ---
 
 Valkey is a fork of the open-source Redis (REmote DIctionary Server) database
@@ -38,7 +35,7 @@ Early contributions and sponsorships
 During 2009, Engine Yard contributed blocking POP (BLPOP) and part of the
 Virtual Memory implementation (later deleted), Hitmeister contributed part of
 the Cluster implementation and Citrusbyte contributed part of Virtual Memory
-implementation. In 2010, Slicehost (aquired by Rackspace) provided Virtual
+implementation. In 2010, Slicehost (acquired by Rackspace) provided Virtual
 Machines for testing in a virtualized environment and Linode provided virtual
 machines for testing in a virtualized environment. Also thanks to the following
 people or organizations that donated to the Project: Emil Vladev, [Brad
@@ -79,7 +76,7 @@ database services based on Redis. In 2013, Garantia Data was changing its name
 to RedisDB, but [decided to withdraw the change][redisdb] after complaints by
 Sanfilippo:
 
-[redisdb]: https://techcrunch.com/2014/01/29/database-provider-garantia-data-makes-another-name-change-this-time-to-redis-labs/
+[redisdb]: https://www.forbes.com/sites/benkepes/2013/11/04/was-garantia-is-now-redisdb-either-way-nosql-is-hot/
 
 > If this is true, it is not a good thing as the current informal rule was: use
 > "Redis" in company names that are selling Redis services, but in a way that
@@ -93,7 +90,7 @@ Sanfilippo:
 
 The following year, 2014, Garantia Data [changed its name to Redis Labs][redislabs].
 
-[redislabs]: https://techcrunch.com/2014/01/29/database-provider-garantia-data-makes-another-name-change-this-time-to-redis-labs/)
+[redislabs]: https://techcrunch.com/2014/01/29/database-provider-garantia-data-makes-another-name-change-this-time-to-redis-labs/
 
 In 2015, Salvatore left Pivotal for Redis Labs. He writes in his blog post
 [Thanks Pivotal, Hello Redis Labs](http://antirez.com/news/91):
@@ -129,7 +126,7 @@ Itamar Haber from Redis Labs, Zhao Zhao from Alibaba and Madelyn Olson from
 Amazon. The members were selected “based on demonstrated, long-term personal
 involvement and contributions”. This was described in the projects
 [Governance][governance-2020] page which was the inspiration for the current
-[Valkey governance](valkey-governance).
+[Valkey governance][valkey-governance].
 
 [governance-2020]: https://web.archive.org/web/20200709170526/https://redis.io/topics/governance
 [valkey-governance]: https://github.com/valkey-io/valkey/blob/unstable/GOVERNANCE.md
@@ -145,7 +142,7 @@ The end of open source Redis
 In 2024, Redis Ltd. changed the license of Redis from the open source BSD
 license to dual source-available licenses. This was announced in a blog post
 [Redis Adopts Dual Source-Available Licensing][redis-source-avail] and the
-license change was [commited to the repository][change-license-pr] the same day.
+license change was [committed to the repository][change-license-pr] the same day.
 
 [redis-source-avail]: https://redis.io/blog/redis-adopts-dual-source-available-licensing/
 [change-license-pr]: https://github.com/redis/redis/pull/13157

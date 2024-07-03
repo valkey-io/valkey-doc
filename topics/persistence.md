@@ -1,14 +1,7 @@
 ---
 title: Valkey persistence
 linkTitle: Persistence
-weight: 7
 description: How Valkey writes data to disk
-aliases: [
-    /topics/persistence,
-    /topics/persistence.md,
-    /docs/manual/persistence,
-    /docs/manual/persistence.md
-]
 ---
 
 Persistence refers to the writing of data to durable storage, such as a solid-state disk (SSD). Valkey provides a range of persistence options. These include:
@@ -26,7 +19,7 @@ To learn more about how to evaluate your Valkey persistence strategy, read on.
 * RDB is very good for disaster recovery, being a single compact file that can be transferred to far data centers, or onto Amazon S3 (possibly encrypted).
 * RDB maximizes Valkey performances since the only work the Valkey parent process needs to do in order to persist is forking a child that will do all the rest. The parent process will never perform disk I/O or alike.
 * RDB allows faster restarts with big datasets compared to AOF.
-* On replicas, RDB supports [partial resynchronizations after restarts and failovers](https://valkey.io/topics/replication#partial-resynchronizations-after-restarts-and-failovers).
+* On replicas, RDB supports [partial resynchronizations after restarts and failovers](replication.md#partial-resynchronizations-after-restarts-and-failovers).
 
 ## RDB disadvantages
 

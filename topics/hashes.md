@@ -1,7 +1,6 @@
 ﻿---
 title: "Hashes"
 linkTitle: "Hashes"
-weight: 40
 description: >
     Introduction to Hashes
 ---
@@ -63,7 +62,7 @@ encoded in special way in memory that make them very memory efficient.
 * `HMGET` returns the values at one or more given fields.
 * `HINCRBY` increments the value at a given field by the integer provided.
 
-See the [complete list of hash commands](../commands/?group=hash).
+See the [complete list of hash commands](../commands/#hash).
 
 
 ## Examples

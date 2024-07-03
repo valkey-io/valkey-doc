@@ -1,12 +1,8 @@
 ---
 title: "Install Valkey"
 linkTitle: "Install Valkey"
-weight: 1
 description: >
     Install Valkey on Linux, macOS, and Windows
-aliases:
-- /docs/getting-started/installation
-- /docs/getting-started/tutorial
 ---
 
 This is a an installation guide. You'll learn how to install, run, and experiment with the Valkey server process.
@@ -86,7 +82,7 @@ Note that a Valkey instance exposed to the internet without any security [is ver
 
 Of course using Valkey just from the command line interface is not enough as the goal is to use it from your application. To do so, you need to download and install a Valkey client library for your programming language.
 
-You'll find a [full list of clients for different languages in this page](/clients/).
+You'll find a [full list of clients for different languages in this page](../clients/).
 
 
 ## Valkey persistence

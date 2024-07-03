@@ -1,7 +1,6 @@
 ---
 title: "Sorted Sets"
 linkTitle: "Sorted sets"
-weight: 50
 description: >
     Introduction to Sorted Sets
 ---
@@ -143,11 +142,11 @@ the elements sorted in a descending way.
 
 ### Lexicographical scores
 
-In version Redis OSS 2.8, a new feature was introduced that allows
+A family of commands allow
 getting ranges lexicographically, assuming elements in a sorted set are all
-inserted with the same identical score (elements are compared with the C
+inserted with the same identical score. Elements are compared with the C
 `memcmp` function, so it is guaranteed that there is no collation, and every
-Valkey instance will reply with the same output).
+Valkey instance will reply with the same output.
 
 The main commands to operate with lexicographical ranges are `ZRANGEBYLEX`,
 `ZREVRANGEBYLEX`, `ZREMRANGEBYLEX` and `ZLEXCOUNT`.
@@ -223,7 +222,7 @@ You'll see that `ZADD` returns 0 when the member already exists (the score is up
 * `ZRANK` returns the rank of the provided member, assuming the sorted is in ascending order.
 * `ZREVRANK` returns the rank of the provided member, assuming the sorted set is in descending order.
  
-See the [complete list of sorted set commands](../commands/?group=sorted-set).
+See the [complete list of sorted set commands](../commands/#sorted-set).
 
 ## Performance
 

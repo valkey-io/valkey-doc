@@ -28,8 +28,8 @@ Note that calling `EXPIRE`/`PEXPIRE` with a non-positive timeout or
 [deleted][del] rather than expired (accordingly, the emitted [key event][ntf]
 will be `del`, not `expired`).
 
-[del]: /commands/del
-[ntf]: /topics/notifications
+[del]: del.md
+[ntf]: ../topics/notifications.md
 
 ## Options
 

@@ -1,14 +1,11 @@
 ---
-title: "Valkey serialization protocol specification"
+title: "Serialization protocol specification"
 linkTitle: "Protocol spec"
-weight: 4
-description: Valkey serialization protocol (RESP) is the wire protocol that clients implement
-aliases:
-    - /topics/protocol
----
+description: Valkey's serialization protocol (RESP) is the wire protocol that clients implement
+----
 
 To communicate with the Valkey server, Valkey clients use a protocol called REdis Serialization Protocol (RESP).
-While the protocol was designed specifically for Valkey, you can use it for other client-server software projects.
+While the protocol was designed for Redis, it's used by many other client-server software projects.
 
 RESP is a compromise among the following considerations:
 
@@ -31,10 +28,10 @@ The protocol outlined here is used only for client-server communication.
 [Valkey Cluster](cluster-spec.md) uses a different binary protocol for exchanging messages between nodes.
 
 ## RESP versions
-Support for the first version of the RESP protocol was introduced in Redis OSS 1.2.
-Using RESP with Redis OSS 1.2 was optional and had mainly served the purpose of working the kinks out of the protocol.
 
-In Redis OSS 2.0, the protocol's next version, a.k.a RESP2, became the standard communication method for clients with the Valkey server.
+The first version of the RESP protocol was experimental and was never widely used.
+
+The next version, RESP2, early became the standard communication method for clients with Redis OSS.
 
 [RESP3](https://github.com/redis/redis-specifications/blob/master/protocol/RESP3.md) is a superset of RESP2 that mainly aims to make a client author's life a little bit easier.
 Redis OSS 6.0 introduced experimental opt-in support of RESP3's features (excluding streaming strings and streaming aggregates).
@@ -64,13 +61,17 @@ This is the simplest model possible; however, there are some exceptions:
 * The `MONITOR` command.
   Invoking the `MONITOR` command switches the connection to an ad-hoc push mode.
   The protocol of this mode is not specified but is obvious to parse.
-* [Protected mode](/docs/management/security/#protected-mode).
+* [Protected mode](security.md#protected-mode).
   Connections opened from a non-loopback address to a Valkey while in protected mode are denied and terminated by the server.
   Before terminating the connection, Valkey unconditionally sends a `-DENIED` reply, regardless of whether the client writes to the socket.
-* The [RESP3 Push type](#resp3-pushes).
+* The [RESP3 Push type](#pushes).
   As the name suggests, a push type allows the server to send out-of-band data to the connection.
   The server may push data at any time, and the data isn't necessarily related to specific commands executed by the client.
-  
+* When RESP3 is used, the commands `SUBSCRIBE`, `UNSUBSCRIBE` and their pattern and sharded variants,
+  return either an error reply *or one or more Push replies, without any regular in-band reply*.
+  This is considered a design mistake of these commands but the behaviour is kept for backward compatibility.
+  Clients need to compensate for this behaviour.
+
 Excluding these exceptions, the Valkey protocol is a simple request-response protocol.
 
 ## RESP protocol description
@@ -124,8 +125,6 @@ The following table summarizes the RESP data types that Valkey supports:
 | [Sets](#sets) | RESP3 | Aggregate | `~` |
 | [Pushes](#pushes) | RESP3 | Aggregate | `>` |
 
-<a name="simple-string-reply"></a>
-
 ### Simple strings
 Simple strings are encoded as a plus (`+`) character, followed by a string.
 The string mustn't contain a CR (`\r`) or LF (`\n`) character and is terminated by CRLF (i.e., `\r\n`).
@@ -139,8 +138,6 @@ The encoding of this Simple String is the following 5 bytes:
 When Valkey replies with a simple string, a client library should return to the caller a string value composed of the first character after the `+` up to the end of the string, excluding the final CRLF bytes.
 
 To send binary strings, use [bulk strings](#bulk-strings) instead.
-
-<a name="error-reply"></a>
 
 ### Simple errors
 RESP has specific data types for errors.
@@ -171,8 +168,6 @@ A client implementation can return different types of exceptions for various err
 However, such a feature should not be considered vital as it is rarely useful. 
 Also, simpler client implementations can return a generic error value, such as `false`.
 
-<a name="integer-reply"></a>
-
 ### Integers
 This type is a CRLF-terminated string that represents a signed, base-10, 64-bit integer.
 
@@ -197,8 +192,6 @@ For instance, `SISMEMBER` returns 1 for true and 0 for false.
 
 Other commands, including `SADD`, `SREM`, and `SETNX`, return 1 when the data changes and 0 otherwise.
 
-<a name="bulk-string-reply"></a>
-
 ### Bulk strings
 A bulk string represents a single binary string.
 The string can be of any size, but by default, Valkey limits it to 512 MB (see the `proto-max-bulk-len` configuration directive).
@@ -222,22 +215,6 @@ The empty string's encoding is:
     $0\r\n\r\n
 
 <a name="nil-reply"></a>
-
-#### Null bulk strings
-Whereas RESP3 has a dedicated data type for [null values](#nulls), RESP2 has no such type.
-Instead, due to historical reasons, the representation of null values in RESP2 is via predetermined forms of the [bulk strings](#bulk-strings) and [arrays](#arrays) types.
-
-The null bulk string represents a non-existing value.
-The `GET` command returns the Null Bulk String when the target key doesn't exist.
-
-It is encoded as a bulk string with the length of negative one (-1), like so:
-
-    $-1\r\n
-
-A Valkey client should return a nil object when the server replies with a null bulk string rather than the empty string.
-For example, a Ruby library should return `nil` while a C library should return `NULL` (or set a special flag in the reply object).
-
-<a name="array-reply"></a>
 
 ### Arrays
 Clients send commands to the Valkey server as RESP arrays.
@@ -305,7 +282,33 @@ The second element is another array containing a simple string and an error.
 In some places, the RESP Array type may be referred to as _multi bulk_.
 The two are the same.
 
-<a name="nil-array-reply"></a>
+### Nulls
+The null data type represents non-existent values.
+
+In RESP3, null is encoded using the underscore (`_`) character, followed by the CRLF terminator (`\r\n`).
+Here's null's raw RESP encoding:
+
+    _\r\n
+
+RESP2 features two specially crafted values for representing null values,
+known as "null bulk strings" and "null arrays".
+This duality has always been a redundancy that added zero semantical value to the protocol itself.
+The null type, introduced in RESP3, aims to fix this wrong.
+Clients should handle all these representations of null in the same way.
+For example, a Ruby library should return `nil` while a C library should return `NULL` (or set a special flag in the reply object).
+
+#### Null bulk strings
+Whereas RESP3 has a dedicated data type for [null values](#nulls), RESP2 has no such type.
+Instead, due to historical reasons, the representation of null values in RESP2 is via predetermined forms of the [bulk strings](#bulk-strings) and [arrays](#arrays) types.
+
+The null bulk string represents a non-existing value.
+The `GET` command returns the Null Bulk String when the target key doesn't exist.
+
+It is encoded as a bulk string with the length of negative one (-1), like so:
+
+    $-1\r\n
+
+A Valkey client should return a nil object when the server replies with a null bulk string rather than the empty string.
 
 #### Null arrays
 Whereas RESP3 has a dedicated data type for [null values](#nulls), RESP2 has no such type. Instead, due to historical reasons, the representation of null values in RESP2 is via predetermined forms of the [Bulk Strings](#bulk-strings) and [arrays](#arrays) types.
@@ -313,19 +316,18 @@ Whereas RESP3 has a dedicated data type for [null values](#nulls), RESP2 has no 
 Null arrays exist as an alternative way of representing a null value.
 For instance, when the `BLPOP` command times out, it returns a null array.
 
-The encoding of a null array is that of an array with the length of -1, i.e.:
+The encoding of a null array is that of an array with the length of -1, i.e.
 
     *-1\r\n
 
 When Valkey replies with a null array, the client should return a null object rather than an empty array.
-This is necessary to distinguish between an empty list and a different condition (for instance, the timeout condition of the `BLPOP` command).
 
 #### Null elements in arrays
-Single elements of an array may be [null bulk string](#null-bulk-strings).
+Single elements of an array may be [null](#nulls).
 This is used in Valkey replies to signal that these elements are missing and not empty strings. This can happen, for example, with the `SORT` command when used with the `GET pattern` option
 if the specified key is missing.
 
-Here's an example of an array reply containing a null element:
+Here's an example of an array reply containing a null element, represented as a RESP2 null bulk string:
 
     *3\r\n
     $5\r\n
@@ -339,23 +341,6 @@ The client library should return to its caller something like this:
 
     ["hello",nil,"world"]
 
-<a name="null-reply"></a>
-
-### Nulls
-The null data type represents non-existent values.
-
-Nulls' encoding is the underscore (`_`) character, followed by the CRLF terminator (`\r\n`).
-Here's Null's raw RESP encoding:
-
-    _\r\n
-
-**Note:**
-Due to historical reasons, RESP2 features two specially crafted values for representing null values of bulk strings and arrays.
-This duality has always been a redundancy that added zero semantical value to the protocol itself.
-The null type, introduced in RESP3, aims to fix this wrong.
-
-<a name="boolean-reply">
-
 ### Booleans
 RESP booleans are encoded as follows:
 
@@ -364,8 +349,6 @@ RESP booleans are encoded as follows:
 * The octothorpe character (`#`) as the first byte.
 * A `t` character for true values, or an `f` character for false ones.
 * The CRLF terminator.
-
-<a name="double-reply"></a>
 
 ### Doubles
 The Double RESP type encodes a double-precision floating point value.
@@ -419,8 +402,6 @@ Big numbers can be positive or negative but can't include fractionals.
 Client libraries written in languages with a big number type should return a big number.
 When big numbers aren't supported, the client should return a string and, when possible, signal to the caller that the reply is a big integer (depending on the API used by the client library).
 
-<a name="bulk-error-reply"></a>
-
 ### Bulk errors
 This type combines the purpose of [simple errors](#simple-errors) with the expressive power of [bulk strings](#bulk-strings).
 
@@ -442,8 +423,6 @@ For instance, the error "SYNTAX invalid syntax" is represented by the following 
     SYNTAX invalid syntax\r\n
 
 (The raw RESP encoding is split into multiple lines for readability).
-
-<a name="verbatim-string-reply">
 
 ### Verbatim strings
 This type is similar to the [bulk string](#bulk-strings), with the addition of providing a hint about the data's encoding.
@@ -473,8 +452,6 @@ However, interactive clients, such as command line interfaces (e.g., [`valkey-cl
 For example, the Valkey command `INFO` outputs a report that includes newlines.
 When using RESP3, `valkey-cli` displays it correctly because it is sent as a Verbatim String reply (with its three bytes being "txt").
 When using RESP2, however, the `valkey-cli` is hard-coded to look for the `INFO` command to ensure its correct display to the user.
-
-<a name="map-reply"></a>
 
 ### Maps
 The RESP map encodes a collection of key-value tuples, i.e., a dictionary or a hash.
@@ -515,8 +492,6 @@ RESP2 doesn't have a map type.
 A map in RESP2 is represented by a flat array containing the keys and the values.
 The first element is a key, followed by the corresponding value, then the next key and so on, like this:
 `key1, value1, key2, value2, ...`.
-
-<a name="set-reply"></a>
 
 ### Sets
 Sets are somewhat like [Arrays](#arrays) but are unordered and should only contain unique elements.
@@ -572,7 +547,7 @@ If we specify a connection version that is too big and unsupported by the server
 
     Client: HELLO 4
     Server: -NOPROTO sorry, this protocol version is not supported.
-    
+
 At that point, the client may retry with a lower protocol version.
 
 Similarly, the client can easily detect a server that is only able to speak RESP2:

@@ -1,13 +1,7 @@
 ---
 title: Key eviction
 linkTitle: Eviction
-weight: 6
 description: Overview of Valkey key eviction policies (LRU, LFU, etc.)
-aliases: [
-    /topics/lru_cache,
-    /topics/lru_cache.md,
-    /docs/manual/eviction
-]
 ---
 
 When Valkey is used as a cache, it is often convenient to let it automatically
@@ -56,6 +50,8 @@ The following policies are available:
 * **volatile-ttl**: Removes keys with `expire` field set to `true` and the shortest remaining time-to-live (TTL) value.
 
 The policies **volatile-lru**, **volatile-lfu**, **volatile-random**, and **volatile-ttl** behave like **noeviction** if there are no keys to evict matching the prerequisites.
+
+**LRU**, **LFU** and **volatile-ttl** are implemented using approximated randomized algorithms.
 
 Picking the right eviction policy is important depending on the access pattern
 of your application, however you can reconfigure the policy at runtime while

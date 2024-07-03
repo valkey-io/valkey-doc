@@ -69,7 +69,7 @@ native programming language. Symmetrically, it is also possible to set an entire
 bitmap by performing the bits-to-bytes encoding in the client and calling `SET`
 with the resultant string.
 
-[ti]: /topics/data-types-intro#bitmaps
+[ti]: ../topics/data-types.md#bitmaps
 
 ## Pattern: setting multiple bits
 

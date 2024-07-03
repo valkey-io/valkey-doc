@@ -2,7 +2,7 @@ Instruct Valkey to start an [Append Only File][tpaof] rewrite process.
 The rewrite will create a small optimized version of the current Append Only
 File.
 
-[tpaof]: /topics/persistence#append-only-file
+[tpaof]: ../topics/persistence.md#append-only-file
 
 If `BGREWRITEAOF` fails, no data gets lost as the old AOF will be untouched.
 
@@ -21,5 +21,5 @@ The AOF rewrite is automatically triggered by Valkey, however the
 
 Please refer to the [persistence documentation][tp] for detailed information.
 
-[tp]: /topics/persistence
+[tp]: ../topics/persistence.md
 

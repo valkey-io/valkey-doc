@@ -184,7 +184,7 @@ When using `HSCAN`, you can use the `NOVALUES` option to make Valkey return only
 
 ```
 127.0.0.1:6379> HSET myhash a 1 b 2
-OK
+(integer) 2
 127.0.0.1:6379> HSCAN myhash 0
 1) "0"
 2) 1) "a"
@@ -192,6 +192,25 @@ OK
    3) "b"
    4) "2"
 127.0.0.1:6379> HSCAN myhash 0 NOVALUES
+1) "0"
+2) 1) "a"
+   2) "b"
+```
+
+## The NOSCORES option
+
+When using `ZSCAN`, you can use the `NOSCORES` option to make Valkey return only the members in the sorted set without their corresponding scores.
+
+```
+127.0.0.1:6379> ZADD myzset 1 a 2 b
+(integer) 2
+127.0.0.1:6379> ZSCAN myzset 0
+1) "0"
+2) 1) "a"
+   2) "1"
+   3) "b"
+   4) "2"
+127.0.0.1:6379> ZSCAN myzset 0 NOSCORES
 1) "0"
 2) 1) "a"
    2) "b"
