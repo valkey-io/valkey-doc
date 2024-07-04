@@ -24,7 +24,7 @@ The blocking of global variables is in place to ensure that scripts and function
 In the (somewhat uncommon) use case that a context needs to be maintain between executions,
 you should store the context in Valkey' keyspace.
 
-Valkey will return a "Script attempted to create global variable 'my_global_variable" error when trying to execute the following snippet:
+Valkey will return an error when trying to execute the following snippet:
 
 ```lua
 my_global_variable = 'some value'
@@ -46,7 +46,7 @@ return an_undefined_global_variable
 ```
 
 Instead, all variable and function definitions are required to be declared as local.
-To do so, you'll need to prepend the [_local_](https://www.lua.org/manual/5.1/manual.html#2.4.7) keyword to your declarations.
+To do so, you'll need to prepend the [`local`](https://www.lua.org/manual/5.1/manual.html#2.4.7) keyword to your declarations.
 For example, the following snippet will be considered perfectly valid by Valkey:
 
 ```lua
@@ -75,19 +75,11 @@ The only libraries that Valkey ships with and that you can use in scripts are li
 
 While the sandbox prevents users from declaring globals, the execution context is pre-populated with several of these.
 
-### The _server_ singleton
+For some of them, a "since version" is specified.
+The ones without "since version" specified are available in all maintained versions.
 
-The _server_ singleton is an object instance that's accessible from all scripts.
-It provides the API to interact with Valkey from scripts.
-Its description follows [below](#server_object).
+### <a name="the-keys-global-variable"></a>The `KEYS` global variable
 
-**Note:**
-For compatibility with Redis, Valkey also exposes a _redis_ top level object, that exposes the exact same set of APIs as the _server_ object.
-Valkey does not intend to drop compatibility for this _redis_ API, but it is recommended to use the _server_ object for newly developed scripts.
-
-### <a name="the-keys-global-variable"></a>The _KEYS_ global variable
-
-* Since version: 2.6.0
 * Available in scripts: yes
 * Available in functions: no
 
@@ -96,31 +88,35 @@ to ensure the correct execution of scripts, both in standalone and clustered dep
 The script **should only** access keys whose names are given as input arguments.
 Scripts **should never** access keys with programmatically-generated names or based on the contents of data structures stored in the database.
 
-The _KEYS_ global variable is available only for [ephemeral scripts](eval-intro.md).
+The `KEYS` global variable is available only for [ephemeral scripts](eval-intro.md).
 It is pre-populated with all key name input arguments.
 
-### <a name="the-argv-global-variable"></a>The _ARGV_ global variable
+### <a name="the-argv-global-variable"></a>The `ARGV` global variable
 
-* Since version: 2.6.0
 * Available in scripts: yes
 * Available in functions: no
 
-The _ARGV_ global variable is available only in [ephemeral scripts](eval-intro.md).
+The `ARGV` global variable is available only in [ephemeral scripts](eval-intro.md).
 It is pre-populated with all regular input arguments.
 
-## <a name="server_object"></a>_server_ object
+### The `server` singleton
 
-* Since version: 2.6.0
+* Since version: 7.2.5
 * Available in scripts: yes
 * Available in functions: yes
 
-The Valkey Lua execution context always provides a singleton instance of an object named _server_.
-The _server_ instance enables the script to interact with the Valkey server that's running it.
-Following is the API provided by the _server_ object instance.
+The `server` singleton is an object instance that's accessible from all scripts.
+It provides the API to interact with Valkey from scripts.
+Following is the API provided by the `server` object instance.
+
+**Note:**
+For compatibility with Redis, Valkey also exposes a `redis` top-level object, that exposes the exact same set of APIs as the `server` object.
+Valkey does not intend to drop compatibility for this `redis` API, but it is recommended to use the `server` object for newly developed scripts.
+
+## <a name="server_object"></a> `server` object fields (functions and variables)
 
 ### <a name="server.call"></a> `server.call(command [,arg...])`
 
-* Since version: 2.6.0
 * Available in scripts: yes
 * Available in functions: yes
 
@@ -147,7 +143,6 @@ To handle Valkey runtime errors use `server.pcall()` instead.
 
 ### <a name="server.pcall"></a> `server.pcall(command [,arg...])`
 
-* Since version: 2.6.0
 * Available in scripts: yes
 * Available in functions: yes
 
@@ -178,14 +173,13 @@ Evaluating this script with more than one argument will return:
 
 ### <a name="server.error_reply"></a> `server.error_reply(x)`
 
-* Since version: 2.6.0
 * Available in scripts: yes
 * Available in functions: yes
 
 This is a helper function that returns an [error reply](protocol.md#simply-errors).
-The helper accepts a single string argument and returns a Lua table with the _err_ field set to that string.
+The helper accepts a single string argument and returns a Lua table with the `err` field set to that string.
 
-The outcome of the following code is that _error1_ and _error2_ are identical for all intents and purposes:
+The outcome of the following code is that `error1` and `error2` are identical for all intents and purposes:
 
 ```lua
 local text = 'ERR My very special error'
@@ -211,15 +205,14 @@ Scripts are advised to follow this convention, as shown in the example above, bu
 
 ### <a name="server.status_reply"></a> `server.status_reply(x)`
 
-* Since version: 2.6.0
 * Available in scripts: yes
 * Available in functions: yes
 
 This is a helper function that returns a [simple string reply](protocol.md#simple-strings).
 "OK" is an example of a standard Valkey status reply.
-The Lua API represents status replies as tables with a single field, _ok_, set with a simple status string.
+The Lua API represents status replies as tables with a single field, `ok`, set with a simple status string.
 
-The outcome of the following code is that _status1_ and _status2_ are identical for all intents and purposes:
+The outcome of the following code is that `status1` and `status2` are identical for all intents and purposes:
 
 ```lua
 local text = 'Frosty'
@@ -241,7 +234,6 @@ Refer to the [Data type conversion](#data-type-conversion) for returning other r
 
 ### <a name="server.sha1hex"></a> `server.sha1hex(x)`
 
-* Since version: 2.6.0
 * Available in scripts: yes
 * Available in functions: yes
 
@@ -256,7 +248,6 @@ You can, for example, obtain the empty string's SHA1 digest:
 
 ### <a name="server.log"></a> `server.log(level, message)`
 
-* Since version: 2.6.0
 * Available in scripts: yes
 * Available in functions: yes
 
@@ -288,7 +279,6 @@ will produce a line similar to the following in your server's log:
 
 ### <a name="server.setresp"></a> `server.setresp(x)`
 
-* Since version: 6.0.0
 * Available in scripts: yes
 * Available in functions: yes
 
@@ -306,33 +296,13 @@ Please refer to the [Data type conversion](#data-type-conversion) for more infor
 
 ### <a name="server.set_repl"></a> `server.set_repl(x)`
 
-* Since version: 3.2.0
 * Available in scripts: yes
 * Available in functions: no
 
 **Note:**
-this feature is only available when script effects replication is employed.
-Calling it when using verbatim script replication will result in an error.
-As of Redis OSS version 2.6.0, scripts were replicated verbatim, meaning that the scripts' source code was sent for execution by replicas and stored in the AOF.
-An alternative replication mode added in version 3.2.0 allows replicating only the scripts' effects.
-As of Redis OSS version 7.0, script replication is no longer supported, and the only replication mode available is script effects replication.
-
-**Warning:**
-this is an advanced feature. Misuse can cause damage by violating the contract that binds the Valkey master, its replicas, and AOF contents to hold the same logical content.
-
-This function allows a script to assert control over how its effects are propagated to replicas and the AOF afterward.
-A script's effects are the Valkey write commands that it calls.
-
-By default, all write commands that a script executes are replicated.
-Sometimes, however, better control over this behavior can be helpful.
-This can be the case, for example, when storing intermediate values in the master alone.
-
-Consider a script that intersects two sets and stores the result in a temporary key with `SUNIONSTORE`.
-It then picks five random elements (`SRANDMEMBER`) from the intersection and stores (`SADD`) them in another set.
-Finally, before returning, it deletes the temporary key that stores the intersection of the two source sets.
-
-In this case, only the new set with its five randomly-chosen elements needs to be replicated.
-Replicating the `SUNIONSTORE` command and the `DEL`ition of the temporary key is unnecessary and wasteful.
+Script replication is no longer supported.
+The only replication mode available is script effects replication.
+This feature is only available in Redis OSS versions prior to 7.0 which supported and used verbatim script replication by default.
 
 The `server.set_repl()` function instructs the server how to treat subsequent write commands in terms of replication.
 It accepts a single input argument that only be one of the following:
@@ -361,22 +331,20 @@ If you run this script by calling `EVAL "..." 3 A B C 1 2 3`, the result will be
 
 ### <a name="server.replicate_commands"></a> `server.replicate_commands()`
 
-* Since version: 3.2.0
 * Until version: 7.0.0
 * Available in scripts: yes
 * Available in functions: no
 
 This function switches the script's replication mode from verbatim replication to effects replication.
-You can use it to override the default verbatim script replication mode used by Valkey until version 7.0.
+You can use it to override the default verbatim script replication mode used by Redis OSS until version 7.0.
 
 **Note:**
-as of Redis OSS v7.0, verbatim script replication is no longer supported.
-The default, and only script replication mode supported, is script effects' replication.
+Verbatim script replication is no longer supported.
+The only script replication mode supported is script effects' replication.
 For more information, please refer to [`Replicating commands instead of scripts`](eval-intro.md#replicating-commands-instead-of-scripts)
 
 ### <a name="server.breakpoint"></a>  `server.breakpoint()`
 
-* Since version: 3.2.0
 * Available in scripts: yes
 * Available in functions: no
 
@@ -384,7 +352,6 @@ This function triggers a breakpoint when using the [Valkey Lua debugger](ldb.md)
 
 ### <a name="server.debug"></a> `server.debug(x)`
 
-* Since version: 3.2.0
 * Available in scripts: yes
 * Available in functions: no
 
@@ -504,6 +471,7 @@ Please refer to [Function Flags](functions-intro.md#function-flags) and [Eval Fl
 
 ### <a name="server.server_version"></a> `server.SERVER_VERSION`
 
+* Since version: 7.2.5
 * Available in scripts: yes
 * Available in functions: yes
 
@@ -516,7 +484,7 @@ The reply's format is `MM.mm.PP`, where:
 
 ### <a name="server.redis_version"></a> `server.REDIS_VERSION`
 
-* Since version: 7.0.0 (if accessed as `redis.REDIS_VERSION`)
+* Since version: 7.0.0
 * Available in scripts: yes
 * Available in functions: yes
 
@@ -529,6 +497,7 @@ The reply's format is `MM.mm.PP`, where:
 
 ### <a name="server.redis_version_num"></a> `server.SERVER_VERSION_NUM`
 
+* Since version: 7.2.5
 * Available in scripts: yes
 * Available in functions: yes
 
@@ -541,7 +510,7 @@ The reply is a hexadecimal value structured as `0x00MMmmPP`, where:
 
 ### <a name="server.redis_version_num"></a> `server.REDIS_VERSION_NUM`
 
-* Since version: 7.0.0 (if accessed as `redis.REDIS_VERSION_NUM`)
+* Since version: 7.0.0
 * Available in scripts: yes
 * Available in functions: yes
 
@@ -555,13 +524,13 @@ The reply is a hexadecimal value structured as `0x00MMmmPP`, where:
 ## Data type conversion
 
 Unless a runtime exception is raised, `server.call()` and `server.pcall()` return the reply from the executed command to the Lua script.
-Valkey' replies from these functions are converted automatically into Lua's native data types.
+Valkey's replies from these functions are converted automatically into Lua's native data types.
 
 Similarly, when a Lua script returns a reply with the `return` keyword,
-that reply is automatically converted to Valkey' protocol.
+that reply is automatically converted to RESP protocol.
 
-Put differently; there's a one-to-one mapping between Valkey' replies and Lua's data types and a one-to-one mapping between Lua's data types and the [Valkey Protocol](protocol.md) data types.
-The underlying design is such that if a Valkey type is converted into a Lua type and converted back into a Valkey type, the result is the same as the initial value.
+Put differently: There's a one-to-one mapping between Valkey's replies and Lua's data types and a one-to-one mapping between Lua's data types and the [RESP Protocol](protocol.md) data types.
+The underlying design is such that if a RESP type is converted into a Lua type and converted back into a RESP type, the result is the same as the initial value.
 
 Type conversion from Valkey replies (i.e. the replies from `server.call()` and `server.pcall()`) to Lua data types depends on the RESP protocol version used by the script.
 The default protocol version during script executions is RESP2.
@@ -644,22 +613,18 @@ As you can see, the float value of _3.333_ gets converted to an integer _3_, the
 RESP3 is a newer version of the [protocol](protocol.md) used by Valkey.
 It is available as an opt-in choice.
 
-An executing script may call the [`server.setresp`](#server.setresp) function during its execution and switch the protocol version that's used for returning replies from Valkey' commands (that can be invoked via [`server.call()`](#server.call) or [`server.pcall()`](#server.pcall)).
+An executing script may call the [`server.setresp`](#server.setresp) function during its execution and switch the protocol version that's used for returning replies from Valkey's commands (that can be invoked via [`server.call()`](#server.call) or [`server.pcall()`](#server.pcall)).
 
-Once Valkey' replies are in RESP3 protocol, all of the [RESP2 to Lua conversion](#resp2-to-lua-type-conversion) rules apply, with the following additions:
+Once Valkey's replies are in RESP3 protocol, all of the [RESP2 to Lua conversion](#resp2-to-lua-type-conversion) rules apply, with the following additions:
 
 * [Map reply](protocol.md#maps) -> Lua table with a single _map_ field containing a Lua table representing the fields and values of the map.
 * [Set reply](protocol.md#sets) -> Lua table with a single _set_ field containing a Lua table representing the elements of the set as fields, each with the Lua Boolean value of `true`.
 * [Null](protocol.md#nulls) -> Lua `nil`.
 * [True reply](protocol.md#booleans) -> Lua true boolean value.
 * [False reply](protocol.md#booleans) -> Lua false boolean value.
-* [Double reply](protocol.md#doubles) -> Lua table with a single _double_ field containing a Lua number representing the double value.
-* [Big number reply](protocol.md#big-numbers) -> Lua table with a single _big_number_ field containing a Lua string representing the big number value.
-* [Verbatim string reply](protocol.md#verbatim-strings) -> Lua table with a single _verbatim_string_ field containing a Lua table with two fields, _string_ and _format_, representing the verbatim string and its format, respectively.
-
-**Note:**
-the RESP3 [big number](protocol.md#big-numbers) and [verbatim strings](protocol.md#verbatim-strings) replies are supported since Redis OSS 7.0.
-Also, presently, RESP3's [attributes](https://github.com/redis/redis-specifications/blob/master/protocol/RESP3.md#attribute-type), [streamed strings](https://github.com/redis/redis-specifications/blob/master/protocol/RESP3.md#streamed-strings) and [streamed aggregate data types](https://github.com/redis/redis-specifications/blob/master/protocol/RESP3.md#streamed-aggregate-data-types) are not supported by the Valkey Lua API.
+* [Double reply](protocol.md#doubles) -> Lua table with a single `double` field containing a Lua number representing the double value.
+* [Big number reply](protocol.md#big-numbers) -> Lua table with a single `big_number` field containing a Lua string representing the big number value (since Redis OSS 7.0).
+* [Verbatim string reply](protocol.md#verbatim-strings) -> Lua table with a single `verbatim_string` field containing a Lua table with two fields, `string` and `format`, representing the verbatim string and its format, respectively (since Redis OSS 7.0).
 
 ### Lua to RESP3 type conversion
 
@@ -667,9 +632,9 @@ Regardless of the script's choice of protocol version set for replies with the [
 Although the default protocol for incoming client connections is RESP2, the script should honor the user's preference and return adequately-typed RESP3 replies, so the following rules apply on top of those specified in the [Lua to RESP2 type conversion](#lua-to-resp2-type-conversion) section when that is the case.
 
 * Lua Boolean -> [RESP3 Boolean reply](protocol.md#booleans) (note that this is a change compared to the RESP2, in which returning a Boolean Lua `true` returned the number 1 to the Valkey client, and returning a `false` used to return a `null`.
-* Lua table with a single _map_ field set to an associative Lua table -> [RESP3 map reply](protocol.md#maps).
-* Lua table with a single _set_ field set to an associative Lua table -> [RESP3 set reply](protocol.md#sets). Values can be set to anything and are discarded anyway.
-* Lua table with a single _double_ field to an associative Lua table -> [RESP3 double reply](protocol.md#doubles).
+* Lua table with a single `map` field set to an associative Lua table -> [RESP3 map reply](protocol.md#maps).
+* Lua table with a single `set` field set to an associative Lua table -> [RESP3 set reply](protocol.md#sets). Values can be set to anything and are discarded anyway.
+* Lua table with a single `double` field to an associative Lua table -> [RESP3 double reply](protocol.md#doubles).
 * Lua nil -> [RESP3 null](protocol.md#nulls).
 
 However, if the connection is set use the RESP2 protocol, and even if the script replies with RESP3-typed responses, Valkey will automatically perform a RESP3 to RESP2 conversion of the reply as is the case for regular commands.
@@ -680,10 +645,7 @@ That means, for example, that returning the RESP3 map type to a RESP2 connection
 ### Using `SELECT` inside scripts
 
 You can call the `SELECT` command from your Lua scripts, like you can with any normal client connection.
-However, one subtle aspect of the behavior changed between Redis OSS versions 2.8.11 and 2.8.12.
-Prior to Redis OSS version 2.8.12, the database selected by the Lua script was *set as the current database* for the client connection that had called it.
-As of Redis OSS version 2.8.12, the database selected by the Lua script only affects the execution context of the script, and does not modify the database that's selected by the client calling the script.
-This semantic change between patch level releases was required since the old behavior was inherently incompatible with Valkey' replication and introduced bugs.
+The database selected by the Lua script only affects the execution context of the script, and does not modify the database that's selected by the client calling the script.
 
 ## Runtime libraries
 
@@ -717,7 +679,6 @@ Note that for sandbox security, currently only the following os functions is exp
 
 ### <a name="struct-library"></a> _struct_ library
 
-* Since version: 2.6.0
 * Available in scripts: yes
 * Available in functions: yes
 
@@ -791,7 +752,6 @@ Usage example:
 
 ### <a name="cjson-library"></a> _cjson_ library
 
-* Since version: 2.6.0
 * Available in scripts: yes
 * Available in functions: yes
 
@@ -822,7 +782,6 @@ Usage example:
 
 ### <a name="cmsgpack-library"></a> _cmsgpack_ library
 
-* Since version: 2.6.0
 * Available in scripts: yes
 * Available in functions: yes
 
@@ -855,7 +814,6 @@ Usage example:
 
 ### <a name="bitop-library"></a> _bit_ library
 
-* Since version: 2.8.18
 * Available in scripts: yes
 * Available in functions: yes
 
