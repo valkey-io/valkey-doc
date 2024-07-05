@@ -300,9 +300,8 @@ Please refer to the [Data type conversion](#data-type-conversion) for more infor
 * Available in functions: no
 
 **Note:**
-Script replication is no longer supported.
-The only replication mode available is script effects replication.
-This feature is only available in Redis OSS versions prior to 7.0 which supported and used verbatim script replication by default.
+Prior to Redis OSS 7.0, scripts were replicated verbatim by default.se
+Since Redis OSS 7.0 (and Valkey), script effects replication is the only replication mode available.
 
 The `server.set_repl()` function instructs the server how to treat subsequent write commands in terms of replication.
 It accepts a single input argument that only be one of the following:
