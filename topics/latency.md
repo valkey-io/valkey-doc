@@ -236,7 +236,7 @@ Fork time in different systems
 
 Modern hardware is pretty fast at copying the page table.
 So are modern hardware-assisted virtualized environments,
-but fork can be really slow in older virtualized environmants without hardware support.
+but fork can be really slow in older virtualized environments without hardware support.
 As of 2024, this is hardly a problem.
 
 You can measure the fork time for a Valkey instance by

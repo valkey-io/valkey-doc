@@ -114,7 +114,7 @@ You can see three kind of dots in the graphs, forming three distinct bands.
 In a theoretical LRU implementation we expect that, among the old keys, the first half will be evicted.
 The Valkey LRU algorithm will instead only *probabilistically* evicts the older keys.
 
-As you can see, Redis OSS 3.0 does a reasonalbe job with 5 samples.
+As you can see, Redis OSS 3.0 does a reasonable job with 5 samples.
 Using a sample size of 10, the approximation is very close to an exact LRU implementation.
 (The LRU algorithm hasn't changed considerably since this test was performed, so the performance of Valkey is similar in this regard.)
 
