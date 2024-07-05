@@ -74,9 +74,7 @@ environment will experience because of the kernel or hypervisor implementation
 or setup.
 
 We call this kind of latency **intrinsic latency**, and `valkey-cli`
-is able to measure it. This is an example run
-under Linux 3.11.0 running on an entry level server around 2014.
-(This is old, but it illustrates how to measure this.)
+is able to measure it. This is an example run.
 
 Note: the argument `100` is the number of seconds the test will be executed.
 The more time we run the test, the more likely we'll be able to spot
@@ -99,9 +97,8 @@ milliseconds (or 115 microseconds), which is a good news, however keep in mind
 that the intrinsic latency may change over time depending on the load of the
 system.
 
-Virtualized environments will not show so good numbers, especially with high
-load or if there are noisy neighbors. The following is a run on a Linode 4096
-instance running Valkey and Apache:
+In a virtualized environments with high load or if there are noisy neighbors,
+you may get numbers like these:
 
     $ ./valkey-cli --intrinsic-latency 100
     Max latency so far: 573 microseconds.
