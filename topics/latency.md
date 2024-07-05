@@ -237,7 +237,7 @@ but fork can be really slow in older virtualized environments without hardware s
 As of 2024, this is hardly a problem.
 
 You can measure the fork time for a Valkey instance by
-performing a BGSAVE and looking at the `latest_fork_usec` filed in the `INFO` command output.
+performing a BGSAVE and looking at the `latest_fork_usec` field in the `INFO` command output.
 
 Latency induced by transparent huge pages
 -----------------------------------------
