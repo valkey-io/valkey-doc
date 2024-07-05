@@ -300,7 +300,7 @@ Please refer to the [Data type conversion](#data-type-conversion) for more infor
 * Available in functions: no
 
 **Note:**
-Prior to Redis OSS 7.0, scripts were replicated verbatim by default.se
+Prior to Redis OSS 7.0, scripts were replicated verbatim by default.
 Since Redis OSS 7.0 (and Valkey), script effects replication is the only replication mode available.
 
 The `server.set_repl()` function instructs the server how to treat subsequent write commands in terms of replication.
