@@ -12,19 +12,7 @@ Hashes, Lists, Sets composed of just integers, and Sorted Sets, when smaller tha
 This is completely transparent from the point of view of the user and API.
 Since this is a CPU / memory tradeoff it is possible to tune the maximum 
 number of elements and maximum element size for special encoded types 
-using the following valkey.conf directives (defaults are shown):
-
-### Valkey <= 6.2
-
-```
-hash-max-ziplist-entries 512
-hash-max-ziplist-value 64
-zset-max-ziplist-entries 128 
-zset-max-ziplist-value 64
-set-max-intset-entries 512
-```
-
-### Redis OSS >= 7.0
+using the following valkey.conf directives (defaults for Valkey 7.2 are shown):
 
 ```
 hash-max-listpack-entries 512
@@ -32,13 +20,6 @@ hash-max-listpack-value 64
 zset-max-listpack-entries 128
 zset-max-listpack-value 64
 set-max-intset-entries 512
-```
-
-### Valkey and Redis OSS >= 7.2
-
-The following directives are also available:
-
-```
 set-max-listpack-entries 128
 set-max-listpack-value 64
 ```
@@ -150,68 +131,6 @@ What about small numbers? Like object:2? We handle this case using just
 "object:" as a key name, and the whole number as the hash field name.
 So object:2 and object:10 will both end inside the key "object:", but one
 as field name "2" and one as "10".
-
-How much memory do we save this way?
-
-I used the following Ruby program to test how this works:
-
-```ruby
-require 'rubygems'
-require 'redis'
-
-USE_OPTIMIZATION = true
-
-def hash_get_key_field(key)
-  s = key.split(':')
-  if s[1].length > 2
-    { key: s[0] + ':' + s[1][0..-3], field: s[1][-2..-1] }
-  else
-    { key: s[0] + ':', field: s[1] }
-  end
-end
-
-def hash_set(r, key, value)
-  kf = hash_get_key_field(key)
-  r.hset(kf[:key], kf[:field], value)
-end
-
-def hash_get(r, key, value)
-  kf = hash_get_key_field(key)
-  r.hget(kf[:key], kf[:field], value)
-end
-
-r = Redis.new
-(0..100_000).each do |id|
-  key = "object:#{id}"
-  if USE_OPTIMIZATION
-    hash_set(r, key, 'val')
-  else
-    r.set(key, 'val')
-  end
-end
-```
-
-This is the result against a 64 bit instance of Redis OSS 2.2:
-
- * USE_OPTIMIZATION set to true: 1.7 MB of used memory
- * USE_OPTIMIZATION set to false; 11 MB of used memory
-
-This is an order of magnitude, I think this makes Valkey more or less the most
-memory efficient plain key value store out there.
-
-*WARNING*: for this to work, make sure that in your valkey.conf you have
-something like this:
-
-```
-hash-max-zipmap-entries 256
-```
-
-Also remember to set the following field accordingly to the maximum size
-of your keys and values:
-
-```
-hash-max-zipmap-value 1024
-```
 
 Every time a hash exceeds the number of elements or element size specified
 it will be converted into a real hash table, and the memory saving will be lost.
