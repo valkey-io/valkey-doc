@@ -1,6 +1,6 @@
 Returns the original source code of a script in the script cache.
 
-This command accepts one SHA1 digest and return a script if the script
+This command accepts one SHA1 digest and returns a script if the script
 are already defined or NOSCRIPT error if not inside the script cache.
 This can be useful to debug. In some scenarios, the business may not be able to find the
 previously used Lua script and only have a SHA signature.
