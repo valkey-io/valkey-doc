@@ -1,10 +1,7 @@
 ---
 title: "Valkey history"
 linkTitle: "History"
-weight: 4
 description: How the Valkey project started
-aliases:
-    - /topics/history
 ---
 
 Valkey is a fork of the open-source Redis (REmote DIctionary Server) database

@@ -1,13 +1,7 @@
 ---
 title: Key eviction
 linkTitle: Eviction
-weight: 6
 description: Overview of Valkey key eviction policies (LRU, LFU, etc.)
-aliases: [
-    /topics/lru_cache,
-    /topics/lru_cache.md,
-    /docs/manual/eviction
-]
 ---
 
 When Valkey is used as a cache, it is often convenient to let it automatically
@@ -49,13 +43,15 @@ The following policies are available:
 * **noeviction**: New values aren’t saved when memory limit is reached. When a database uses replication, this applies to the primary database
 * **allkeys-lru**: Keeps most recently used keys; removes least recently used (LRU) keys
 * **allkeys-lfu**: Keeps frequently used keys; removes least frequently used (LFU) keys
-* **volatile-lru**: Removes least recently used keys with the `expire` field set to `true`.
-* **volatile-lfu**: Removes least frequently used keys with the `expire` field set to `true`.
+* **volatile-lru**: Removes least recently used keys with a time-to-live (TTL) set.
+* **volatile-lfu**: Removes least frequently used keys with a TTL set.
 * **allkeys-random**: Randomly removes keys to make space for the new data added.
-* **volatile-random**: Randomly removes keys with `expire` field set to `true`.
-* **volatile-ttl**: Removes keys with `expire` field set to `true` and the shortest remaining time-to-live (TTL) value.
+* **volatile-random**: Randomly removes keys with a TTL set.
+* **volatile-ttl**: Removes keys with a TTL set, the keys with the shortest remaining time-to-live value first.
 
 The policies **volatile-lru**, **volatile-lfu**, **volatile-random**, and **volatile-ttl** behave like **noeviction** if there are no keys to evict matching the prerequisites.
+
+**LRU**, **LFU** and **volatile-ttl** are implemented using approximated randomized algorithms.
 
 Picking the right eviction policy is important depending on the access pattern
 of your application, however you can reconfigure the policy at runtime while
@@ -72,7 +68,7 @@ In general as a rule of thumb:
 
 The **volatile-lru** and **volatile-random** policies are mainly useful when you want to use a single instance for both caching and to have a set of persistent keys. However it is usually a better idea to run two Valkey instances to solve such a problem.
 
-It is also worth noting that setting an `expire` value to a key costs memory, so using a policy like **allkeys-lru** is more memory efficient since there is no need for an `expire` configuration for the key to be evicted under memory pressure.
+It is also worth noting that setting a TTL value to a key costs memory, so using a policy like **allkeys-lru** is more memory efficient since there is no need for a TTL configuration for the key to be evicted under memory pressure.
 
 ## How the eviction process works
 
@@ -92,11 +88,9 @@ Valkey LRU algorithm is not an exact implementation. This means that Valkey is
 not able to pick the *best candidate* for eviction, that is, the key that
 was accessed the furthest in the past. Instead it will try to run an approximation
 of the LRU algorithm, by sampling a small number of keys, and evicting the
-one that is the best (with the oldest access time) among the sampled keys.
-
-However, since Redis OSS 3.0 the algorithm was improved to also take a pool of good
-candidates for eviction. This improved the performance of the algorithm, making
-it able to approximate more closely the behavior of a real LRU algorithm.
+one that is the best (with the oldest access time) among the sampled keys, while
+also managing a pool of good candidates for eviction.
+This algorithm consumes less memory than an exact LRU algorithm.
 
 What is important about the Valkey LRU algorithm is that you **are able to tune** the precision of the algorithm by changing the number of samples to check for every eviction. This parameter is controlled by the following configuration directive:
 
@@ -109,7 +103,7 @@ the LRU approximation used by Valkey with true LRU.
 
 ![LRU comparison](lru_comparison.png)
 
-The test to generate the above graphs filled a Valkey server with a given number of keys. The keys were accessed from the first to the last. The first keys are the best candidates for eviction using an LRU algorithm. Later more 50% of keys are added, in order to force half of the old keys to be evicted.
+The test to generate the above graphs filled a server with a given number of keys. The keys were accessed from the first to the last. The first keys are the best candidates for eviction using an LRU algorithm. Later more 50% of keys are added, in order to force half of the old keys to be evicted.
 
 You can see three kind of dots in the graphs, forming three distinct bands.
 
@@ -117,12 +111,15 @@ You can see three kind of dots in the graphs, forming three distinct bands.
 * The gray band are objects that were not evicted.
 * The green band are objects that were added.
 
-In a theoretical LRU implementation we expect that, among the old keys, the first half will be expired. The Valkey LRU algorithm will instead only *probabilistically* expire the older keys.
+In a theoretical LRU implementation we expect that, among the old keys, the first half will be evicted.
+The Valkey LRU algorithm will instead only *probabilistically* evicts the older keys.
 
-As you can see Redis OSS 3.0 does a better job with 5 samples compared to Redis OSS 2.8, however most objects that are among the latest accessed are still retained by Redis OSS 2.8. Using a sample size of 10 in Redis OSS 3.0 the approximation is very close to the theoretical performance of Redis OSS 3.0.
+As you can see, Redis OSS 3.0 does a reasonable job with 5 samples.
+Using a sample size of 10, the approximation is very close to an exact LRU implementation.
+(The LRU algorithm hasn't changed considerably since this test was performed, so the performance of Valkey is similar in this regard.)
 
 Note that LRU is just a model to predict how likely a given key will be accessed in the future. Moreover, if your data access pattern closely
-resembles the power law, most of the accesses will be in the set of keys
+resembles the power law; most of the accesses will be in the set of keys
 the LRU approximated algorithm can handle well.
 
 In simulations we found that using a power law access pattern, the difference between true LRU and Valkey approximation were minimal or non-existent.
@@ -134,16 +131,17 @@ difference in your cache misses rate.
 To experiment in production with different values for the sample size by using
 the `CONFIG SET maxmemory-samples <count>` command, is very simple.
 
-## The new LFU mode
+## The LFU mode
 
-Starting with Redis OSS 4.0, the [Least Frequently Used eviction mode](http://antirez.com/news/109) is available. This mode may work better (provide a better
+The [Least Frequently Used eviction mode](http://antirez.com/news/109) is available as an alternative to LRU.
+This mode may work better (provide a better
 hits/misses ratio) in certain cases. In LFU mode, Valkey will try to track
 the frequency of access of items, so the ones used rarely are evicted. This means
 the keys used often have a higher chance of remaining in memory.
 
 To configure the LFU mode, the following policies are available:
 
-* `volatile-lfu` Evict using approximated LFU among the keys with an expire set.
+* `volatile-lfu` Evict using approximated LFU among the keys with a time-to-live (TTL) set.
 * `allkeys-lfu` Evict any key using approximated LFU.
 
 LFU is approximated like LRU: it uses a probabilistic counter, called a [Morris counter](https://en.wikipedia.org/wiki/Approximate_counting_algorithm) to estimate the object access frequency using just a few bits per object, combined with a decay period so that the counter is reduced over time. At some point we no longer want to consider keys as frequently accessed, even if they were in the past, so that the algorithm can adapt to a shift in the access pattern.

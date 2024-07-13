@@ -1,7 +1,6 @@
 ﻿---
 title: "Lists"
 linkTitle: "Lists"
-weight: 20
 description: >
     Introduction to Lists
 ---

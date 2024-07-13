@@ -1,12 +1,7 @@
 ---
 title: "Diagnosing latency issues"
 linkTitle: "Latency diagnosis"
-weight: 1
 description: Finding the causes of slow responses
-aliases: [
-    /topics/latency,
-    /docs/reference/optimization/latency
-]
 ---
 
 This document will help you understand what the problem could be if you
@@ -79,8 +74,7 @@ environment will experience because of the kernel or hypervisor implementation
 or setup.
 
 We call this kind of latency **intrinsic latency**, and `valkey-cli`
-is able to measure it. This is an example run
-under Linux 3.11.0 running on an entry level server.
+is able to measure it. This is an example run.
 
 Note: the argument `100` is the number of seconds the test will be executed.
 The more time we run the test, the more likely we'll be able to spot
@@ -103,9 +97,8 @@ milliseconds (or 115 microseconds), which is a good news, however keep in mind
 that the intrinsic latency may change over time depending on the load of the
 system.
 
-Virtualized environments will not show so good numbers, especially with high
-load or if there are noisy neighbors. The following is a run on a Linode 4096
-instance running Valkey and Apache:
+In a virtualized environments with high load or if there are noisy neighbors,
+you may get numbers like these:
 
     $ ./valkey-cli --intrinsic-latency 100
     Max latency so far: 573 microseconds.
@@ -238,24 +231,13 @@ of a large memory chunk can be expensive.
 Fork time in different systems
 ------------------------------
 
-Modern hardware is pretty fast at copying the page table, but Xen is not.
-The problem with Xen is not virtualization-specific, but Xen-specific. For instance using VMware or Virtual Box does not result into slow fork time.
-The following is a table that compares fork time for different Valkey instance
-size. Data is obtained performing a BGSAVE and looking at the `latest_fork_usec` filed in the `INFO` command output.
+Modern hardware is pretty fast at copying the page table.
+So are modern hardware-assisted virtualized environments,
+but fork can be really slow in older virtualized environments without hardware support.
+As of 2024, this is hardly a problem.
 
-However the good news is that **new types of EC2 HVM based instances are much
-better with fork times**, almost on par with physical servers, so for example
-using m3.medium (or better) instances will provide good results.
-
-* **Linux beefy VM on VMware** 6.0GB RSS forked in 77 milliseconds (12.8 milliseconds per GB).
-* **Linux running on physical machine (Unknown HW)** 6.1GB RSS forked in 80 milliseconds (13.1 milliseconds per GB)
-* **Linux running on physical machine (Xeon @ 2.27Ghz)** 6.9GB RSS forked into 62 milliseconds (9 milliseconds per GB).
-* **Linux VM on 6sync (KVM)** 360 MB RSS forked in 8.2 milliseconds (23.3 milliseconds per GB).
-* **Linux VM on EC2, old instance types (Xen)** 6.1GB RSS forked in 1460 milliseconds (239.3 milliseconds per GB).
-* **Linux VM on EC2, new instance types (Xen)** 1GB RSS forked in 10 milliseconds (10 milliseconds per GB).
-* **Linux VM on Linode (Xen)** 0.9GBRSS forked into 382 milliseconds (424 milliseconds per GB).
-
-As you can see certain VMs running on Xen have a performance hit that is between one order to two orders of magnitude. For EC2 users the suggestion is simple: use modern HVM based instances.
+You can measure the fork time for a Valkey instance by
+performing a BGSAVE and looking at the `latest_fork_usec` field in the `INFO` command output.
 
 Latency induced by transparent huge pages
 -----------------------------------------
@@ -589,7 +571,7 @@ This is how this feature works:
 * The user enables the software watchdog using the `CONFIG SET` command.
 * Valkey starts monitoring itself constantly.
 * If Valkey detects that the server is blocked into some operation that is not returning fast enough, and that may be the source of the latency issue, a low level report about where the server is blocked is dumped on the log file.
-* The user contacts the developers writing a message in the Valkey Google Group, including the watchdog report in the message.
+* The user contacts the developers by opening an issue on GitHub, including the watchdog report in the message.
 
 Note that this feature cannot be enabled using the valkey.conf file, because it is designed to be enabled only in already running instances and only for debugging purposes.
 
@@ -623,4 +605,5 @@ The following is an example of what you'll see printed in the log file once the 
 
 Note: in the example the **DEBUG SLEEP** command was used in order to block the server. The stack trace is different if the server blocks in a different context.
 
-If you happen to collect multiple watchdog stack traces you are encouraged to send everything to the Valkey Google Group: the more traces we obtain, the simpler it will be to understand what the problem with your instance is.
+If you happen to collect multiple watchdog stack traces you are encouraged to post everything in a GitHub issue.
+The more traces we obtain, the simpler it will be to understand what the problem with your instance is.

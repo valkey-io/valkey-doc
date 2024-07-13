@@ -1,10 +1,7 @@
 ---
 title: "Valkey command arguments"
 linkTitle: "Command arguments"
-weight: 7
 description: How Valkey commands expose their documentation programmatically
-aliases:
-    - /topics/command-arguments
 ---
 
 The `COMMAND DOCS` command returns documentation-focused information about available Valkey commands.

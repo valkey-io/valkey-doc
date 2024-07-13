@@ -1,18 +1,13 @@
 ---
 title: "Bulk loading"
 linkTitle: "Bulk loading"
-weight: 1
 description: >
-    Writing data in bulk using the Valkey protocol
-aliases: [
-    /topics/mass-insertion,
-    /docs/reference/patterns/bulk-loading
-]
+    Writing data in bulk using the RESP protocol
 ---
 
 Bulk loading is the process of loading Valkey with a large amount of pre-existing data. Ideally, you want to perform this operation quickly and efficiently. This document describes some strategies for bulk loading data in Valkey.
 
-## Bulk loading using the Valkey protocol
+## Bulk loading using the RESP protocol
 
 Using a normal Valkey client to perform bulk loading is not a good idea
 for a few reasons: the naive approach of sending one command after the other
@@ -61,9 +56,9 @@ That will produce an output similar to this:
 The valkey-cli utility will also make sure to only redirect errors received
 from the Valkey instance to the standard output.
 
-### Generating Valkey Protocol
+### Generating RESP protocol
 
-The Valkey protocol is extremely simple to generate and parse, and is
+The RESP protocol is extremely simple to generate and parse, and is
 [Documented here](protocol.md). However in order to generate protocol for
 the goal of bulk loading you don't need to understand every detail of the
 protocol, but just that every command is represented in the following way:
@@ -96,24 +91,28 @@ represented in the above way, one after the other.
 
 The following Ruby function generates valid protocol:
 
-    def gen_redis_proto(*cmd)
-        proto = ""
-        proto << "*"+cmd.length.to_s+"\r\n"
-        cmd.each{|arg|
-            proto << "$"+arg.to_s.bytesize.to_s+"\r\n"
-            proto << arg.to_s+"\r\n"
-        }
-        proto
-    end
+```ruby
+def gen_redis_proto(*cmd)
+    proto = ""
+    proto << "*"+cmd.length.to_s+"\r\n"
+    cmd.each{|arg|
+        proto << "$"+arg.to_s.bytesize.to_s+"\r\n"
+        proto << arg.to_s+"\r\n"
+    }
+    proto
+end
 
-    puts gen_redis_proto("SET","mykey","Hello World!").inspect
+puts gen_redis_proto("SET","mykey","Hello World!").inspect
+```
 
 Using the above function it is possible to easily generate the key value pairs
 in the above example, with this program:
 
-    (0...1000).each{|n|
-        STDOUT.write(gen_redis_proto("SET","Key#{n}","Value#{n}"))
-    }
+```ruby
+(0...1000).each{|n|
+    STDOUT.write(gen_redis_proto("SET","Key#{n}","Value#{n}"))
+}
+```
 
 We can run the program directly in pipe to valkey-cli in order to perform our
 first mass import session.

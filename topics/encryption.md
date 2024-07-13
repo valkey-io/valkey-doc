@@ -1,13 +1,7 @@
 ---
 title: "TLS"
 linkTitle: "TLS"
-weight: 1
 description: Valkey TLS support
-aliases: [
-    /topics/encryption,
-    /docs/manual/security/encryption,
-    /docs/manual/security/encryption.md
-]
 ---
 
 SSL/TLS is supported by Valkey as an optional feature

@@ -2,11 +2,6 @@
 title: "Valkey data types"
 linkTitle: "Data types"
 description: Overview of data types supported by Valkey
-weight: 35
-aliases:
-    - /docs/manual/data-types
-    - /topics/data-types
-    - /docs/data-types/tutorial
 ---
 
 Valkey is a data structure server.

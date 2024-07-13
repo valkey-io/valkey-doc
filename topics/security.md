@@ -1,13 +1,7 @@
 ---
 title: "Valkey security"
 linkTitle: "Security"
-weight: 1
 description: Security model and features in Valkey
-aliases: [
-    /topics/security,
-    /docs/manual/security,
-    /docs/manual/security.md
-]
 ---
 
 This document provides an introduction to the topic of security from the point of
@@ -76,7 +70,7 @@ disable protected mode or manually bind all the interfaces.
 ## Authentication
 
 Valkey provides two ways to authenticate clients.
-The recommended authentication method, introduced in Valkey OSS 6.0, is via Access Control Lists, allowing named users to be created and assigned fine-grained permissions.
+The recommended authentication method is via Access Control Lists, allowing named users to be created and assigned fine-grained permissions.
 Read more about Access Control Lists [here](acl.md).
 
 The legacy authentication method is enabled by editing the **valkey.conf** file, and providing a database password using the `requirepass` setting.
@@ -106,26 +100,6 @@ perform eavesdropping.
 
 Valkey has optional support for TLS on all communication channels, including
 client connections, replication links, and the Valkey Cluster bus protocol.
-
-## Disallowing specific commands
-
-It is possible to disallow commands in Valkey or to rename them as an unguessable
-name, so that normal clients are limited to a specified set of commands.
-
-For instance, a virtualized server provider may offer a managed Valkey instance
-service. In this context, normal users should probably not be able to
-call the **CONFIG** command to alter the configuration of the instance,
-but the systems that provide and remove instances should be able to do so.
-
-In this case, it is possible to either rename or completely shadow commands from
-the command table. This feature is available as a statement that can be used
-inside the valkey.conf configuration file. For example:
-
-    rename-command CONFIG b840fc02d524045429941cc15f59e41cb7be6c52
-
-In the above example, the **CONFIG** command was renamed into an unguessable name.  It is also possible to completely disallow it (or any other command) by renaming it to the empty string, like in the following example:
-
-    rename-command CONFIG ""
 
 ## Attacks triggered by malicious inputs from external clients
 
@@ -158,16 +132,8 @@ While it would be a strange use case, the application should avoid composing the
 
 ## Code security
 
-In a classical setup, clients are allowed full access to the command set,
-but accessing the instance should never result in the ability to control the
-system where Valkey is running.
-
 Internally, Valkey uses all the well-known practices for writing secure code to
 prevent buffer overflows, format bugs, and other memory corruption issues.
-However, the ability to control the server configuration using the **CONFIG**
-command allows the client to change the working directory of the program and
-the name of the dump file. This allows clients to write RDB Valkey files
-to random paths. This is [a security issue](http://antirez.com/news/96) that may lead to the ability to compromise the system and/or run untrusted code as the same user as Valkey is running.
 
 Valkey does not require root privileges to run. It is recommended to
 run it as an unprivileged *valkey* user that is only used for this purpose.

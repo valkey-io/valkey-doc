@@ -1,14 +1,7 @@
 ---
 title: Valkey administration
 linkTitle: Administration
-weight: 1
 description: Advice for configuring and managing Valkey in production
-aliases: [
-    /topics/admin,
-    /topics/admin.md,
-    /manual/admin,
-    /manual/admin.md
-]
 ---
 
 ## Valkey setup tips

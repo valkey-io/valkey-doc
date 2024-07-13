@@ -1,12 +1,7 @@
 ---
 title: Valkey Pub/Sub
 linkTitle: "Pub/sub"
-weight: 40
 description: How to use pub/sub channels in Valkey
-aliases:
-  - /topics/pubsub
-  - /docs/manual/pub-sub
-  - /docs/manual/pubsub
 ---
 
 `SUBSCRIBE`, `UNSUBSCRIBE` and `PUBLISH` implement the [Publish/Subscribe messaging paradigm](https://en.wikipedia.org/wiki/Publish/subscribe) where publishers send their messages to channels, without knowledge of what receivers (subscribers) there may be.
@@ -55,7 +50,7 @@ Messages in streams are persisted, and support both _at-most-once_ as well as _a
 
 ## Format of pushed messages
 
-A message is an [array-reply](protocol.md#array-reply) with three elements.
+A message is an [array-reply](protocol.md#arrays) with three elements.
 
 The first element is the kind of message:
 
@@ -190,10 +185,6 @@ It restricts the propagation of messages to be within the shard of a cluster.
 Hence, the amount of data passing through the cluster bus is limited in comparison to global Pub/Sub where each message propagates to each node in the cluster.
 This allows users to horizontally scale the Pub/Sub usage by adding more shards.
  
-## Programming example
-
-Pieter Noordhuis provided a great example using EventMachine and Valkey to create [a multi user high performance web chat](https://gist.github.com/pietern/348262).
-
 ## Client library implementation hints
 
 Because all the messages received contain the original subscription causing the message delivery (the channel in the case of message type, and the original pattern in the case of pmessage type) client libraries may bind the original subscription to callbacks (that can be anonymous functions, blocks, function pointers), using a hash table.

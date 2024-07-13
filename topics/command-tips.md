@@ -1,10 +1,7 @@
 ---
 title: "Valkey command tips"
 linkTitle: "Command tips"
-weight: 1
 description: Get additional information about a command
-aliases:
-    - /topics/command-tips
 ---
 
 Command tips are an array of strings.

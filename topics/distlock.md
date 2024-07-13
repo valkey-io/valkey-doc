@@ -1,14 +1,8 @@
 ---
 title: "Distributed Locks with Valkey"
 linkTitle: "Distributed locks"
-weight: 1
 description: >
     A distributed lock pattern with Valkey
-aliases: [
-    /topics/distlock,
-    /docs/reference/patterns/distributed-locks,
-    /docs/reference/patterns/distributed-locks.md
-]
 ---
 Distributed locks are a very useful primitive in many environments where
 different processes must operate with shared resources in a mutually

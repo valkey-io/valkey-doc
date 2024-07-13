@@ -1,11 +1,8 @@
 ---
 title: Valkey cluster specification
 linkTitle: Cluster spec
-weight: 9
 description: >
     Detailed specification for Valkey cluster
-aliases:
-  - /topics/cluster-spec
 ---
 
 Welcome to the **Valkey Cluster Specification**. Here you'll find information
@@ -22,8 +19,6 @@ Valkey Cluster is a distributed implementation of Valkey with the following goal
 * High performance and linear scalability up to 1000 nodes. There are no proxies, asynchronous replication is used, and no merge operations are performed on values.
 * Acceptable degree of write safety: the system tries (in a best-effort way) to retain all the writes originating from clients connected with the majority of the master nodes. Usually there are small windows where acknowledged writes can be lost. Windows to lose acknowledged writes are larger when clients are in a minority partition.
 * Availability: Valkey Cluster is able to survive partitions where the majority of the master nodes are reachable and there is at least one reachable replica for every master node that is no longer reachable. Moreover using *replicas migration*, masters no longer replicated by any replica will receive one from a master which is covered by multiple replicas.
-
-What is described in this document is implemented in Redis OSS 3.0 or greater.
 
 ### Implemented subset
 
@@ -350,9 +345,7 @@ A node will accept another node as part of the cluster only in two ways:
 
 * If a node presents itself with a `MEET` message (`CLUSTER MEET` command). A meet message is exactly
 like a `PING` message, but forces the receiver to accept the node as part of
-the cluster. Nodes will send `MEET` messages to other nodes **only if** the system administrator requests this via the following command:
-
-    CLUSTER MEET ip port
+the cluster. Nodes will send `MEET` messages to other nodes **only if** the system administrator requests this via `CLUSTER MEET ip port`.
 
 * A node will also register another node as part of the cluster if a node that is already trusted will gossip about this other node. So if A knows B, and B knows C, eventually B will send gossip messages to A about C. When this happens, A will register C as part of the network, and will try to connect with C.
 
@@ -1211,7 +1204,7 @@ The cluster makes sure the published shard messages are forwarded to all nodes i
 
     /*
      * Copyright 2001-2010 Georges Menie (www.menie.org)
-     * Copyright 2010 Salvatore Sanfilippo (adapted to Valkey coding style)
+     * Copyright 2010 Salvatore Sanfilippo (adapted to Redis coding style)
      * All rights reserved.
      * Redistribution and use in source and binary forms, with or without
      * modification, are permitted provided that the following conditions are met:
