@@ -221,7 +221,7 @@ These are:
 * `SCRIPT LOAD script`: this command registers the specified script in the Valkey script cache.
   It is a useful command in all the contexts where we want to ensure that `EVALSHA` doesn't not fail (for instance, in a pipeline or when called from a [`MULTI`/`EXEC` transaction](transactions.md)), without the need to execute the script.
 
-* `SCRIPT SHOW sha1`: this command show server-side script in the script cache.
+* `SCRIPT SHOW`: this command shows the original source code for a script that is stored in the script cache.
   It is useful to help users easily obtain scripts using signature.
 
 * `SCRIPT KILL`: this command is the only way to interrupt a long-running script (a.k.a slow script), short of shutting down the server.
@@ -441,4 +441,3 @@ it still has a different set of defaults compared to a script without a `#!` lin
 Another difference is that scripts without `#!` can run commands that access keys belonging to different cluster hash slots, but ones with `#!` inherit the default flags, so they cannot.
 
 Please refer to [Script flags](lua-api.md#script_flags) to learn about the various scripts and the defaults.
-
