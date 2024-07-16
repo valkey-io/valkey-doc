@@ -418,14 +418,12 @@ Here is the meaning of all fields in the **persistence** section:
 *   `current_fork_perc`: The percentage of progress of the current fork process. For AOF and RDB forks it is the percentage of `current_save_keys_processed` out of `current_save_keys_total`.
 *   `current_save_keys_processed`: Number of keys processed by the current save operation
 *   `current_save_keys_total`: Number of keys at the beginning of the current save operation
-*   `rdb_changes_since_last_save`: Number of changes since the last dump
-*   `rdb_bgsave_in_progress`: Flag indicating a RDB save is on-going
-*   `rdb_last_save_time`: Epoch-based timestamp of last successful RDB save
-*   `rdb_last_bgsave_status`: Status of the last RDB save operation
-*   `rdb_last_bgsave_time_sec`: Duration of the last RDB save operation in
-     seconds
-*   `rdb_current_bgsave_time_sec`: Duration of the on-going RDB save operation
-     if any
+*   `rdb_changes_since_last_save`: Number of changes since the last RDB file save
+*   `rdb_bgsave_in_progress`: Flag indicating a RDB save is on-going, including a diskless replication RDB save
+*   `rdb_last_save_time`: Epoch-based timestamp of last successful RDB file save
+*   `rdb_last_bgsave_status`: Status of the last RDB file save operation
+*   `rdb_last_bgsave_time_sec`: Duration of the last RDB save operation in seconds, including a diskless replication RDB save
+*   `rdb_current_bgsave_time_sec`: Duration of the on-going RDB save operation if any, including a diskless replication RDB save
 *   `rdb_last_cow_size`: The size in bytes of copy-on-write memory during
      the last RDB save operation
 *   `rdb_last_load_keys_expired`: Number of volatile keys deleted during the last RDB loading.
