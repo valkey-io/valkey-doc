@@ -1,4 +1,4 @@
-`CLUSTER SLOTS` returns details about which cluster slots map to which Valkey instances.The command response is deterministic across all nodes in a cluster and is ordered lexicographically.
+`CLUSTER SLOTS` returns details about which cluster slots map to which Valkey instances. 
 The command is suitable to be used by Valkey Cluster client libraries implementations in order to retrieve (or update when a redirection is received) the map associating cluster *hash slots* with actual nodes network information, so that when a command is received, it can be sent to what is likely the right instance for the keys specified in the command. 
 
 The networking information for each node is an array containing the following elements:
@@ -36,6 +36,8 @@ Each nested result is:
 Each result includes all active replicas of the master instance
 for the listed slot range. Failed replicas are not returned.
 
+The command response is deterministic across all nodes in a cluster, which means that if two nodes return the same response they have the same view of the cluster.
+Primaries are ordered by the slots they serve and then replicas are ordered lexicographically by the node-id they were assigned by the cluster. 
 The third nested reply is guaranteed to be the networking information of the master instance for the slot range.
 All networking information after the third nested reply are replicas of the master.
 
