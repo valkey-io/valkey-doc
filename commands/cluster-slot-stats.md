@@ -4,8 +4,8 @@ The command is suitable for Valkey Cluster users aiming to assess general slot u
 As of now, the following metrics are supported:
 * `key-count` - Number of keys residing in a given slot.
 * `cpu-usec` - Amount of cpu time (in micro-seconds) spent on a given slot.
-* `network-bytes-in` - Amount of network ingress (in bytes) spent on a given slot.
-* `network-bytes-out` - Amount of network egress (in bytes) spent on a given slot.
+* `network-bytes-in` - Amount of network ingress (in bytes) received for given slot.
+* `network-bytes-out` - Amount of network egress (in bytes) sent out for given slot.
 
 ## Supported arguments
 There exist two mutually exclusive arguments, namely;
