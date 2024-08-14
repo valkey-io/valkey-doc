@@ -17,7 +17,11 @@ The field `master_failover_state` in `INFO replication` can be used to track the
 * `waiting-for-sync`: The master is waiting for the replica to catch up to its replication offset.
 * `failover-in-progress`: The master has demoted itself, and is attempting to hand off ownership to a target replica.
 
-NOTE: During the `failover-in-progress` phase, the master first demotes itself to a replica and then notifies the replica to promote itself to master. These two steps are an asynchronous process, which may result in the simultaneous existence of two nodes as replicas. In this scenario, for clients that support REDIRECT (explicitly execute [CLIENT CAPA REDIRECT](client-capa.md)), the redirection result may bounce back and forth between the two replicas until the target replica completes the process of promoting itself to master. To avoid this situation, during the `failover-in-progress` phase, we temporarily suspend the clients that need to be redirected until the replica truly becomes the primary, and then resume the execution.
+NOTE:
+During the `failover-in-progress` phase, the master first demotes itself to a replica and then notifies the replica to promote itself to master.
+These two steps are an asynchronous process, which may result in the simultaneous existence of two nodes as replicas.
+In this scenario, for clients that support REDIRECT (explicitly execute [CLIENT CAPA REDIRECT](client-capa.md)), the redirection result may bounce back and forth between the two replicas until the target replica completes the process of promoting itself to master.
+To avoid this situation, during the `failover-in-progress` phase, we temporarily suspend the clients that need to be redirected until the replica truly becomes the primary, and then resume the execution.
 
 If the previous master had additional replicas attached to it, they will continue replicating from it as chained replicas. You will need to manually execute a `REPLICAOF` on these replicas to start replicating directly from the new master.
 
