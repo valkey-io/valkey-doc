@@ -535,8 +535,12 @@ Here is the meaning of all fields in the **stats** section:
 *   `dump_payload_sanitizations`: Total number of dump payload deep integrity validations (see `sanitize-dump-payload` config).
 *   `total_reads_processed`: Total number of read events processed
 *   `total_writes_processed`: Total number of write events processed
-*   `io_threaded_reads_processed`: Number of read events processed by the main and I/O threads
-*   `io_threaded_writes_processed`: Number of write events processed by the main and I/O threads
+*   `io_threaded_reads_processed`: Number of read events processed by the I/O threads.
+*   `io_threaded_writes_processed`: Number of write events processed by the I/O threads.
+*   `io_threaded_total_prefetch_batches`: Indicate how many prefetch batches were executed in order to prefetch keys before executing commands batch.
+*   `io_threaded_total_prefetch_entries`: The total number of dict entries that were prefetched. Each batch can contain multiple entries, the ratio entries/batches indicates how many entries were prefetched per batch on average.
+*   `io_threaded_poll_processed`: Total poll system calls performed by the I/O threads.
+*   `io_threaded_freed_objects`: The total number of objects freed that were offloaded to the I/O threads.
 *   `client_query_buffer_limit_disconnections`: Total number of disconnections due to client reaching query buffer limit
 *   `client_output_buffer_limit_disconnections`: Total number of disconnections due to client reaching output buffer limit
 *   `reply_buffer_shrinks`: Total number of output buffer shrinks
