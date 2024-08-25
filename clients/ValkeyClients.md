@@ -5,7 +5,7 @@ Selecting the right client is a complex task, given that there are over 200 clie
 
 ## Mandatory Features Overview
 
-1. **Cluster Support** - The ability to operate in a clustered environment, where the data is distributed across multiple shards. Cluster support is essential for applications that require high  scalability.
+1. **Cluster Support** - The ability to operate in a clustered environment, where the data is distributed across multiple shards. Cluster support is essential for applications that require high scalability.
 
 2. **TLS/SSL Support** - The capability to establish secure connections using TLS/SSL, which encrypts the data transmitted between the client and the server. This is a critical feature for applications that require data privacy and protection against eavesdropping.
 
