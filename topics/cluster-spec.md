@@ -585,7 +585,7 @@ Starting from Valkey 8.0, when the primary in either the source or target shard 
 the primary in the other shard will automatically attempt to update its migrating/importing state to correctly pair
 with the newly elected primary. If this update is successful, the ASK redirection will continue functioning without
 requiring administrator intervention. In the event that slot migration fails, administrators can manually resume
-the process by running the command `valkey-cli --cluster fix <ip:port>`.
+the interrupted slot migration by running the command `valkey-cli --cluster fix <ip:port>`.
 
 Additionally, since Valkey 8.0, replicas are now able to return `ASK` redirects during slot migrations.
 This capability was previously unavailable, as replicas were not aware of ongoing slot migrations in earlier versions.
