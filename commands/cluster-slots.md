@@ -34,8 +34,10 @@ Each nested result is:
   - ...continues until all replicas for this master are returned.
 
 Each result includes all active replicas of the master instance
-for the listed slot range.  Failed replicas are not returned.
+for the listed slot range. Failed replicas are not returned.
 
+The command response is deterministic across all nodes in a cluster, which means that if two nodes return the same response they have the same view of the cluster.
+Primaries are ordered by the slots they serve and then replicas are ordered lexicographically by the node-id they were assigned by the cluster. 
 The third nested reply is guaranteed to be the networking information of the master instance for the slot range.
 All networking information after the third nested reply are replicas of the master.
 
