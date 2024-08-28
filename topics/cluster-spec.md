@@ -479,16 +479,6 @@ is that:
 * All queries about existing keys are processed by "A".
 * All queries about non-existing keys in A are processed by "B", because "A" will redirect clients to "B".
 
-Starting from Valkey 8.0, the `CLUSTER SETSLOT` command is synchronously replicated to all healthy replicas
-running Valkey version 8.0+. By default, this synchronous replication must complete within 2 seconds.
-If the replication fails, the primary does not execute the command, and the client receives a
-`NOREPLICAS Not enough good replicas to write` error. Operators can retry the command or customize the
-timeout using the `TIMEOUT` parameter to further increase the reliability of live reconfiguration:
-
-    CLUSTER SETSLOT slot [MIGRATING|IMPORTING|NODE] node-id [TIMEOUT timeout]
-
-Here, `timeout` is measured in seconds, with 0 meaning to wait indefinitely.
-
 This way we no longer create new keys in "A".
 In the meantime, `valkey-cli` used during reshardings
 and Valkey Cluster configuration will migrate existing keys in
@@ -523,11 +513,37 @@ set the slots to their normal state again. The same command is usually
 sent to all other nodes to avoid waiting for the natural
 propagation of the new configuration across the cluster.
 
+#### Synchronous replication of `CLUSTER SETSLOT`
+
+Starting from Valkey 8.0, the `CLUSTER SETSLOT` command is synchronously replicated to all healthy replicas
+running Valkey version 8.0+. By default, this synchronous replication must complete within 2 seconds.
+If the replication fails, the primary does not execute the command, and the client receives a
+`NOREPLICAS Not enough good replicas to write` error. Operators can retry the command or customize the
+timeout using the `TIMEOUT` parameter to further increase the reliability of live reconfiguration:
+
+    CLUSTER SETSLOT slot [MIGRATING|IMPORTING|NODE] node-id [TIMEOUT timeout]
+
+Here, `timeout` is measured in seconds, with 0 meaning to wait indefinitely.
+
+Synchronous replication is critical for maintaining cluster consistency during live reconfiguration.
+Before applying changes like slot ownership and migrating states to the primary, these must be fully
+replicated to all replicas. This prevents loss of state if the primary fails after executing the command.
+
+Consider a scenario where the target primary node `B` is finalizing a slot migration.
+Before the `SETSLOT` command is replicated to its replica node `B’`, `B` might send a cluster `PONG`
+message to the source primary node `A`, promoting `A` to relinguish its ownership of the slot in question.
+If `B` crashes right after this point, the replica node `B’`, which could be elected as the new primary,
+would not be aware of the slot ownership transfer without the synchronous replication of `SETSLOT`.
+This would leave the slot without an owner, leading to potential data loss and cluster topology inconsistency.
+
+#### Election in empty shards
+
 Starting from Valkey 8.0, Valkey clusters introduce the ability to elect a primary in empty shards.
 This behavior ensures that even when a shard is in the process of receiving its first slot,
 a primary can be elected. This prevents scenarios where there would be no primary available in the
 empty shard to handle redirected requests from the official slot owner,
 thereby maintaining availability during the live reconfiguration.
+
 ### ASK redirection
 
 In the previous section, we briefly talked about ASK redirection. Why can't
@@ -568,7 +584,12 @@ command documentation.
 Starting from Valkey 8.0, when the primary in either the source or target shard fails during live reconfiguration,
 the primary in the other shard will automatically attempt to update its migrating/importing state to correctly pair
 with the newly elected primary. If this update is successful, the ASK redirection will continue functioning without
-requiring operator intervention.
+requiring administrator intervention. In the event that slot migration fails, administrators can manually resume
+the process by running the command `valkey-cli --cluster fix <ip:port>`.
+
+Additionally, since Valkey 8.0, replicas are now able to return `ASK` redirects during slot migrations.
+This capability was previously unavailable, as replicas were not aware of ongoing slot migrations in earlier versions.
+It's worth noting that this change has already been documented in the READONLY command section.
 
 ### Client connections and redirection handling
 
