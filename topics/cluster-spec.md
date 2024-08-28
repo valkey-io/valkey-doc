@@ -531,7 +531,7 @@ replicated to all replicas. This prevents loss of state if the primary fails aft
 
 Consider a scenario where the target primary node `B` is finalizing a slot migration.
 Before the `SETSLOT` command is replicated to its replica node `B’`, `B` might send a cluster `PONG`
-message to the source primary node `A`, promoting `A` to relinguish its ownership of the slot in question.
+message to the source primary node `A`, promoting `A` to relinquish its ownership of the slot in question.
 If `B` crashes right after this point, the replica node `B’`, which could be elected as the new primary,
 would not be aware of the slot ownership transfer without the synchronous replication of `SETSLOT`.
 This would leave the slot without an owner, leading to potential data loss and cluster topology inconsistency.
