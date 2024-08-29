@@ -85,6 +85,8 @@ Notes:
   `NOREPLICAS Not enough good replicas to write` error. Operators can retry the command or customize the
   timeout using the `TIMEOUT` parameter to further increase the reliability of live reconfiguration:
 
-    CLUSTER SETSLOT slot [MIGRATING|IMPORTING|NODE] node-id [TIMEOUT timeout]
+  ```
+  CLUSTER SETSLOT slot [MIGRATING|IMPORTING|NODE] node-id [TIMEOUT timeout]
+  ```
 
   Here, `timeout` is measured in seconds, with 0 meaning to wait indefinitely.
