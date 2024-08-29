@@ -589,7 +589,7 @@ the interrupted slot migration by running the command `valkey-cli --cluster fix 
 
 Additionally, since Valkey 8.0, replicas are now able to return `ASK` redirects during slot migrations.
 This capability was previously unavailable, as replicas were not aware of ongoing slot migrations in earlier versions.
-It's worth noting that this change has already been documented in the READONLY command section.
+See the [READONLY](../commands/readonly.md) command.
 
 ### Client connections and redirection handling
 
