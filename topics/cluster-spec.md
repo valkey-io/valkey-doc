@@ -525,10 +525,7 @@ timeout using the `TIMEOUT` parameter to further increase the reliability of liv
 
 Here, `timeout` is measured in seconds, with 0 meaning to wait indefinitely.
 
-Synchronous replication is critical for maintaining cluster consistency during live reconfiguration.
-Before applying changes like slot ownership and migrating states to the primary, these must be fully
-replicated to all replicas. This prevents loss of state if the primary fails after executing the command.
-
+Replicating the slot information prevents loss of state if the primary fails after executing the command.
 Consider a scenario where the target primary node `B` is finalizing a slot migration.
 Before the `SETSLOT` command is replicated to its replica node `B’`, `B` might send a cluster `PONG`
 message to the source primary node `A`, promoting `A` to relinquish its ownership of the slot in question.
