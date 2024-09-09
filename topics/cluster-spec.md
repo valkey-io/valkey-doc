@@ -513,24 +513,26 @@ set the slots to their normal state again. The same command is usually
 sent to all other nodes to avoid waiting for the natural
 propagation of the new configuration across the cluster.
 
-#### Synchronous replication of `CLUSTER SETSLOT`
+#### Replication of `CLUSTER SETSLOT`
 
-Starting from Valkey 8.0, the `CLUSTER SETSLOT` command is synchronously replicated if the replicas
-are running Valkey version 8.0+. By default, this synchronous replication must complete within 2 seconds.
-If the replication fails, the primary does not execute the command, and the client receives a
-`NOREPLICAS Not enough good replicas to write` error. Operators can retry the command or customize the
-timeout using the `TIMEOUT` parameter to further increase the reliability of live resharding:
+Starting from Valkey 8.0, the `CLUSTER SETSLOT` command is replicated if the replicas are running Valkey version 8.0+.
+The primary node waits up to 2 seconds, by default, for all healthy replicas to acknowledge the replication.
+If not all health replicas acknowledge the replication within this timeframe, the primary aborts the command,
+and the client receives a `NOREPLICAS Not enough good replicas to write` error.
+Operators can retry the command or customize the timeout using the `TIMEOUT` parameter to further increase the
+reliability of live resharding:
 
     CLUSTER SETSLOT slot [MIGRATING|IMPORTING|NODE] node-id [TIMEOUT timeout]
 
-Here, `timeout` is measured in seconds, with 0 meaning to wait indefinitely.
+The `timeout` is specified in seconds, where a value of 0 indicates an indefinite wait time.
 
-Synchronously replicating the slot information prevents loss of state if the primary fails after executing the command.
-Consider a scenario where the target primary node `B` is finalizing a slot migration.
+Replicating the slot information and ensuring acknowledgement from health replicas significantly reduces
+the likelihookd of losing replication states if the primary fails after executing the command.
+For example, consider a scenario where the target primary node `B` is finalizing a slot migration.
 Before the `SETSLOT` command is replicated to its replica node `B’`, `B` might send a cluster `PONG`
 message to the source primary node `A`, promoting `A` to relinquish its ownership of the slot in question.
 If `B` crashes right after this point, the replica node `B’`, which could be elected as the new primary,
-would not be aware of the slot ownership transfer without the synchronous replication of `SETSLOT`.
+would not be aware of the slot ownership transfer without the successful replication of `SETSLOT`.
 This would leave the slot without an owner, leading to potential data loss and cluster topology inconsistency.
 
 #### Election in empty shards
