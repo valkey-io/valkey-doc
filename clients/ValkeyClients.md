@@ -48,7 +48,7 @@ Selecting the right client is a complex task, given that there are over 200 clie
 - **valkey-glide**
   - GitHub: [valkey-glide](https://github.com/valkey-io/valkey-glide/tree/main/python)
   - Installation: `pip install valkey-glide`
-  - Description: An open source Valkey client library that supports Valkey and Redis open source 6.2, 7.0 and 7.2. Valkey GLIDE is designed for reliability, optimized performance, and high-availability, for Valkey and Redis OSS based applications. GLIDE is a multi language client library, written in Rust with programming language bindings, such as Java, node.js and Python.
+  - Description: Valkey GLIDE is designed for reliability, optimized performance, and high-availability, for Valkey and Redis OSS based applications. GLIDE is a multi language client library, written in Rust with programming language bindings, such as Java, node.js and Python.
 
 - **valkey-py**
   - GitHub: [valkey-py](https://github.com/valkey-io/valkey-py)
@@ -74,7 +74,7 @@ Selecting the right client is a complex task, given that there are over 200 clie
 - **valkey-glide**
   - GitHub: [valkey-glide](https://github.com/valkey-io/valkey-glide/tree/main/node)
   - Installation: `npm install valkey-glide`
-  - Description: An open source Valkey client library that supports Valkey and Redis open source 6.2, 7.0 and 7.2. Valkey GLIDE is designed for reliability, optimized performance, and high-availability, for Valkey and Redis OSS based applications. GLIDE is a multi language client library, written in Rust with programming language bindings, such as Java, node.js and Python.
+  - Description: Valkey GLIDE is designed for reliability, optimized performance, and high-availability, for Valkey and Redis OSS based applications. GLIDE is a multi language client library, written in Rust with programming language bindings, such as Java, node.js and Python.
 
 - **iovalkey**
   - GitHub: [iovalkey](https://github.com/valkey-io/iovalkey)
@@ -100,7 +100,7 @@ Selecting the right client is a complex task, given that there are over 200 clie
 - **valkey-glide**
   - GitHub: [valkey-glide](https://github.com/valkey-io/valkey-glide/tree/main/java)
   - Installation: Available via Maven and Gradle
-  - Description: An open source Valkey client library that supports Valkey and Redis open source 6.2, 7.0 and 7.2. Valkey GLIDE is designed for reliability, optimized performance, and high-availability, for Valkey and Redis OSS based applications. GLIDE is a multi language client library, written in Rust with programming language bindings, such as Java, node.js and Python.
+  - Description: Valkey GLIDE is designed for reliability, optimized performance, and high-availability, for Valkey and Redis OSS based applications. GLIDE is a multi language client library, written in Rust with programming language bindings, such as Java, node.js and Python.
 
 - **Valkey-Java**
   - GitHub: [valkey-java](https://github.com/valkey-io/valkey-java)
