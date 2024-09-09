@@ -13,8 +13,8 @@ Refer to [install Valkey](installation.md) for installation options.
 ## Why to migrate to Valkey?
 
 * Valkey is the vendor-neutral and open-source software
-* Enhanced performance with multi-threading, dual-channel replication and I/O threading
-* Scalability via automatic cluster failover and improved scaling
+* Enhanced performance with multi-threading and dual-channel replication
+* Improved memory efficiency by using one dictionary per slot in cluster mode and embedding keys in dictionaries. 
 
 ### Migration compatibility matrix
 
@@ -49,42 +49,41 @@ This is the easiest and fastest migration method. You make a fresh snapshot of y
 
 2. Make a backup of your Redis instance. 
 
-    a. Connect to Redis and check the number of keys:
+   a. Connect to Redis and check the number of keys:
 
-        ```
-        $ redis-cli -h 127.0.0.1 -p 6379
-        127.0.0.1:6379> INFO KEYSPACE
-        # Keyspace
-        db0:keys=6286,expires=0,avg_ttl=0
-        ```
+      ```
+      $ redis-cli -h 127.0.0.1 -p 6379
+      redis 127.0.0.1:6379> INFO KEYSPACE
+      # Keyspace
+      db0:keys=6286,expires=0,avg_ttl=0
+      ```
     
-    b. Check the configuration for the directory (`dir`) where Redis stores its database files and the name of the database file (`dbfilename`):
-
-        ```
-        redis> CONFIG GET dir dbfilename
-        1) "dir"
-        2) "/data"
-        3) "dbfilename"
-        4) "dump.rdb"
-        ```
+   b. Check the configuration for the directory (`dir`) where Redis stores its database files and the name of the database file (`dbfilename`):
+       ```
+       redis 127.0.0.1:6379> CONFIG GET dir dbfilename
+       1) "dir"
+       2) "/data"
+       3) "dbfilename"
+       4) "dump.rdb"
+       ```
     
-    c. Check the timestamp of the last save operation
+   c. Check the timestamp of the last save operation
 
-        ```
-        redis> LASTSAVE
-        (integer) 1724764878
-        ```
+      ```
+      redis 127.0.0.1:6379> LASTSAVE
+      (integer) 1724764878
+      ```
 
-    d. Start a backup
+   d. Start a backup
 
-        ```
-        redis> BGSAVE
-        Background saving started
-        ```
+      ```
+      redis 127.0.0.1:6379> BGSAVE
+      Background saving started
+      ```
 
-    e. Check if the backup succeeded by running `LASTSAVE` periodically. The backup ended when the timestamp changes.
+   e. Check if the backup succeeded by running `LASTSAVE` periodically. The backup ended when the timestamp changes.
 
-    f. Exit the `redis-cli` by pressing `Ctrl-D`. 
+   f. Exit the `redis-cli` by pressing `Ctrl-D`. 
 
 2. Stop the Redis server. 
 3. Copy the RDB file to the Valkey's data directory and start Valkey. 
@@ -93,24 +92,24 @@ This is the easiest and fastest migration method. You make a fresh snapshot of y
 
    For Docker deployments, copy the RDB file to your host and start a Valkey container mounting this file to the container's data directory. Replace the `<container-name>` and `<path/on/host>` placeholders with your values.
 
-    ```
-    $ docker cp <container-name>:/data/dump.rdb <path/on/host>
-    ```
+   ```
+   $ docker cp <container-name>:/data/dump.rdb <path/on/host>
+   ```
 
-    Start Valkey:
+   Start Valkey:
 
-    ```
-    $ docker run -d --name somevalkey -v <path/on/host>:/data valkey/valkey
-    ```
+   ```
+   $ docker run -d --name somevalkey -v <path/on/host>:/data valkey/valkey
+   ```
 
 4. Check the keyspace on Valkey to verify that the data is migrated:
 
-    ```
-    $ docker exec -it somevalkey valkey-cli
-    valkey> INFO KEYSPACE
-    # Keyspace
-    db0:keys=6286,expires=0,avg_ttl=0
-    ```
+   ```
+   $ docker exec -it somevalkey valkey-cli
+   valkey 127.0.0.1:6379> INFO KEYSPACE
+   # Keyspace
+   db0:keys=6286,expires=0,avg_ttl=0
+   ```
 
 5. To exit `valkey-cli`, press `Ctrl-D`.
 
@@ -130,13 +129,13 @@ In this scenario we will configure Valkey to be the replica of Redis. For illust
 
     ```
     $ docker exec -it myvalkey valkey-cli
-    valkey> REPLICAOF 172.17.0.2 6379
+    valkey 127.0.0.1:6379> REPLICAOF 172.17.0.2 6379
     ```
 
 3. Check the replication status in Valkey. 
 
     ```
-    valkey> INFO REPLICATION
+    valkey 127.0.0.1:6379> INFO REPLICATION
     # Replication
     role:slave
     master_host:172.21.0.4
@@ -162,11 +161,11 @@ In this scenario we will configure Valkey to be the replica of Redis. For illust
 5. Halt Valkey replication:
  
     ```
-    valkey> REPLICAOF NO ONE
+    valkey 127.0.0.1:6379> REPLICAOF NO ONE
     OK
     ```
 
-> NOTE: If not for backward compatibility, the Valkey project no longer uses the word "slave". Unfortunately in this command the word "slave" is part of the protocol, so we’ll be able to remove such occurrences only when this API will be naturally deprecated.
+> NOTE: If not for backward compatibility, the Valkey project no longer uses the words "master" and "slave". Unfortunately in this command these words are part of the protocol, so we’ll be able to remove such occurrences only when this API will be naturally deprecated.
 
 ### Migrate specific keys
 
@@ -183,8 +182,8 @@ For simplicity, we are running both instances without authentication.
 
     ```
     $ docker exec -it myredis redis-cli
-    redis> SET message "Hello Valkey!"
-    redis> HSET  mydata name Alice age 33 country Brazil "favorite food" beans
+    redis 127.0.0.1:6379> SET message "Hello Valkey!"
+    redis 127.0.0.1:6379> HSET  mydata name Alice age 33 country Brazil "favorite food" beans
     (integer) 4
     ```
 
@@ -207,7 +206,7 @@ For simplicity, we are running both instances without authentication.
      For example, to migrate the `message` and `mydata` keys to the Valkey instance with the IP address 172.21.0.3, the command looks as follows:
 
     ```
-    redis> MIGRATE 172.21.0.3 6379 "" 0 10 COPY REPLACE KEYS message mydata
+    redis 127.0.0.1:6379> MIGRATE 172.21.0.3 6379 "" 0 10 COPY REPLACE KEYS message mydata
     ```
 
 4. Exit `redis-cli` by pressing `Ctrl-D`
@@ -216,9 +215,9 @@ For simplicity, we are running both instances without authentication.
    
     ```
     $ docker exec -it myvalkey valkey-cli
-    valkey> GET message
+    valkey 127.0.0.1:6379> GET message
     "Hello Valkey"
-    valkey> HGETALL mydata
+    valkey 127.0.0.1:6379> HGETALL mydata
     1) "name"
     2) "Alice"
     3) "age"
@@ -303,7 +302,7 @@ For this scenario, we assume that you have Redis Cluster consisting of 3 primary
 8. Promote it to be a new primary. Run the following command **from the node you wish to promote**:
 
    ```
-   valkey> cluster failover
+   valkey 127.0.0.1:6379> cluster failover
    OK
    ```
 
@@ -333,10 +332,10 @@ For this scenario, we assume that you have Redis Cluster consisting of 3 primary
 12. Remove Redis nodes:
 
      ```
-     redis-cli --cluster del-node 127.0.0.1:7000 `<node-id>`
+     redis-cli --cluster del-node 127.0.0.1:6379 `<node-id>`
      ```
 
      The first argument is just a random node in the cluster, the second argument is the ID of the node you want to remove.
 
-> NOTE: If not for backward compatibility, the Valkey project no longer uses the word "slave". Unfortunately in the given commands the word "slave" is part of the protocol, so we’ll be able to remove such occurrences only when this API will be naturally deprecated.
+> NOTE: If not for backward compatibility, the Valkey project no longer uses the words "master" and "slave". Unfortunately in the given commands these words are part of the protocol, so we’ll be able to remove such occurrences only when this API will be naturally deprecated.
 
