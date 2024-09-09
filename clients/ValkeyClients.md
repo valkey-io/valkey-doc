@@ -19,7 +19,7 @@ Selecting the right client is a complex task, given that there are over 200 clie
 
 4. **PubSub State Restoration** - The ability to restore the state of Pub/Sub (publish/subscribe) channels after a client reconnects. This feature ensures that clients can continue receiving messages after disconnections or topology updates such as adding or removing shards, for both legacy Pub/Sub and sharded Pub/Sub. The client will automatically resubscribe the connections to the new node. The advantage is that the application code is simplified, and doesn’t have to take care of resubscribing to new nodes during reconnects.
 
-5. **Cluster Scan** - This feature ensures that the user experience and guarantees for scanning a cluster are identical to those for scanning a single node. The SCAN function operates as a cursor-based iterator. With each command, the server provides an updated cursor, which must be used as the cursor argument in subsequent calls. A complete iteration with SCAN retrieves all elements present in the collection from start to finish. If an element exists in the collection at the beginning and remains until the end of the iteration, SCAN will return it. Conversely, any element removed before the iteration begins and not re-added during the process will not be returned by SCAN. A client supporting this feature ensures the scan iterator remains valid even during failovers or cluster scaling (in or out) during the SCAN operation. This is achieved by storing metadata of the scanned slots and nodes within the GLIDE SCAN cursor and continuously updating the cluster topology.
+5. **Cluster Scan** - This feature ensures that the user experience and guarantees for scanning a cluster are identical to those for scanning a single node. The SCAN function operates as a cursor-based iterator. With each command, the server provides an updated cursor, which must be used as the cursor argument in subsequent calls. A complete iteration with SCAN retrieves all elements present in the collection from start to finish. If an element exists in the collection at the beginning and remains until the end of the iteration, SCAN will return it. Conversely, any element removed before the iteration begins and not re-added during the process will not be returned by SCAN. A client supporting this feature ensures the scan iterator remains valid even during failovers or cluster scaling (in or out) during the SCAN operation. 
 
 6. **Latency-Based Read from Replica** - This feature enables reading data from the nearest replica, i.e., the replica that offers the best latency. It supports complex deployments where replicas are distributed across various distances, including different geographical regions, to ensure data is read from the closest replica, thereby minimizing latency.
 
@@ -40,13 +40,8 @@ Selecting the right client is a complex task, given that there are over 200 clie
   - [Feature Comparison Table](#feature-comparison-table-2)
 - [Go](#go)
   - [Feature Comparison Table](#feature-comparison-table-3)
-- [Ruby](#ruby)
 - [PHP](#php)
   - [Feature Comparison Table](#feature-comparison-table-4)
-- [C#](#c)
-  - [Feature Comparison Table](#feature-comparison-table-5)
-- [Other Languages](#other-languages)
-- [References](#references)
 
 ## Python
 
@@ -121,8 +116,6 @@ Selecting the right client is a complex task, given that there are over 200 clie
 | **Read from replica**                        |     Yes      |     No      |
 | **Exponential backoff to prevent storm**     |     Yes      |     Yes     |
 | **Valkey version compatibility**             |     7.2      |     7.2     |
-| **Cluster support**                          |     Yes      |     Yes     |
-| **TLS/SSL support**                          |     Yes      |     Yes     |
 | **PubSub state restoration**                 |     Yes      |     No      |
 | **Cluster Scan**                             |     Yes      |     No      |
 | **Latency-Based Read from Replica**          |     No       |     No      |
@@ -145,18 +138,12 @@ Selecting the right client is a complex task, given that there are over 200 clie
 | **Read from replica**                        |     Yes    |
 | **Exponential backoff to prevent storm**     |     Yes    |
 | **Valkey version compatibility**             |     7.2    |
-| **Cluster support**                          |     Yes    |
-| **TLS/SSL support**                          |     Yes    |
 | **PubSub state restoration**                 |     No     |
 | **Cluster Scan**                             |     No     |
 | **Latency-Based Read from Replica**          |     No     |
 | **Client Side Caching**                      |     No     |
 
 
-
-## Ruby
-
-TODO
 
 ## PHP
 
@@ -165,7 +152,7 @@ TODO
   - Installation: `composer require predis/predis`
   - Description: A flexible and feature-rich Valkey client for PHP.
 
-- **phpvalkey**
+- **phpredis**
   - GitHub: [phpredis](https://github.com/phpredis/phpredis)
   - Installation: Install via PECL or compile from source
   - Description: A PHP extension for Redis, offering high performance and a native API.
@@ -179,40 +166,9 @@ TODO
 | **Read from replica**                        |   Yes   |    Yes   |
 | **Exponential backoff to prevent storm**     |   No    |    Yes   |
 | **Valkey version compatibility**             |   7.2   |    7.2   |
-| **Cluster support**                          |   Yes   |    Yes   |
-| **TLS/SSL support**                          |   Yes   |    Yes   |
 | **PubSub state restoration**                 |   No    |    No    |
 | **Cluster Scan**                             |   No    |    No    |
 | **Latency-Based Read from Replica**          |   No    |    No    |
 | **Client Side Caching**                      |   No    |    No    |
 
-## C#
 
-- **StackExchange.Redis**
-  - GitHub: [StackExchange.Redis](https://github.com/StackExchange/StackExchange.Redis)
-  - Installation: Available via NuGet
-  - Description: A high-performance Valkey client for .NET, maintained by StackExchange.
-
-<!--- This heading should not be included in the TOC --->
-### Feature Comparison Table
-{: .no_toc }
-
-| Feature                                      | StackExchange.Valkey |
-|----------------------------------------------|:--------------------:|
-| **Read from replica**                        |         Yes          |
-| **Exponential backoff to prevent storm**     |         Yes          |
-| **Valkey version compatibility**             |         7.2          |
-| **Cluster support**                          |         Yes          |
-| **TLS/SSL support**                          |         Yes          |
-| **PubSub state restoration**                 |         No           |
-| **Cluster Scan**                             |         No           |
-| **Latency-Based Read from Replica**          |         No           |
-| **Client Side Caching**                      |         No           |
-
-## Other Languages
-
-TBD
-
-## References
-
-- [Valkey Official Documentation](https://valkey.io/docs/)
