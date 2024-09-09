@@ -517,7 +517,7 @@ propagation of the new configuration across the cluster.
 
 Starting from Valkey 8.0, the `CLUSTER SETSLOT` command is replicated if the replicas are running Valkey version 8.0+.
 The primary node waits up to 2 seconds, by default, for all healthy replicas to acknowledge the replication.
-If not all health replicas acknowledge the replication within this timeframe, the primary aborts the command,
+If not all health replicas acknowledge the replication within this time frame, the primary aborts the command,
 and the client receives a `NOREPLICAS Not enough good replicas to write` error.
 Operators can retry the command or customize the timeout using the `TIMEOUT` parameter to further increase the
 reliability of live resharding:
@@ -527,7 +527,7 @@ reliability of live resharding:
 The `timeout` is specified in seconds, where a value of 0 indicates an indefinite wait time.
 
 Replicating the slot information and ensuring acknowledgement from health replicas significantly reduces
-the likelihookd of losing replication states if the primary fails after executing the command.
+the likelihood of losing replication states if the primary fails after executing the command.
 For example, consider a scenario where the target primary node `B` is finalizing a slot migration.
 Before the `SETSLOT` command is replicated to its replica node `B’`, `B` might send a cluster `PONG`
 message to the source primary node `A`, promoting `A` to relinquish its ownership of the slot in question.
