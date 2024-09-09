@@ -37,23 +37,25 @@ For a proper On-CPU analysis, Valkey (and any dynamically loaded library like
 Valkey Modules) requires stack traces to be available to tracers, which you may
 need to fix first. 
 
-By default, Valkey is compiled with the `-O2` switch (which we intent to keep
-during profiling). This means that compiler optimizations are enabled. Many
-compilers omit the frame pointer as a runtime optimization (saving a register),
-thus breaking frame pointer-based stack walking. This makes the Valkey
-executable faster, but at the same time it makes Valkey (like any other program)
-harder to trace, potentially wrongfully pinpointing on-CPU time to the last
-available frame pointer of a call stack that can get a lot deeper (but
-impossible to trace).
+By default, Valkey is compiled with the `-O3` optimization flag, which enables 
+a high level of compiler optimizations that aim to maximize runtime performance. 
+These optimizations can significantly enhance performance. Valkey is also compiled with 
+the `-fno-omit-frame-pointer` flag by default, ensuring that the frame pointer is preserved across 
+function calls. This combination allows for precise stack walking and call stack tracing, 
+which is essential for accurate profiling and debugging.  Keeping the frame pointer 
+intact helps profiling tools like `perf`, `gdb`, and others correctly attribute on-CPU 
+time to deeper call stack frames, leading to more reliable insights into performance bottlenecks 
+and hotspots. This setup strikes a balance between maintaining a highly optimized executable 
+and ensuring that profiling and tracing tools provide accurate and actionable data.
 
 It's important that you ensure that:
 - debug information is present: compile option `-g`
 - frame pointer register is present: `-fno-omit-frame-pointer`
-- we still run with optimizations to get an accurate representation of production run times, meaning we will keep: `-O2`
+- we still run with optimizations to get an accurate representation of production run times, meaning we will keep: `-O3`
 
-You can do it as follows within redis main repo:
+You can do it as follows within valkey main repo:
 
-    $ make SERVER_CFLAGS="-g -fno-omit-frame-pointer"
+    $ make SERVER_CFLAGS="-g"
 
 ## A set of instruments to identify performance regressions and/or potential **on-CPU performance** improvements 
 
