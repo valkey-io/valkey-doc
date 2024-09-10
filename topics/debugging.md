@@ -40,9 +40,11 @@ production environment.
 
 ## Compiling Valkey without optimizations
 
-By default Valkey is compiled with the `-O2` switch, this means that compiler
-optimizations are enabled. This makes the Valkey executable faster, but at the
-same time it makes Valkey (like any other program) harder to inspect using GDB.
+By default, Valkey is compiled with the `-O3` optimization flag, which enables 
+a high level of compiler optimizations that aim to maximize runtime performance.
+Valkey is also compiled with the `-fno-omit-frame-pointer` flag by default, ensuring that 
+the frame pointer is preserved across function calls. This combination allows for 
+precise stack walking and call stack tracing, which is essential for debugging.
 
 It is better to attach GDB to Valkey compiled without optimizations using the
 `make noopt` command (instead of just using the plain `make` command). However,
