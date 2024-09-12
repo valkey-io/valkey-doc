@@ -403,7 +403,7 @@ without redirections, proxies or other single point of failure entities.
 A client **must be also able to handle -ASK redirections** that are described
 later in this document, otherwise it is not a complete Valkey Cluster client.
 
-### Live reconfiguration
+### Live resharding
 
 Valkey Cluster supports the ability to add and remove nodes while the cluster
 is running. Adding or removing a node is abstracted into the same
@@ -513,6 +513,36 @@ set the slots to their normal state again. The same command is usually
 sent to all other nodes to avoid waiting for the natural
 propagation of the new configuration across the cluster.
 
+#### Replication of `CLUSTER SETSLOT`
+
+Starting from Valkey 8.0, the `CLUSTER SETSLOT` command is replicated if the replicas are running Valkey version 8.0+.
+The primary node waits up to 2 seconds, by default, for all healthy replicas to acknowledge the replication.
+If not all health replicas acknowledge the replication within this time frame, the primary aborts the command,
+and the client receives a `NOREPLICAS Not enough good replicas to write` error.
+Operators can retry the command or customize the timeout using the `TIMEOUT` parameter to further increase the
+reliability of live resharding:
+
+    CLUSTER SETSLOT slot [MIGRATING|IMPORTING|NODE] node-id [TIMEOUT timeout]
+
+The `timeout` is specified in seconds, where a value of 0 indicates an indefinite wait time.
+
+Replicating the slot information and ensuring acknowledgement from health replicas significantly reduces
+the likelihood of losing replication states if the primary fails after executing the command.
+For example, consider a scenario where the target primary node `B` is finalizing a slot migration.
+Before the `SETSLOT` command is replicated to its replica node `B’`, `B` might send a cluster `PONG`
+message to the source primary node `A`, promoting `A` to relinquish its ownership of the slot in question.
+If `B` crashes right after this point, the replica node `B’`, which could be elected as the new primary,
+would not be aware of the slot ownership transfer without the successful replication of `SETSLOT`.
+This would leave the slot without an owner, leading to potential data loss and cluster topology inconsistency.
+
+#### Election in empty shards
+
+Starting from Valkey 8.0, Valkey clusters introduce the ability to elect a primary in empty shards.
+This behavior ensures that even when a shard is in the process of receiving its first slot,
+a primary can be elected. This prevents scenarios where there would be no primary available in the
+empty shard to handle redirected requests from the official slot owner,
+thereby maintaining availability during the live resharding.
+
 ### ASK redirection
 
 In the previous section, we briefly talked about ASK redirection. Why can't
@@ -549,6 +579,16 @@ so B will redirect the client to A using a MOVED redirection error.
 Slots migration is explained in similar terms but with different wording
 (for the sake of redundancy in the documentation) in the `CLUSTER SETSLOT`
 command documentation.
+
+Starting from Valkey 8.0, when the primary in either the source or target shard fails during live resharding,
+the primary in the other shard will automatically attempt to update its migrating/importing state to correctly pair
+with the newly elected primary. If this update is successful, the ASK redirection will continue functioning without
+requiring administrator intervention. In the event that slot migration fails, administrators can manually resume
+the interrupted slot migration by running the command `valkey-cli --cluster fix <ip:port>`.
+
+Additionally, since Valkey 8.0, replicas are now able to return `ASK` redirects during slot migrations.
+This capability was previously unavailable, as replicas were not aware of ongoing slot migrations in earlier versions.
+See the [READONLY](../commands/readonly.md) command.
 
 ### Client connections and redirection handling
 

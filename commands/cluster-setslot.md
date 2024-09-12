@@ -79,3 +79,14 @@ Notes:
   If the source node is informed before the destination node and the destination node crashes before it is set as new slot owner, the slot is left with no owner, even after a successful failover.
 * Step 6, sending `SETSLOT` to the nodes not involved in the resharding, is not technically necessary since the configuration will eventually propagate itself.
   However, it is a good idea to do so in order to stop nodes from pointing to the wrong node for the hash slot moved as soon as possible, resulting in less redirections to find the right node.
+* Starting from Valkey 8.0, `CLUSTER SETSLOT` is synchronously replicated to all healthy replicas
+  running Valkey version 8.0+. By default, this synchronous replication must complete within 2 seconds.
+  If the replication fails, the primary does not execute the command, and the client receives a
+  `NOREPLICAS Not enough good replicas to write` error. Operators can retry the command or customize the
+  timeout using the `TIMEOUT` parameter to further increase the reliability of live reconfiguration:
+
+  ```
+  CLUSTER SETSLOT slot [MIGRATING|IMPORTING|NODE] node-id [TIMEOUT timeout]
+  ```
+
+  Here, `timeout` is measured in seconds, with 0 meaning to wait indefinitely.
