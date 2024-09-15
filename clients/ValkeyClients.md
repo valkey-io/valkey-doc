@@ -13,7 +13,7 @@ Selecting the right client is a complex task, given that there are over 200 clie
 
 1. **Read from Replica** - The ability to read data from a replica node, which can be useful for load balancing and reducing the load on the primary node. This feature is particularly important in read-heavy applications.
 
-2. **Exponential Backoff to Prevent Storm** - A strategy used to prevent connection storms by progressively increasing the wait time between retries when attempting to reconnect to a Valkey server. This helps to reduce the load on the server during topology updates, periods of high demand or network instability.
+2. **Smart Backoff to Prevent Connection Storm** - A strategy used to prevent connection storms by progressively updating the wait time between retries when attempting to reconnect to a Valkey server. This helps to reduce the load on the server during topology updates, periods of high demand or network instability.
 
 3. **Valkey Version Compatibility** - Indicates which versions of Valkey the client is compatible with. This is crucial for ensuring that the client can leverage the latest features and improvements in the Valkey server.
 
@@ -23,7 +23,14 @@ Selecting the right client is a complex task, given that there are over 200 clie
 
 6. **Latency-Based Read from Replica** - This feature enables reading data from the nearest replica, i.e., the replica that offers the best latency. It supports complex deployments where replicas are distributed across various distances, including different geographical regions, to ensure data is read from the closest replica, thereby minimizing latency.
 
-7. **Client Side Caching** - Valkey client-side caching is a feature that allows clients to cache the results of Redis queries on the client-side, reducing the need for frequent communication with the Valkey server. This can significantly improve application performance by lowering latency, reducing the network usage and cost and reducing the load on the Valkey server. 
+7. **AZ-Based Read from Replica** - This feature enables reading data from replicas within the same Availability Zone (AZ). When running Valkey in a cloud environment across multiple AZs, it is preferable to keep traffic localized within an AZ to reduce costs and latency. By reading from replicas in the same AZ as the client, you can optimize performance and minimize cross-AZ data transfer charges. For more detailed information about this feature and its implementation, please refer to the following link: https://github.com/valkey-io/valkey/pull/700
+
+8. **Client Side Caching** - Valkey client-side caching is a feature that allows clients to cache the results of Valkey queries on the client-side, reducing the need for frequent communication with the Valkey server. This can significantly improve application performance by lowering latency, reducing the network usage and cost and reducing the load on the Valkey server. 
+   
+9. **`CLIENT CAPA redirect` Support** - The `CLIENT CAPA redirect` feature was introduced in Valkey 8 to facilitate seamless upgrades without causing errors in standalone mode. When enabled, this feature allows the replica to redirect data access commands (both read and write operations) to the primary instance. This ensures uninterrupted service during the upgrade process. For more detailed information about this feature, please refer to the following link: https://github.com/valkey-io/valkey/pull/325
+
+10. **Persistent Connection Pool** - This feature enables the Valkey client to maintain a pool of persistent connections to the Valkey server, improving performance and reducing overhead. Instead of establishing a new connection for each request, the client can reuse existing connections from the pool, minimizing the time and resources required for connection setup.
+
 
 
 
@@ -62,12 +69,15 @@ Selecting the right client is a complex task, given that there are over 200 clie
 | Feature                                      | valkey-glide | valkey-py |
 |----------------------------------------------|:------------:|:---------:|
 | **Read from replica**                        |     Yes      |    Yes    |
-| **Exponential backoff to prevent storm**     |     Yes      |    Yes    |
+| **Smart Backoff to Prevent Connection Storm**|     Yes      |    Yes    |
 | **Valkey version compatibility**             |     7.2      |   7.2     |
 | **PubSub state restoration**                 |     Yes      |    No     |
 | **Cluster Scan**                             |     Yes      |    No     |
 | **Latency-Based Read from Replica**          |     No       |    No     |
+| **AZ-Based Read from Replica**               |     No       |    No     |
 | **Client Side Caching**                      |     No       |    No     |
+| **`CLIENT CAPA redirect`**                   |     No       |    No     |
+| **Persistent Connection Pool**               |     No       |    Yes    |
 
 ## JavaScript/Node.js
 
@@ -88,12 +98,15 @@ Selecting the right client is a complex task, given that there are over 200 clie
 | Feature                                      | valkey-glide | iovalkey  |
 |----------------------------------------------|:------------:|:---------:|
 | **Read from replica**                        |     Yes      |    Yes    |
-| **Exponential backoff to prevent storm**     |     Yes      |    Yes    |
+| **Smart Backoff to Prevent Connection Storm**|     Yes      |    Yes    |
 | **Valkey version compatibility**             |     7.2      |    7.2    |
 | **PubSub state restoration**                 |     Yes      |    No     |
 | **Cluster Scan**                             |     Yes      |    No     |
 | **Latency-Based Read from Replica**          |     No       |    No     |
+| **AZ-Based Read from Replica**               |     No       |    No     |
 | **Client Side Caching**                      |     No       |    No     |
+| **`CLIENT CAPA redirect`**                   |     No       |    No     |
+| **Persistent Connection Pool**               |     No       |    Yes    |
 
 ## Java
 
@@ -114,12 +127,15 @@ Selecting the right client is a complex task, given that there are over 200 clie
 | Feature                                      | valkey-glide | valkey-java |
 |----------------------------------------------|:------------:|:-----------:|
 | **Read from replica**                        |     Yes      |     No      |
-| **Exponential backoff to prevent storm**     |     Yes      |     Yes     |
+| **Smart Backoff to Prevent Connection Storm**|     Yes      |     Yes     |
 | **Valkey version compatibility**             |     7.2      |     7.2     |
 | **PubSub state restoration**                 |     Yes      |     No      |
 | **Cluster Scan**                             |     Yes      |     No      |
 | **Latency-Based Read from Replica**          |     No       |     No      |
+| **AZ-Based Read from Replica**               |     No       |     No      |
 | **Client Side Caching**                      |     No       |     No      |
+| **`CLIENT CAPA redirect`**                   |     No       |     No      |
+| **Persistent Connection Pool**               |     No       |     Yes     |
 
 
 ## Go
@@ -136,14 +152,15 @@ Selecting the right client is a complex task, given that there are over 200 clie
 | Feature                                      | valkey-go  |
 |----------------------------------------------|:----------:|
 | **Read from replica**                        |     Yes    |
-| **Exponential backoff to prevent storm**     |     No     |
+| **Smart Backoff to Prevent Connection Storm**|     Yes    |
 | **Valkey version compatibility**             |     7.2    |
 | **PubSub state restoration**                 |     Yes    |
 | **Cluster Scan**                             |     No     |
 | **Latency-Based Read from Replica**          |     No     |
+| **AZ-Based Read from Replica**               |     No     |
 | **Client Side Caching**                      |     Yes    |
-
-
+| **`CLIENT CAPA redirect`**                   |     No     |
+| **Persistent Connection Pool**               |     Yes    |
 
 ## PHP
 
@@ -164,11 +181,13 @@ Selecting the right client is a complex task, given that there are over 200 clie
 | Feature                                      | Predis  | phpredis |
 |----------------------------------------------|:-------:|:--------:|
 | **Read from replica**                        |   Yes   |    Yes   |
-| **Exponential backoff to prevent storm**     |   No    |    Yes   |
+| **Smart Backoff to Prevent Connection Storm**|   No    |    Yes   |
 | **Valkey version compatibility**             |   7.2   |    7.2   |
 | **PubSub state restoration**                 |   No    |    No    |
 | **Cluster Scan**                             |   No    |    No    |
 | **Latency-Based Read from Replica**          |   No    |    No    |
+| **AZ-Based Read from Replica**               |   No    |    No    |
 | **Client Side Caching**                      |   No    |    No    |
-
+| **`CLIENT CAPA redirect`**                   |   No    |    No    |
+| **Persistent Connection Pool**               |   No    |    Yes   |
 
