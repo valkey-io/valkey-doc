@@ -40,15 +40,11 @@ Selecting the right client is a complex task, given that there are over 200 clie
 
 - [Table of Contents](#table-of-contents)
 - [Python](#python)
-  - [Feature Comparison Table](#feature-comparison-table)
 - [JavaScript/Node.js](#javascriptnodejs)
-  - [Feature Comparison Table](#feature-comparison-table-1)
 - [Java](#java)
-  - [Feature Comparison Table](#feature-comparison-table-2)
 - [Go](#go)
-  - [Feature Comparison Table](#feature-comparison-table-3)
 - [PHP](#php)
-  - [Feature Comparison Table](#feature-comparison-table-4)
+  
 
 ## Python
 
@@ -62,9 +58,7 @@ Selecting the right client is a complex task, given that there are over 200 clie
   - Installation: `pip install valkey`
   - Description: The Python interface to the Valkey key-value store.
 
-<!--- This heading should not be included in the TOC --->
 ### Feature Comparison Table
-{: .no_toc }
 
 | Feature                                      | valkey-glide | valkey-py |
 |----------------------------------------------|:------------:|:---------:|
@@ -91,9 +85,7 @@ Selecting the right client is a complex task, given that there are over 200 clie
   - Installation: `npm install iovalkey`
   - Description: A robust, performance-focused and full-featured Redis client for Node.js. This is a friendly fork of ioredis after this commit.
 
-<!--- This heading should not be included in the TOC --->
 ### Feature Comparison Table
-{: .no_toc }
 
 | Feature                                      | valkey-glide | iovalkey  |
 |----------------------------------------------|:------------:|:---------:|
@@ -122,7 +114,6 @@ Selecting the right client is a complex task, given that there are over 200 clie
 
 <!--- This heading should not be included in the TOC --->
 ### Feature Comparison Table
-{: .no_toc }
 
 | Feature                                      | valkey-glide | valkey-java |
 |----------------------------------------------|:------------:|:-----------:|
@@ -147,7 +138,6 @@ Selecting the right client is a complex task, given that there are over 200 clie
 
 <!--- This heading should not be included in the TOC --->
 ### Feature Comparison Table
-{: .no_toc }
 
 | Feature                                      | valkey-go  |
 |----------------------------------------------|:----------:|
@@ -176,7 +166,6 @@ Selecting the right client is a complex task, given that there are over 200 clie
 
 <!--- This heading should not be included in the TOC --->
 ### Feature Comparison Table
-{: .no_toc }
 
 | Feature                                      | Predis  | phpredis |
 |----------------------------------------------|:-------:|:--------:|
