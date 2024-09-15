@@ -136,12 +136,12 @@ Selecting the right client is a complex task, given that there are over 200 clie
 | Feature                                      | valkey-go  |
 |----------------------------------------------|:----------:|
 | **Read from replica**                        |     Yes    |
-| **Exponential backoff to prevent storm**     |     Yes    |
+| **Exponential backoff to prevent storm**     |     No     |
 | **Valkey version compatibility**             |     7.2    |
-| **PubSub state restoration**                 |     No     |
+| **PubSub state restoration**                 |     Yes    |
 | **Cluster Scan**                             |     No     |
 | **Latency-Based Read from Replica**          |     No     |
-| **Client Side Caching**                      |     No     |
+| **Client Side Caching**                      |     Yes    |
 
 
 
