@@ -145,7 +145,7 @@ candidate. This release is fully compatible with Redis OSS 7.2.4.
 * Fix a bug which caused bouncing `-REDIRECT` messages during a FAILOVER ([#871])
 * Avoid re-establishing replication to a node that is already the primary in `CLUSTER REPLICATE`. ([#884])
 * Fix `CLUSTER SETSLOT` with `BLOCK` to only wait for replicas that are online. ([#879])
-* Fix `valkey-cli` to make source node ignores NOREPLICAS when doing the last CLUSTER SETSLOT ([#928])
+* Fix `valkey-cli` to make source node ignore NOREPLICAS when doing the last CLUSTER SETSLOT ([#928])
 * Exclude '.' and ':' from `isValidAuxChar`'s banned charset to better support
   IPV6 addresses. ([#963])
 * Better handle `-REDIRECT` messages in the MULTI context. ([#895])
@@ -163,7 +163,7 @@ candidate. This release is fully compatible with Redis OSS 7.2.4.
 
 #### <a id="800-rc2-compatibility-improvements"></a>Compatibility Improvements
 
-* Add 4 sentinel command `GET-PRIMARY-ADDR-BY-NAME`, `PRIMARY`, `PRIMARIES`, and
+* Add 4 Sentinel command `GET-PRIMARY-ADDR-BY-NAME`, `PRIMARY`, `PRIMARIES`, and
   `IS-PRIMARY-DOWN-BY-ADDR` to allow clients to use inclusive language. ([#789])
 
 #### <a id="800-rc2-behavior-changes"></a>Behavior Changes
@@ -245,7 +245,7 @@ release is fully compatible with Redis OSS 7.2.4.
 
 #### <a id="800-rc1-compatibility-improvements-sentinel"></a>Compatibility Improvements - Sentinel
 
-* Accept `redis-sentinel` to start Valkey in sentinel mode. ([#731])
+* Accept `redis-sentinel` to start Valkey in Sentinel mode. ([#731])
 
 #### <a id="800-rc1-performanceefficiency-improvements-core"></a>Performance/Efficiency Improvements - Core
 
@@ -306,7 +306,7 @@ release is fully compatible with Redis OSS 7.2.4.
 
 #### <a id="800-rc1-reliability-improvements-cluster"></a>Reliability Improvements - Cluster
 
-* Reduce fail-over time in Valkey cluster when multiple sequential fail-overs
+* Reduce failover time in Valkey cluster when multiple sequential failovers
   occurred by resetting `failover_auth_time` when the new primary node goes
   down. ([#782])
 * Restrict node failure marking to primaries with assigned slots. ([#634])
@@ -414,7 +414,7 @@ release is fully compatible with Redis OSS 7.2.4.
 
 #### <a id="800-rc1-internal-codebase-improvements"></a>Internal Codebase Improvements
 
-* Enable debug asserts for cluster and sentinel tests. ([#588])
+* Enable debug asserts for cluster and Sentinel tests. ([#588])
 * Introduce a minimal debugger for Tcl integration test suite. ([#683])
 * Set up clang-format GitHub action for automated code formatting checks. ([#538])
 * Replace custom atomic logic with C11 _Atomics. ([#490])
@@ -495,7 +495,7 @@ compiled for Redis. For other users, it primarily fixes uncommon bugs.
 
 #### <a id="726-ga-bug-fixes-sentinel"></a>Bug fixes - Sentinel
 
-* Accept redis-sentinel to start Valkey in sentinel mode ([#731], Fixes [Issue #719])
+* Accept redis-sentinel to start Valkey in Sentinel mode ([#731], Fixes [Issue #719])
 
 #### <a id="726-ga-bug-fixes-cli"></a>Bug fixes - CLI
 
@@ -542,7 +542,7 @@ fixes to minor bugs present in 7.2.4 RC1 and more compatibility changes.
 Upgrade urgency **LOW**.
 
 Initial release of Valkey with API compatibility for OSS
-Redis 7.2.4. This release is based off of OSS Redis 7.2.4, with additional
+Redis 7.2.4. This release is based on OSS Redis 7.2.4, with additional
 functionality to better brand the server as Valkey instead of Redis. All APIs
 are fully backwards compatible and care was taken to minimize the number of
 log lines that were changed to best support existing tooling around log parsing.
