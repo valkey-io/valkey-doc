@@ -254,13 +254,13 @@ def acl_categories(json):
         acl.add("SLOW")
     return ["@" + cat.lower() for cat in sorted(acl)]
 
-def command_see_also(group, commands_per_group_file):
+def command_see_also(group, commands_per_group_file, exclude_command):
     """Returns a dict {command: summary} of the commands in the given group"""
     commands_per_group = loadjson(commands_per_group_file)
     commands = commands_per_group.get(group)
     if not commands:
         return []
-    return {k: v.get("summary") for (k, v) in commands.items() if not v.get("deprecated")}
+    return {k: v.get("summary") for (k, v) in commands.items() if not v.get("deprecated") and k != exclude_command}
 
 def rewrite_links(text, renderer):
     def repl_link_match(match):
@@ -354,7 +354,7 @@ def main():
             "history": command_metadata.get("history"),
             "acl_categories": acl_categories(command_metadata),
             "group": command_metadata.get("group"),
-            "see_also_commands": command_see_also(command_metadata.get("group"), args.commands_per_group_json)
+            "see_also_commands": command_see_also(command_metadata.get("group"), args.commands_per_group_json, name)
         })
         if "deprecated_since" in command_metadata:
             data["deprecated_since"] = command_metadata["deprecated_since"]
