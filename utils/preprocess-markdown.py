@@ -124,7 +124,7 @@ class ManStructure:
             print("# SEE ALSO", end="\n\n")
             see_also = ", ".join(["**" + cmd.lower().replace(' ', '-') + "**(3valkey)"
                                   for cmd in self.see_also_commands.keys()])
-            print(see_also + ".", end="\n\n")
+            print(see_also, end="\n\n")
 
     def rewrite_heading(self, heading):
         heading = heading.strip()
