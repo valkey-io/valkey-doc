@@ -133,10 +133,10 @@ man5_src = $(filter $(configs),$(topics_md))
 man7_src = $(filter-out $(programs) $(configs) topics/index.md,$(topics_md))
 
 # Target man pages
-man1     = $(man1_src:topics/%.md=$(MAN_DIR)/man1/valkey-%.1)
-man3     = $(man3_src:commands/%.md=$(MAN_DIR)/man3/%.3valkey)
-man5     = $(man5_src:topics/%.md=$(MAN_DIR)/man5/%.5)
-man7     = $(man7_src:topics/%.md=$(MAN_DIR)/man7/valkey-%.7) $(MAN_DIR)/man7/valkey-commands.7 $(MAN_DIR)/man7/valkey.7
+man1     = $(man1_src:topics/%.md=$(MAN_DIR)/man1/valkey-%.1.gz)
+man3     = $(man3_src:commands/%.md=$(MAN_DIR)/man3/%.3valkey.gz)
+man5     = $(man5_src:topics/%.md=$(MAN_DIR)/man5/%.5.gz)
+man7     = $(man7_src:topics/%.md=$(MAN_DIR)/man7/valkey-%.7.gz) $(MAN_DIR)/man7/valkey-commands.7.gz $(MAN_DIR)/man7/valkey.7.gz
 
 man_targets = $(man1) $(man3) $(man5) $(man7)
 
@@ -148,52 +148,53 @@ $(MAN_DIR)/man1 $(MAN_DIR)/man3 $(MAN_DIR)/man5 $(MAN_DIR)/man7:
 	mkdir -p $@
 
 man_scripts = utils/preprocess-markdown.py utils/command_syntax.py utils/links-to-man.py
+to_man = pandoc -s --to man - | gzip -
 
-$(MAN_DIR)/man1/valkey-%.1: topics/%.md $(man_scripts)
+$(MAN_DIR)/man1/valkey-%.1.gz: topics/%.md $(man_scripts)
 	utils/preprocess-markdown.py --man --page-type program \
 	 --version $(VERSION) --date $(DATE) \$< \
-	 | utils/links-to-man.py - | pandoc -s --to man -o $@ -
-$(MAN_DIR)/man3/%.3valkey: commands/%.md $(VALKEY_ROOT)/src/commands/%.json $(BUILD_DIR)/.commands-per-group.json $(man_scripts)
+	 | utils/links-to-man.py - | $(to_man) > $@
+$(MAN_DIR)/man3/%.3valkey.gz: commands/%.md $(VALKEY_ROOT)/src/commands/%.json $(BUILD_DIR)/.commands-per-group.json $(man_scripts)
 	utils/preprocess-markdown.py --man --page-type command \
 	 --version $(VERSION) --date $(DATE) \
 	 --commands-per-group-json $(BUILD_DIR)/.commands-per-group.json \
 	 --valkey-root $(VALKEY_ROOT) $< \
-	 | utils/links-to-man.py - | pandoc -s --to man -o $@ -
-$(MAN_DIR)/man5/%.5: topics/%.md $(man_scripts)
+	 | utils/links-to-man.py - | $(to_man) > $@
+$(MAN_DIR)/man5/%.5.gz: topics/%.md $(man_scripts)
 	utils/preprocess-markdown.py --man --page-type config \
 	 --version $(VERSION) --date $(DATE) $< \
-	 | utils/links-to-man.py - | pandoc -s --to man -o $@ -
-$(MAN_DIR)/man7/valkey-%.7: topics/%.md $(man_scripts)
+	 | utils/links-to-man.py - | $(to_man) > $@
+$(MAN_DIR)/man7/valkey-%.7.gz: topics/%.md $(man_scripts)
 	utils/preprocess-markdown.py --man --page-type topic \
 	 --version $(VERSION) --date $(DATE) $< \
-	 | utils/links-to-man.py - | pandoc -s --to man -o $@ -
-$(MAN_DIR)/man7/valkey.7: topics/index.md $(man_scripts)
+	 | utils/links-to-man.py - | $(to_man) > $@
+$(MAN_DIR)/man7/valkey.7.gz: topics/index.md $(man_scripts)
 	utils/preprocess-markdown.py --man --page-type topic \
 	 --version $(VERSION) --date $(DATE) $< \
-	 | utils/links-to-man.py - | pandoc -s --to man -o $@ -
-$(MAN_DIR)/man7/valkey-commands.7: $(BUILD_DIR)/.commands-per-group.json groups.json utils/build-command-index.py
+	 | utils/links-to-man.py - | $(to_man) > $@
+$(MAN_DIR)/man7/valkey-commands.7.gz: $(BUILD_DIR)/.commands-per-group.json groups.json utils/build-command-index.py
 	utils/build-command-index.py --man \
 	 --version $(VERSION) --date $(DATE) \
 	 --groups-json groups.json \
 	 --commands-per-group-json $(BUILD_DIR)/.commands-per-group.json \
-	 | pandoc -s --to man -o $@ -
+	 | $(to_man) > $@
 
 .PHONY: install-man uninstall-man
 install-man: man | $(INSTALL_MAN_DIR)/man1 $(INSTALL_MAN_DIR)/man3 $(INSTALL_MAN_DIR)/man5 $(INSTALL_MAN_DIR)/man7
-	cp $(MAN_DIR)/man1/valkey*.1 $(INSTALL_MAN_DIR)/man1/
-	cp $(MAN_DIR)/man3/*.3valkey $(INSTALL_MAN_DIR)/man3/
-	cp $(MAN_DIR)/man5/valkey*.5 $(INSTALL_MAN_DIR)/man5/
-	cp $(MAN_DIR)/man7/valkey*.7 $(INSTALL_MAN_DIR)/man7/
+	cp $(MAN_DIR)/man1/valkey*.1.gz $(INSTALL_MAN_DIR)/man1/
+	cp $(MAN_DIR)/man3/*.3valkey.gz $(INSTALL_MAN_DIR)/man3/
+	cp $(MAN_DIR)/man5/valkey*.5.gz $(INSTALL_MAN_DIR)/man5/
+	cp $(MAN_DIR)/man7/valkey*.7.gz $(INSTALL_MAN_DIR)/man7/
 
 $(INSTALL_MAN_DIR)/man1 $(INSTALL_MAN_DIR)/man3 $(INSTALL_MAN_DIR)/man5 $(INSTALL_MAN_DIR)/man7:
 	mkdir -p $@
 
 uninstall-man:
-	rm $(INSTALL_MAN_DIR)/man1/valkey*.1
-	rm $(INSTALL_MAN_DIR)/man3/*.3valkey
-	rm $(INSTALL_MAN_DIR)/man4/valkey*.4
-	rm $(INSTALL_MAN_DIR)/man5/valkey*.5
-	rm $(INSTALL_MAN_DIR)/man7/valkey*.7
+	rm -f $(INSTALL_MAN_DIR)/man1/valkey*.1*
+	rm -f $(INSTALL_MAN_DIR)/man3/*.3valkey*
+	rm -f $(INSTALL_MAN_DIR)/man4/valkey*.4*
+	rm -f $(INSTALL_MAN_DIR)/man5/valkey*.5*
+	rm -f $(INSTALL_MAN_DIR)/man7/valkey*.7*
 
 # -------
 
