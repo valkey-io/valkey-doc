@@ -49,7 +49,7 @@ we can store the value of the element we are actually indexing.
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> ZADD myzset 0 a 0 b 0 c 0 d 0 e 0 f 0 g
 (integer) 7
 127.0.0.1:6379> ZRANGEBYLEX myzset - [c

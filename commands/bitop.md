@@ -26,7 +26,7 @@ zero bytes up to the length of the longest string.
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> SET key1 "foobar"
 OK
 127.0.0.1:6379> SET key2 "abcdef"

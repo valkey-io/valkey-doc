@@ -78,7 +78,7 @@ If you like science fiction, think of time flowing at infinite speed inside a
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> DEL list1 list2
 (integer) 0
 127.0.0.1:6379> RPUSH list1 a b c

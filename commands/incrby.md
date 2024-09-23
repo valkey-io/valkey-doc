@@ -8,7 +8,7 @@ See `INCR` for extra information on increment/decrement operations.
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> SET mykey "10"
 OK
 127.0.0.1:6379> INCRBY mykey 5

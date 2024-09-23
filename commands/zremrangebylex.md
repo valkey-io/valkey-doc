@@ -4,7 +4,7 @@ The meaning of `min` and `max` are the same of the `ZRANGEBYLEX` command. Simila
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> ZADD myzset 0 aaaa 0 b 0 c 0 d 0 e
 (integer) 5
 127.0.0.1:6379> ZADD myzset 0 foo 0 zap 0 zip 0 ALPHA 0 alpha

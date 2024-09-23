@@ -59,7 +59,7 @@ When `MAXLEN` is used, it is possible to specify 0 as the maximum number of comp
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> RPUSH mylist a b c d 1 2 3 4 3 3 3
 (integer) 11
 127.0.0.1:6379> LPOS mylist 3

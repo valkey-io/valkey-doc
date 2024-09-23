@@ -30,7 +30,7 @@ so to query very large areas with a very small `COUNT` option may be slow even i
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> GEOADD Sicily 13.361389 38.115556 "Palermo" 15.087269 37.502669 "Catania"
 (integer) 2
 127.0.0.1:6379> GEOADD Sicily 12.758489 38.788135 "edge1"   17.241510 38.788135 "edge2" 

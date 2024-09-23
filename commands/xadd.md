@@ -74,7 +74,7 @@ For further information about streams please check our
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> XADD mystream * name Sara surname OConnor
 "1714701491958-0"
 127.0.0.1:6379> XADD mystream * field1 value1 field2 value2 field3 value3

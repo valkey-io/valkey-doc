@@ -12,7 +12,7 @@ of the argument.
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> PING
 PONG
 127.0.0.1:6379> 

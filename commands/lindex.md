@@ -9,7 +9,7 @@ When the value at `key` is not a list, an error is returned.
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> LPUSH mylist "World"
 (integer) 1
 127.0.0.1:6379> LPUSH mylist "Hello"

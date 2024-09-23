@@ -8,7 +8,7 @@ description: >
 Hashes are record types structured as collections of field-value pairs.
 You can use hashes to represent basic objects and to store groupings of counters, among other things.
 
-```valkey-cli
+```
 127.0.0.1:6379> HSET bike:1 model Deimos brand Ergonom type 'Enduro bikes' price 4972
 (integer) 4
 127.0.0.1:6379> HGET bike:1 model
@@ -33,7 +33,7 @@ hashes in many different ways inside your application.
 The command `HSET` sets multiple fields of the hash, while `HGET` retrieves
 a single field. `HMGET` is similar to `HGET` but returns an array of values:
 
-```valkey-cli
+```
 127.0.0.1:6379> HMGET bike:1 model price no-such-field
 1) "Deimos"
 2) "4972"
@@ -43,7 +43,7 @@ a single field. `HMGET` is similar to `HGET` but returns an array of values:
 There are commands that are able to perform operations on individual fields
 as well, like `HINCRBY`:
 
-```valkey-cli
+```
 127.0.0.1:6379> HINCRBY bike:1 price 100
 (integer) 5072
 127.0.0.1:6379> HINCRBY bike:1 price -100
@@ -68,7 +68,7 @@ See the [complete list of hash commands](../commands/#hash).
 ## Examples
 
 * Store counters for the number of times bike:1 has been ridden, has crashed, or has changed owners:
-```valkey-cli
+```
 127.0.0.1:6379> HINCRBY bike:1:stats rides 1
 (integer) 1
 127.0.0.1:6379> HINCRBY bike:1:stats rides 1

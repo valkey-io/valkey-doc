@@ -10,7 +10,7 @@ The optional `WITHVALUES` modifier changes the reply so it includes the respecti
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> HSET coin heads obverse tails reverse edge null
 (integer) 3
 127.0.0.1:6379> HRANDFIELD coin

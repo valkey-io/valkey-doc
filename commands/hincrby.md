@@ -11,7 +11,7 @@ The range of values supported by `HINCRBY` is limited to 64 bit signed integers.
 Since the `increment` argument is signed, both increment and decrement
 operations can be performed:
 
-```valkey-cli
+```
 127.0.0.1:6379> HSET myhash field 5
 (integer) 1
 127.0.0.1:6379> HINCRBY myhash field 1

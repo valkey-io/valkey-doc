@@ -9,7 +9,7 @@ Note that `GEORADIUSBYMEMBER_RO` was added to provide a read-only command that c
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> GEOADD Sicily 13.583333 37.316667 "Agrigento"
 (integer) 1
 127.0.0.1:6379> GEOADD Sicily 13.361389 38.115556 "Palermo" 15.087269 37.502669 "Catania"

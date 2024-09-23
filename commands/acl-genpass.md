@@ -27,7 +27,7 @@ hex character.
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> ACL GENPASS
 "dd721260bfe1b3d9601e7fbab36de6d04e2e67b0ef1c53de59d45950db0dd3cc"
 127.0.0.1:6379> ACL GENPASS 32

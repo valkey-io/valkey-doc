@@ -25,7 +25,7 @@ the last element of the list.
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> RPUSH mylist "one"
 (integer) 1
 127.0.0.1:6379> RPUSH mylist "two"

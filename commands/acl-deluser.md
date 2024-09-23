@@ -6,7 +6,7 @@ exist, in such case no operation is performed for the non existing users.
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> ACL DELUSER antirez
 (integer) 1
 ```

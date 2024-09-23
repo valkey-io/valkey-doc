@@ -2,7 +2,7 @@ This command is like `ZRANGE`, but stores the result in the `<dst>` destination 
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> ZADD srczset 1 "one" 2 "two" 3 "three" 4 "four"
 (integer) 4
 127.0.0.1:6379> ZRANGESTORE dstzset srczset 2 -1

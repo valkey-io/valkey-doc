@@ -3,7 +3,7 @@ This command can be used to test the permissions of a given user without having 
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> ACL SETUSER VIRGINIA +SET ~*
 "OK"
 127.0.0.1:6379> ACL DRYRUN VIRGINIA SET foo bar

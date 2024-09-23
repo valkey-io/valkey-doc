@@ -24,7 +24,7 @@ Suppose you want to maintain two metrics for various bicycles: the current price
 
 * Bike 1 initially costs 1,000 (counter in offset 0) and has never had an owner. After being sold, it's now considered used and the price instantly drops to reflect its new condition, and it now has an owner (offset 1). After quite some time, the bike becomes a classic. The original owner sells it for a profit, so the price goes up and the number of owners does as well.Finally, you can look at the bike's current price and number of owners.
 
-```valkey-cli
+```
 127.0.0.1:6379> BITFIELD bike:1:stats SET u32 #0 1000
 1) (integer) 0
 127.0.0.1:6379> BITFIELD bike:1:stats INCRBY u32 #0 -50 INCRBY u32 #1 1

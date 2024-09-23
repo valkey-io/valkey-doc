@@ -4,7 +4,7 @@ An error is returned when the value stored at `key` is not a list.
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> LPUSH mylist "World"
 (integer) 1
 127.0.0.1:6379> LPUSH mylist "Hello"

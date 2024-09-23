@@ -25,7 +25,7 @@ regardless of the actual internal precision of the computation.
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> SET mykey 10.50
 OK
 127.0.0.1:6379> INCRBYFLOAT mykey 0.1

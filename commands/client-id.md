@@ -9,7 +9,7 @@ Check the `CLIENT UNBLOCK` command page for a pattern involving the two commands
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> CLIENT ID
 (integer) 2873
 ```
