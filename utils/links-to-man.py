@@ -53,7 +53,7 @@ def page_to_man(text, dir, name):
         if name == '' or name == '.':
             return '**valkey**(7)'
         elif name == 'valkey.conf':
-            return '**valkey.conf**(4)'
+            return '**valkey.conf**(5)'
         elif name in ['cli', 'check-aof', 'check-rdb', 'benchmark', 'server', 'sentinel']:
             return '**valkey-%s**(1)' % name
         elif text == '':

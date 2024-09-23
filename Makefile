@@ -125,22 +125,22 @@ configs = topics/valkey.conf.md
 
 man1_src = $(filter $(programs),$(topics_md))
 man3_src = $(commands)
-man4_src = $(filter $(configs),$(topics_md))
+man5_src = $(filter $(configs),$(topics_md))
 man7_src = $(filter-out $(programs) $(configs) topics/index.md,$(topics_md))
 
 # Target man pages
 man1     = $(man1_src:topics/%.md=$(MAN_DIR)/man1/valkey-%.1)
 man3     = $(man3_src:commands/%.md=$(MAN_DIR)/man3/%.3valkey)
-man4     = $(man4_src:topics/%.md=$(MAN_DIR)/man4/%.4)
+man5     = $(man5_src:topics/%.md=$(MAN_DIR)/man5/%.5)
 man7     = $(man7_src:topics/%.md=$(MAN_DIR)/man7/valkey-%.7) $(MAN_DIR)/man7/valkey-commands.7 $(MAN_DIR)/man7/valkey.7
 
-man_targets = $(man1) $(man3) $(man4) $(man7)
+man_targets = $(man1) $(man3) $(man5) $(man7)
 
 $(man1): | $(MAN_DIR)/man1
 $(man3): | $(MAN_DIR)/man3
-$(man4): | $(MAN_DIR)/man4
+$(man5): | $(MAN_DIR)/man5
 $(man7): | $(MAN_DIR)/man7
-$(MAN_DIR)/man1 $(MAN_DIR)/man3 $(MAN_DIR)/man4 $(MAN_DIR)/man7:
+$(MAN_DIR)/man1 $(MAN_DIR)/man3 $(MAN_DIR)/man5 $(MAN_DIR)/man7:
 	mkdir -p $@
 
 man_scripts = utils/preprocess-markdown.py utils/command_syntax.py utils/links-to-man.py
@@ -153,7 +153,7 @@ $(MAN_DIR)/man3/%.3valkey: commands/%.md $(VALKEY_ROOT)/src/commands/%.json $(BU
 	 --commands-per-group-json $(BUILD_DIR)/.commands-per-group.json \
 	 --valkey-root $(VALKEY_ROOT) $< \
 	 | utils/links-to-man.py - | pandoc -s --to man -o $@ -
-$(MAN_DIR)/man4/%.4: topics/%.md $(man_scripts)
+$(MAN_DIR)/man5/%.5: topics/%.md $(man_scripts)
 	utils/preprocess-markdown.py --man --page-type config $< \
 	 | utils/links-to-man.py - | pandoc -s --to man -o $@ -
 $(MAN_DIR)/man7/valkey-%.7: topics/%.md $(man_scripts)
@@ -169,19 +169,20 @@ $(MAN_DIR)/man7/valkey-commands.7: $(BUILD_DIR)/.commands-per-group.json groups.
 	 | pandoc -s --to man -o $@ -
 
 .PHONY: install-man uninstall-man
-install-man: man | $(INSTALL_MAN_DIR)/man1 $(INSTALL_MAN_DIR)/man3 $(INSTALL_MAN_DIR)/man4 $(INSTALL_MAN_DIR)/man7
+install-man: man | $(INSTALL_MAN_DIR)/man1 $(INSTALL_MAN_DIR)/man3 $(INSTALL_MAN_DIR)/man5 $(INSTALL_MAN_DIR)/man7
 	cp $(MAN_DIR)/man1/valkey*.1 $(INSTALL_MAN_DIR)/man1/
 	cp $(MAN_DIR)/man3/*.3valkey $(INSTALL_MAN_DIR)/man3/
-	cp $(MAN_DIR)/man4/valkey*.4 $(INSTALL_MAN_DIR)/man4/
+	cp $(MAN_DIR)/man5/valkey*.5 $(INSTALL_MAN_DIR)/man5/
 	cp $(MAN_DIR)/man7/valkey*.7 $(INSTALL_MAN_DIR)/man7/
 
-$(INSTALL_MAN_DIR)/man1 $(INSTALL_MAN_DIR)/man3 $(INSTALL_MAN_DIR)/man4 $(INSTALL_MAN_DIR)/man7:
+$(INSTALL_MAN_DIR)/man1 $(INSTALL_MAN_DIR)/man3 $(INSTALL_MAN_DIR)/man5 $(INSTALL_MAN_DIR)/man7:
 	mkdir -p $@
 
 uninstall-man:
 	rm $(INSTALL_MAN_DIR)/man1/valkey*.1
 	rm $(INSTALL_MAN_DIR)/man3/*.3valkey
 	rm $(INSTALL_MAN_DIR)/man4/valkey*.4
+	rm $(INSTALL_MAN_DIR)/man5/valkey*.5
 	rm $(INSTALL_MAN_DIR)/man7/valkey*.7
 
 # -------

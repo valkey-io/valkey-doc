@@ -20,7 +20,7 @@ standard_headings = {
     'LIBRARY',                  # Not used (possibly use module API functions)
     'SYNOPSIS',                 # Inserted automatically for commands. Written
                                 # explicitly as "## Usage" for programs.
-    'CONFIGURATION',            # Explicit for valkey.conf(4)
+    'CONFIGURATION',            # Explicit for valkey.conf(5)
     'DESCRIPTION',              # Inserted automatically before any text unless
                                 # another standard heading starts the text
     'OPTIONS',                  # Uses for programs
@@ -59,7 +59,7 @@ class ManStructure:
             print('section: 1')
             print('header: Valkey Manual')
         elif self.pagetype == 'config':
-            print('section: 4')
+            print('section: 5')
             print('header: Valkey Configuration Manual')
         else:
             print('section: 7')
