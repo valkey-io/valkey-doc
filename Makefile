@@ -34,6 +34,22 @@ ifeq ("$(shell which pandoc)","")
     $(error Please install pandoc)
 endif
 
+# ---- If we're in a git repo, override date and version ----
+
+ifneq ($(wildcard .git),)
+    DATE=$(shell git log -1 --format=%cs)
+    described=$(shell git describe --tags --always)
+    # If git returned a clean version on the form X.Y.Z, then check that it
+    # matches the declared VERSION. This is just when tagging.
+    ifneq ($(shell echo $(described) | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$$'),)
+    ifneq ($(described),$(VERSION))
+        $(error Declared VERSION $(VERSION) mismatches git tag $(described))
+    endif
+    endif
+    VERSION=$(described)
+    $(warning $(VERSION) $(DATE))
+endif
+
 # ---- Source files ----
 
 topics   = $(wildcard topics/*)
