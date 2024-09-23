@@ -30,7 +30,7 @@ represent sorted sets). They are ordered according to the following rule:
 
 Let's start with a simple example, we'll add all our racers and the score they got in the first race:
 
-```valkey-cli
+```
 127.0.0.1:6379> ZADD racer_scores 10 "Norem"
 (integer) 1
 127.0.0.1:6379> ZADD racer_scores 12 "Castilla"
@@ -54,7 +54,7 @@ every time we add an element Valkey performs an O(log(N)) operation. That's
 good, but when we ask for sorted elements Valkey does not have to do any work at
 all, it's already sorted. Note that the `ZRANGE` order is low to high, while the `ZREVRANGE` order is high to low:
 
-```valkey-cli
+```
 127.0.0.1:6379> ZRANGE racer_scores 0 -1
 1) "Ford"
 2) "Sam-Bodden"
@@ -76,7 +76,7 @@ here just as it does in the case of the `LRANGE` command).
 
 It is possible to return scores as well, using the `WITHSCORES` argument:
 
-```valkey-cli
+```
 127.0.0.1:6379> ZRANGE racer_scores 0 -1 withscores
  1) "Ford"
  2) "6"
@@ -98,7 +98,7 @@ Sorted sets are more powerful than this. They can operate on ranges.
 Let's get all the racers with 10 or fewer points. We
 use the `ZRANGEBYSCORE` command to do it:
 
-```valkey-cli
+```
 127.0.0.1:6379> ZRANGEBYSCORE racer_scores -inf 10
 1) "Ford"
 2) "Sam-Bodden"
@@ -113,7 +113,7 @@ To remove an element we'd simply call `ZREM` with the racer's name.
 It's also possible to remove ranges of elements. Let's remove racer Castilla along with all
 the racers with strictly fewer than 10 points:
 
-```valkey-cli
+```
 127.0.0.1:6379> ZREM racer_scores "Castilla"
 (integer) 1
 127.0.0.1:6379> ZREMRANGEBYSCORE racer_scores -inf 9
@@ -133,7 +133,7 @@ position of an element in the set of ordered elements.
 The `ZREVRANK` command is also available in order to get the rank, considering
 the elements sorted in a descending way.
 
-```valkey-cli
+```
 127.0.0.1:6379> ZRANK racer_scores "Norem"
 (integer) 0
 127.0.0.1:6379> ZREVRANK racer_scores "Norem"
@@ -154,7 +154,7 @@ The main commands to operate with lexicographical ranges are `ZRANGEBYLEX`,
 For example, let's add again our list of famous hackers, but this time
 using a score of zero for all the elements. We'll see that because of the sorted sets ordering rules, they are already sorted lexicographically. Using `ZRANGEBYLEX` we can ask for lexicographical ranges:
 
-```valkey-cli
+```
 127.0.0.1:6379> ZADD racer_scores 0 "Norem" 0 "Sam-Bodden" 0 "Royce" 0 "Castilla" 0 "Prickett" 0 "Ford"
 (integer) 3
 127.0.0.1:6379> ZRANGE racer_scores 0 -1
@@ -200,7 +200,7 @@ the #4932 best score here").
 ## Examples
 
 * There are two ways we can use a sorted set to represent a leaderboard. If we know a racer's new score, we can update it directly via the `ZADD` command. However, if we want to add points to an existing score, we can use the `ZINCRBY` command.
-```valkey-cli
+```
 127.0.0.1:6379> ZADD racer_scores 100 "Wood"
 (integer) 1
 127.0.0.1:6379> ZADD racer_scores 100 "Henshaw"

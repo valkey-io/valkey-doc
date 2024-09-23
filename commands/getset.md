@@ -11,7 +11,7 @@ some event occurs, but from time to time we need to get the value of the counter
 and reset it to zero atomically.
 This can be done using `GETSET mycounter "0"`:
 
-```valkey-cli
+```
 127.0.0.1:6379> INCR mycounter
 (integer) 1
 127.0.0.1:6379> GETSET mycounter "0"
@@ -22,7 +22,7 @@ This can be done using `GETSET mycounter "0"`:
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> SET mykey "Hello"
 OK
 127.0.0.1:6379> GETSET mykey "World"

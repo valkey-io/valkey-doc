@@ -35,7 +35,7 @@ To use pattern with hash tag, see [Hash tags](../topics/cluster-spec.md#hash-tag
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> MSET firstname Jack lastname Stuntman age 35
 OK
 127.0.0.1:6379> KEYS *name*

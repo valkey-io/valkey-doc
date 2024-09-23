@@ -102,7 +102,7 @@ The binary nature of the comparison allows to use sorted sets as a general purpo
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> ZADD myzset 1 "one" 2 "two" 3 "three"
 (integer) 3
 127.0.0.1:6379> ZRANGE myzset 0 -1
@@ -118,7 +118,7 @@ The binary nature of the comparison allows to use sorted sets as a general purpo
 
 The following example using `WITHSCORES` shows how the command returns always an array, but this time, populated with *element_1*, *score_1*, *element_2*, *score_2*, ..., *element_N*, *score_N*.
 
-```valkey-cli
+```
 127.0.0.1:6379> ZADD myzset 1 "one" 2 "two" 3 "three"
 (integer) 3
 127.0.0.1:6379> ZRANGE myzset 0 1 WITHSCORES
@@ -130,7 +130,7 @@ The following example using `WITHSCORES` shows how the command returns always an
 
 This example shows how to query the sorted set by score, excluding the value `1` and up to infinity, returning only the second element of the result:
 
-```valkey-cli
+```
 127.0.0.1:6379> ZADD myzset 1 "one" 2 "two" 3 "three"
 (integer) 3
 127.0.0.1:6379> ZRANGE myzset (1 +inf BYSCORE LIMIT 1 1

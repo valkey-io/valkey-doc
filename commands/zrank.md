@@ -10,7 +10,7 @@ to low.
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> ZADD myzset 1 "one"
 (integer) 1
 127.0.0.1:6379> ZADD myzset 2 "two"

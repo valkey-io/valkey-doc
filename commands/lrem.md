@@ -14,7 +14,7 @@ exist, the command will always return `0`.
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> RPUSH mylist "hello"
 (integer) 1
 127.0.0.1:6379> RPUSH mylist "hello"

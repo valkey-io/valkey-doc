@@ -13,7 +13,7 @@ for caching purposes. So `PFCOUNT` is technically a write command.
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> PFADD hll foo bar zap
 (integer) 1
 127.0.0.1:6379> PFADD hll zap zap zap

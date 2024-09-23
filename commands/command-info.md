@@ -8,7 +8,7 @@ position will be nil.
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> COMMAND INFO get set eval
 1)  1) "get"
     2) (integer) 2

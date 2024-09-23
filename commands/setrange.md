@@ -30,7 +30,7 @@ This is a very fast and efficient storage in many real world use cases.
 
 Basic usage:
 
-```valkey-cli
+```
 127.0.0.1:6379> SET key1 "Hello World"
 OK
 127.0.0.1:6379> SETRANGE key1 6 "Valkey"
@@ -41,7 +41,7 @@ OK
 
 Example of zero padding:
 
-```valkey-cli
+```
 127.0.0.1:6379> SETRANGE key2 6 "Valkey"
 (integer) 12
 127.0.0.1:6379> GET key2

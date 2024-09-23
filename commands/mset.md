@@ -8,7 +8,7 @@ others are unchanged.
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> MSET key1 "Hello" key2 "World"
 OK
 127.0.0.1:6379> GET key1

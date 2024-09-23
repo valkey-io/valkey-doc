@@ -17,7 +17,7 @@ For negative values, -1 is the last bit, -2 is the penultimate, and so forth.
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> SET mykey "foobar"
 OK
 127.0.0.1:6379> BITCOUNT mykey

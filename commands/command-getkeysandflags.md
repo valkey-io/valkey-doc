@@ -10,7 +10,7 @@ Refer to [key specifications](../topics/key-specs.md#logical-operation-flags) fo
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> COMMAND GETKEYS MSET a b c d e f
 1) "a"
 2) "c"

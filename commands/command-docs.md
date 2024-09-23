@@ -46,7 +46,7 @@ The following keys may be included in the mapped reply:
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> COMMAND DOCS SET
 1) "set"
 2)  1) "summary"

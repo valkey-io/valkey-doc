@@ -20,7 +20,7 @@ If they don't match an error is returned.
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> DEL mykey
 (integer) 0
 127.0.0.1:6379> RESTORE mykey 0 "\n\x17\x17\x00\x00\x00\x12\x00\x00\x00\x03\x00\

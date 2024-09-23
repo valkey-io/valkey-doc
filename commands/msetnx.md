@@ -12,7 +12,7 @@ others are unchanged.
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> MSETNX key1 "Hello" key2 "there"
 (integer) 1
 127.0.0.1:6379> MSETNX key2 "new" key3 "world"

@@ -3,7 +3,7 @@ An error is returned when `key` holds a non-string value.
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> SET mykey "Hello world"
 OK
 127.0.0.1:6379> STRLEN mykey

@@ -16,7 +16,7 @@ enough to send:
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> XADD writers * name Virginia surname Woolf
 "1714701492147-0"
 127.0.0.1:6379> XADD writers * name Jane surname Austen

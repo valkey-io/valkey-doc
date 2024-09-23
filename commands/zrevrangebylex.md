@@ -4,7 +4,7 @@ Apart from the reversed ordering, `ZREVRANGEBYLEX` is similar to `ZRANGEBYLEX`.
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> ZADD myzset 0 a 0 b 0 c 0 d 0 e 0 f 0 g
 (integer) 7
 127.0.0.1:6379> ZREVRANGEBYLEX myzset [c -

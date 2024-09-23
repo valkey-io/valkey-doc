@@ -26,7 +26,7 @@ It can also take the following values:
 
 When no parameter is provided, the `default` option is assumed.
 
-```valkey-cli
+```
 127.0.0.1:6379> INFO
 # Server
 redis_version:7.2.4

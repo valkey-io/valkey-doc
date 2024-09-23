@@ -14,7 +14,7 @@ information.
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> HSET mykey field 10.50
 (integer) 1
 127.0.0.1:6379> HINCRBYFLOAT mykey field 0.1

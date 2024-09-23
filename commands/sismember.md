@@ -2,7 +2,7 @@ Returns if `member` is a member of the set stored at `key`.
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> SADD myset "one"
 (integer) 1
 127.0.0.1:6379> SISMEMBER myset "one"

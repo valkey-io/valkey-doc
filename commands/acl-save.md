@@ -3,7 +3,7 @@ option), this command will save the currently defined ACLs from the server memor
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> ACL SAVE
 OK
 127.0.0.1:6379> ACL SAVE

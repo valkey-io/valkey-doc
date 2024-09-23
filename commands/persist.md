@@ -4,7 +4,7 @@ is associated).
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> SET mykey "Hello"
 OK
 127.0.0.1:6379> EXPIRE mykey 10

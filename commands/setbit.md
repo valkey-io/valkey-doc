@@ -22,7 +22,7 @@ the same _key_ will not have the allocation overhead.
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> SETBIT mykey 7 1
 (integer) 0
 127.0.0.1:6379> SETBIT mykey 7 0

@@ -14,7 +14,7 @@ The number of popped elements is the minimum from the sorted set's cardinality a
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> ZMPOP 1 notsuchkey MIN
 (nil)
 127.0.0.1:6379> ZADD myzset 1 "one" 2 "two" 3 "three"

@@ -171,7 +171,7 @@ For further information about streams please check our
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> XADD writers * name Virginia surname Woolf
 "1714701492065-0"
 127.0.0.1:6379> XADD writers * name Jane surname Austen

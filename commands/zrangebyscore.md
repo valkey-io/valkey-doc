@@ -41,7 +41,7 @@ Will return all the elements with `5 < score < 10` (5 and 10 excluded).
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> ZADD myzset 1 "one"
 (integer) 1
 127.0.0.1:6379> ZADD myzset 2 "two"

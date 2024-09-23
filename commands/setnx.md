@@ -5,7 +5,7 @@ When `key` already holds a value, no operation is performed.
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> SETNX mykey "Hello"
 (integer) 1
 127.0.0.1:6379> SETNX mykey "World"

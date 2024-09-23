@@ -16,7 +16,7 @@ popped from.
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> DEL zset1 zset2
 (integer) 0
 127.0.0.1:6379> ZADD zset1 0 a 1 b 2 c

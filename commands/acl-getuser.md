@@ -13,7 +13,7 @@ Selectors are listed in the order they were applied to the user, and include inf
 
 Here's an example configuration for a user
 
-```valkey-cli
+```
 127.0.0.1:6379> ACL SETUSER sample on nopass +GET allkeys &* (+SET ~key2)
 "OK"
 127.0.0.1:6379> ACL GETUSER sample

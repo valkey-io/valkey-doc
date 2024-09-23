@@ -8,7 +8,7 @@ An error is returned when `key` exists but does not hold a list value.
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> RPUSH mylist "Hello"
 (integer) 1
 127.0.0.1:6379> RPUSH mylist "World"
