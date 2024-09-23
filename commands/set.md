@@ -29,10 +29,6 @@ OK
 OK
 ```
 
-### Code examples
-
-{{< clients-example set_and_get />}}
-
 ## Patterns
 
 **Note:** The following pattern is discouraged in favor of [the Redlock algorithm](../topics/distlock.md) which is only a bit more complex to implement, but offers better guarantees and is fault tolerant.
