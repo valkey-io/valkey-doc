@@ -2,6 +2,10 @@
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 
+# Version info
+VERSION ?= 8.0.0
+DATE ?= 2024-09-23
+
 # Path to the code repo.
 VALKEY_ROOT ?= ../valkey
 
@@ -146,24 +150,30 @@ $(MAN_DIR)/man1 $(MAN_DIR)/man3 $(MAN_DIR)/man5 $(MAN_DIR)/man7:
 man_scripts = utils/preprocess-markdown.py utils/command_syntax.py utils/links-to-man.py
 
 $(MAN_DIR)/man1/valkey-%.1: topics/%.md $(man_scripts)
-	utils/preprocess-markdown.py --man --page-type program $< \
+	utils/preprocess-markdown.py --man --page-type program \
+	 --version $(VERSION) --date $(DATE) \$< \
 	 | utils/links-to-man.py - | pandoc -s --to man -o $@ -
 $(MAN_DIR)/man3/%.3valkey: commands/%.md $(VALKEY_ROOT)/src/commands/%.json $(BUILD_DIR)/.commands-per-group.json $(man_scripts)
 	utils/preprocess-markdown.py --man --page-type command \
+	 --version $(VERSION) --date $(DATE) \
 	 --commands-per-group-json $(BUILD_DIR)/.commands-per-group.json \
 	 --valkey-root $(VALKEY_ROOT) $< \
 	 | utils/links-to-man.py - | pandoc -s --to man -o $@ -
 $(MAN_DIR)/man5/%.5: topics/%.md $(man_scripts)
-	utils/preprocess-markdown.py --man --page-type config $< \
+	utils/preprocess-markdown.py --man --page-type config \
+	 --version $(VERSION) --date $(DATE) $< \
 	 | utils/links-to-man.py - | pandoc -s --to man -o $@ -
 $(MAN_DIR)/man7/valkey-%.7: topics/%.md $(man_scripts)
-	utils/preprocess-markdown.py --man --page-type topic $< \
+	utils/preprocess-markdown.py --man --page-type topic \
+	 --version $(VERSION) --date $(DATE) $< \
 	 | utils/links-to-man.py - | pandoc -s --to man -o $@ -
 $(MAN_DIR)/man7/valkey.7: topics/index.md $(man_scripts)
-	utils/preprocess-markdown.py --man --page-type topic $< \
+	utils/preprocess-markdown.py --man --page-type topic \
+	 --version $(VERSION) --date $(DATE) $< \
 	 | utils/links-to-man.py - | pandoc -s --to man -o $@ -
 $(MAN_DIR)/man7/valkey-commands.7: $(BUILD_DIR)/.commands-per-group.json groups.json utils/build-command-index.py
 	utils/build-command-index.py --man \
+	 --version $(VERSION) --date $(DATE) \
 	 --groups-json groups.json \
 	 --commands-per-group-json $(BUILD_DIR)/.commands-per-group.json \
 	 | pandoc -s --to man -o $@ -
