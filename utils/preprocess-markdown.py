@@ -20,7 +20,7 @@ standard_headings = {
     'LIBRARY',                  # Not used (possibly use module API functions)
     'SYNOPSIS',                 # Inserted automatically for commands. Written
                                 # explicitly as "## Usage" for programs.
-    'CONFIGURATION',            # Explicit for valkey.conf(4)
+    'CONFIGURATION',            # Explicit for valkey.conf(5)
     'DESCRIPTION',              # Inserted automatically before any text unless
                                 # another standard heading starts the text
     'OPTIONS',                  # Uses for programs
@@ -59,12 +59,12 @@ class ManStructure:
             print('section: 1')
             print('header: Valkey Manual')
         elif self.pagetype == 'config':
-            print('section: 4')
+            print('section: 5')
             print('header: Valkey Configuration Manual')
         else:
             print('section: 7')
             print('header: Valkey Manual')
-        print('footer: Valkey Documentation')
+        print('footer: %s' % self.version)
         print('date: %s' % self.date)
         print('adjusting: left')
         print('---')
@@ -295,13 +295,17 @@ def main():
                         help='Suffix to use in internal links instead of .md for non-manpage usage')
     parser.add_argument('--base-url', default='https://valkey.io/', help='Used for transforming absolute links to relative ones.')
     parser.add_argument('--man', action='store_true', help='Generate markdown for man page')
+    parser.add_argument('--date', default=None, help='Date on the form YYYY-MM-DD')
+    parser.add_argument('--version', default=None, help='Version on the form X.Y.Z')
     parser.add_argument('filename', help='Markdown file')
     args = parser.parse_args()
 
     # We can use git to find the last change of the file, but only if we're in a git repo.
     # yyyymmdd = os.popen('git log -1 --pretty="format:%cs" ' + args.filename).read()
-    mtime = os.stat(args.filename).st_mtime
-    yyyymmdd = date.fromtimestamp(mtime).isoformat()
+    yyyymmdd = args.date
+    if not args.date:
+        mtime = os.stat(args.filename).st_mtime
+        yyyymmdd = date.fromtimestamp(mtime).isoformat()
 
     name0 = re.sub(r'^.*/([^/]+)\.md$', r'\1', args.filename) # "client-kill"
 
@@ -317,6 +321,7 @@ def main():
     data = {
         "name": pagename,
         "date": yyyymmdd,
+        "version": args.version,
         "suffix": args.suffix,
         "pagetype": args.page_type
     }
