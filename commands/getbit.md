@@ -8,7 +8,7 @@ always out of range and the value is also assumed to be a contiguous space with
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> SETBIT mykey 7 1
 (integer) 0
 127.0.0.1:6379> GETBIT mykey 0

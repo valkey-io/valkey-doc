@@ -19,6 +19,8 @@ parser = argparse.ArgumentParser(prog="build-command-index.py",
 parser.add_argument('--suffix', default='.md',
                     help='Suffix to use in internal links instead of .md for non-manpage usage')
 parser.add_argument('--man', action='store_true', help='Generate markdown for man page')
+parser.add_argument('--date', default='', help='Date on the form YYYY-MM-DD')
+parser.add_argument('--version', default='', help='Version on the form X.Y.Z')
 parser.add_argument('--groups-json', help='groups.json')
 parser.add_argument('--commands-per-group-json', help='commands-per-groups.json')
 args = parser.parse_args()
@@ -32,7 +34,8 @@ if args.man:
     print("---")
     print("title: VALKEY-COMMANDS(7)")
     print('header: Valkey Command Manual')
-    print('footer: Valkey Documentation')
+    print('footer: %s' % args.version)
+    print('date: %s' % args.date)
     print('adjusting: left')
     print("---")
     print('# NAME', end="\n\n")

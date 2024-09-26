@@ -26,7 +26,7 @@ See the [complete list of set commands](../commands/#set).
 
 * Store the sets of bikes racing in France and the USA. Note that 
 if you add a member that already exists, it will be ignored. 
-```valkey-cli
+```
 127.0.0.1:6379> SADD bikes:racing:france bike:1
 (integer) 1
 127.0.0.1:6379> SADD bikes:racing:france bike:1
@@ -38,7 +38,7 @@ if you add a member that already exists, it will be ignored.
 ```
 
 * Check whether bike:1 or bike:2 are racing in the US.
-```valkey-cli
+```
 127.0.0.1:6379> SISMEMBER bikes:racing:usa bike:1
 (integer) 1
 127.0.0.1:6379> SISMEMBER bikes:racing:usa bike:2
@@ -46,13 +46,13 @@ if you add a member that already exists, it will be ignored.
 ```
 
 * Which bikes are competing in both races?
-```valkey-cli
+```
 127.0.0.1:6379> SINTER bikes:racing:france bikes:racing:usa
 1) "bike:1"
 ```
 
 * How many bikes are racing in France?
-```valkey-cli
+```
 127.0.0.1:6379> SCARD bikes:racing:france
 (integer) 3
 ```
@@ -63,7 +63,7 @@ to do a number of other operations against sets like testing if a given element
 already exists, performing the intersection, union or difference between
 multiple sets, and so forth.
 
-```valkey-cli
+```
 127.0.0.1:6379> SADD bikes:racing:france bike:1 bike:2 bike:3
 (integer) 3
 127.0.0.1:6379> SMEMBERS bikes:racing:france
@@ -78,7 +78,7 @@ elements in any order at every call.
 
 Valkey has commands to test for set membership. These commands can be used on single as well as multiple items:
 
-```valkey-cli
+```
 127.0.0.1:6379> SISMEMBER bikes:racing:france bike:1
 (integer) 1
 127.0.0.1:6379> SMISMEMBER bikes:racing:france bike:2 bike:3 bike:4
@@ -90,7 +90,7 @@ Valkey has commands to test for set membership. These commands can be used on si
 We can also find the difference between two sets. For instance, we may want
 to know which bikes are racing in France but not in the USA:
 
-```valkey-cli
+```
 127.0.0.1:6379> SADD bikes:racing:usa bike:1 bike:4
 (integer) 2
 127.0.0.1:6379> SDIFF bikes:racing:france bikes:racing:usa
@@ -106,7 +106,7 @@ sets. In addition to intersection you can also perform
 unions, difference, and more. For example 
 if we add a third race we can see some of these commands in action:
 
-```valkey-cli
+```
 127.0.0.1:6379> SADD bikes:racing:france bike:1 bike:2 bike:3
 (integer) 3
 127.0.0.1:6379> SADD bikes:racing:usa bike:1 bike:4
@@ -138,7 +138,7 @@ remove one or more items from a set, or you can use the `SPOP` command to
 remove a random item from a set. You can also _return_ a random item from a
 set without removing it using the `SRANDMEMBER` command:
 
-```valkey-cli
+```
 127.0.0.1:6379> SADD bikes:racing:france bike:1 bike:2 bike:3 bike:4 bike:5
 (integer) 5
 127.0.0.1:6379> SREM bikes:racing:france bike:1

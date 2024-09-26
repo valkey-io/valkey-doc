@@ -5,7 +5,7 @@ If `field` already exists, this operation has no effect.
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> HSETNX myhash field "Hello"
 (integer) 1
 127.0.0.1:6379> HSETNX myhash field "World"

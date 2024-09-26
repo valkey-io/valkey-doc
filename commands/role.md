@@ -71,7 +71,7 @@ The sentinel output is composed of the following parts:
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> ROLE
 1) "master"
 2) (integer) 0

@@ -8,7 +8,7 @@ In this case, the number of returned elements is the absolute value of the speci
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> SADD myset one two three
 (integer) 3
 127.0.0.1:6379> SRANDMEMBER myset

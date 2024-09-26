@@ -10,7 +10,7 @@ Entries are displayed starting from the most recent.
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> AUTH someuser wrongpassword
 (error) WRONGPASS invalid username-password pair
 > ACL LOG 1

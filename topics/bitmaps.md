@@ -33,7 +33,7 @@ You can represent this scenario using a bitmap whose key references the current 
 
 * Rider 123 pings the server on January 1, 2024 within the 00:00 hour. You can then confirm that rider 123 pinged the server. You can also check to see if rider 456 has pinged the server for that same hour.
 
-```valkey-cli
+```
 127.0.0.1:6379> SETBIT pings:2024-01-01-00:00 123 1
 (integer) 0
 127.0.0.1:6379> GETBIT pings:2024-01-01-00:00 123
@@ -74,7 +74,7 @@ There are three commands operating on group of bits:
 Both `BITPOS` and `BITCOUNT` are able to operate with byte ranges of the
 string, instead of running for the whole length of the string. We can trivially see the number of bits that have been set in a bitmap.
 
-```valkey-cli
+```
 127.0.0.1:6379> BITCOUNT pings:2024-01-01-00:00
 (integer) 1
 ```

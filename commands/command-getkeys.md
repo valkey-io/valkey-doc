@@ -9,7 +9,7 @@ You can use `COMMAND GETKEYS` or `COMMAND GETKEYSANDFLAGS` to discover key names
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> COMMAND GETKEYS MSET a b c d e f
 1) "a"
 2) "c"

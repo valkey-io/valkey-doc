@@ -46,7 +46,7 @@ Specifying the value 0 as `count` disables the limiting mechanism entirely.
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> XADD mystream * field1 A field2 B field3 C field4 D
 "1714701492231-0"
 127.0.0.1:6379> XTRIM mystream MAXLEN 2

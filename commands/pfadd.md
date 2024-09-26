@@ -10,7 +10,7 @@ For an introduction to HyperLogLog data structure check the `PFCOUNT` command pa
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> PFADD hll a b c d e f g
 (integer) 1
 127.0.0.1:6379> PFCOUNT hll

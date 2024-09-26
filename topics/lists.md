@@ -34,7 +34,7 @@ See the [complete series of list commands](../commands/#list).
 ## Examples
 
 * Treat a list like a queue (first in, first out):
-```valkey-cli
+```
 127.0.0.1:6379> LPUSH bikes:repairs bike:1
 (integer) 1
 127.0.0.1:6379> LPUSH bikes:repairs bike:2
@@ -46,7 +46,7 @@ See the [complete series of list commands](../commands/#list).
 ```
 
 * Treat a list like a stack (first in, last out):
-```valkey-cli
+```
 127.0.0.1:6379> LPUSH bikes:repairs bike:1
 (integer) 1
 127.0.0.1:6379> LPUSH bikes:repairs bike:2
@@ -58,13 +58,13 @@ See the [complete series of list commands](../commands/#list).
 ```
 
 * Check the length of a list:
-```valkey-cli
+```
 127.0.0.1:6379> LLEN bikes:repairs
 (integer) 0
 ```
 
 * Atomically pop an element from one list and push to another:
-```valkey-cli
+```
 127.0.0.1:6379> LPUSH bikes:repairs bike:1
 (integer) 1
 127.0.0.1:6379> LPUSH bikes:repairs bike:2
@@ -78,7 +78,7 @@ See the [complete series of list commands](../commands/#list).
 ```
 
 * To limit the length of a list you can call `LTRIM`:
-```valkey-cli
+```
 127.0.0.1:6379> RPUSH bikes:repairs bike:1 bike:2 bike:3 bike:4 bike:5
 (integer) 5
 127.0.0.1:6379> LTRIM bikes:repairs 0 2
@@ -129,7 +129,7 @@ left (at the head), while the `RPUSH` command adds a new
 element into a list, on the right (at the tail). Finally the
 `LRANGE` command extracts ranges of elements from lists:
 
-```valkey-cli
+```
 127.0.0.1:6379> RPUSH bikes:repairs bike:1
 (integer) 1
 127.0.0.1:6379> RPUSH bikes:repairs bike:2
@@ -153,7 +153,7 @@ the final `LPUSH` appended the element on the left.
 Both commands are *variadic commands*, meaning that you are free to push
 multiple elements into a list in a single call:
 
-```valkey-cli
+```
 127.0.0.1:6379> RPUSH bikes:repairs bike:1 bike:2 bike:3
 (integer) 3
 127.0.0.1:6379> LPUSH bikes:repairs bike:important_bike bike:very_important_bike
@@ -173,7 +173,7 @@ of the list. We'll add three elements and pop three elements, so at the end of t
 sequence of commands the list is empty and there are no more elements to
 pop:
 
-```valkey-cli
+```
 127.0.0.1:6379> RPUSH bikes:repairs bike:1 bike:2 bike:3
 (integer) 3
 127.0.0.1:6379> RPOP bikes:repairs
@@ -225,7 +225,7 @@ the elements outside the given range are removed.
 For example, if you're adding bikes on the end of a list of repairs, but only
 want to worry about the 3 that have been on the list the longest:
 
-```valkey-cli
+```
 127.0.0.1:6379> RPUSH bikes:repairs bike:1 bike:2 bike:3 bike:4 bike:5
 (integer) 5
 127.0.0.1:6379> LTRIM bikes:repairs 0 2
@@ -242,7 +242,7 @@ useful pattern: doing a List push operation + a List trim operation together
 to add a new element and discard elements exceeding a limit. Using 
 `LTRIM` with negative indexes can then be used to keep only the 3 most recently added:
 
-```valkey-cli
+```
 127.0.0.1:6379> RPUSH bikes:repairs bike:1 bike:2 bike:3 bike:4 bike:5
 (integer) 5
 127.0.0.1:6379> LTRIM bikes:repairs -3 -1
@@ -290,7 +290,7 @@ timeout is reached.
 
 This is an example of a `BRPOP` call we could use in the worker:
 
-```valkey-cli
+```
 127.0.0.1:6379> RPUSH bikes:repairs bike:1 bike:2
 (integer) 2
 127.0.0.1:6379> BRPOP bikes:repairs 1
@@ -343,7 +343,7 @@ Basically we can summarize the behavior with three rules:
 
 Examples of rule 1:
 
-```valkey-cli
+```
 127.0.0.1:6379> DEL new_bikes
 (integer) 0
 127.0.0.1:6379> LPUSH new_bikes bike:1 bike:2 bike:3
@@ -352,7 +352,7 @@ Examples of rule 1:
 
 However we can't perform operations against the wrong type if the key exists:
 
-```valkey-cli
+```
 127.0.0.1:6379> SET new_bikes bike:1
 OK
 127.0.0.1:6379> TYPE new_bikes
@@ -363,7 +363,7 @@ string
 
 Example of rule 2:
 
-```valkey-cli
+```
 127.0.0.1:6379> RPUSH bikes:repairs bike:1 bike:2 bike:3
 (integer) 3
 127.0.0.1:6379> EXISTS bikes:repairs
@@ -382,7 +382,7 @@ The key no longer exists after all the elements are popped.
 
 Example of rule 3:
 
-```valkey-cli
+```
 127.0.0.1:6379> DEL bikes:repairs
 (integer) 0
 127.0.0.1:6379> LLEN bikes:repairs

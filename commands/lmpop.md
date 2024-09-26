@@ -12,7 +12,7 @@ The number of returned elements is limited to the lower between the non-empty li
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> LMPOP 2 non1 non2 LEFT COUNT 10
 (nil)
 127.0.0.1:6379> LPUSH mylist "one" "two" "three" "four" "five"

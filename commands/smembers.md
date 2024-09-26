@@ -4,7 +4,7 @@ This has the same effect as running `SINTER` with one argument `key`.
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> SADD myset "Hello"
 (integer) 1
 127.0.0.1:6379> SADD myset "World"

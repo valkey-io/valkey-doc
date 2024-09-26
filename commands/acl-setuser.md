@@ -36,7 +36,7 @@ it had previously defined rules associated, we can use the special rule
 
 After resetting a user, its ACL rules revert to the default: inactive, passwordless, can't execute any command nor access any key or channel:
 
-```valkey-cli
+```
 127.0.0.1:6379> ACL SETUSER antirez reset
 OK
 127.0.0.1:6379> ACL LIST
@@ -88,7 +88,7 @@ This is a list of all the supported Valkey ACL rules:
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> ACL SETUSER alan allkeys +@string +@set -SADD >alanpassword
 OK
 127.0.0.1:6379> ACL SETUSER antirez heeyyyy

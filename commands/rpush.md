@@ -12,7 +12,7 @@ containing `a` as first element, `b` as second element and `c` as third element.
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> RPUSH mylist "hello"
 (integer) 1
 127.0.0.1:6379> RPUSH mylist "world"

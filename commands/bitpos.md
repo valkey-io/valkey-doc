@@ -24,7 +24,7 @@ Non-existent keys are treated as empty strings.
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> SET mykey "\xff\xf0\x00"
 OK
 127.0.0.1:6379> BITPOS mykey 0

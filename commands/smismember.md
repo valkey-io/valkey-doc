@@ -4,7 +4,7 @@ For every `member`, `1` is returned if the value is a member of the set, or `0` 
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> SADD myset "one"
 (integer) 1
 127.0.0.1:6379> SADD myset "one"

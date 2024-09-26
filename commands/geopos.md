@@ -6,7 +6,7 @@ The command can accept a variable number of arguments so it always returns an ar
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> GEOADD Sicily 13.361389 38.115556 "Palermo" 15.087269 37.502669 "Catania"
 (integer) 2
 127.0.0.1:6379> GEOPOS Sicily Palermo Catania NonExisting

@@ -4,7 +4,7 @@ The different types that can be returned are: `string`, `list`, `set`, `zset`,
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> SET key1 "value"
 OK
 127.0.0.1:6379> LPUSH key2 "value"

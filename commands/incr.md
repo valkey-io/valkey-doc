@@ -15,7 +15,7 @@ representation of the integer.
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> SET mykey "10"
 OK
 127.0.0.1:6379> INCR mykey

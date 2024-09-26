@@ -5,7 +5,7 @@ will be similar to `SET` in this special case.
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> EXISTS mykey
 (integer) 0
 127.0.0.1:6379> APPEND mykey "Hello"
@@ -48,7 +48,7 @@ more friendly to be distributed across many Valkey instances.
 An example sampling the temperature of a sensor using fixed-size strings (using
 a binary format is better in real implementations).
 
-```valkey-cli
+```
 127.0.0.1:6379> APPEND ts "0043"
 (integer) 4
 127.0.0.1:6379> APPEND ts "0035"

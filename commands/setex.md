@@ -10,7 +10,7 @@ An error is returned when `seconds` is invalid.
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> SETEX mykey 10 "Hello"
 OK
 127.0.0.1:6379> TTL mykey

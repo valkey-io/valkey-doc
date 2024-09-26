@@ -33,7 +33,7 @@ Valkey stands for Remote Dictionary Server. You can use the same data types as i
 
 Similar to byte arrays, Strings store sequences of bytes, including text, serialized objects, counter values, and binary arrays. The following example shows you how to set and get a string value:
 
-```valkey-cli
+```
 127.0.0.1:6379> SET bike:1 "Process 134"
 OK
 127.0.0.1:6379> GET bike:1
@@ -42,7 +42,7 @@ OK
 
 Hashes are the equivalent of dictionaries (dicts or hash maps). Among other things, you can use hashes to represent plain objects and to store groupings of counters. The following example explains how to set and access field values of an object:
 
-```valkey-cli
+```
 127.0.0.1:6379> HSET bike:1 model Deimos brand Ergonom type 'Enduro bikes' price 4972
 (integer) 4
 127.0.0.1:6379> HGET bike:1 model
@@ -66,7 +66,7 @@ You can get a complete overview of available data types in this documentation si
 
 Each item within Valkey has a unique key. All items live within the Valkey [keyspace](keyspace.md). You can scan the Valkey keyspace via the [SCAN command](../commands/scan.md). Here is an example that scans for the first 100 keys that have the prefix `bike:`:
 
-```valkey-cli
+```
 127.0.0.1:6379> SCAN 0 MATCH "bike:*" COUNT 100
 1) "0"
 2) 1) "bike:4"

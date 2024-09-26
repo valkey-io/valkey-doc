@@ -2,7 +2,7 @@ Returns the set cardinality (number of elements) of the set stored at `key`.
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> SADD myset "Hello"
 (integer) 1
 127.0.0.1:6379> SADD myset "World"

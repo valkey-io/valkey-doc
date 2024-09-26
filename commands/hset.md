@@ -5,7 +5,7 @@ If `key` doesn't exist, a new key holding a hash is created.
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> HSET myhash field1 "Hello"
 (integer) 1
 127.0.0.1:6379> HGET myhash field1

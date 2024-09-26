@@ -5,7 +5,7 @@ In Cluster mode, both `key` and `newkey` must be in the same **hash slot**, mean
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> SET mykey "Hello"
 OK
 127.0.0.1:6379> SET myotherkey "World"

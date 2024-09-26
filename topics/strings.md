@@ -14,7 +14,7 @@ Since Valkey keys are strings, when we use the string type as a value too,
 we are mapping a string to another string. The string data type is useful
 for a number of use cases, like caching HTML fragments or pages.
 
-```valkey-cli
+```
 127.0.0.1:6379> SET bike:1 Deimos
 OK
 127.0.0.1:6379> GET bike:1
@@ -33,7 +33,7 @@ The `SET` command has interesting options, that are provided as additional
 arguments. For example, I may ask `SET` to fail if the key already exists,
 or the opposite, that it only succeed if the key already exists:
 
-```valkey-cli
+```
 127.0.0.1:6379> set bike:1 bike nx
 (nil)
 127.0.0.1:6379> set bike:1 bike xx
@@ -53,7 +53,7 @@ The ability to set or retrieve the value of multiple keys in a single
 command is also useful for reduced latency. For this reason there are
 the `MSET` and `MGET` commands:
 
-```valkey-cli
+```
 127.0.0.1:6379> mset bike:1 "Deimos" bike:2 "Ares" bike:3 "Vanth"
 OK
 127.0.0.1:6379> mget bike:1 bike:2 bike:3
@@ -68,7 +68,7 @@ When `MGET` is used, Valkey returns an array of values.
 Even if strings are the basic values of Valkey, there are interesting operations
 you can perform with them. For instance, one is atomic increment:
 
-```valkey-cli
+```
 127.0.0.1:6379> set total_crashes 0
 OK
 127.0.0.1:6379> incr total_crashes

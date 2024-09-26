@@ -3,7 +3,7 @@ time is specified in milliseconds instead of seconds.
 
 ## Examples
 
-```valkey-cli
+```
 127.0.0.1:6379> PSETEX mykey 1000 "Hello"
 OK
 127.0.0.1:6379> PTTL mykey
