@@ -21,12 +21,12 @@ For the `WRITE` mode, some commands have special behavior:
 This command is useful as it makes able to switch clients from a Valkey instance to another one in a controlled way. For example during an instance upgrade the system administrator could do the following:
 
 * Pause the clients using `CLIENT PAUSE`
-* Wait a few seconds to make sure the replicas processed the latest replication stream from the master.
-* Turn one of the replicas into a master.
-* Reconfigure clients to connect with the new master.
+* Wait a few seconds to make sure the replicas processed the latest replication stream from the primary.
+* Turn one of the replicas into a primary.
+* Reconfigure clients to connect with the new primary.
 
 The recommended mode for client pause is `WRITE`. This mode will stop all replication traffic, can be
-aborted with the `CLIENT UNPAUSE` command, and allows reconfiguring the old master without risking accepting writes after the
+aborted with the `CLIENT UNPAUSE` command, and allows reconfiguring the old primary without risking accepting writes after the
 failover. This is also the mode used during cluster failover.
 
 This command also prevents keys to be evicted or expired during the time clients are paused.

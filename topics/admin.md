@@ -30,11 +30,11 @@ description: Advice for configuring and managing Valkey in production
 
 ### Replication
 
-* Set up a non-trivial replication backlog in proportion to the amount of memory Valkey is using. The backlog allows replicas to sync with the primary (master) instance much more easily.
+* Set up a non-trivial replication backlog in proportion to the amount of memory Valkey is using. The backlog allows replicas to sync with the primary instance much more easily.
 
-* If you use replication, Valkey performs RDB saves even if persistence is disabled. (This does not apply to diskless replication.) If you don't have disk usage on the master, enable diskless replication.
+* If you use replication, Valkey performs RDB saves even if persistence is disabled. (This does not apply to diskless replication.) If you don't have disk usage on the primary, enable diskless replication.
 
-* If you are using replication, ensure that either your master has persistence enabled, or that it does not automatically restart on crashes. Replicas will try to maintain an exact copy of the master, so if a master restarts with an empty data set, replicas will be wiped as well.
+* If you are using replication, ensure that either your primary has persistence enabled, or that it does not automatically restart on crashes. Replicas will try to maintain an exact copy of the primary, so if a primary restarts with an empty data set, replicas will be wiped as well.
 
 ### Security
 
@@ -45,7 +45,7 @@ description: Advice for configuring and managing Valkey in production
 * Use HVM based instances, not PV based instances.
 * Do not use old instance families. For example, use m3.medium with HVM instead of m1.medium with PV.
 * The use of Valkey persistence with EC2 EBS volumes needs to be handled with care because sometimes EBS volumes have high latency characteristics.
-* You may want to try the new diskless replication if you have issues when replicas are synchronizing with the master.
+* You may want to try the new diskless replication if you have issues when replicas are synchronizing with the primary.
 
 ## Upgrading or restarting a Valkey instance without downtime
 
@@ -57,16 +57,16 @@ Follow these steps to avoid downtime.
 
 * Set up your new Valkey instance as a replica for your current Valkey instance. In order to do so, you need a different server, or a server that has enough RAM to keep two instances of Valkey running at the same time.
 
-* If you use a single server, ensure that the replica is started on a different port than the master instance, otherwise the replica cannot start.
+* If you use a single server, ensure that the replica is started on a different port than the primary instance, otherwise the replica cannot start.
 
 * Wait for the replication initial synchronization to complete. Check the replica's log file.
 
-* Using `INFO`, ensure the master and replica have the same number of keys. Use `valkey-cli` to check that the replica is working as expected and is replying to your commands.
+* Using `INFO`, ensure the primary and replica have the same number of keys. Use `valkey-cli` to check that the replica is working as expected and is replying to your commands.
 
-* Allow writes to the replica using `CONFIG SET slave-read-only no`.
+* Allow writes to the replica using `CONFIG SET replica-read-only no`.
 
-* Configure all your clients to use the new instance (the replica). Note that you may want to use the `CLIENT PAUSE` command to ensure that no client can write to the old master during the switch.
+* Configure all your clients to use the new instance (the replica). Note that you may want to use the `CLIENT PAUSE` command to ensure that no client can write to the old primary during the switch.
 
-* Once you confirm that the master is no longer receiving any queries (you can check this using the `MONITOR` command), elect the replica to master using the `REPLICAOF NO ONE` command, and then shut down your master.
+* Once you confirm that the primary is no longer receiving any queries (you can check this using the `MONITOR` command), elect the replica to primary using the `REPLICAOF NO ONE` command, and then shut down your primary.
 
-If you are using [Valkey Sentinel](sentinel.md) or [Valkey Cluster](cluster-tutorial.md), the simplest way to upgrade to newer versions is to upgrade one replica after the other. Then you can perform a manual failover to promote one of the upgraded replicas to master, and finally promote the last replica.
+If you are using [Valkey Sentinel](sentinel.md) or [Valkey Cluster](cluster-tutorial.md), the simplest way to upgrade to newer versions is to upgrade one replica after the other. Then you can perform a manual failover to promote one of the upgraded replicas to primary, and finally promote the last replica.

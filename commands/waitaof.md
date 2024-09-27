@@ -6,12 +6,12 @@ The value 0 disables this check.
 
 If the timeout, specified in milliseconds, is reached, the command returns even if the specified number of acknowledgments has not been met.
 
-The command **will always return** the number of masters and replicas that have fsynced all write commands sent by the current client before the `WAITAOF` command, both in the case where the specified thresholds were met, and when the timeout is reached.
+The command **will always return** the number of primaries and replicas that have fsynced all write commands sent by the current client before the `WAITAOF` command, both in the case where the specified thresholds were met, and when the timeout is reached.
 
 A few remarks:
 
-1. When `WAITAOF` returns, all the previous write commands sent in the context of the current connection are guaranteed to be fsynced to the AOF of at least the number of masters and replicas returned by `WAITAOF`.
-2. If the command is sent as part of a `MULTI` transaction (or any other context that does not allow blocking, such as inside scripts), the command does not block but instead returns immediately the number of masters and replicas that fsynced all previous write commands.
+1. When `WAITAOF` returns, all the previous write commands sent in the context of the current connection are guaranteed to be fsynced to the AOF of at least the number of primaries and replicas returned by `WAITAOF`.
+2. If the command is sent as part of a `MULTI` transaction (or any other context that does not allow blocking, such as inside scripts), the command does not block but instead returns immediately the number of primaries and replicas that fsynced all previous write commands.
 3. A timeout of 0 means to block forever.
 4. Since `WAITAOF` returns the number of fsyncs completed both in case of success and timeout, the client should check that the returned values are equal or greater than the persistence level required.
 5. `WAITAOF` cannot be used on replica instances, and the `numlocal` argument cannot be non-zero if the local Valkey does not have AOF enabled.
@@ -35,7 +35,7 @@ Implementation details
 
 Valkey tracks and increments the replication offset even when no replicas are configured (as long as AOF exists).
 
-In addition, Valkey replicas asynchronously ping their master with two replication offsets: the offset they have processed in the replication stream, and the offset they have fsynced to their AOF.
+In addition, Valkey replicas asynchronously ping their primary with two replication offsets: the offset they have processed in the replication stream, and the offset they have fsynced to their AOF.
 
 Valkey remembers, for each client, the replication offset of the produced replication stream when the last write command was executed in the context of that client.
 When `WAITAOF` is called, Valkey checks if the local Valkey and/or the specified number of replicas have confirmed fsyncing this offset or a greater one to their AOF.

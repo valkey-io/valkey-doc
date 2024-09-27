@@ -69,7 +69,7 @@ The `CLUSTER SETSLOT` command is an important piece used by Valkey Cluster in or
 3. Get keys from the source node with `CLUSTER GETKEYSINSLOT` command and move them into the destination node using the `MIGRATE` command.
 4. Send `CLUSTER SETSLOT <slot> NODE <destination-node-id>` to the destination node.
 5. Send `CLUSTER SETSLOT <slot> NODE <destination-node-id>` to the source node.
-6. Send `CLUSTER SETSLOT <slot> NODE <destination-node-id>` to the other master nodes (optional).
+6. Send `CLUSTER SETSLOT <slot> NODE <destination-node-id>` to the other primary nodes (optional).
 
 Notes:
 

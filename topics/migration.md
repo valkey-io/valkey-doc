@@ -137,7 +137,7 @@ In this scenario we will configure Valkey to be the replica of Redis. For illust
     ```
     valkey 127.0.0.1:6379> INFO REPLICATION
     # Replication
-    role:slave
+    role:replica
     master_host:172.21.0.4
     master_port:6379
     master_link_status:up
@@ -282,7 +282,7 @@ For this scenario, we assume that you have Redis Cluster consisting of 3 primary
 
     ``` 
     $ docker exec -it <redis-1> bash
-    $ redis-cli --cluster add-node <valkey-node-IP>:6379 <existing-node-IP>:6379 --cluster-slave
+    $ redis-cli --cluster add-node <valkey-node-IP>:6379 <existing-node-IP>:6379 --cluster-replica
     ```
 
 6. Check the cluster status
@@ -326,7 +326,7 @@ For this scenario, we assume that you have Redis Cluster consisting of 3 primary
     b. Add a new node to a specific primary:
 
       ```
-      $ valkey-cli --cluster add-node 172.22.0.10:6379 172.22.0.2:6379 --cluster-slave --cluster-master-id <node-ID>
+      $ valkey-cli --cluster add-node 172.22.0.10:6379 172.22.0.2:6379 --cluster-replica --cluster-master-id <node-ID>
       ```
     
 12. Remove Redis nodes:

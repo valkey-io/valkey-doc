@@ -49,7 +49,7 @@ c: connection to be closed after writing entire reply
 d: a watched keys has been modified - EXEC will fail
 e: the client is excluded from the client eviction mechanism
 i: the client is waiting for a VM I/O (deprecated)
-M: the client is a master
+M: the client is a primary
 N: no specific flag set
 O: the client is a client in MONITOR mode
 P: the client is a Pub/Sub subscriber
