@@ -19,14 +19,14 @@ Consistency and WAIT
 
 Note that `WAIT` does not make Valkey a strongly consistent store: while synchronous replication is part of a replicated state machine, it is not the only thing needed. However in the context of Sentinel or Valkey Cluster failover, `WAIT` improves the real world data safety.
 
-Specifically if a given write is transferred to one or more replicas, it is more likely (but not guaranteed) that if the master fails, we'll be able to promote, during a failover, a replica that received the write: both Sentinel and Valkey Cluster will do a best-effort attempt to promote the best replica among the set of available replicas.
+Specifically if a given write is transferred to one or more replicas, it is more likely (but not guaranteed) that if the primary fails, we'll be able to promote, during a failover, a replica that received the write: both Sentinel and Valkey Cluster will do a best-effort attempt to promote the best replica among the set of available replicas.
 
 However this is just a best-effort attempt so it is possible to still lose a write synchronously replicated to multiple replicas.
 
 Implementation details
 ---
 
-Since the introduction of partial resynchronization with replicas (PSYNC feature) Valkey replicas asynchronously ping their master with the offset they already processed in the replication stream. This is used in multiple ways:
+Since the introduction of partial resynchronization with replicas (PSYNC feature) Valkey replicas asynchronously ping their primary with the offset they already processed in the replication stream. This is used in multiple ways:
 
 1. Detect timed out replicas.
 2. Perform a partial resynchronization after a disconnection.

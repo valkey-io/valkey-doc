@@ -1,8 +1,8 @@
-In Valkey Cluster, each node keeps track of which master is serving
+In Valkey Cluster, each node keeps track of which primary is serving
 a particular hash slot.
 
 The `CLUSTER DELSLOTS` command asks a particular Valkey Cluster node to
-forget which master is serving the hash slots specified as arguments.
+forget which primary is serving the hash slots specified as arguments.
 
 In the context of a node that has received a `CLUSTER DELSLOTS` command and
 has consequently removed the associations for the passed hash slots,

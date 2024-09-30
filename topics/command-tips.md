@@ -39,11 +39,11 @@ The default behavior a client should implement for commands without the _request
 
 In cases where the client should adopt a behavior different than the default, the _request_policy_ tip can be one of:
 
-- **all_nodes:** the client should execute the command on all nodes - masters and replicas alike.
+- **all_nodes:** the client should execute the command on all nodes - primaries and replicas alike.
   An example is the `CONFIG SET` command. 
   This tip is in-use by commands that don't accept key name arguments.
   The command operates atomically per shard.
-* **all_shards:** the client should execute the command on all master shards (e.g., the `DBSIZE` command).
+* **all_shards:** the client should execute the command on all primary shards (e.g., the `DBSIZE` command).
   This tip is in-use by commands that don't accept key name arguments.
   The command operates atomically per shard.
 - **multi_shard:** the client should execute the command on several shards.

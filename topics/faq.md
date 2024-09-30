@@ -126,7 +126,7 @@ Every hash, list, set, and sorted set, can hold 2^32 elements.
 
 In other words your limit is likely the available memory in your system.
 
-## Why does my replica have a different number of keys its master instance?
+## Why does my replica have a different number of keys than its primary instance?
 
 If you use keys with limited time to live (Valkey expires) this is normal behavior. This is what happens:
 

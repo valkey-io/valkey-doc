@@ -574,7 +574,7 @@ In Valkey' RESP3 implementation, the following fields are also emitted:
 
 * **id**: the connection's identifier (ID).
 * **mode**: "standalone", "sentinel" or "cluster".
-* **role**: "master" or "replica".
+* **role**: "primary" or "replica".
 * **modules**: list of loaded modules as an Array of Bulk Strings.
 
 ## Sending commands to a Valkey server

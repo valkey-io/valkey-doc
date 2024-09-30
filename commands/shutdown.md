@@ -47,7 +47,7 @@ However, there are situations where it is unsafe to do so and, unless the **FORC
 This happens in the following situations:
 
 * The user just turned on AOF, and the server triggered the first AOF rewrite in order to create the initial AOF file. In this context, stopping will result in losing the dataset at all: once restarted, the server will potentially have AOF enabled without having any AOF file at all.
-* A replica with AOF enabled, reconnected with its master, performed a full resynchronization, and restarted the AOF file, triggering the initial AOF creation process. In this case not completing the AOF rewrite is dangerous because the latest dataset received from the master would be lost. The new master can actually be even a different instance (if the **REPLICAOF** or **SLAVEOF** command was used in order to reconfigure the replica), so it is important to finish the AOF rewrite and start with the correct data set representing the data set in memory when the server was terminated.
+* A replica with AOF enabled, reconnected with its primary, performed a full resynchronization, and restarted the AOF file, triggering the initial AOF creation process. In this case not completing the AOF rewrite is dangerous because the latest dataset received from the primary would be lost. The new primary can actually be even a different instance (if the **REPLICAOF** or **SLAVEOF** command was used in order to reconfigure the replica), so it is important to finish the AOF rewrite and start with the correct data set representing the data set in memory when the server was terminated.
 
 There are situations when we want just to terminate a Valkey instance ASAP, regardless of what its content is.
 In such a case, the command **SHUTDOWN NOW NOSAVE FORCE** can be used.
@@ -59,5 +59,5 @@ The second command will not have any problem to execute since the AOF is no long
 
 The server waits for lagging replicas up to a configurable `shutdown-timeout`, by default 10 seconds, before shutting down.
 This provides a best effort minimizing the risk of data loss in a situation where no save points are configured and AOF is disabled.
-Before version 7.0, shutting down a heavily loaded master node in a diskless setup was more likely to result in data loss.
-To minimize the risk of data loss in such setups, it's advised to trigger a manual `FAILOVER` (or `CLUSTER FAILOVER`) to demote the master to a replica and promote one of the replicas to be the new master, before shutting down a master node.
+Before version 7.0, shutting down a heavily loaded primary node in a diskless setup was more likely to result in data loss.
+To minimize the risk of data loss in such setups, it's advised to trigger a manual `FAILOVER` (or `CLUSTER FAILOVER`) to demote the primary to a replica and promote one of the replicas to be the new primary, before shutting down a primary node.

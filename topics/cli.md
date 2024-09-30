@@ -184,7 +184,7 @@ This topic covers the different aspects of `valkey-cli`, starting from the simpl
 : Simulate a cache workload with an 80-20 distribution.
 
 **`--replica`**
-: Simulate a replica showing commands received from the master.
+: Simulate a replica showing commands received from the primary.
 
 **`--rdb`** _filename_
 : Transfer an RDB dump from remote server to local file.
@@ -295,7 +295,7 @@ For management of [Valkey Cluster](cluster-tutorial.md), the following syntax is
                  --cluster-threshold <arg>
                  --cluster-replace
   add-node       new_host:new_port existing_host:existing_port
-                 --cluster-slave
+                 --cluster-replica
                  --cluster-master-id <arg>
   del-node       host:port node_id
   call           host:port command arg arg .. arg
