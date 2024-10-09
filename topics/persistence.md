@@ -77,6 +77,8 @@ Then add the following configuration instead:
 
     save ""
 
+Alternatively, you can also use the `--save ""` argument on the `valkey-server` binary.
+
 ### How it works
 
 Whenever Valkey needs to dump the dataset to disk, this is what happens:
