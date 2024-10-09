@@ -70,7 +70,7 @@ This strategy is known as _snapshotting_.
 
 ## No persistence
 
-If you prefer **not** to have persistence (eg. when using a Valkey instance solely as a cache) that is also possibility.
+If you prefer **not** to have persistence (eg. when using a Valkey instance solely as a cache) that is also a possibility.
 
 First comment out or remove all existing `save` lines that are present in the current configuration file.   
 Then add the following configuration instead:
