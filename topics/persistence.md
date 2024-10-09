@@ -68,6 +68,15 @@ dataset to disk every 60 seconds if at least 1000 keys changed:
 
 This strategy is known as _snapshotting_.
 
+## No persistence
+
+If you prefer **not** to have persistence (eg. when using a Valkey instance solely as a cache) that is also possibility.
+
+First comment out or remove all existing `save` lines that are present in the current configuration file.   
+Then add the following configuration instead:
+
+    save ""
+
 ### How it works
 
 Whenever Valkey needs to dump the dataset to disk, this is what happens:
