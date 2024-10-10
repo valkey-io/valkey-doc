@@ -70,7 +70,7 @@ This strategy is known as _snapshotting_.
 
 ## No persistence
 
-If you prefer **not** to have persistence (eg. when using a Valkey instance solely as a cache) that is also a possibility.
+If you prefer **not** to have persistence (for example when using a Valkey instance solely as a cache) that is also a possibility.
 
 RDB snapshotting is enabled by default. To disable it, set the `save` configuration parameter to the empty string `""` and remove any excess `save` lines that are present in the current configuration file.
 
