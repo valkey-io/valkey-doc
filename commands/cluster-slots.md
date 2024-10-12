@@ -28,20 +28,20 @@ Each nested result is:
 
   - Start slot range
   - End slot range
-  - Master for slot range represented as nested networking information
-  - First replica of master for slot range
+  - Primary for slot range represented as nested networking information
+  - First replica of primary for slot range
   - Second replica
-  - ...continues until all replicas for this master are returned.
+  - ...continues until all replicas for this primary are returned.
 
-Each result includes all active replicas of the master instance
+Each result includes all active replicas of the primary instance
 for the listed slot range. Failed replicas are not returned.
 
 The command response is deterministic across all nodes in a cluster, which means that if two nodes return the same response they have the same view of the cluster.
 Primaries are ordered by the slots they serve and then replicas are ordered lexicographically by the node-id they were assigned by the cluster. 
-The third nested reply is guaranteed to be the networking information of the master instance for the slot range.
-All networking information after the third nested reply are replicas of the master.
+The third nested reply is guaranteed to be the networking information of the primary instance for the slot range.
+All networking information after the third nested reply are replicas of the primary.
 
-If a cluster instance has non-contiguous slots (e.g. 1-400,900,1800-6000) then master and replica networking information results will be duplicated for each top-level slot range reply.
+If a cluster instance has non-contiguous slots (e.g. 1-400,900,1800-6000) then primary and replica networking information results will be duplicated for each top-level slot range reply.
 
 ```
 > CLUSTER SLOTS

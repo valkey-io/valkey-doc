@@ -45,7 +45,7 @@ are totally ordered inside a stream. In order to guarantee this property,
 if the current top ID in the stream has a time greater than the current
 local time of the instance, the top entry time will be used instead, and
 the sequence part of the ID incremented. This may happen when, for instance,
-the local clock jumps backward, or if after a failover the new master has
+the local clock jumps backward, or if after a failover the new primary has
 a different absolute time.
 
 When a user specified an explicit ID to `XADD`, the minimum valid ID is

@@ -160,7 +160,7 @@ Here's an example of loading and then executing a cached script:
 
 The Valkey script cache is **always volatile**.
 It isn't considered as a part of the database and is **not persisted**.
-The cache may be cleared when the server restarts, during fail-over when a replica assumes the master role, or explicitly by `SCRIPT FLUSH`.
+The cache may be cleared when the server restarts, during fail-over when a replica assumes the primary role, or explicitly by `SCRIPT FLUSH`.
 That means that cached scripts are ephemeral, and the cache's contents can be lost at any time.
 
 Applications that use scripts should always call `EVALSHA` to execute them.
@@ -229,17 +229,17 @@ These are:
 
 ## Script replication
 
-In standalone deployments, a single Valkey instance called _master_ manages the entire database.
-A [clustered deployment](cluster-tutorial.md) has at least three masters managing the sharded database.
-Valkey uses [replication](replication.md) to maintain one or more replicas, or exact copies, for any given master.
+In standalone deployments, a single Valkey instance called _primary_ manages the entire database.
+A [clustered deployment](cluster-tutorial.md) has at least three primaries managing the sharded database.
+Valkey uses [replication](replication.md) to maintain one or more replicas, or exact copies, for any given primary.
 
 Because scripts can modify the data, Valkey ensures all write operations performed by a script are also sent to replicas to maintain consistency.
 There are two conceptual approaches when it comes to script replication:
 
-1. Verbatim replication: the master sends the script's source code to the replicas.
+1. Verbatim replication: the primary sends the script's source code to the replicas.
    Replicas then execute the script and apply the write effects.
    This mode can save on replication bandwidth in cases where short scripts generate many commands (for example, a _for_ loop).
-   However, this replication mode means that replicas redo the same work done by the master, which is wasteful.
+   However, this replication mode means that replicas redo the same work done by the primary, which is wasteful.
    More importantly, it also requires [all write scripts to be deterministic](#scripts-with-deterministic-writes).
 1. Effects replication: only the script's data-modifying commands are replicated.
    Replicas then run the commands without executing any scripts.
@@ -295,7 +295,7 @@ Scripts executed in a Valkey instance are, by default until version 5.0, propaga
 Since the script will be re-run on the remote host (or when reloading the AOF file), its changes to the database must be reproducible.
 
 The reason for sending the script is that it is often much faster than sending the multiple commands that the script generates.
-If the client is sending many scripts to the master, converting the scripts into individual commands for the replica / AOF would result in too much bandwidth for the replication link or the Append Only File (and also too much CPU since dispatching a command received via the network is a lot more work for Valkey compared to dispatching a command invoked by Lua scripts).
+If the client is sending many scripts to the primary, converting the scripts into individual commands for the replica / AOF would result in too much bandwidth for the replication link or the Append Only File (and also too much CPU since dispatching a command received via the network is a lot more work for Valkey compared to dispatching a command invoked by Lua scripts).
 
 Normally replicating scripts instead of the effects of the scripts makes sense, however not in all the cases.
 So starting with Redis OSS 3.2, the scripting engine is able to, alternatively, replicate the sequence of write commands resulting from the script execution, instead of replication the script itself.

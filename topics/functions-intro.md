@@ -65,7 +65,7 @@ This allows calling functions from other functions within the same library, or s
 
 Functions are intended to better support the use case of maintaining a consistent view for data entities through a logical schema, as mentioned above.
 As such, functions are stored alongside the data itself.
-Functions are also persisted to the AOF file and replicated from master to replicas, so they are as durable as the data itself.
+Functions are also persisted to the AOF file and replicated from primary to replicas, so they are as durable as the data itself.
 When Valkey is used as an ephemeral cache, additional mechanisms (described below) are required to make functions more durable.
 
 Like all other operations in Valkey, the execution of a function is atomic.
@@ -375,7 +375,7 @@ And your Valkey log file should have lines in it that are similar to:
 As noted above, Valkey automatically handles propagation of loaded functions to replicas.
 In a Valkey Cluster, it is also necessary to load functions to all cluster nodes. This is not handled automatically by Valkey Cluster, and needs to be handled by the cluster administrator (like module loading, configuration setting, etc.).
 
-As one of the goals of functions is to live separately from the client application, this should not be part of the Valkey client library responsibilities. Instead, `valkey-cli --cluster-only-masters --cluster call host:port FUNCTION LOAD ...` can be used to execute the load command on all master nodes.
+As one of the goals of functions is to live separately from the client application, this should not be part of the Valkey client library responsibilities. Instead, `valkey-cli --cluster-only-masters --cluster call host:port FUNCTION LOAD ...` can be used to execute the load command on all primary nodes.
 
 Also, note that `valkey-cli --cluster add-node` automatically takes care to propagate the loaded functions from one of the existing nodes to the new node.
 
