@@ -137,7 +137,7 @@ In this scenario we will configure Valkey to be the replica of Redis. For illust
     ```
     valkey 127.0.0.1:6379> INFO REPLICATION
     # Replication
-    role:replica
+    role:slave
     master_host:172.21.0.4
     master_port:6379
     master_link_status:up
