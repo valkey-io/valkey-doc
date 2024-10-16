@@ -687,6 +687,6 @@ It won't be included when `INFO` or `INFO ALL` are called, and it is returned on
 
 [hcgcpgp]: http://code.google.com/p/google-perftools/
 
-**A note about the word slave used in this man page**: If not for backward compatibility, the Valkey project no longer uses the word slave. Unfortunately in this command the word slave is part of the protocol, so we'll be able to remove such occurrences only when this API will be naturally deprecated.
+**A note about the word slave used in this man page**: If not for backward compatibility, the Valkey project no longer uses the words "master" and "slave". Unfortunately in the given commands these words are part of the protocol, so we’ll be able to remove such occurrences only when this API will be naturally deprecated.
 
 **Modules generated sections**: Starting with Valkey 6, modules can inject their info into the `INFO` command, these are excluded by default even when the `all` argument is provided (it will include a list of loaded modules but not their generated info fields). To get these you must use either the `modules` argument or `everything`.,
