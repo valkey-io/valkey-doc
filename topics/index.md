@@ -41,6 +41,7 @@ Administration
 * [valkey-server](server.md): How to run the Valkey server.
 * [Configuration](valkey.conf.md): How to configure Valkey.
 * [Replication](replication.md): What you need to know to set up primary-replica replication.
+* [Migration](migration.md): How to migrate from Redis to Valkey.
 * [Persistence](persistence.md): Options for configuring durability using disk backups.
 * [Administration](admin.md): Various administration topics.
 * [Security](security.md): An overview of Valkey's security.
