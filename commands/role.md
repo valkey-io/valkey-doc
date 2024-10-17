@@ -78,4 +78,4 @@ The sentinel output is composed of the following parts:
 3) (empty array)
 ```
 
-**A note about the word slave used in this man page**: If not for Redis OSS compatibility, the Valkey project does not use the word slave. Unfortunately in this command the word slave is part of the protocol, so we'll be able to remove such occurrences only when this API will be naturally deprecated.
+**A note about the word slave used in this man page**: If not for backward compatibility, the Valkey project no longer uses the words "master" and "slave". Unfortunately in the given commands these words are part of the protocol, so we'll be able to remove such occurrences only when this API will be naturally deprecated.

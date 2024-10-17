@@ -1,4 +1,4 @@
-**A note about the word slave used in this man page and command name**: If not for Redis OSS compatibility, the Valkey project does not use the word slave. Please use the new command `CLUSTER REPLICAS`. The command `CLUSTER SLAVES` will continue to work for backward compatibility.
+**A note about the word slave used in this man page and command name**: the Valkey project no longer uses the words "master" and "slave". Please use the new command `CLUSTER REPLICAS`. The command `CLUSTER SLAVES` will continue to work for backward compatibility.
 
 The command provides a list of replica nodes replicating from the specified
 primary node. The list is provided in the same format used by `CLUSTER NODES` (please refer to its documentation for the specification of the format).
