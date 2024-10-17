@@ -337,5 +337,5 @@ For this scenario, we assume that you have Redis Cluster consisting of 3 primary
 
      The first argument is just a random node in the cluster, the second argument is the ID of the node you want to remove.
 
-> NOTE: If not for backward compatibility, the Valkey project no longer uses the words "master" and "slave". Unfortunately in the given commands these words are part of the protocol, so we’ll be able to remove such occurrences only when this API will be naturally deprecated.
+> NOTE: If not for backward compatibility, the Valkey project no longer uses the words "master" and "slave". Unfortunately in the given commands these words are part of the protocol, so we'll be able to remove such occurrences only when this API will be naturally deprecated.
 
