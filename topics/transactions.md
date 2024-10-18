@@ -120,10 +120,37 @@ MULTI
 +OK
 INCR a b c
 -ERR wrong number of arguments for 'incr' command
+EXEC
+-EXECABORT Transaction discarded because of previous errors.
 ```
 
 This time due to the syntax error the bad `INCR` command is not queued
-at all.
+at all. And the `EXEC` command will receive an `EXECABORT` error.
+
+There are some more specific scenarios: in the `MULTI` context, commands are
+successfully queued (i.e., `QUEUED` reply is received), but when the `EXEC` command
+is executed, it is found that the data needed for these commands does not belong to
+the current node (for example, in cluster mode, the accessed slot has been migrated to
+another node; in standalone mode, a primary-replica switch has occurred). In this case,
+the `EXEC` command will receive a `MOVED` or `REDIRECT` result.
+
+For cluster mode:
+
+```
+MULTI    ==>  +OK
+SET x y  ==>  +QUEUED
+slot {x} is migrated to other node
+EXEC     ==>  -MOVED
+```
+
+For standalone mode:
+
+```
+MULTI    ==>  +OK
+SET x y  ==>  +QUEUED
+failover
+EXEC     ==>  -REDIRECT
+```
 
 ## What about rollbacks?
 
