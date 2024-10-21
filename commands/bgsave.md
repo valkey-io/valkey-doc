@@ -12,6 +12,10 @@ If `BGSAVE SCHEDULE` is used, the command will immediately return `OK` when an
 AOF rewrite is in progress and schedule the background save to run at the next
 opportunity.
 
+If `BGSAVE CANCEL` is used, it will immediately terminate any in-progress RDB save or replication full sync process.
+In case a bgsave is schedule to run (e.g. using `BGSAVE SCHEDULE` command) the scheduled execution will be 
+cancelled as well.
+
 A client may be able to check if the operation succeeded using the `LASTSAVE`
 command.
 
