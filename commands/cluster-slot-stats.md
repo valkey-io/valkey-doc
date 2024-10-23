@@ -1,14 +1,14 @@
 `CLUSTER SLOT-STATS` returns an array of slot usage statistics for slots assigned to the current shard.
 The command is suitable for Valkey Cluster users aiming to assess general slot usage trends, identify hot / cold slots, migrate slots for a balanced cluster workload, and / or re-write application logic to better utilize slots.
 
-As of now, the following metrics are supported:
+The following statistics are supported:
 * `key-count` - Number of keys residing in a given slot.
 * `cpu-usec` - Amount of cpu time (in micro-seconds) spent on a given slot.
 * `network-bytes-in` - Amount of network ingress (in bytes) received for given slot.
 * `network-bytes-out` - Amount of network egress (in bytes) sent out for given slot.
 
-## Supported arguments
-There exist two mutually exclusive arguments, namely;
+## Supported filtering and ordering arguments
+There exist two mutually exclusive arguments for controlling the output, namely;
 
 ### SLOTSRANGE
 Returns slot statistics based on the slots range provided. The range is inclusive.
@@ -54,11 +54,7 @@ The response is ordered in ascending slot number.
 ```
 
 ### ORDERBY
-Orders slot statistics based on the provided metric.
-The `ORDERBY` argument allows for the user to identify hot / cold slots across the cluster.
-The response is ordered based on sort result.
-In the event of a tie in the provided metric value, ascending slot number is used as a tie breaker.
-
+The `ORDERBY` argument returns an ordered slot statistics based on the specified statistic and sub-arguments to identify hot / cold slots across the cluster. In the event of a tie in the stats, ascending slot number is used as a tie breaker.
 
 ##### Response in RESP2
 ```
