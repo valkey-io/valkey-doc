@@ -4,10 +4,10 @@ linkTitle: Migration
 description: How to migrate from Redis to Valkey
 ---
 
-This is a migration guide from Redis Community Edition to Valkey. 
+This is a migration guide from Redis open source versions to Valkey.
 You will learn how to migrate a standalone Redis server instance and a Redis Cluster. 
 
-This guide provides migration steps for Redis server and Valkey deployed in Docker; however, they should also apply for on-premises deployments. 
+This guide provides migration steps for Redis server and Valkey deployed in Docker; however, they should also apply for other deployments.
 Refer to [install Valkey](installation.md) for installation options.
 
 ## Why to migrate to Valkey?
@@ -18,15 +18,19 @@ Refer to [install Valkey](installation.md) for installation options.
 
 ### Migration compatibility matrix
 
-You can migrate Redis server to Valkey. 
-The following table provides migration options depending on the Redis version you run:
+You can migrate a Redis server to Valkey.
+Valkey is backward compatible with Redis OSS 7.2 and all earlier open source Redis versions.
+Migrating from any open source Redis version to Valkey is just an upgrade.
+Redis 7.4 and later are not open source and the data files are no longer compatible with Valkey.
+It may be possible to migrate the data to Valkey from proprietary Redis versions and other Redis-like software but it requires another method and is not covered by this document.
 
-| Redis | Valkey |
-|-------|--------|
-| 6.x   | 7.2.x  |
-| 7.2.x | 7.2.x  |
-| 7.2.x | 8.0.x  |
-| 7.4   | n/a    |
+The following table provides migration options depending on the open source Redis version you run:
+
+| Redis                 | Valkey |
+|-----------------------|--------|
+| 2.x - 7.2.x           | 7.2.x  |
+| 2.x - 7.2.x           | 8.0    |
+| 7.4 (not open source) | n/a    |
 
 ## Migrate a standalone instance
 
