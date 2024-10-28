@@ -18,7 +18,7 @@ Refer to [Valkey Administration](admin.md) for detailed setup tips.
 
 Source releases are available from the GitHub [Releases](https://github.com/valkey-io/valkey/releases) page.
 
-Unpack the tarball (e.g. `tar -xzvf valkey-7.2.5.tar.gz`) and follow the instructions in the included README.md.
+Unpack the tarball (e.g. `tar -xzvf valkey-8.0.1.tar.gz`) and follow the instructions in the included README.md.
 
 ### Containers
 
