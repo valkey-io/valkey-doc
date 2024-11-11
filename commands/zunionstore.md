@@ -21,6 +21,11 @@ the minimum or maximum score of an element across the inputs where it exists.
 
 If `destination` already exists, it is overwritten.
 
+## Notes
+
+If an option `WEIGHTS` or `AGGREGATE` is given multiple times, it is undefined
+which option takes precedence.
+
 ## Examples
 
 ```
