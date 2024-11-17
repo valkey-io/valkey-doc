@@ -1,21 +1,15 @@
 {
-    "name": "phpredis",
-    "description": " A PHP extension for Redis, offering high performance and a native API.",
-    "recommended": true,
-    "twitter": [
-        "grumi78",
-        "yowgi",
-        "yatsukhnenko"
-    ],
-    "language":"PHP",
-    "read_from_replica": true,
+    "name": "valkey-java",
+    "description": "valkey-java is Valkey's Java client, derived from Jedis fork, dedicated to maintaining simplicity and high performance.",
+    "language":"Java",
+    "read_from_replica": false,
     "smart_backoff_to_prevent_connection_storm": true,
     "valkey_version_compatibility": 7.2, 
     "pubsub_state_restoration": false,
     "cluster_scan": false,
     "latency_based_read_from_replica": false,
     "AZ_based_read_from_replica": false,
-    "client_side_caching": true,
+    "client_side_caching": false,
     "client_capa_redirect": false,
     "persistent_connection_pool": true
 }

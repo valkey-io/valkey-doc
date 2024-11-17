@@ -1,19 +1,15 @@
 {
-    "name": "Predis",
-    "description": "A flexible and feature-complete Redis client for PHP.",
-    "recommended": true,
-    "twitter": [
-        "JoL1hAHN"
-    ], 
-    "language":"PHP",
+    "name": "valkey-go",
+    "description": "A fast Golang Valkey client that does auto pipelining and supports server-assisted client-side caching.",
+    "language":"Go",
     "read_from_replica": true,
     "smart_backoff_to_prevent_connection_storm": true,
     "valkey_version_compatibility": 7.2, 
-    "pubsub_state_restoration": false,
+    "pubsub_state_restoration": true,
     "cluster_scan": false,
     "latency_based_read_from_replica": false,
     "AZ_based_read_from_replica": false,
     "client_side_caching": true,
     "client_capa_redirect": false,
-    "persistent_connection_pool": false
+    "persistent_connection_pool": true
 }

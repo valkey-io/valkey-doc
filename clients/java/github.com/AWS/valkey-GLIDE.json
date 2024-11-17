@@ -1,0 +1,15 @@
+{
+    "name": "Valkey GLIDE",
+    "description": "General Language Independent Driver for the Enterprise (GLIDE) for Redis is an advanced multi-language Redis client that is feature rich, highly performant, and built for reliability and operational stability. GLIDE for Redis is supported by AWS.",
+    "language":"Java",
+    "read_from_replica": true,
+    "smart_backoff_to_prevent_connection_storm": true,
+    "valkey_version_compatibility": 7.2, 
+    "pubsub_state_restoration": true,
+    "cluster_scan": true,
+    "latency_based_read_from_replica": false,
+    "AZ_based_read_from_replica": false,
+    "client_side_caching": false,
+    "client_capa_redirect": false,
+    "persistent_connection_pool": false
+}
