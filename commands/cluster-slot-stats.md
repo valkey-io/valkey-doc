@@ -3,10 +3,10 @@ The command is suitable for Valkey Cluster users aiming to assess general slot u
 
 The following statistics are supported:
 
-* `KEY-COUNT` -- Number of keys residing in a given slot.
-* `CPU-USEC` *micro-seconds* -- Amount of cpu time (in micro-seconds) spent on a given slot.
-* `NETWORK-BYTES-IN` *bytes* -- Amount of network ingress (in bytes) received for given slot.
-* `NETWORK-BYTES-OUT` *bytes* -- Amount of network egress (in bytes) sent out for given slot.
+* `key-count` -- Number of keys residing in a given slot.
+* `cpu-usec` -- Amount of CPU time (in microseconds) spent on a given slot.
+* `network-bytes-in` -- Amount of network ingress (in bytes) received for given slot.
+* `network-bytes-out` -- Amount of network egress (in bytes) sent out for given slot.
 
 ## Options
 
