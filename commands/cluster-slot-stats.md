@@ -1,4 +1,4 @@
-`CLUSTER SLOT-STATS` returns an array of slot usage statistics for slots assigned to the current shard.
+Returns an array of slot usage statistics for slots assigned to the current shard.
 The command is suitable for Valkey Cluster users aiming to assess general slot usage trends, identify hot / cold slots, migrate slots for a balanced cluster workload, and / or re-write application logic to better utilize slots.
 
 The following statistics are supported:
