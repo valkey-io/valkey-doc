@@ -291,6 +291,9 @@
   "CLUSTER SLOTS": [
     "[Array reply](../topics/protocol.md#arrays): nested list of slot ranges with networking information."
   ],
+  "CLUSTER SLOT-STATS": [
+    "[Array reply](../topics/protocol.md#arrays): nested list of slot usage statistics."
+  ],
   "COMMAND": [
     "[Array reply](../topics/protocol.md#arrays): a nested list of command details. The order of the commands in the array is random."
   ],
