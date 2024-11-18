@@ -10,13 +10,14 @@ The following statistics are supported:
 
 ## Options
 
-* `ORDERBY` -- Returns an ordered slot statistics based on the specified statistic and sub-arguments to identify hot / cold slots across the cluster. In the event of a tie in the stats, ascending slot number is used as a tie breaker.
+* `ORDERBY` -- Returns an ordered slot statistics based on the specified statistic and sub-arguments to identify hot / cold slots across the cluster. Either `ASC` or `DESC` modifiers can be used. In the event of a tie in the stats, ascending slot number is used as a tie breaker.
 * `SLOTSRANGE` -- Returns slot statistics based on the slots range provided for pagination. The range is inclusive. The response is ordered in ascending slot number.
 
 ## Examples
 
 ### Response in RESP2
 
+For `ORDERBY`:
 ```
 > CLUSTER SLOT-STATS ORDERBY KEY-COUNT LIMIT 2 DESC
 1) 1) (integer) 12426
@@ -38,6 +39,8 @@ The following statistics are supported:
       7) "network-bytes-out"
       8) (integer) 0
 ```
+
+For `SLOTSRANGE`:
 ```
 > CLUSTER SLOT-STATS SLOTSRANGE 0 1
 1) 1) (integer) 0
@@ -62,6 +65,7 @@ The following statistics are supported:
 
 ### Response in RESP3
 
+For `ORDERBY`:
 ```
 > CLUSTER SLOT-STATS ORDERBY KEY-COUNT LIMIT 2 DESC
 1) 1) (integer) 12426
@@ -75,6 +79,8 @@ The following statistics are supported:
       3# "network-bytes-in" => (integer) 0
       4# "network-bytes-out" => (integer) 0
 ```
+
+For `SLOTSRANGE`:
 ```
 > CLUSTER SLOT-STATS SLOTSRANGE 0 1
 1) 1) (integer) 0
