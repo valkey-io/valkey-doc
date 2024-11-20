@@ -13,7 +13,8 @@ The `SET` command supports a set of options that modify its behavior:
 * `NX` -- Only set the key if it does not already exist.
 * `XX` -- Only set the key if it already exists.
 * `KEEPTTL` -- Retain the time to live associated with the key.
-* `!GET` -- Return the old string stored at key, or nil if key did not exist. An error is returned and `SET` aborted if the value stored at key is not a string.
+* `GET` -- Return the old string stored at key, or nil if key did not exist. An error is returned and `SET` aborted if the value stored at key is not a string.
+* `IFEQ` -- Set the key if the given value matches the existing value. An error is returned and `SET` aborted if the value stored at key is not a string.
 
 Note: Since the `SET` command options can replace `SETNX`, `SETEX`, `PSETEX`, `GETSET`, it is possible that in future versions of Valkey these commands will be deprecated and finally removed.
 
@@ -24,9 +25,17 @@ Note: Since the `SET` command options can replace `SETNX`, `SETEX`, `PSETEX`, `G
 OK
 127.0.0.1:6379> GET mykey
 "Hello"
-127.0.0.1:6379> 
 127.0.0.1:6379> SET anotherkey "will expire in a minute" EX 60
 OK
+
+127.0.0.1:6379> SET foo "Initial Value"
+OK
+127.0.0.1:6379> GET foo
+"Initial Value"
+127.0.0.1:6379> SET foo "New Value" IFEQ "Initial Value"
+OK
+127.0.0.1:6379> GET foo
+"New Value"
 ```
 
 ## Patterns
