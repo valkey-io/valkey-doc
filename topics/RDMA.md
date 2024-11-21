@@ -50,12 +50,12 @@ Or:
 
     ibv_devices (ibverbs-utils package of Debian/Ubuntu)
 
-### Performance tuning
+## Performance tuning
 The RDMA completion queue will use the completion vector to signal completion events
 via hardware interrupts. A large number of hardware interrupts can affect CPU performance.
 It is possible to tune the performance using `rdma-comp-vector`.
 
-#### Example 1
+### Example 1
 
 - Pin hardware interrupt vectors [0, 3] to CPU [0, 3].
 - Set CPU affinity for valkey to CPU [4, X].
@@ -71,7 +71,7 @@ All valkey servers will not affect each other and will be isolated from kernel i
  INTR0  INTR1  INTR2  INTR3
 ```
 
-#### Example 2
+### Example 2
 
 - Pin hardware interrupt vectors [0, X] to CPU [0, X].
 - Set CPU affinity for valkey to CPU [0, X].
