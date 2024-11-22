@@ -55,11 +55,13 @@ The RDMA completion queue will use the completion vector to signal completion ev
 via hardware interrupts. A large number of hardware interrupts can affect CPU performance.
 It is possible to tune the performance using `rdma-comp-vector`.
 
+See [RDMA CQ completion vector](https://man7.org/linux/man-pages/man3/ibv_create_cq.3.html)
+
 ### Example 1
 
 - Pin hardware interrupt vectors [0, 3] to CPU [0, 3].
 - Set CPU affinity for valkey to CPU [4, X].
-- Any valkey server uses a random RDMA completion vector.
+- Any valkey server uses a random RDMA completion vector [-1].
 
 All valkey servers will not affect each other and will be isolated from kernel interrupts.
 
@@ -74,11 +76,13 @@ All valkey servers will not affect each other and will be isolated from kernel i
 ### Example 2
 
 - Pin hardware interrupt vectors [0, X] to CPU [0, X].
-- Set CPU affinity for valkey to CPU [0, X].
+- Set CPU affinity for valkey [M] to CPU [M].
 - Valkey server [M] uses RDMA completion vector [M].
 
-A single CPU handles hardware interrupts, the RDMA completion queue, and the valkey server.
-This avoids overhead and function calls across multiple CPUs.
+A single CPU [M] handles hardware interrupts, the RDMA completion vector [M],
+and the valkey server [M] within its context only.
+This avoids overhead and function calls across multiple CPUs, fully isolating
+each valkey server from one another.
 
 ```
 VALKEY VALKEY VALKEY VALKEY VALKEY VALKEY     VALKEY
