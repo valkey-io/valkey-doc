@@ -1,6 +1,9 @@
 ---
-Valkey Clients
-======
+title: "Valkey Clients"
+linkTitle: "Valkey Clients"
+description: Overview of Valkey clients and features
+---
+
 Selecting the right client is a complex task, given that there are over 200 clients compatible with Valkey across different programming languages. This document offers an overview of recommended Valkey clients for various programming languages. To be included in this list, a client must support a mandatory set of features, such as TLS support and cluster mode. Additionally, for each language, we have provided a list of advanced features supported by the respective clients, highlighting the unique advantages of one client over another.
 
 Mandatory Features Overview
@@ -54,20 +57,6 @@ Python
   - Installation: `pip install valkey`
   - Description: The Python interface to the Valkey key-value store.
 
-**Feature Comparison Table:**
-
-| Feature                                      | valkey-glide | valkey-py |
-|----------------------------------------------|:------------:|:---------:|
-| **Read from replica**                        |     Yes      |    Yes    |
-| **Smart Backoff to Prevent Connection Storm**|     Yes      |    Yes    |
-| **Valkey version compatibility**             |     7.2      |   7.2     |
-| **PubSub state restoration**                 |     Yes      |    No     |
-| **Cluster Scan**                             |     Yes      |    No     |
-| **Latency-Based Read from Replica**          |     No       |    No     |
-| **AZ-Based Read from Replica**               |     No       |    No     |
-| **Client Side Caching**                      |     No       |    No     |
-| **`CLIENT CAPA redirect`**                   |     No       |    No     |
-| **Persistent Connection Pool**               |     No       |    Yes    |
 
 JavaScript/Node.js
 ----
@@ -80,21 +69,6 @@ JavaScript/Node.js
   - GitHub: [iovalkey](https://github.com/valkey-io/iovalkey)
   - Installation: `npm install iovalkey`
   - Description: A robust, performance-focused and full-featured Redis client for Node.js. This is a friendly fork of ioredis after this commit.
-
-**Feature Comparison Table:**
-
-| Feature                                      | valkey-glide | iovalkey  |
-|----------------------------------------------|:------------:|:---------:|
-| **Read from replica**                        |     Yes      |    Yes    |
-| **Smart Backoff to Prevent Connection Storm**|     Yes      |    Yes    |
-| **Valkey version compatibility**             |     7.2      |    7.2    |
-| **PubSub state restoration**                 |     Yes      |    No     |
-| **Cluster Scan**                             |     Yes      |    No     |
-| **Latency-Based Read from Replica**          |     No       |    No     |
-| **AZ-Based Read from Replica**               |     No       |    No     |
-| **Client Side Caching**                      |     No       |    No     |
-| **`CLIENT CAPA redirect`**                   |     No       |    No     |
-| **Persistent Connection Pool**               |     No       |    Yes    |
 
 Java
 ----
@@ -109,21 +83,6 @@ Java
   - Installation: Available via Maven and Gradle
   - Description: valkey-java is Valkey's Java client, derived from Jedis fork, dedicated to maintaining simplicity and high performance.
 
-**Feature Comparison Table:**
-
-| Feature                                      | valkey-glide | valkey-java |
-|----------------------------------------------|:------------:|:-----------:|
-| **Read from replica**                        |     Yes      |     No      |
-| **Smart Backoff to Prevent Connection Storm**|     Yes      |     Yes     |
-| **Valkey version compatibility**             |     7.2      |     7.2     |
-| **PubSub state restoration**                 |     Yes      |     No      |
-| **Cluster Scan**                             |     Yes      |     No      |
-| **Latency-Based Read from Replica**          |     No       |     No      |
-| **AZ-Based Read from Replica**               |     No       |     No      |
-| **Client Side Caching**                      |     No       |     No      |
-| **`CLIENT CAPA redirect`**                   |     No       |     No      |
-| **Persistent Connection Pool**               |     No       |     Yes     |
-
 
 Go
 -----
@@ -132,20 +91,6 @@ Go
   - Installation: TBD
   - Description: A fast Golang Valkey client that does auto pipelining and supports server-assisted client-side caching.
 
-**Feature Comparison Table:**
-
-| Feature                                      | valkey-go  |
-|----------------------------------------------|:----------:|
-| **Read from replica**                        |     Yes    |
-| **Smart Backoff to Prevent Connection Storm**|     Yes    |
-| **Valkey version compatibility**             |     7.2    |
-| **PubSub state restoration**                 |     Yes    |
-| **Cluster Scan**                             |     No     |
-| **Latency-Based Read from Replica**          |     No     |
-| **AZ-Based Read from Replica**               |     No     |
-| **Client Side Caching**                      |     Yes    |
-| **`CLIENT CAPA redirect`**                   |     No     |
-| **Persistent Connection Pool**               |     Yes    |
 
 PHP
 ----
@@ -158,19 +103,3 @@ PHP
   - GitHub: [phpredis](https://github.com/phpredis/phpredis)
   - Installation: Install via PECL or compile from source
   - Description: A PHP extension for Redis, offering high performance and a native API.
-
-**Feature Comparison Table:**
-
-| Feature                                      | Predis  | phpredis |
-|----------------------------------------------|:-------:|:--------:|
-| **Read from replica**                        |   Yes   |    Yes   |
-| **Smart Backoff to Prevent Connection Storm**|   No    |    Yes   |
-| **Valkey version compatibility**             |   7.2   |    7.2   |
-| **PubSub state restoration**                 |   No    |    No    |
-| **Cluster Scan**                             |   No    |    No    |
-| **Latency-Based Read from Replica**          |   No    |    No    |
-| **AZ-Based Read from Replica**               |   No    |    No    |
-| **Client Side Caching**                      |   No    |    No    |
-| **`CLIENT CAPA redirect`**                   |   No    |    No    |
-| **Persistent Connection Pool**               |   No    |    Yes   |
-
