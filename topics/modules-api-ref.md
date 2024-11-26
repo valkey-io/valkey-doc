@@ -1937,6 +1937,20 @@ immediately.
 The command returns `VALKEYMODULE_ERR` if the format specifiers are invalid
 or the command name does not belong to a known command.
 
+### `ValkeyModule_ReplicateWithFlag`
+
+    int ValkeyModule_ReplicateWithFlag(ValkeyModuleCtx *ctx,
+                               ValkeyModueFlag flag,
+                               const char *cmdname,
+                               const char *fmt,
+                               ...);
+
+**Available since:** 8.1.0
+
+Same as [`ValkeyModule_Replicate`](#ValkeyModule_Replicate), but can take ValkeyModuleFlag which allows specifying replication behavior through the parameter. 
+* `VALKEYMODULE_FLAG_DEFAULT` for default behavior (identical to [`ValkeyModule_Replicate`](#ValkeyModule_Replicate))
+* `VALKEYMODULE_FLAG_SKIP_VALIDATION` for bypassing command validation (It is strongly recommended to use only in trusted modules to prevent accidental replication of incorrect commands, which could compromise data consistency)
+
 <span id="ValkeyModule_ReplicateVerbatim"></span>
 
 ### `ValkeyModule_ReplicateVerbatim`
