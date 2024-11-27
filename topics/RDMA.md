@@ -50,6 +50,51 @@ Or:
 
     ibv_devices (ibverbs-utils package of Debian/Ubuntu)
 
+## Performance tuning
+The RDMA completion queue will use the completion vector to signal completion events
+via hardware interrupts. A large number of hardware interrupts can affect CPU performance.
+It is possible to tune the performance using `rdma-comp-vector`.
+
+See [RDMA CQ completion vector](https://man7.org/linux/man-pages/man3/ibv_create_cq.3.html)
+
+### Example 1
+
+- Pin hardware interrupt vectors [0, 3] to CPU [0, 3].
+- Set CPU affinity for valkey to CPU [4, X].
+- Any valkey server uses a random RDMA completion vector [-1].
+
+All valkey servers will not affect each other and will be isolated from kernel interrupts.
+
+```
+  SYS    SYS    SYS    SYS  VALKEY VALKEY     VALKEY
+   |      |      |      |      |      |          |
+ CPU0   CPU1   CPU2   CPU3   CPU4   CPU5   ... CPUX
+   |      |      |      |
+ INTR0  INTR1  INTR2  INTR3
+```
+
+### Example 2
+
+- Pin hardware interrupt vectors [0, X] to CPU [0, X].
+- Set CPU affinity for valkey [M] to CPU [M].
+- Valkey server [M] uses RDMA completion vector [M].
+
+A single CPU [M] handles hardware interrupts, the RDMA completion vector [M],
+and the valkey server [M] within its context only.
+This avoids overhead and function calls across multiple CPUs, fully isolating
+each valkey server from one another.
+
+```
+VALKEY VALKEY VALKEY VALKEY VALKEY VALKEY     VALKEY
+   |      |      |      |      |      |          |
+ CPU0   CPU1   CPU2   CPU3   CPU4   CPU5  ...  CPUX
+   |      |      |      |      |      |          |
+ INTR0  INTR1  INTR2  INTR3  INTR4  INTR5      INTRX
+```
+
+Use 0 and positive numbers to specify the RDMA completion vector, or specify -1 to allow
+the server to use a random vector for a new connection. The default vector is -1.
+
 
 ## Protocol
 
