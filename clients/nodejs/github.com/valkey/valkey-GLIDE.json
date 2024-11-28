@@ -1,0 +1,15 @@
+{
+    "name": "Valkey GLIDE",
+    "description": "An open source Valkey client library that supports Valkey and Redis open source 6.2, 7.0 and 7.2. Valkey GLIDE is designed for reliability, optimized performance, and high-availability, for Valkey and Redis OSS based applications.",
+    "language":"Node.js",
+    "read_from_replica": true,
+    "smart_backoff_to_prevent_connection_storm": true,
+    "valkey_version_compatibility": "8.0", 
+    "pubsub_state_restoration": true,
+    "cluster_scan": true,
+    "latency_based_read_from_replica": false,
+    "AZ_based_read_from_replica": true,
+    "client_side_caching": false,
+    "client_capa_redirect": false,
+    "persistent_connection_pool": false
+}

@@ -1,11 +1,7 @@
 {
-    "name": "Predis",
-    "description": "A flexible and feature-complete Redis client for PHP.",
-    "recommended": true,
-    "twitter": [
-        "JoL1hAHN"
-    ], 
-    "language":"PHP",
+    "name": "valkey-py",
+    "description": "The Python interface to the Valkey key-value store.",
+    "language":"Python",
     "read_from_replica": true,
     "smart_backoff_to_prevent_connection_storm": true,
     "valkey_version_compatibility": "7.2", 
@@ -13,7 +9,7 @@
     "cluster_scan": false,
     "latency_based_read_from_replica": false,
     "AZ_based_read_from_replica": false,
-    "client_side_caching": true,
+    "client_side_caching": false,
     "client_capa_redirect": false,
-    "persistent_connection_pool": false
+    "persistent_connection_pool": true
 }
