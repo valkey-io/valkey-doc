@@ -1,6 +1,5 @@
 ﻿---
 title: "Quick starts"
-linkTitle: "Quick starts"
 hideListLinks: true
 description: >
     Valkey quick start guides

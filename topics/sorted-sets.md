@@ -1,6 +1,5 @@
 ---
 title: "Sorted Sets"
-linkTitle: "Sorted sets"
 description: >
     Introduction to Sorted Sets
 ---

@@ -1,6 +1,5 @@
 ---
 title: "High availability with Valkey Sentinel"
-linkTitle: "High availability with Sentinel"
 description: High availability for non-clustered Valkey
 ---
 

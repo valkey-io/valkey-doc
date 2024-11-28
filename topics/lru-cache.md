@@ -1,6 +1,5 @@
 ---
 title: Key eviction
-linkTitle: Eviction
 description: Overview of Valkey key eviction policies (LRU, LFU, etc.)
 ---
 

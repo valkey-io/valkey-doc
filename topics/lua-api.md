@@ -1,6 +1,5 @@
 ---
-title: "Valkey Lua API reference"
-linkTitle: "Lua API"
+title: "Lua API reference"
 description: >
    Executing Lua in Valkey
 ---

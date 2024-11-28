@@ -1,6 +1,5 @@
 ---
-title: "Valkey command tips"
-linkTitle: "Command tips"
+title: "Command tips"
 description: Get additional information about a command
 ---
 

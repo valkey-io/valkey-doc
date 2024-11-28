@@ -1,6 +1,5 @@
 ---
-title: "Valkey FAQ"
-linkTitle: "FAQ"
+title: "FAQ"
 description: >
     Commonly asked questions when getting started with Valkey
 ---

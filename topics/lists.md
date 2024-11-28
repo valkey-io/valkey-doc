@@ -1,6 +1,5 @@
 ﻿---
 title: "Lists"
-linkTitle: "Lists"
 description: >
     Introduction to Lists
 ---

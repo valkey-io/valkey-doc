@@ -1,6 +1,5 @@
 ---
 title: "TLS"
-linkTitle: "TLS"
 description: Valkey TLS support
 ---
 

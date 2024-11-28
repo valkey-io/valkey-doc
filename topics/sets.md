@@ -1,6 +1,5 @@
 ﻿---
 title: "Sets"
-linkTitle: "Sets"
 description: >
     Introduction to Sets
 ---

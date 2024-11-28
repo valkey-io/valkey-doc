@@ -1,6 +1,5 @@
 ---
-title: "Valkey data types"
-linkTitle: "Data types"
+title: "Data types"
 description: Overview of data types supported by Valkey
 ---
 

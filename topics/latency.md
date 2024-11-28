@@ -1,6 +1,5 @@
 ---
 title: "Diagnosing latency issues"
-linkTitle: "Latency diagnosis"
 description: Finding the causes of slow responses
 ---
 

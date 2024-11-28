@@ -1,6 +1,5 @@
 ---
 title: "ARM support"
-linkTitle: "ARM support"
 description: >
     Exploring Valkey on the ARM CPU Architecture
 ---

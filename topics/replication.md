@@ -1,6 +1,5 @@
 ---
-title: Valkey replication
-linkTitle: Replication
+title: Replication
 description: How Valkey supports high availability and failover with replication
 ---
 

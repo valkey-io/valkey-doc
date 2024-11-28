@@ -1,6 +1,5 @@
 ---
-title: "Valkey client handling"
-linkTitle: "Client handling"
+title: "Client handling"
 description: >
     How the Valkey server manages client connections
 ---

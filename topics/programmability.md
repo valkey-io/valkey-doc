@@ -1,6 +1,5 @@
 ---
-title: "Valkey programmability"
-linkTitle: "Programmability"
+title: "Programmability"
 description: >
    Extending Valkey with Lua and Valkey Functions
 ---

@@ -1,6 +1,5 @@
 ---
 title: "Serialization protocol specification"
-linkTitle: "Protocol spec"
 description: Valkey's serialization protocol (RESP) is the wire protocol that clients implement
 ----
 

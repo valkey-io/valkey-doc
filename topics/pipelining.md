@@ -1,6 +1,5 @@
 ---
-title: "Valkey pipelining"
-linkTitle: "Pipelining"
+title: "Pipelining"
 description: How to optimize round-trip times by batching Valkey commands
 ---
 

@@ -1,6 +1,5 @@
 ---
 title: "Troubleshooting Valkey"
-linkTitle: "Troubleshooting"
 description: Problems with Valkey? Start here.
 ---
 

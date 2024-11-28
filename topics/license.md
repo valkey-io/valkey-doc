@@ -1,6 +1,5 @@
 ---
-title: "Valkey license"
-linkTitle: "License"
+title: "License"
 description: >
     License and trademark information
 ---

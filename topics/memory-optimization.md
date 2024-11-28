@@ -1,6 +1,5 @@
 ---
 title: Memory optimization
-linkTitle: Memory optimization
 description: Strategies for optimizing memory usage in Valkey
 ---
 

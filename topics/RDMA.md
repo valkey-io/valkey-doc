@@ -1,6 +1,5 @@
 ---
 title: "RDMA experimental support"
-linkTitle: "RDMA support"
 description: Valkey Over RDMA experimental support
 ---
 

@@ -1,6 +1,5 @@
 ---
-title: Valkey Pub/Sub
-linkTitle: "Pub/sub"
+title: Pub/Sub
 description: How to use pub/sub channels in Valkey
 ---
 

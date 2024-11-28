@@ -1,6 +1,5 @@
 ---
 title: Secondary indexing
-linkTitle: Secondary indexing
 description: >
     Building secondary indexes in Valkey
 ---

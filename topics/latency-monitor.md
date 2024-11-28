@@ -1,6 +1,5 @@
 ---
-title: "Valkey latency monitoring"
-linkTitle: "Latency monitoring"
+title: "Latency monitoring"
 description: Discovering slow server events in Valkey
 ---
 
