@@ -1,6 +1,5 @@
 ---
 title: "Bulk loading"
-linkTitle: "Bulk loading"
 description: >
     Writing data in bulk using the RESP protocol
 ---

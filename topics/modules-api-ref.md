@@ -1,6 +1,5 @@
 ---
 title: "Modules API reference"
-linkTitle: "API reference"
 description: >
     Reference for the Valkey Modules API
 ---

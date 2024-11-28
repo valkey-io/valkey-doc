@@ -1,6 +1,5 @@
 ---
 title: "Benchmarking tool"
-linkTitle: "Benchmarking"
 description: >
     Using the valkey-benchmark utility on a Valkey server
 ---

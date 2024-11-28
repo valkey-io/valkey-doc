@@ -1,6 +1,5 @@
 ---
 title: "Bitfields"
-linkTitle: "Bitfields"
 description: >
     Introduction to Bitfields
 ---

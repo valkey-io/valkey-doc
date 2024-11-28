@@ -1,6 +1,5 @@
 ---
 title: "Quick start guide"
-linkTitle: "Data structure store"
 description: Understand how to use basic Valkey data types
 ---
 

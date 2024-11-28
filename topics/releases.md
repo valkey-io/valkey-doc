@@ -1,6 +1,5 @@
 ---
 title: "Releases and versioning"
-linkTitle: "Valkey releases"
 description: How new versions of Valkey are released and supported
 ---
 

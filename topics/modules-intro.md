@@ -1,6 +1,5 @@
 ---
 title: "Modules API"
-linkTitle: "Modules API"
 description: >
     Introduction to writing Valkey modules
 ---

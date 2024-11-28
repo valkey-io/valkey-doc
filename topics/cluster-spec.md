@@ -1,6 +1,5 @@
 ---
 title: Cluster specification
-linkTitle: Cluster spec
 description: >
     Detailed specification for Valkey cluster
 ---

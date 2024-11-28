@@ -1,6 +1,5 @@
 ---
 title: Transactions
-linkTitle: Transactions
 description: How transactions work in Valkey
 ---
 

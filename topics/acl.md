@@ -1,6 +1,5 @@
 ---
 title: "ACL"
-linkTitle: "ACL"
 description: Valkey Access Control List
 ---
 

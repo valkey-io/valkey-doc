@@ -1,6 +1,5 @@
 ---
 title: "Scripting with Lua"
-linkTitle: "Lua scripting"
 description: >
    Executing Lua in Valkey
 ---

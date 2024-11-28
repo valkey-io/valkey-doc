@@ -1,6 +1,5 @@
 ---
 title: "Modules API for native types"
-linkTitle: "Native types API"
 description: >
     How to use native types in a Valkey module
 ---

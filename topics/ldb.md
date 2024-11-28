@@ -1,6 +1,5 @@
 ---
 title: Debugging Lua scripts in Valkey
-linkTitle: Debugging Lua
 description: How to use the built-in Lua debugger
 ---
 

@@ -1,6 +1,5 @@
 ---
 title: "Sentinel client spec"
-linkTitle: "Sentinel clients"
 description: How to build clients for Valkey Sentinel
 ---
 

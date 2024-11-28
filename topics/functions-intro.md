@@ -1,6 +1,5 @@
 ---
 title: "Functions"
-linkTitle: "Functions"
 description: >
    Scripting with Redis OSS 7 and beyond
 ---

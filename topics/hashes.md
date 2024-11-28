@@ -1,6 +1,5 @@
 ﻿---
 title: "Hashes"
-linkTitle: "Hashes"
 description: >
     Introduction to Hashes
 ---

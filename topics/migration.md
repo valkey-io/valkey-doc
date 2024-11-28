@@ -1,6 +1,5 @@
 ---
 title: Migration from Redis to Valkey
-linkTitle: Migration
 description: How to migrate from Redis to Valkey
 ---
 

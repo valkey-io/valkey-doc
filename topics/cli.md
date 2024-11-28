@@ -1,6 +1,5 @@
 ---
 title: "CLI"
-linkTitle: "CLI"
 description: >
     Valkey command line interface
 ---

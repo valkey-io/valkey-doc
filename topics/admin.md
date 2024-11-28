@@ -1,6 +1,5 @@
 ---
 title: Administration
-linkTitle: Administration
 description: Advice for configuring and managing Valkey in production
 ---
 

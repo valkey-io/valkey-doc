@@ -1,6 +1,5 @@
 ---
 title: "Signal handling"
-linkTitle: "Signal handling"
 description: How Valkey handles common Unix signals
 ---
 

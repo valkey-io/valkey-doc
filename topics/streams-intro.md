@@ -1,6 +1,5 @@
 ---
 title: "Streams"
-linkTitle: "Streams"
 description: >
     Introduction to Streams
 ---

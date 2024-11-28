@@ -1,6 +1,5 @@
 ---
 title: "Install Valkey"
-linkTitle: "Install Valkey"
 description: >
     Install Valkey on Linux, macOS, and Windows
 ---

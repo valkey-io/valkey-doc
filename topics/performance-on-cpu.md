@@ -1,6 +1,5 @@
 ---
 title: "CPU profiling"
-linkTitle: "CPU profiling"
 description: >
     Performance engineering guide for on-CPU profiling and tracing
 ---

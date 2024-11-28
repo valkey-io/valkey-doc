@@ -1,6 +1,5 @@
 ---
 title: "Configuration"
-linkTitle: "Configuration"
 description: >
     Overview of valkey.conf, the Valkey configuration file
 

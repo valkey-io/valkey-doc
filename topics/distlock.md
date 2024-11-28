@@ -1,6 +1,5 @@
 ---
 title: "Distributed Locks with Valkey"
-linkTitle: "Distributed locks"
 description: >
     A distributed lock pattern with Valkey
 ---
