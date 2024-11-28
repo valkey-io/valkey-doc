@@ -1,10 +1,9 @@
 ---
-title: "Valkey Clients"
-linkTitle: "Valkey Clients"
+title: "Client list"
 description: Overview of Valkey clients and features
 ---
 
-Selecting the right client is a complex task, given that there are over 200 clients compatible with Valkey across different programming languages. This document offers an overview of recommended Valkey clients for various programming languages. To be included in this list, a client must support a mandatory set of features, such as TLS support and cluster mode. Additionally, for each language, we have provided a list of advanced features supported by the respective clients, highlighting the unique advantages of one client over another.
+Selecting the right client is a complex task, given that there are over 200 clients compatible with Valkey across different programming languages. This document offers an overview of recommended Valkey clients for various programming languages. To be included in this list, a client must support a mandatory set of features, such as TLS support and cluster mode. Additionally, a table of advanced features supported by the respective clients is provided, highlighting the unique advantages of one client over another.
 
 Mandatory Features Overview
 ----
@@ -75,20 +74,44 @@ Java
 
 - **valkey-glide**
   - GitHub: [valkey-glide](https://github.com/valkey-io/valkey-glide/tree/main/java)
-  - Installation: Available via Maven and Gradle
+  - Installation:
+
+    Maven - 
+    ```
+    <dependency>
+        <groupId>io.valkey</groupId>
+        <artifactId>valkey-glide</artifactId>
+        <version>1.2.0</version>
+    </dependency>
+    ```
+    Gradle - 
+    `implementation 'io.valkey:valkey-glide:1.2.0'`
+
+
   - Description: Valkey GLIDE is designed for reliability, optimized performance, and high-availability, for Valkey and Redis OSS based applications. GLIDE is a multi language client library, written in Rust with programming language bindings, such as Java, node.js and Python.
 
 - **Valkey-Java**
   - GitHub: [valkey-java](https://github.com/valkey-io/valkey-java)
-  - Installation: Available via Maven and Gradle
-  - Description: valkey-java is Valkey's Java client, derived from Jedis fork, dedicated to maintaining simplicity and high performance.
+  - Installation: 
+  
+    Maven - 
+    ```
+    <dependency>
+        <groupId>io.valkey</groupId>
+        <artifactId>valkey-java</artifactId>
+        <version>5.3.0</version>
+    </dependency>
+    ```
+    Gradle - 
+    `implementation 'io.valkey:valkey-java:5.3.0'`
+  - Description: valkey-java is Valkey's Java client, dedicated to maintaining simplicity and high performance.
 
 
 Go
 -----
 - **valkey-go**
   - GitHub: [go-valkey-go](https://github.com/valkey-io/valkey-go)
-  - Installation: TBD
+  - Installation: `go get github.com/valkey-io/valkey-go`
   - Description: A fast Golang Valkey client that does auto pipelining and supports server-assisted client-side caching.
 
 

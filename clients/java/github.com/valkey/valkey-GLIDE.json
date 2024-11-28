@@ -1,7 +1,7 @@
 {
     "name": "Valkey GLIDE",
-    "description": "General Language Independent Driver for the Enterprise (GLIDE) for Redis is an advanced multi-language Redis client that is feature rich, highly performant, and built for reliability and operational stability. GLIDE for Redis is supported by AWS.",
-    "language":"Node.js",
+    "description": "An open source Valkey client library that supports Valkey and Redis open source 6.2, 7.0 and 7.2. Valkey GLIDE is designed for reliability, optimized performance, and high-availability, for Valkey and Redis OSS based applications.",
+    "language":"Java",
     "read_from_replica": true,
     "smart_backoff_to_prevent_connection_storm": true,
     "valkey_version_compatibility": "8.0", 

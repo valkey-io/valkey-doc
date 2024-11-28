@@ -1,6 +1,6 @@
 {
     "name": "valkey-java",
-    "description": "valkey-java is Valkey's Java client, derived from Jedis fork, dedicated to maintaining simplicity and high performance.",
+    "description": "valkey-java is Valkey's Java client, dedicated to maintaining simplicity and high performance.",
     "language":"Java",
     "read_from_replica": false,
     "smart_backoff_to_prevent_connection_storm": true,
