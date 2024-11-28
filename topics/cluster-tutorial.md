@@ -1,5 +1,5 @@
 ---
-title: Scale with Valkey Cluster
+title: Cluster tutorial
 description: Horizontal scaling with Valkey Cluster
 ---
 

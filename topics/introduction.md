@@ -1,5 +1,5 @@
 ---
-title: Introduction to Valkey
+title: Introduction
 description: Learn about the Valkey open source project
 ---
 
