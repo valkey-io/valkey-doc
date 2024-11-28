@@ -1,5 +1,5 @@
 ---
-title: "Valkey history"
+title: "History"
 linkTitle: "History"
 description: How the Valkey project started
 ---

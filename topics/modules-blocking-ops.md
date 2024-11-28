@@ -1,5 +1,5 @@
 ---
-title: "Valkey modules and blocking commands"
+title: "Modules and blocking commands"
 linkTitle: "Blocking commands"
 description: >
     How to implement blocking commands in a Valkey module

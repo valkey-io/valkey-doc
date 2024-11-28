@@ -1,5 +1,5 @@
 ---
-title: Valkey persistence
+title: Persistence
 linkTitle: Persistence
 description: How Valkey writes data to disk
 ---

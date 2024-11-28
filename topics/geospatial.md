@@ -1,5 +1,5 @@
 ﻿---
-title: "Valkey geospatial"
+title: "Geospatial"
 linkTitle: "Geospatial"
 description: >
     Introduction to the Valkey Geospatial data type

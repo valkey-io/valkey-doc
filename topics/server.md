@@ -1,5 +1,5 @@
 ---
-title: "Valkey Server"
+title: "The Valkey server"
 linkTitle: "Valkey Server"
 description: >
     Manual for valkey-server, the Valkey server program
