@@ -5,6 +5,8 @@
     "twitter": [
         "JoL1hAHN"
     ], 
+    "github":"https://github.com/predis/predis",
+    "installation": "pecl install redis",
     "language":"PHP",
     "read_from_replica": true,
     "smart_backoff_to_prevent_connection_storm": true,

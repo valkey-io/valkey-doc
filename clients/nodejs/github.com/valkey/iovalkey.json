@@ -1,7 +1,9 @@
 {
     "name": "iovalkey",
     "description": "A robust, performance-focused and full-featured Redis client for Node.js.",
-    "language":"Node.js",
+    "github":"https://github.com/valkey-io/iovalkey",
+    "installation": "npm install iovalkey",
+    "language":"JavaScript/Node.js",
     "read_from_replica": true,
     "smart_backoff_to_prevent_connection_storm": true,
     "valkey_version_compatibility": "7.2", 
