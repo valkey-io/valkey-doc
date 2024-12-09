@@ -72,10 +72,10 @@ By default Valkey binds to **all the interfaces** and has no authentication at a
 
 1. Make sure the port Valkey uses to listen for connections (by default 6379 and additionally 16379 if you run Valkey in cluster mode, plus 26379 for Sentinel) is firewalled, so that it is not possible to contact Valkey from the outside world.
 2. Use a configuration file where the `bind` directive is set in order to guarantee that Valkey listens on only the network interfaces you are using. For example, only the loopback interface (127.0.0.1) if you are accessing Valkey locally from the same computer.
-3. Use the `requirepass` option to add an additional layer of security so that clients will be required to authenticate using the `AUTH` command.
-4. Use [spiped](https://www.tarsnap.com/spiped.html) or another SSL tunneling software to encrypt traffic between Valkey servers and Valkey clients if your environment requires encryption.
+3. Set up authenticaltion using [Access Control List (ACL)](acl.md) or use the `requirepass` option to add an additional layer of security so that clients will be required to authenticate using the `AUTH` command.
+4. Use [TLS](encryption.md) to encrypt traffic between Valkey servers and Valkey clients if your environment requires encryption.
 
-Note that a Valkey instance exposed to the internet without any security [is very simple to exploit](http://antirez.com/news/96), so make sure you understand the above and apply **at least** a firewall layer. After the firewall is in place, try to connect with `valkey-cli` from an external host to confirm that the instance is not reachable.
+Make sure you understand the above and apply **at least** a firewall layer. After the firewall is in place, try to connect with `valkey-cli` from an external host to confirm that the instance is not reachable.
 
 ## Use Valkey from your application
 
@@ -86,7 +86,11 @@ You'll find a [full list of clients for different languages in this page](../cli
 
 ## Valkey persistence
 
-You can learn [how Valkey persistence works on this page](persistence.md). It is important to understand that, if you start Valkey with the default configuration, Valkey will spontaneously save the dataset only from time to time. For example, after at least five minutes if you have at least 100 changes in your data. If you want your database to persist and be reloaded after a restart make sure to call the **SAVE** command manually every time you want to force a data set snapshot. Alternatively, you can save the data on disk before quitting by using the **SHUTDOWN** command:
+You can learn [how Valkey persistence works on this page](persistence.md).
+It is important to understand that, if you start Valkey with the default configuration, Valkey will spontaneously save the dataset only from time to time.
+For example, after at least five minutes if you have at least 100 changes in your data.
+If you want your database to persist and be reloaded after a restart, make sure to call the [SAVE](../commands/save.md) command manually every time you want to force a data set snapshot.
+Alternatively, you can save the data on disk before quitting by using the [SHUTDOWN](../commands/shutdown.md) command:
 
 ```
 $ valkey-cli shutdown
@@ -96,15 +100,14 @@ This way, Valkey will save the data on disk before quitting. Reading the [persis
 
 ## Install Valkey properly
 
-Running Valkey from the command line is fine just to hack a bit or for development. However, at some point you'll have some actual application to run on a real server. For this kind of usage you have two different choices:
+Running Valkey from the command line is fine just to hack a bit or for development. However, at some point you'll have some actual application to run on a real server.
+For this kind of usage, it's highly recommended to install Valkey as a system service so that everything will start properly after a system restart.
+The available packages for supported Linux distributions already include the capability of starting the Valkey server as a service.
 
-* Run Valkey using screen.
-* Install Valkey in your Linux box in a proper way using an init script, so that after a restart everything will start again properly.
+Valkey supports systemd, but this document was written for init scripts, before systemd was widely adapted.
+There are many guides online for how to set up a systemd service.
 
-A proper install using an init script is strongly recommended. 
-
-**Note:**
-The available packages for supported Linux distributions already include the capability of starting the Valkey server from `/etc/init`.
+The remainder of this section explains how to set up Valkey using an init script, for distros like Alpine Linux that don't use systemd.
 
 If you have not yet run `make install` after building the Valkey source, you will need to do so before continuing. By default, `make install` will copy the `valkey-server` and `valkey-cli` binaries to `/usr/local/bin`.
 
@@ -168,9 +171,8 @@ Make sure that everything is working as expected:
 3. Check that your Valkey instance is logging to the `/var/log/valkey_6379.log` file.
 4. If it's a new machine where you can try it without problems, make sure that after a reboot everything is still working.
 
-**Note:**
+## Configuring Valkey
+
 The above instructions don't include all of the Valkey configuration parameters that you could change. For example, to use AOF persistence instead of RDB persistence, or to set up replication, and so forth.
 
 You should also read the example [valkey.conf](https://github.com/valkey-io/valkey/blob/unstable/valkey.conf) file, which is heavily annotated to help guide you on making changes. Further details can also be found in the [configuration article on this site](valkey.conf.md).
-
-<hr>
