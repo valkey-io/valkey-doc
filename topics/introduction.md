@@ -29,8 +29,12 @@ Valkey also includes:
 * [LRU eviction of keys](lru-cache.md)
 * [Automatic failover](sentinel.md)
 
-You can use Valkey from [most programming languages](../clients/).
+You can use Valkey from most programming languages. See [clients](../clients/).
 
-Valkey is written in **ANSI C** and works on most POSIX systems like Linux,
-\*BSD, and Mac OS X, without external dependencies. Linux and OS X are the two operating systems where Valkey is developed and tested the most, and we **recommend using Linux for deployment**. Valkey may work in Solaris-derived systems like SmartOS, but support is *best effort*.
+Valkey is written in **ANSI C 11** with Atomics and a few GCC/Clang builtins like `__builtin_clz()`.
+It works on most POSIX systems like Linux, \*BSD and MacOS, without external dependencies.
+Linux and MacOS are the two operating systems where Valkey is developed and tested the most, and we **recommend using Linux for deployment**.
+Valkey may work on Solaris-derived systems like Illumos, but support is *best effort*.
+Supported hardware includes x86-64 (AKA amd64), x86 (32-bit) and AArch64 (64-bit ARM).
+It is also know to work on IBM z/Architecture like s390x and builds for this system are available from the Fedora distro.
 There is no official support for Windows builds.
