@@ -20,16 +20,13 @@ there is always an updated version of the data set on disk.
 
 ## What's the Valkey memory footprint?
 
-To give you a few examples (all obtained using 64-bit instances):
+To give you a few examples:
 
 * An empty instance uses ~ 3MB of memory.
 * 1 Million small Keys -> String Value pairs use ~ 85MB of memory.
 * 1 Million Keys -> Hash value, representing an object with 5 fields, use ~ 160 MB of memory.
 
 Testing your use case is trivial. Use the `valkey-benchmark` utility to generate random data sets then check the space used with the `INFO memory` command.
-
-64-bit systems will use considerably more memory than 32-bit systems to store the same keys, especially if the keys and values are small. This is because pointers take 8 bytes in 64-bit systems. But of course the advantage is that you can
-have a lot of memory in 64-bit systems, so in order to run large Valkey servers a 64-bit system is more or less required. The alternative is sharding.
 
 ## Why does Valkey keep its entire dataset in memory?
 
@@ -104,24 +101,20 @@ in RAM is also atomic from the point of view of the disk snapshot.
 
 ## How can Valkey use multiple CPUs or cores?
 
-It's not very frequent that CPU becomes your bottleneck with Valkey, as usually Valkey is either memory or network bound.
-For instance, when using pipelining a Valkey instance running on an average Linux system can deliver 1 million requests per second, so if your application mainly uses O(N) or O(log(N)) commands, it is hardly going to use too much CPU.
+Enable I/O threading to offload client communication to threads.
+In Valkey 8, the I/O threading implementation has been rewritten and greatly improved.
+Reading commands from clients and writing replies back uses considerable CPU time.
+By offloading this work to separate threads, the main thread can focus on executing commands.
 
-However, to maximize CPU usage you can start multiple instances of Valkey in
-the same box and treat them as different servers. At some point a single
-box may not be enough anyway, so if you want to use multiple CPUs you can
-start thinking of some way to shard earlier.
-
-You can find more information about using multiple Valkey instances in the [Partitioning page](cluster-tutorial.md).
-
-As of version 4.0, Valkey has started implementing threaded actions. For now this is limited to deleting objects in the background and blocking commands implemented via Valkey modules. For subsequent releases, the plan is to make Valkey more and more threaded.
+You can also start multiple instances of Valkey in
+the same box and combine them into a [Valkey Cluster](cluster-tutorial.md).
 
 ## What is the maximum number of keys a single Valkey instance can hold? What is the maximum number of elements in a Hash, List, Set, and Sorted Set?
 
-Valkey can handle up to 2^32 keys, and was tested in practice to
+Valkey can handle up to 2<sup>32</sup> keys, and was tested in practice to
 handle at least 250 million keys per instance.
 
-Every hash, list, set, and sorted set, can hold 2^32 elements.
+Every hash, list, set, and sorted set, can hold 2<sup>32</sup> elements.
 
 In other words your limit is likely the available memory in your system.
 
