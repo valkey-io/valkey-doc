@@ -12,7 +12,7 @@ The `SET` command supports a set of options that modify its behavior:
 * `PXAT` *timestamp-milliseconds* -- Set the specified Unix time at which the key will expire, in milliseconds (a positive integer).
 * `NX` -- Only set the key if it does not already exist.
 * `XX` -- Only set the key if it already exists.
-* `IFEQ` -- Set the key if the given value matches the existing value. An error is returned and `SET` aborted if the value stored at key is not a string.
+* `IFEQ` *comparison-value* -- Set the key if the comparison value matches the existing value. An error is returned and `SET` aborted if the value stored at key is not a string.
 * `KEEPTTL` -- Retain the time to live associated with the key.
 * `GET` -- Return the old string stored at key, or nil if key did not exist. An error is returned and `SET` aborted if the value stored at key is not a string.
 
