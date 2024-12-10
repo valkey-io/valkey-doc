@@ -31,7 +31,7 @@ This approach suits many light-weight scripting use cases, but introduces severa
 1. When used naively, `EVAL` promotes an anti-pattern in which the client application renders verbatim scripts instead of responsibly using the [`KEYS` and `ARGV` Lua APIs](lua-api.md#runtime-globals).
 1. Because they are ephemeral, a script can't call another script. This makes sharing and reusing code between scripts nearly impossible, short of client-side preprocessing.
 
-To address these needs while avoiding breaking changes to already-established and well-liked ephemeral scripts, Redis OSS v7.0 introduced Functions.
+To address these needs while avoiding breaking changes to already-established and well-liked ephemeral scripts, functions were introduced in version 7.0.
 
 ## What are Valkey Functions?
 
@@ -297,7 +297,7 @@ local function check_keys(keys)
   end
 
   if error ~= nil then
-    server.log(redis.LOG_WARNING, error);
+    server.log(server.LOG_WARNING, error);
     return server.error_reply(error)
   end
   return nil
