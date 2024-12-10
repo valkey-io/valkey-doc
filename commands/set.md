@@ -12,22 +12,30 @@ The `SET` command supports a set of options that modify its behavior:
 * `PXAT` *timestamp-milliseconds* -- Set the specified Unix time at which the key will expire, in milliseconds (a positive integer).
 * `NX` -- Only set the key if it does not already exist.
 * `XX` -- Only set the key if it already exists.
+* `IFEQ` -- Set the key if the given value matches the existing value. An error is returned and `SET` aborted if the value stored at key is not a string.
 * `KEEPTTL` -- Retain the time to live associated with the key.
 * `GET` -- Return the old string stored at key, or nil if key did not exist. An error is returned and `SET` aborted if the value stored at key is not a string.
-* `IFEQ` -- Set the key if the given value matches the existing value. An error is returned and `SET` aborted if the value stored at key is not a string.
 
 Note: Since the `SET` command options can replace `SETNX`, `SETEX`, `PSETEX`, `GETSET`, it is possible that in future versions of Valkey these commands will be deprecated and finally removed.
 
 ## Examples
 
+Basic usage
 ```
 127.0.0.1:6379> SET mykey "Hello"
 OK
 127.0.0.1:6379> GET mykey
 "Hello"
+```
+
+Set a value and an expiry time.
+```
 127.0.0.1:6379> SET anotherkey "will expire in a minute" EX 60
 OK
+```
 
+Conditionally set a value.
+```
 127.0.0.1:6379> SET foo "Initial Value"
 OK
 127.0.0.1:6379> GET foo
