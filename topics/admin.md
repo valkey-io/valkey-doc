@@ -7,7 +7,9 @@ description: Advice for configuring and managing Valkey in production
 
 ### Linux
 
-* Deploy Valkey using the Linux operating system. Valkey is also tested on OS X, and from time to time on FreeBSD and OpenBSD systems. However, Linux is where most of the stress testing is performed, and where most production deployments are run.
+* Deploy Valkey using the Linux operating system.
+  Valkey is also tested on macOS and FreeBSD, and from time to time on other OpenBSD, NetBSD, DragonFlyBSD and Solaris derivates.
+  However, Linux is where most of the stress testing is performed, and where most production deployments are run.
 
 * Set the Linux kernel overcommit memory setting to 1. Add `vm.overcommit_memory = 1` to `/etc/sysctl.conf`. Then, reboot or run the command `sysctl vm.overcommit_memory=1` to activate the setting. See [FAQ: Background saving fails with a fork() error on Linux?](faq.md#background-saving-fails-with-a-fork-error-on-linux) for details. 
 
@@ -37,14 +39,13 @@ description: Advice for configuring and managing Valkey in production
 
 ### Security
 
-* By default, Valkey does not require any authentication and listens to all the network interfaces. This is a big security issue if you leave Valkey exposed on the internet or other places where attackers can reach it. See for example [this attack](http://antirez.com/news/96) to see how dangerous it can be. Please check our [security page](security.md) and the [quick start](quickstart.md) for information about how to secure Valkey.
+* By default, Valkey does not require any authentication and listens to all the network interfaces. This is a big security issue if you leave Valkey exposed on the internet or other places where attackers can reach it. Please check our [security page](security.md) and the [quick start](quickstart.md) for information about how to secure Valkey.
 
 ## Running Valkey on EC2
 
 * Use HVM based instances, not PV based instances.
-* Do not use old instance families. For example, use m3.medium with HVM instead of m1.medium with PV.
 * The use of Valkey persistence with EC2 EBS volumes needs to be handled with care because sometimes EBS volumes have high latency characteristics.
-* You may want to try the new diskless replication if you have issues when replicas are synchronizing with the primary.
+* You may want to try diskless replication if you have issues when replicas are synchronizing with the primary.
 
 ## Upgrading or restarting a Valkey instance without downtime
 
