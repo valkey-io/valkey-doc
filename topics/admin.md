@@ -8,7 +8,7 @@ description: Advice for configuring and managing Valkey in production
 ### Linux
 
 * Deploy Valkey using the Linux operating system.
-  Valkey is also tested on macOS and FreeBSD, and from time to time on other OpenBSD, NetBSD, DragonFlyBSD and Solaris derivates.
+  Valkey is also tested on macOS and FreeBSD, and from time to time on other OpenBSD, NetBSD, DragonFlyBSD and Solaris-derived systems.
   However, Linux is where most of the stress testing is performed, and where most production deployments are run.
 
 * Set the Linux kernel overcommit memory setting to 1. Add `vm.overcommit_memory = 1` to `/etc/sysctl.conf`. Then, reboot or run the command `sysctl vm.overcommit_memory=1` to activate the setting. See [FAQ: Background saving fails with a fork() error on Linux?](faq.md#background-saving-fails-with-a-fork-error-on-linux) for details. 

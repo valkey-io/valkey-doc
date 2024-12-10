@@ -27,7 +27,7 @@ This approach suits many light-weight scripting use cases, but introduces severa
 
 1. All client application instances must maintain a copy of all scripts. That means having some mechanism that applies script updates to all of the application's instances.
 1. Calling cached scripts within the context of a [transaction](transactions.md) increases the probability of the transaction failing because of a missing script. Being more likely to fail makes using cached scripts as building blocks of workflows less attractive.
-1. SHA1 digests are not readalbe for humans, making debugging the system hard (e.g. in a [`MONITOR`](../commands/monitor.md) session).
+1. SHA1 digests are not readable for humans, making debugging the system hard (e.g. in a [`MONITOR`](../commands/monitor.md) session).
 1. When used naively, `EVAL` promotes an anti-pattern in which the client application renders verbatim scripts instead of responsibly using the [`KEYS` and `ARGV` Lua APIs](lua-api.md#runtime-globals).
 1. Because they are ephemeral, a script can't call another script. This makes sharing and reusing code between scripts nearly impossible, short of client-side preprocessing.
 

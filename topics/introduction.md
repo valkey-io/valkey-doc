@@ -31,7 +31,7 @@ Valkey also includes:
 
 You can use Valkey from most programming languages. See [clients](../clients/).
 
-Valkey is written in **ANSI C 11** with Atomics and a few GCC/Clang builtins like `__builtin_clz()`.
+Valkey is written in **ANSI C 11** with Atomics and a few GCC/Clang built-ins like `__builtin_clz()`.
 It works on most POSIX systems like Linux, \*BSD and MacOS, without external dependencies.
 Linux and MacOS are the two operating systems where Valkey is developed and tested the most, and we **recommend using Linux for deployment**.
 Valkey may work on Solaris-derived systems like Illumos, but support is *best effort*.

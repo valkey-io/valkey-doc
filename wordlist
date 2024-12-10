@@ -4,6 +4,7 @@
 .rdb
 ˈrɛd-ɪs
 A1
+AArch64
 acknowledgement
 ACKs
 acl
@@ -20,6 +21,7 @@ allkeys-random
 allocator
 allocator's
 allocators
+amd64
 AMD64
 analytics
 antirez
@@ -44,6 +46,7 @@ Async
 async
 Asyncio
 atomicity
+Atomics
 Atomicvar
 Attribution-ShareAlike
 Auth
@@ -196,7 +199,9 @@ Diskless
 diskless
 DistLock
 distlock
+distros
 dnf
+DragonFlyBSD
 dup-sentinel
 Dynomite
 earts
@@ -344,6 +349,7 @@ Identinal
 idletime
 idx
 idx'-th
+Illumos
 incr
 incrby
 incrby_get_mget
@@ -735,6 +741,7 @@ runlevels
 RW
 Rx/Tx
 S[1-9]
+s390x
 SaaS
 sadd
 sadd_smembers
@@ -782,6 +789,7 @@ Snapcraft
 snapd
 Snapshotting
 snapshotting
+Solaris
 Solaris-derived
 somekey
 SomeOtherValue
@@ -832,6 +840,7 @@ SYNC_RDB_START
 syncd
 syscall
 systemctl
+systemd
 T1
 T2
 taskset
@@ -924,6 +933,8 @@ whos-using-redis
 WQE
 WQEs
 WSL2
+x86
+x86-64
 xack
 xadd
 xadd_2
