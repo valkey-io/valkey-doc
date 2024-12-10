@@ -68,10 +68,9 @@ Let's explore Valkey Functions via some tangible examples and Lua snippets.
 
 At this point, if you're unfamiliar with Lua in general and specifically in Valkey, you may benefit from reviewing some of the examples in [Introduction to Eval Scripts](eval-intro.md) and [Lua API](lua-api.md) pages for a better grasp of the language.
 
-Every Valkey function belongs to a single library that's loaded to Valkey.
+Every Valkey function belongs to a library.
 Loading a library to the database is done with the [`FUNCTION LOAD`](../commands/function-load.md) command.
-The command takes the library source code as input and
-the it must start with a Shebang line that provides a metadata about the library, like the language (always "lua") and the library name.
+The library source code must start with a Shebang line that provides metadata about the library, like the language (always "lua") and the library name.
 The Shebang format is:
 
 ```

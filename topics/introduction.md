@@ -36,5 +36,5 @@ It works on most POSIX systems like Linux, \*BSD and MacOS, without external dep
 Linux and MacOS are the two operating systems where Valkey is developed and tested the most, and we **recommend using Linux for deployment**.
 Valkey may work on Solaris-derived systems like Illumos, but support is *best effort*.
 Supported hardware includes x86-64 (AKA amd64), x86 (32-bit) and AArch64 (64-bit ARM).
-It is also know to work on IBM z/Architecture like s390x and builds for this system are available from the Fedora distro.
+It is also known to work on IBM z/Architecture like s390x and builds for this system are available from the Fedora distro.
 There is no official support for Windows builds.
