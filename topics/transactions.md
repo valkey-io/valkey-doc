@@ -127,12 +127,8 @@ EXEC
 This time due to the syntax error the bad `INCR` command is not queued
 at all. And the `EXEC` command will receive an `EXECABORT` error.
 
-There are some more specific scenarios: in the `MULTI` context, commands are
-successfully queued (i.e., `QUEUED` reply is received), but when the `EXEC` command
-is executed, it is found that the data needed for these commands does not belong to
-the current node (for example, in cluster mode, the accessed slot has been migrated to
-another node; in standalone mode, a primary-replica switch has occurred). In this case,
-the `EXEC` command will receive a `MOVED` or `REDIRECT` result.
+When the `EXEC` command is processed, the server will check if a failover or slot migration has occurred since queuing the commands.
+If either event has occurred, a `-MOVED` or `-REDIRECT` error will be returned if needed without processing the transaction.
 
 For cluster mode:
 
