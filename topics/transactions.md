@@ -148,6 +148,25 @@ failover
 EXEC     ==>  -REDIRECT
 ```
 
+Before the `EXEC` command is processed, if a command accesses data that does not belong to the current node,
+a `-MOVED` or `-REDIRECT` error will be returned immediately, and the `EXEC` command will receive an `EXECABORT` error.
+
+For cluster mode:
+
+```
+MULTI    ==>  +OK
+SET x y  ==>  -MOVED
+EXEC     ==>  -EXECABORT
+```
+
+For standalone mode:
+
+```
+MULTI    ==>  +OK
+SET x y  ==>  -REDIRECT
+EXEC     ==>  -EXECABORT
+```
+
 ## What about rollbacks?
 
 Valkey does not support rollbacks of transactions since supporting rollbacks
