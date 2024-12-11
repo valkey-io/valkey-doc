@@ -27,6 +27,10 @@ Setting `maxmemory` to zero results into no memory limits. This is the
 default behavior for 64 bit systems, while 32 bit systems use an implicit
 memory limit of 3GB.
 
+If you have set up replication and have set the `maxmemory` option, the memory needed to send data to the replicas (the replication buffer) is subtracted from the total memory available for Valkey. This prevents a situation where constant key evictions could fill up the replication buffer, causing more keys to be deleted repeatedly until the database is empty.
+
+For Valkey with replication configured, it's recommended to set the maxmemory value lower than the one for a single instance to ensure there's enough memory for client replication buffers, RAM and other processes. This is not needed if the policy is set to 'noeviction'.
+
 When the specified amount of memory is reached, how **eviction policies** are configured determines the default behavior.
 Valkey can return errors for commands that could result in more memory
 being used, or it can evict some old data to return back to the
@@ -39,7 +43,7 @@ configured using the `maxmemory-policy` configuration directive.
 
 The following policies are available:
 
-* **noeviction**: New values aren’t saved when memory limit is reached. When a database uses replication, this applies to the primary database
+* **noeviction**: New values aren't saved when memory limit is reached. When a database uses replication, this applies to the primary database
 * **allkeys-lru**: Keeps most recently used keys; removes least recently used (LRU) keys
 * **allkeys-lfu**: Keeps frequently used keys; removes least frequently used (LFU) keys
 * **volatile-lru**: Removes least recently used keys with a time-to-live (TTL) set.
@@ -80,6 +84,13 @@ It is important to understand that the eviction process works like this:
 So we continuously cross the boundaries of the memory limit, by going over it, and then by evicting keys to return back under the limits.
 
 If a command results in a lot of memory being used (like a big set intersection stored into a new key) for some time, the memory limit can be surpassed by a noticeable amount.
+
+## Monitor eviction
+
+To monitor the point when Valkey starts to evict data, use the `INFO MEMORY` output. Compare the current memory usage displayed in the `used_memory` output with the `maxmemory` value. 
+
+Once eviction happens, additional information is available through the `INFO STATS` metrics. The `total_eviction_exceeded_time` metric shows the total time in milliseconds that `used_memory` exceeded `maxmemory`.
+
 
 ## Approximated LRU algorithm
 
