@@ -14,6 +14,7 @@
         }
     ],
     "language":"Java",
+    "package_size": "",
     "read_from_replica": false,
     "smart_backoff_to_prevent_connection_storm": true,
     "valkey_version_compatibility": "7.2", 

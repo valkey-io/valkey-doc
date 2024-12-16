@@ -1,7 +1,6 @@
 {
     "name": "phpredis",
     "description": " A PHP extension for Redis, offering high performance and a native API.",
-    "recommended": true,
     "twitter": [
         "grumi78",
         "yowgi",
@@ -10,6 +9,7 @@
     "github":"https://github.com/phpredis/phpredis",
     "installation": "composer require predis/predis",
     "language":"PHP",
+    "package_size": "",
     "read_from_replica": true,
     "smart_backoff_to_prevent_connection_storm": true,
     "valkey_version_compatibility": "7.2", 

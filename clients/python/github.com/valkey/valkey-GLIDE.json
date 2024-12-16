@@ -4,6 +4,7 @@
     "github":"https://github.com/valkey-io/valkey-glide/tree/main/python",
     "installation": "pip install valkey-glide",
     "language":"Python",
+    "package_size": "",
     "read_from_replica": true,
     "smart_backoff_to_prevent_connection_storm": true,
     "valkey_version_compatibility": "8.0", 

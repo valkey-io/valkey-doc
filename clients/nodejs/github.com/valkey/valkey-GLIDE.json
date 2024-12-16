@@ -4,6 +4,7 @@
     "github":"https://github.com/valkey-io/valkey-glide/tree/main/node",
     "installation": "npm install valkey-glide",
     "language":"JavaScript/Node.js",
+    "package_size": "",
     "read_from_replica": true,
     "smart_backoff_to_prevent_connection_storm": true,
     "valkey_version_compatibility": "8.0", 

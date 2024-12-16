@@ -4,6 +4,7 @@
     "github":"https://github.com/valkey-io/iovalkey",
     "installation": "npm install iovalkey",
     "language":"JavaScript/Node.js",
+    "package_size": "",
     "read_from_replica": true,
     "smart_backoff_to_prevent_connection_storm": true,
     "valkey_version_compatibility": "7.2", 
