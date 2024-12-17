@@ -58,4 +58,4 @@ The HyperLogLog, being a String, can be retrieved with `GET` and restored with `
 
 The representation is neutral from the point of view of the processor word size and endianness, so the same representation is used by 32 bit and 64 bit processor, big endian or little endian.
 
-More details about the HyperLogLog implementation can be found in [this blog post](http://antirez.com/news/75). The source code of the implementation in the `hyperloglog.c` file is also easy to read and understand, and includes a full specification for the exact encoding used for the sparse and dense representations.
+More details about the HyperLogLog implementation can be found in [this blog post](https://web.archive.org/web/20241019222035/http://antirez.com/news/75). The source code of the implementation in the `hyperloglog.c` file is also easy to read and understand, and includes a full specification for the exact encoding used for the sparse and dense representations.
