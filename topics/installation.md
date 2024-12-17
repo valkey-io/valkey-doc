@@ -98,7 +98,7 @@ $ valkey-cli shutdown
 
 This way, Valkey will save the data on disk before quitting. Reading the [persistence page](persistence.md) is strongly suggested to better understand how Valkey persistence works.
 
-## Install Valkey properly
+## Install Valkey as a system service
 
 Running Valkey from the command line is fine just to hack a bit or for development. However, at some point you'll have some actual application to run on a real server.
 For this kind of usage, it's highly recommended to install Valkey as a system service so that everything will start properly after a system restart.

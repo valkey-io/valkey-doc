@@ -60,7 +60,6 @@ Because running a function blocks the Valkey server, functions are meant to fini
 Functions are written in [Lua 5.1](lua-api.md).
 Valkey functions can use all of Lua's available capabilities to ephemeral scripts,
 with the only exception being the [Valkey Lua scripts debugger](ldb.md).
-In the future, it may be possible to extend Valkey to allow other languages.
 
 ## Loading libraries and functions
 
@@ -361,7 +360,7 @@ And your Valkey log file should have lines in it that are similar to:
 ## Functions in cluster
 
 As noted above, Valkey automatically handles propagation of loaded functions to replicas.
-In a [Valkey Cluster](cluster-tutorial.md), it is also necessary to load functions to all primaries in the cluster. This is not handled automatically by Valkey Cluster, and needs to be handled by the cluster administrator (like module loading, configuration setting, etc.).
+In a [cluster](cluster-tutorial.md), it is necessary to load functions to all primaries.
 
 As one of the goals of functions is to live separately from the client application, this should not be part of the Valkey client library responsibilities. Instead, `valkey-cli --cluster-only-primaries --cluster call host:port FUNCTION LOAD ...` can be used to execute the load command on all primary nodes.
 

@@ -106,8 +106,7 @@ In Valkey 8, the I/O threading implementation has been rewritten and greatly imp
 Reading commands from clients and writing replies back uses considerable CPU time.
 By offloading this work to separate threads, the main thread can focus on executing commands.
 
-You can also start multiple instances of Valkey in
-the same box and combine them into a [Valkey Cluster](cluster-tutorial.md).
+You can also start multiple instances of Valkey in the same box and combine them into a [cluster](cluster-tutorial.md).
 
 ## What is the maximum number of keys a single Valkey instance can hold? What is the maximum number of elements in a Hash, List, Set, and Sorted Set?
 

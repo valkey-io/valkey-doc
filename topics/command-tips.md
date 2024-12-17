@@ -13,7 +13,6 @@ The information can instruct Valkey Cluster clients as to how the command should
 
 Unlike the command's flags (see the 3rd element of [`COMMAND`](../command.md)'s reply), which are strictly internal to the server's operation, tips don't serve any purpose other than being reported to clients.
 
-The following sections describe the command tips in use so far.
 
 ## `nondeterministic_output`
 
