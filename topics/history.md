@@ -53,7 +53,7 @@ In March, 2010, Sanfilippo was hired by [VMware](https://vmware.com) to work on
 Redis and Redis Tools. In his blog post [VMware: the new Redis
 home][antirez-vmware], he writes:
 
-[antirez-vmware]: http://oldblog.antirez.com/post/vmware-the-new-redis-home.html
+[antirez-vmware]: https://web.archive.org/web/20241017012850/http://oldblog.antirez.com/post/vmware-the-new-redis-home.html
 
 > Not only Redis will remain a totally open source project, but Redis Tools will
 > be open sourced also (and this was an idea I got from VMware itself!).
@@ -93,7 +93,7 @@ The following year, 2014, Garantia Data [changed its name to Redis Labs][redisla
 [redislabs]: https://techcrunch.com/2014/01/29/database-provider-garantia-data-makes-another-name-change-this-time-to-redis-labs/
 
 In 2015, Salvatore left Pivotal for Redis Labs. He writes in his blog post
-[Thanks Pivotal, Hello Redis Labs](http://antirez.com/news/91):
+[Thanks Pivotal, Hello Redis Labs](https://web.archive.org/web/20241123010805/http://antirez.com/news/91):
 
 > Redis Labs was willing to continue what VMware and Pivotal started. I'll be
 > able to work as I do currently, spending all my time in the open source side
@@ -114,12 +114,12 @@ BSD][will-remain-bsd]. He repeated this promise in [a comment on Hacker
 News][hn-always-bsd], writing “let me assure you that Redis remains and always
 will remain, open source, BSD license”.
 
-[antirez-remain-bsd]: http://antirez.com/news/120
+[antirez-remain-bsd]: https://web.archive.org/web/20241111062719/http://antirez.com/news/120
 [will-remain-bsd]: https://redis.io/blog/redis-license-bsd-will-remain-bsd/
 [hn-always-bsd]: https://news.ycombinator.com/item?id=17819392
 
 In 2020, Salvatore Sanfilippo announced in his blog post [The end of the Redis
-adventure](http://antirez.com/news/133) that he was stepping back as the Redis
+adventure](https://web.archive.org/web/20241123005834/http://antirez.com/news/133) that he was stepping back as the Redis
 maintainer, handing over the maintenance to Yossi Gottlieb and Oran Agra at
 Redis Labs. The two created a “core team” to maintain the project and invited
 Itamar Haber from Redis Labs, Zhao Zhao from Alibaba and Madelyn Olson from

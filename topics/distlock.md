@@ -228,4 +228,4 @@ Thanks in advance!
 ## Analysis of Redlock
 ---
 
-1. Martin Kleppmann [analyzed Redlock here](https://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html). A counterpoint to this analysis can be [found here](http://antirez.com/news/101).
+1. Martin Kleppmann [analyzed Redlock here](https://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html). A counterpoint to this analysis can be [found here](https://web.archive.org/web/20241209045142/https://antirez.com/news/101).

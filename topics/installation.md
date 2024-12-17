@@ -76,7 +76,7 @@ By default Valkey binds to **all the interfaces** and has no authentication at a
 3. Use the `requirepass` option to add an additional layer of security so that clients will be required to authenticate using the `AUTH` command.
 4. Use [spiped](https://www.tarsnap.com/spiped.html) or another SSL tunneling software to encrypt traffic between Valkey servers and Valkey clients if your environment requires encryption.
 
-Note that a Valkey instance exposed to the internet without any security [is very simple to exploit](http://antirez.com/news/96), so make sure you understand the above and apply **at least** a firewall layer. After the firewall is in place, try to connect with `valkey-cli` from an external host to confirm that the instance is not reachable.
+Note that a Valkey instance exposed to the internet without any security [is very simple to exploit](https://web.archive.org/web/20241119215618/http://antirez.com/news/96), so make sure you understand the above and apply **at least** a firewall layer. After the firewall is in place, try to connect with `valkey-cli` from an external host to confirm that the instance is not reachable.
 
 ## Use Valkey from your application
 

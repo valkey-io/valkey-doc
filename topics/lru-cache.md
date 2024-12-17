@@ -133,7 +133,7 @@ the `CONFIG SET maxmemory-samples <count>` command, is very simple.
 
 ## The LFU mode
 
-The [Least Frequently Used eviction mode](http://antirez.com/news/109) is available as an alternative to LRU.
+The [Least Frequently Used eviction mode](https://web.archive.org/web/20241019222228/http://antirez.com/news/109) is available as an alternative to LRU.
 This mode may work better (provide a better
 hits/misses ratio) in certain cases. In LFU mode, Valkey will try to track
 the frequency of access of items, so the ones used rarely are evicted. This means
