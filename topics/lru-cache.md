@@ -29,7 +29,7 @@ memory limit of 3GB.
 
 If you have set up replication and have set the `maxmemory` option, the memory needed to send data to the replicas (the replication buffer) is subtracted from the total memory available for Valkey. This prevents a situation where constant key evictions could fill up the replication buffer, causing more keys to be deleted repeatedly until the database is empty.
 
-For Valkey with replication configured, it's recommended to set the maxmemory value lower than the one for a single instance to ensure there's enough memory for client replication buffers, RAM and other processes. This is not needed if the policy is set to 'noeviction'.
+For Valkey with replication configured, it's recommended to set the maxmemory value lower than the one for a single instance. This way you ensure there's enough memory for client replication buffers, RAM and other processes. This is not needed if the policy is set to 'noeviction'.
 
 When the specified amount of memory is reached, how **eviction policies** are configured determines the default behavior.
 Valkey can return errors for commands that could result in more memory
@@ -87,7 +87,21 @@ If a command results in a lot of memory being used (like a big set intersection 
 
 ## Monitor eviction
 
-To monitor the point when Valkey starts to evict data, use the `INFO MEMORY` output. Compare the current memory usage displayed in the `used_memory` output with the `maxmemory` value. 
+To monitor the point when Valkey starts to evict data, use the `INFO MEMORY` output. Compare the current memory usage with the `maxmemory` value. 
+
+The current memory usage is displayed in the `used_memory` output which is made of the `used_memory_overhead` and the `used_memory_dataset` outputs.
+
+The following example shows that Valkey will not start data eviction because the `used_memory` is considerably less than `maxmemory`.
+
+```
+# Memory
+used_memory:12458856
+...
+used_memory_overhead:11633760
+used_memory_dataset:825096
+...
+maxmemory:20971520
+```
 
 Once eviction happens, additional information is available through the `INFO STATS` metrics. The `total_eviction_exceeded_time` metric shows the total time in milliseconds that `used_memory` exceeded `maxmemory`.
 
