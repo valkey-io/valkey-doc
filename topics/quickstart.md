@@ -28,7 +28,7 @@ $ valkey-cli -h 127.0.0.1 -p 6379
 
 ## Store and retrieve data
 
-Valkey stands for Remote Dictionary Server. You can use the same data types as in your local programming environment but on the server side within Valkey.
+Valkey is a remote dictionary server. You can use the same data types as in your local programming environment but on the server side within Valkey.
 
 Similar to byte arrays, Strings store sequences of bytes, including text, serialized objects, counter values, and binary arrays. The following example shows you how to set and get a string value:
 
