@@ -88,4 +88,4 @@ The HyperLogLog can estimate the cardinality of sets with up to 18,446,744,073,7
 
 ## Learn more
 
-* [Valkey new data structure: the HyperLogLog](http://antirez.com/news/75) has a lot of details about the data structure and its implementation in Valkey.
+* This blog post on [the HyperLogLog data structure](https://web.archive.org/web/20241019222035/http://antirez.com/news/75) has a lot of details about the data structure and its implementation in Valkey.
