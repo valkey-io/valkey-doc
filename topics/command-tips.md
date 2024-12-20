@@ -3,40 +3,42 @@ title: "Command tips"
 description: Get additional information about a command
 ---
 
-Command tips are an array of strings.
+This page documents a small part of the reply of the [`COMMAND`](../command.md).
+In the reply of the COMMAND command, each command is represented by an array.
+The 8th element in this array is the command tips.
+It's an array of strings.
+
 These provide Valkey clients with additional information about the command.
 The information can instruct Valkey Cluster clients as to how the command should be executed and its output processed in a clustered deployment.
 
-Unlike the command's flags (see the 3rd element of `COMMAND`'s reply), which are strictly internal to the server's operation, tips don't serve any purpose other than being reported to clients.
+Unlike the command's flags (see the 3rd element of [`COMMAND`](../command.md)'s reply), which are strictly internal to the server's operation, tips don't serve any purpose other than being reported to clients.
 
-Command tips are arbitrary strings.
-However, the following sections describe proposed tips and demonstrate the conventions they are likely to adhere to.
 
-## nondeterministic_output
+## `nondeterministic_output`
 
 This tip indicates that the command's output isn't deterministic.
 That means that calls to the command may yield different results with the same arguments and data.
 That difference could be the result of the command's random nature (e.g., `RANDOMKEY` and `SPOP`); the call's timing (e.g., `TTL`); or generic differences that relate to the server's state (e.g., `INFO` and `CLIENT LIST`).
 
 **Note:**
-Prior to Redis OSS 7.0, this tip was the _random_ command flag.
+Prior to Redis OSS 7.0, this tip was the `random` command flag.
 
-## nondeterministic_output_order
+## `nondeterministic_output_order`
 
 The existence of this tip indicates that the command's output is deterministic, but its ordering is random (e.g., `HGETALL` and `SMEMBERS`).
 
 **Note:**
-Prior to Redis OSS 7.0, this tip was the _sort_\__for_\__script_ flag.
+Prior to Redis OSS 7.0, this tip was the `sort_for_script` flag.
 
-## request_policy
+## `request_policy:`*value*
 
 This tip can help clients determine the shards to send the command in clustering mode.
-The default behavior a client should implement for commands without the _request_policy_ tip is as follows:
+The default behavior a client should implement for commands without the `request_policy` tip is as follows:
 
 1. The command doesn't accept key name arguments: the client can execute the command on an arbitrary shard.
 1. For commands that accept one or more key name arguments: the client should route the command to a single shard, as determined by the hash slot of the input keys.
 
-In cases where the client should adopt a behavior different than the default, the _request_policy_ tip can be one of:
+In cases where the client should adopt a behavior different than the default, the `request_policy` tip can be one of:
 
 - **all_nodes:** the client should execute the command on all nodes - primaries and replicas alike.
   An example is the `CONFIG SET` command. 
@@ -53,10 +55,10 @@ In cases where the client should adopt a behavior different than the default, th
   However, note that `SUNIONSTORE` isn't considered as _multi_shard_ because all of its keys must belong to the same hash slot.
 - **special:** indicates a non-trivial form of the client's request policy, such as the `SCAN` command.
 
-## response_policy
+## `response_policy:`*value*
 
 This tip can help clients determine the aggregate they need to compute from the replies of multiple shards in a cluster.
-The default behavior for commands without a _request_policy_ tip only applies to replies with of nested types (i.e., an array, a set, or a map).
+The default behavior for commands without a `request_policy` tip only applies to replies with of nested types (i.e., an array, a set, or a map).
 The client's implementation for the default behavior should be as follows:
 
 1. The command doesn't accept key name arguments: the client can aggregate all replies within a single nested data structure.
@@ -65,7 +67,7 @@ These should be packed in a single in no particular order.
 1. For commands that accept one or more key name arguments: the client needs to retain the same order of replies as the input key names.
 For example, `MGET`'s aggregated reply.
 
-The _response_policy_ tip is set for commands that reply with scalar data types, or when it's expected that clients implement a non-default aggregate.
+The `response_policy` tip is set for commands that reply with scalar data types, or when it's expected that clients implement a non-default aggregate.
 This tip can be one of:
 
 * **one_succeeded:** the clients should return success if at least one shard didn't reply with an error.
