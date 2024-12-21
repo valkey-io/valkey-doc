@@ -27,6 +27,12 @@
   "ACL LIST": [
     "[Array reply](../topics/protocol.md#arrays): an array of [Bulk string reply](../topics/protocol.md#bulk-strings) elements."
   ],
+  "ACL LOAD": [
+    "[Simple string reply](../topics/protocol.md#simple-strings): `OK` on success.",
+    "",
+    "The command may fail with an error for several reasons: if the file is not readable, if there is an error inside the file, and in such cases, the error will be reported to the user in the error.",
+    "Finally, the command will fail if the server is not configured to use an external ACL file."
+  ],
   "ACL LOG": [
     "When called to show security events:",
     "* [Array reply](../topics/protocol.md#arrays): an array of [Bulk string reply](../topics/protocol.md#bulk-strings) elements representing ACL security events.",
@@ -46,12 +52,6 @@
   ],
   "ACL WHOAMI": [
     "[Bulk string reply](../topics/protocol.md#bulk-strings): the username of the current connection."
-  ],
-  "ACL-LOAD": [
-    "[Simple string reply](../topics/protocol.md#simple-strings): `OK` on success.",
-    "",
-    "The command may fail with an error for several reasons: if the file is not readable, if there is an error inside the file, and in such cases, the error will be reported to the user in the error.",
-    "Finally, the command will fail if the server is not configured to use an external ACL file."
   ],
   "APPEND": [
     "[Integer reply](../topics/protocol.md#integers): the length of the string after the append operation."
@@ -143,6 +143,9 @@
   "CLIENT": [],
   "CLIENT CACHING": [
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK` or an error if the argument is not \"yes\" or \"no\"."
+  ],
+  "CLIENT CAPA": [
+    "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
   ],
   "CLIENT GETNAME": [
     "One of the following:",
@@ -957,6 +960,9 @@
   ],
   "SCRIPT LOAD": [
     "[Bulk string reply](../topics/protocol.md#bulk-strings): the SHA1 digest of the script added into the script cache."
+  ],
+  "SCRIPT SHOW": [
+    "[Bulk string reply](../topics/protocol.md#bulk-strings): Lua script if sha1 hash exists in script cache."
   ],
   "SDIFF": [
     "[Array reply](../topics/protocol.md#arrays): a list with members of the resulting set."

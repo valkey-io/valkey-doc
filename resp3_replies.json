@@ -144,6 +144,9 @@
   "CLIENT CACHING": [
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK` or an error if the argument is not \"yes\" or \"no\"."
   ],
+  "CLIENT CAPA": [
+    "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
+  ],
   "CLIENT GETNAME": [
     "One of the following:",
     "* [Bulk string reply](../topics/protocol.md#bulk-strings): the connection name of the current connection.",
@@ -957,6 +960,9 @@
   ],
   "SCRIPT LOAD": [
     "[Bulk string reply](../topics/protocol.md#bulk-strings): the SHA1 digest of the script added into the script cache."
+  ],
+  "SCRIPT SHOW": [
+    "[Bulk string reply](../topics/protocol.md#bulk-strings): Lua script if sha1 hash exists in script cache."
   ],
   "SDIFF": [
     "[Set reply](../topics/protocol.md#sets): the resulting set."
