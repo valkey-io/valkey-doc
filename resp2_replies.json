@@ -27,6 +27,12 @@
   "ACL LIST": [
     "[Array reply](../topics/protocol.md#arrays): an array of [Bulk string reply](../topics/protocol.md#bulk-strings) elements."
   ],
+  "ACL LOAD": [
+    "[Simple string reply](../topics/protocol.md#simple-strings): `OK` on success.",
+    "",
+    "The command may fail with an error for several reasons: if the file is not readable, if there is an error inside the file, and in such cases, the error will be reported to the user in the error.",
+    "Finally, the command will fail if the server is not configured to use an external ACL file."
+  ],
   "ACL LOG": [
     "When called to show security events:",
     "* [Array reply](../topics/protocol.md#arrays): an array of [Bulk string reply](../topics/protocol.md#bulk-strings) elements representing ACL security events.",
@@ -46,12 +52,6 @@
   ],
   "ACL WHOAMI": [
     "[Bulk string reply](../topics/protocol.md#bulk-strings): the username of the current connection."
-  ],
-  "ACL-LOAD": [
-    "[Simple string reply](../topics/protocol.md#simple-strings): `OK` on success.",
-    "",
-    "The command may fail with an error for several reasons: if the file is not readable, if there is an error inside the file, and in such cases, the error will be reported to the user in the error.",
-    "Finally, the command will fail if the server is not configured to use an external ACL file."
   ],
   "APPEND": [
     "[Integer reply](../topics/protocol.md#integers): the length of the string after the append operation."
@@ -144,6 +144,9 @@
   "CLIENT CACHING": [
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK` or an error if the argument is not \"yes\" or \"no\"."
   ],
+  "CLIENT CAPA": [
+    "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
+  ],
   "CLIENT GETNAME": [
     "One of the following:",
     "* [Bulk string reply](../topics/protocol.md#bulk-strings): the connection name of the current connection.",
@@ -229,7 +232,7 @@
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK` if the command was successful. Otherwise an error is returned."
   ],
   "CLUSTER FAILOVER": [
-    "[Simple string reply](../topics/protocol.md#simple-strings): `OK` if the command was accepted and a manual failover is going to be attempted. An error if the operation cannot be executed, for example if the client is connected to a node that is already a master."
+    "[Simple string reply](../topics/protocol.md#simple-strings): `OK` if the command was accepted and a manual failover is going to be attempted. An error if the operation cannot be executed, for example if the client is connected to a node that is already a primary."
   ],
   "CLUSTER FLUSHSLOTS": [
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK`"
@@ -265,7 +268,7 @@
     "[Bulk string reply](../topics/protocol.md#bulk-strings): the serialized cluster configuration."
   ],
   "CLUSTER REPLICAS": [
-    "[Array reply](../topics/protocol.md#arrays): a list of replica nodes replicating from the specified master node provided in the same format used by `CLUSTER NODES`."
+    "[Array reply](../topics/protocol.md#arrays): a list of replica nodes replicating from the specified primary node provided in the same format used by `CLUSTER NODES`."
   ],
   "CLUSTER REPLICATE": [
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK` if the command was successful. Otherwise an error is returned."
@@ -286,7 +289,7 @@
     "[Array reply](../topics/protocol.md#arrays): a nested list of a map of hash ranges and shard nodes describing individual shards."
   ],
   "CLUSTER SLAVES": [
-    "[Array reply](../topics/protocol.md#arrays): a list of replica nodes replicating from the specified master node provided in the same format used by `CLUSTER NODES`."
+    "[Array reply](../topics/protocol.md#arrays): a list of replica nodes replicating from the specified primary node provided in the same format used by `CLUSTER NODES`."
   ],
   "CLUSTER SLOTS": [
     "[Array reply](../topics/protocol.md#arrays): nested list of slot ranges with networking information."
@@ -578,7 +581,7 @@
   "HSCAN": [
     "[Array reply](../topics/protocol.md#arrays): a two-element array.",
     "* The first element is a [Bulk string reply](../topics/protocol.md#bulk-strings) that represents an unsigned 64-bit number, the cursor.",
-    "* The second element is an [Array reply](../topics/protocol.md#arrays) of field/value pairs that were scanned."
+    "* The second element is an [Array reply](../topics/protocol.md#arrays) of field/value pairs that were scanned. When `NOVALUES` option is on, a list of keys from the hash."
   ],
   "HSET": [
     "[Integer reply](../topics/protocol.md#integers): the number of fields that were added."
@@ -835,7 +838,7 @@
     "When successful, this command doesn't return anything. Instead, for each pattern, one message with the first element being the string `psubscribe` is pushed as a confirmation that the command succeeded."
   ],
   "PSYNC": [
-    "**Non-standard return value**, a bulk transfer of the data followed by `PING` and write requests from the master."
+    "**Non-standard return value**, a bulk transfer of the data followed by `PING` and write requests from the primary."
   ],
   "PTTL": [
     "One of the following:",
@@ -957,6 +960,9 @@
   ],
   "SCRIPT LOAD": [
     "[Bulk string reply](../topics/protocol.md#bulk-strings): the SHA1 digest of the script added into the script cache."
+  ],
+  "SCRIPT SHOW": [
+    "[Bulk string reply](../topics/protocol.md#bulk-strings): Lua script if sha1 hash exists in script cache."
   ],
   "SDIFF": [
     "[Array reply](../topics/protocol.md#arrays): a list with members of the resulting set."
@@ -1086,7 +1092,7 @@
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
   ],
   "SYNC": [
-    "**Non-standard return value**, a bulk transfer of the data followed by `PING` and write requests from the master."
+    "**Non-standard return value**, a bulk transfer of the data followed by `PING` and write requests from the primary."
   ],
   "TIME": [
     "[Array reply](../topics/protocol.md#arrays): specifically, a two-element array consisting of the Unix timestamp in seconds and the microseconds' count."
@@ -1117,7 +1123,7 @@
   ],
   "WAITAOF": [
     "[Array reply](../topics/protocol.md#arrays): The command returns an array of two integers:",
-    "1. The first is the number of local Redises (0 or 1) that have fsynced to AOF  all writes performed in the context of the current connection",
+    "1. The first is the number of local Valkey nodes (0 or 1) that have fsynced to AOF all writes performed in the context of the current connection",
     "2. The second is the number of replicas that have acknowledged doing the same."
   ],
   "WATCH": [
@@ -1307,7 +1313,9 @@
     "* [Array reply](../topics/protocol.md#arrays): The rank and score of the member when _WITHSCORE_ is used."
   ],
   "ZSCAN": [
-    "[Array reply](../topics/protocol.md#arrays): cursor and scan response in array form."
+    "[Array reply](../topics/protocol.md#arrays): a two-element array.",
+    "* The first element is a [Bulk string reply](../topics/protocol.md#bulk-strings) that represents an unsigned 64-bit number, the cursor.",
+    "* The second element is an [Array reply](../topics/protocol.md#arrays) of member/score pairs that were scanned. When `NOSCORES` option is on, a list of members from the sorted set."
   ],
   "ZSCORE": [
     "One of the following:",
