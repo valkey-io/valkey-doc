@@ -62,6 +62,7 @@ t: the client enabled keys tracking in order to perform client side caching
 T: the client will not touch the LRU/LFU of the keys it accesses
 R: the client tracking target client is invalid
 B: the client enabled broadcast tracking mode
+I: the client is an import source
 ```
 
 The file descriptor events can be:
