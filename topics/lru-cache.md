@@ -26,7 +26,6 @@ following directive inside the `valkey.conf` file:
 Setting `maxmemory` to zero results into no memory limits. This is the
 default behavior for 64 bit systems, while 32 bit systems use an implicit
 memory limit of 3GB.
- 
 When the specified amount of memory is reached, how **eviction policies** are configured determines the default behavior.
 Valkey can return errors for commands that could result in more memory
 being used, or it can evict some old data to return back to the
@@ -36,9 +35,9 @@ specified limit every time new data is added.
 
 If you have set up replication, Valkey needs some RAM as a buffer to send data to the replicas and AOF files. This memory is not included in the used memory count that is compared against the `maxmemory` to trigger eviction. 
 
-The reason for that is that key eviction process itself generates some changes that need to be added to the replication and AOF buffers. If these buffers were counted for the key eviction, this would result in a loop where a freed memory would immediately be used up by these updates causing more keys to be deleted repeatedly until the database is empty.
+The reason for that is that the key eviction process itself generates some changes that need to be added to the replication and AOF buffers. If these buffers were counted for the key eviction, this would result in a loop where a freed memory would immediately be used up by these updates causing more keys to be deleted repeatedly until the database is empty.
 
-For Valkey with replication configured, it's recommended to set the `maxmemory` value lower than the one for a single instance. This way you ensure there's enough memory for AOF and replication buffers, and other processes. 
+For Valkey with replication configured, it's recommended to set the `maxmemory` value lower than for a single instance without replication. This way you ensure there's enough memory for AOF and replication buffers, and other processes. 
 
 You can estimate how much memory is used by the replication and AOF buffers using the `mem_not_counted_for_evict` value of the INFO memory command output. 
 
@@ -95,7 +94,7 @@ If a command results in a lot of memory being used (like a big set intersection 
 
 To monitor the point when Valkey starts to evict data, use the `INFO MEMORY` command. The following fields provide the information about the memory usage and the condition to trigger key eviction:
 
-* `used_memory`: The total number of bytes that the server allocated for storing data. It is made of the `used_memory_overhead` and the `used_memory_dataset` outputs.
+* `used_memory`: The total number of bytes that the server allocated for storing data. It is the sum of the `used_memory_overhead` and the `used_memory_dataset` outputs.
 * `mem_not_counted_for_evict`: The amount of memory not counted for eviction. This includes the replication buffer and AOF buffer.
 
 Thus, the memory usage to trigger eviction is calculated as follows:
