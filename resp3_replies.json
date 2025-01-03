@@ -1039,11 +1039,16 @@
     "[Array reply](../topics/protocol.md#arrays): List of monitored replicas, and their state."
   ],
   "SET": [
-    "Any of the following:",
-    "* [Null reply](../topics/protocol.md#nulls): `GET` not given: Operation was aborted (conflict with one of the `XX`/`NX` options).",
-    "* [Simple string reply](../topics/protocol.md#simple-strings): `OK`. `GET` not given: The key was set.",
-    "* [Null reply](../topics/protocol.md#nulls): `GET` given: The key didn't exist before the `SET`.",
-    "* [Bulk string reply](../topics/protocol.md#bulk-strings): `GET` given: The previous value of the key."
+    "If `GET` not given, any of the following:",
+    "* [Null reply](../topics/protocol.md#nulls): Operation was aborted (conflict with one of the `XX`/`NX` options).",
+    "* [Simple string reply](../topics/protocol.md#simple-strings): `OK`: The key was set.",
+    "If `GET` given, any of the following:",
+    "* [Null reply](../topics/protocol.md#nulls): The key didn't exist before the `SET`.",
+    "* [Bulk string reply](../topics/protocol.md#bulk-strings): The previous value of the key.",
+    "Note that when using `GET` together with `XX`/`NX`/`IFEQ`, the reply indirectly indicates whether the key was set:",
+    "* `GET` and `XX` given: Non-[Null reply](../topics/protocol.md#nulls) indicates the key was set.",
+    "* `GET` and `NX` given: [Null reply](../topics/protocol.md#nulls) indicates the key was set.",
+    "* `GET` and `IFEQ` given: The key was set if the reply is equal to `comparison-value`."
   ],
   "SETBIT": [
     "[Integer reply](../topics/protocol.md#integers): the original bit value stored at _offset_."

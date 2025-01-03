@@ -974,11 +974,16 @@
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
   ],
   "SET": [
-    "Any of the following:",
-    "* [Nil reply](../topics/protocol.md#bulk-strings): `GET` not given: Operation was aborted (conflict with one of the `XX`/`NX` options).",
-    "* [Simple string reply](../topics/protocol.md#simple-strings): `OK`. `GET` not given: The key was set.",
-    "* [Nil reply](../topics/protocol.md#bulk-strings): `GET` given: The key didn't exist before the `SET`.",
-    "* [Bulk string reply](../topics/protocol.md#bulk-strings): `GET` given: The previous value of the key."
+    "If `GET` not given, any of the following:",
+    "* [Nil reply](../topics/protocol.md#bulk-strings): Operation was aborted (conflict with one of the `XX`/`NX` options).",
+    "* [Simple string reply](../topics/protocol.md#simple-strings): `OK`: The key was set.",
+    "If `GET` given, any of the following:",
+    "* [Nil reply](../topics/protocol.md#bulk-strings): The key didn't exist before the `SET`.",
+    "* [Bulk string reply](../topics/protocol.md#bulk-strings): The previous value of the key.",
+    "Note that when using `GET` together with `XX`/`NX`/`IFEQ`, the reply indirectly indicates whether the key was set:",
+    "* `GET` and `XX` given: Non-[Nil reply](../topics/protocol.md#bulk-strings) indicates the key was set.",
+    "* `GET` and `NX` given: [Nil reply](../topics/protocol.md#bulk-strings) indicates the key was set.",
+    "* `GET` and `IFEQ` given: The key was set if the reply is equal to `comparison-value`."
   ],
   "SETBIT": [
     "[Integer reply](../topics/protocol.md#integers): the original bit value stored at _offset_."
