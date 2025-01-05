@@ -14,5 +14,6 @@
     "AZ_based_read_from_replica": false,
     "client_side_caching": false,
     "client_capa_redirect": false,
-    "persistent_connection_pool": true
+    "persistent_connection_pool": true,
+    "specific_properties": ["Available in sync and async api"]
 }
