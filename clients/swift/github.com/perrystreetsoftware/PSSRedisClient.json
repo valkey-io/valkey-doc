@@ -1,7 +1,0 @@
-{
-    "name": "PSSRedisClient",
-    "description": "Swift redis client using the CocoaAsyncSocket library, installable via Cocoapods",
-    "twitter": [
-        "esilverberg"
-    ]
-}

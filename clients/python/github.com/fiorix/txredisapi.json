@@ -1,7 +1,0 @@
-{
-    "name": "txredisapi",
-    "description": "Full featured, non-blocking client for Twisted.",
-    "twitter": [
-        "fiorix"
-    ]
-}

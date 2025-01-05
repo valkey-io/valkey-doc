@@ -1,7 +1,0 @@
-{
-    "name": "xredis",
-    "description": "Redis client with redis ACL features",
-    "twitter": [
-        "razaellahi531"
-    ]
-}

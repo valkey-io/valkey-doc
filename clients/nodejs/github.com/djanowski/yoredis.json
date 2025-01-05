@@ -1,7 +1,0 @@
-{
-    "name": "yoredis",
-    "description": "A minimalistic Redis client using modern Node.js.",
-    "twitter": [
-        "djanowski"
-    ]
-}

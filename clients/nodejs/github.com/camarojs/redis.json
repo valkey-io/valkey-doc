@@ -1,4 +1,0 @@
-{
-    "name": "Camaro Redis",
-    "description": "Redis client for node, support resp2/3 and redis6."
-}

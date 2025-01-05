@@ -1,5 +1,0 @@
-{
-    "name": "JDBC-Redis",
-    "description": "A JDBC client for Redis.",
-    "homepage": "https://code.google.com/p/jdbc-redis/"
-}

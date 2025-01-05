@@ -1,5 +1,0 @@
-{
-    "name": "tornadis",
-    "description": "Async minimal redis client for tornado ioloop designed for performances (use C hiredis parser)",
-    "homepage": "http://tornadis.readthedocs.org"
-}

@@ -1,7 +1,0 @@
-{
-    "name": "goredis",
-    "description": "A redis client for golang with full features",
-    "twitter": [
-        "xuyu"
-    ]
-}

@@ -1,8 +1,0 @@
-{
-    "name": "redis-lua",
-    "description": "A Redis client.",
-    "recommended": true,
-    "twitter": [
-        "JoL1hAHN"
-    ]
-}

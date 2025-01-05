@@ -1,7 +1,0 @@
-{
-    "name": "guile-redis",
-    "description": "A Redis client for Guile",
-    "twitter": [
-        "aconchillo"
-    ]
-}
