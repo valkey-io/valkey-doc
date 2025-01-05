@@ -17,7 +17,7 @@
     "package_size": "",
     "read_from_replica": true,
     "smart_backoff_to_prevent_connection_storm": true,
-    "valkey_version_compatibility": "8.0", 
+    "valkey_version_compliance": "8.0", 
     "pubsub_state_restoration": true,
     "cluster_scan": true,
     "latency_based_read_from_replica": false,
