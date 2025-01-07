@@ -6831,6 +6831,10 @@
         "complexity": "O(1)",
         "history": [
             [
+                "8.1.0",
+                "A new `availability_zone` field has been added into the response if the `availability_zone` config is set."
+            ],
+            [
                 "6.2.0",
                 "`protover` made optional; when called without arguments the command reports the current connection's context."
             ]
