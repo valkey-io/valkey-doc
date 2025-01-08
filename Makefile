@@ -52,8 +52,12 @@ endif
 
 # ---- Source files ----
 
+documented_commands = $(wildcard commands/*.md)
+commands_json_files = $(wildcard $(VALKEY_ROOT)/src/commands/*.json)
+existing_commands = $(commands_json_files:$(VALKEY_ROOT)/src/commands/%.json=commands/%.md)
+
 topics   = $(wildcard topics/*)
-commands = $(wildcard commands/*.md)
+commands = $(filter $(existing_commands),$(documented_commands))
 
 topics_md   = $(filter %.md,$(topics))
 topics_pics = $(filter-out %.md,$(topics))
@@ -64,7 +68,8 @@ topics_pics = $(filter-out %.md,$(topics))
 json_for_documented_commands = $(commands:commands/%.md=$(VALKEY_ROOT)/src/commands/%.json)
 
 $(BUILD_DIR)/.commands-per-group.json: $(VALKEY_ROOT)/src/commands/. utils/build-command-groups.py | $(BUILD_DIR)
-	utils/build-command-groups.py $(json_for_documented_commands) > $@
+	utils/build-command-groups.py $(json_for_documented_commands) > $@~~
+	mv $@~~ $@
 $(BUILD_DIR):
 	mkdir -p $@
 
