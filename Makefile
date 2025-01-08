@@ -3,8 +3,8 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 # Version info
-VERSION ?= 8.0.0
-DATE ?= 2024-09-23
+VERSION ?= 8.0.2
+DATE ?= 2025-01-08
 
 # Path to the code repo.
 VALKEY_ROOT ?= ../valkey
