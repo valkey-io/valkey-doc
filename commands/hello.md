@@ -14,6 +14,8 @@ RESP2, although future version may default to RESP3.
 
 `HELLO` always replies with a list of current server and connection properties,
 such as: versions, modules loaded, client ID, replication role and so forth.
+(The availability_zone field only shows up when it is set in the configs.)
+
 When called without any arguments and its default use of RESP2
 protocol, the reply looks like this:
 
@@ -32,6 +34,8 @@ protocol, the reply looks like this:
     12) "master"
     13) "modules"
     14) (empty array)
+    15) "availability_zone"
+    16) "us-east-1"
 
 Clients that want to handshake using the RESP3 mode need to call the `HELLO`
 command and specify the value "3" as the `protover` argument, like so:
@@ -44,6 +48,7 @@ command and specify the value "3" as the `protover` argument, like so:
     5# "mode" => "standalone"
     6# "role" => "master"
     7# "modules" => (empty array)
+    8# "availability_zone" => "us-east-1"
 
 Because `HELLO` replies with useful information, and given that `protover` is
 optional or can be set to "2", client library authors may consider using this
