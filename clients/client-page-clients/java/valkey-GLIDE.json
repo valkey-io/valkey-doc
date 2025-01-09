@@ -5,19 +5,17 @@
     "installation": [
         {
             "type": "Maven",
-            "command": "<dependency>\n  <groupId>io.valkey</groupId>\n  <artifactId>valkey-glide</artifactId>\n  <version>1.2.0</version>\n</dependency>"
+            "command": "<dependency>\n  <groupId>io.valkey</groupId>\n  <artifactId>valkey-glide</artifactId>\n  <version>LATEST</version>\n</dependency>"
         },
         {
             "type": "Gradle",
-            "command":"implementation 'io.valkey:valkey-glide:1.2.0"
-
+            "command":"implementation 'io.valkey:valkey-glide:+"
         }
     ],
-    "language":"Java",
+    "language":"java",
     "package_size": "",
     "read_from_replica": true,
     "smart_backoff_to_prevent_connection_storm": true,
-    "valkey_version_compliance": "8.0", 
     "pubsub_state_restoration": true,
     "cluster_scan": true,
     "latency_based_read_from_replica": false,

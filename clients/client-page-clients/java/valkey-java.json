@@ -5,19 +5,18 @@
     "installation": [
         {
             "type": "Maven",
-            "command": "<dependency>\n  <groupId>io.valkey</groupId>\n  <artifactId>valkey-java</artifactId>\n  <version>5.3.0</version>\n</dependency>"
+            "command": "<dependency>\n  <groupId>io.valkey</groupId>\n  <artifactId>valkey-java</artifactId>\n  <version>LATEST</version>\n</dependency>"
         },
         {
             "type": "Gradle",
-            "command":"implementation 'io.valkey:valkey-java:5.3.0'"
+            "command":"implementation 'io.valkey:valkey-java:+'"
 
         }
     ],
-    "language":"Java",
+    "language":"java",
     "package_size": "",
     "read_from_replica": false,
     "smart_backoff_to_prevent_connection_storm": true,
-    "valkey_version_compliance": "7.2", 
     "pubsub_state_restoration": false,
     "cluster_scan": false,
     "latency_based_read_from_replica": false,
