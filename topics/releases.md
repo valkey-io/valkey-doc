@@ -95,6 +95,7 @@ For contacting the TSC on sensitive matters and security issues, please see [SEC
 
 | Version | Initial release | Maintenance support end | Extended Security support end |
 | -- | -- | -- | -- |
+| 8.0 | 2024-09-15 | 2027-09-15 | N/A |
 | 7.2 | 2024-04-16 | 2027-04-16 | 2029-04-16 |
 
 ## Unstable tree
