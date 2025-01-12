@@ -167,6 +167,9 @@
   "CLIENT INFO": [
     "[Bulk string reply](../topics/protocol.md#bulk-strings): a unique string for the current client, as described at the `CLIENT LIST` page."
   ],
+  "CLIENT IMPORT-SOURCE": [
+    "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
+  ],
   "CLIENT KILL": [
     "One of the following:",
     "* [Simple string reply](../topics/protocol.md#simple-strings): `OK` when called in 3 argument format and the connection has been closed.",
