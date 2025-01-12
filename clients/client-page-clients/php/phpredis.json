@@ -9,7 +9,7 @@
     "github":"https://github.com/phpredis/phpredis",
     "installation": "pecl install redis",
     "language":"php",
-    "package_size": "",
+    "package_size": "4.2M",
     "read_from_replica": true,
     "smart_backoff_to_prevent_connection_storm": true,
     "pubsub_state_restoration": false,

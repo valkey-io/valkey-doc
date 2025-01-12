@@ -13,7 +13,7 @@
         }
     ],
     "language":"java",
-    "package_size": "",
+    "package_size": "22M",
     "read_from_replica": true,
     "smart_backoff_to_prevent_connection_storm": true,
     "pubsub_state_restoration": true,
