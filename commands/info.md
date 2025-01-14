@@ -316,8 +316,8 @@ Here is the meaning of all fields in the **clients** section:
 *   `total_blocking_keys_on_nokey`: Number of blocking keys that one or more clients that would like to be unblocked when the key is deleted.
 *   `paused_actions`: The current paused actions of the instance: "all" means all clients will be paused,
     "write" means clients executing write commands will be paused,
-    and "none" means no clients will be paused.
-*   `paused_timeout_milliseconds`: The remaining time of the paused actions.
+    and "none" means no clients will be paused. Added in Valkey 8.1.
+*   `paused_timeout_milliseconds`: The remaining time of the paused actions. Added in Valkey 8.1.
 
 Here is the meaning of all fields in the **memory** section:
 
