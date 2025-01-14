@@ -61,8 +61,9 @@ When breaking changes are required, we will also strive to provide a way to miti
 
 ## Release schedule
 
-The Valkey community strives to release a stable major version once a year.
-Stable minor versions are created as needed in between major releases, and we aim to release at least one minor version a year.
+The Valkey community typically releases a stable major version once each year.
+Stable minor versions are introduced as needed between major releases,
+with at least one minor version published annually.
 
 ### Release candidate
 
