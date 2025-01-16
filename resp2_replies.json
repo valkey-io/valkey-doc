@@ -238,7 +238,7 @@
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK` if the command was accepted and a manual failover is going to be attempted. An error if the operation cannot be executed, for example if the client is connected to a node that is already a primary."
   ],
   "CLUSTER FLUSHSLOTS": [
-    "[Simple string reply](../topics/protocol.md#simple-strings): `OK`"
+    "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
   ],
   "CLUSTER FORGET": [
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK` if the command was executed successfully. Otherwise an error is returned."
@@ -310,7 +310,7 @@
     "[Array reply](../topics/protocol.md#arrays): a map, as a flattened array, where each key is a command name, and each value is the documentary information."
   ],
   "COMMAND GETKEYS": [
-    "[Array reply](../topics/protocol.md#arrays): list of keys from the given command."
+    "[Array reply](../topics/protocol.md#arrays): a list of keys from the given command."
   ],
   "COMMAND GETKEYSANDFLAGS": [
     "[Array reply](../topics/protocol.md#arrays): a list of keys from the given command and their usage flags."
@@ -363,7 +363,7 @@
   ],
   "DUMP": [
     "One of the following:",
-    "* [Bulk string reply](../topics/protocol.md#bulk-strings): The serialized value of the key.",
+    "* [Bulk string reply](../topics/protocol.md#bulk-strings): the serialized value of the key.",
     "* [Nil reply](../topics/protocol.md#bulk-strings): the key does not exist."
   ],
   "ECHO": [
@@ -431,7 +431,7 @@
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
   ],
   "FUNCTION HELP": [
-    "[Array reply](../topics/protocol.md#arrays): a list of sub-commands and their descriptions"
+    "[Array reply](../topics/protocol.md#arrays): a list of sub-commands and their descriptions."
   ],
   "FUNCTION KILL": [
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
@@ -460,7 +460,7 @@
     "[Array reply](../topics/protocol.md#arrays): an array where each element is the Geohash corresponding to each member name passed as an argument to the command."
   ],
   "GEOPOS": [
-    "[Array reply](../topics/protocol.md#arrays): An array where each element is a two elements array representing longitude and latitude (x,y) of each member name passed as argument to the command. Non-existing elements are reported as [Nil reply](../topics/protocol.md#bulk-strings) elements of the array."
+    "[Array reply](../topics/protocol.md#arrays): an array where each element is a two elements array representing longitude and latitude (x,y) of each member name passed as argument to the command. Non-existing elements are reported as [Nil reply](../topics/protocol.md#bulk-strings) elements of the array."
   ],
   "GEORADIUS": [
     "One of the following:",
@@ -563,7 +563,7 @@
     "[Bulk string reply](../topics/protocol.md#bulk-strings): the value of the field after the increment operation."
   ],
   "HKEYS": [
-    "[Array reply](../topics/protocol.md#arrays): a list of fields in the hash, or an empty list when the key does not exist"
+    "[Array reply](../topics/protocol.md#arrays): a list of fields in the hash, or an empty list when the key does not exist."
   ],
   "HLEN": [
     "[Integer reply](../topics/protocol.md#integers): the number of fields in the hash, or 0 when the key does not exist."
@@ -598,7 +598,7 @@
     "[Integer reply](../topics/protocol.md#integers): the string length of the value associated with the _field_, or zero when the _field_ isn't present in the hash or the _key_ doesn't exist at all."
   ],
   "HVALS": [
-    "[Array reply](../topics/protocol.md#arrays): a list of values in the hash, or an empty list when the key does not exist"
+    "[Array reply](../topics/protocol.md#arrays): a list of values in the hash, or an empty list when the key does not exist."
   ],
   "INCR": [
     "[Integer reply](../topics/protocol.md#integers): the value of the key after the increment."
@@ -708,10 +708,10 @@
     "[Bulk string reply](../topics/protocol.md#bulk-strings): a memory problems report."
   ],
   "MEMORY HELP": [
-    "[Array reply](../topics/protocol.md#arrays): a list of sub-commands and their descriptions"
+    "[Array reply](../topics/protocol.md#arrays): a list of sub-commands and their descriptions."
   ],
   "MEMORY MALLOC-STATS": [
-    "[Bulk string reply](../topics/protocol.md#bulk-strings): the memory allocator's internal statistics report"
+    "[Bulk string reply](../topics/protocol.md#bulk-strings): the memory allocator's internal statistics report."
   ],
   "MEMORY PURGE": [
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
@@ -781,7 +781,7 @@
     "[Nil reply](../topics/protocol.md#bulk-strings): if _key_ doesn't exist."
   ],
   "OBJECT HELP": [
-    "[Array reply](../topics/protocol.md#arrays): a list of sub-commands and their descriptions"
+    "[Array reply](../topics/protocol.md#arrays): a list of sub-commands and their descriptions."
   ],
   "OBJECT IDLETIME": [
     "One of the following:",
@@ -875,12 +875,12 @@
     "When successful, this command doesn't return anything. Instead, for each pattern, one message with the first element being the string `punsubscribe` is pushed as a confirmation that the command succeeded."
   ],
   "QUIT": [
-    "[Simple string reply](../topics/protocol.md#simple-strings): OK."
+    "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
   ],
   "RANDOMKEY": [
     "One of the following:",
     "* [Nil reply](../topics/protocol.md#bulk-strings): when the database is empty.",
-    "* [Bulk string reply](../topics/protocol.md#bulk-strings): a random key in database."
+    "* [Bulk string reply](../topics/protocol.md#bulk-strings): a random key in the database."
   ],
   "READONLY": [
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
@@ -1127,7 +1127,7 @@
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
   ],
   "WAIT": [
-    "[Integer reply](../topics/protocol.md#integers): the command returns the number of replicas reached by all the writes performed in the context of the current connection."
+    "[Integer reply](../topics/protocol.md#integers): the number of replicas reached by all the writes performed in the context of the current connection."
   ],
   "WAITAOF": [
     "[Array reply](../topics/protocol.md#arrays): The command returns an array of two integers:",
@@ -1190,8 +1190,8 @@
   ],
   "XINFO STREAM": [
     "One of the following:",
-    "* [Array reply](../topics/protocol.md#arrays): when the _FULL_ argument is used, a list of information about a stream in summary form.",
-    "* [Array reply](../topics/protocol.md#arrays): when the _FULL_ argument is used, a list of information about a stream in extended form."
+    "* [Array reply](../topics/protocol.md#arrays): when the _FULL_ argument was not given, a list of information about a stream in summary form.",
+    "* [Array reply](../topics/protocol.md#arrays): when the _FULL_ argument was given, a list of information about a stream in extended form."
   ],
   "XLEN": [
     "[Integer reply](../topics/protocol.md#integers): the number of entries of the stream at _key_."
@@ -1306,10 +1306,10 @@
     "[Integer reply](../topics/protocol.md#integers): the number of members removed."
   ],
   "ZREVRANGE": [
-    "* [Array reply](../topics/protocol.md#arrays): a list of members in the specified range, optionally with their scores if _WITHSCORE_ was used."
+    "* [Array reply](../topics/protocol.md#arrays): a list of the members in the specified range, optionally with their scores if _WITHSCORE_ was used."
   ],
   "ZREVRANGEBYLEX": [
-    "[Array reply](../topics/protocol.md#arrays): a list of members in the specified score range."
+    "[Array reply](../topics/protocol.md#arrays): a list of the members in the specified score range."
   ],
   "ZREVRANGEBYSCORE": [
     "* [Array reply](../topics/protocol.md#arrays): a list of the members and, optionally, their scores in the specified score range."
