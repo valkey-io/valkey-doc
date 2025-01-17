@@ -10,9 +10,9 @@ You can use one or more optional arguments to filter the list:
 
 - **`USER user`**: Filters the list to include only clients authenticated as the specified user.
 
-- **`ADDR ip:port`**: Filters the list to include only clients connected from the specified address.
+- **`ADDR ip:port`**: Filters the list to include only clients connected from the specified address and port.
 
-- **`LADDR ip:port`**: Filters the list to include only clients connected to the specified local address.
+- **`LADDR ip:port`**: Filters the list to include only clients connected to the specified local address and port.
 
 - **`SKIPME yes|no`**: Filters whether the list should skip the client making the request.
     - `yes`: Skips the client making the request.
