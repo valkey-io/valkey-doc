@@ -1,9 +1,27 @@
 The `CLIENT LIST` command returns information and statistics about the client
 connections server in a mostly human readable format.
 
-You can use one of the optional subcommands to filter the list. The `TYPE type` subcommand filters the list by clients' type, where *type* is one of `normal`, `master`, `replica`, and `pubsub`. Note that clients blocked by the `MONITOR` command belong to the `normal` class.
+You can use one or more optional arguments to filter the list:
 
-The `ID` filter only returns entries for clients with IDs matching the `client-id` arguments.
+- **`TYPE type`**: Filters the list by clients' type, where *type* is one of `normal`, `master`, `replica`, and `pubsub`.
+  > Note: Clients blocked by the `MONITOR` command belong to the `normal` class.
+
+- **`ID client-id [client-id ...]`**: Returns entries for clients with IDs matching one or more `client-id` arguments.
+
+- **`USER user`**: Filters the list to include only clients authenticated as the specified user.
+
+- **`ADDR ip:port`**: Filters the list to include only clients connected from the specified address and port.
+
+- **`LADDR ip:port`**: Filters the list to include only clients connected to the specified local address and port.
+
+- **`SKIPME yes|no`**: Filters whether the list should skip the client making the request.
+    - `yes`: Skips the client making the request.
+    - `no`: Includes the client making the request.
+
+- **`MAXAGE milliseconds`**: Filters the list to include only clients whose connection age (time since the client was created) is greater than or equal to the specified number of milliseconds.
+  > Note: This is actually a minimum age, not a maximum age. This filter was first added to CLIENT KILL, where the intention was to keep clients of a maximum age and kill the ones than the max age.
+
+Filters can be combined to perform more precise searches. The command will handle multiple filters via logical AND.
 
 Here is the meaning of the fields:
 
@@ -70,6 +88,12 @@ The file descriptor events can be:
 ```
 r: the client socket is readable (event loop)
 w: the client socket is writable (event loop)
+```
+
+## Examples
+
+```bash
+CLIENT LIST TYPE normal USER admin MAXAGE 5000 ID 1234 5678
 ```
 
 ## Notes
