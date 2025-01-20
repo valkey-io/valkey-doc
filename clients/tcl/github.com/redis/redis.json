@@ -1,7 +1,0 @@
-{
-    "name": "Tcl Client",
-    "description": "The client used in the Redis test suite. Not really full featured nor designed to be used in the real world.",
-    "twitter": [
-        "antirez"
-    ]
-}

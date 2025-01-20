@@ -1,4 +1,0 @@
-{
-    "name": "scala-redis",
-    "description": "Non-blocking, netty 4.1.x based Scala Redis client"
-}

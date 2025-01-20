@@ -1,7 +1,0 @@
-{
-    "name": "gawk-redis",
-    "description": "Gawk extension, using the hiredis C library. Supports pipelining and pub/sub",
-    "twitter": [
-        "paulinohuerta"
-    ]
-}

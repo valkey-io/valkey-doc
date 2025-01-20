@@ -1,8 +1,0 @@
-{
-    "name": "Redis::Fast",
-    "description": "Perl binding for Redis database",
-    "homepage": "https://metacpan.org/pod/Redis::Fast",
-    "twitter": [
-        "shogo82148"
-    ]
-}

@@ -1,7 +1,0 @@
-{
-    "name": "redis-racket",
-    "description": "A Redis client for Racket.",
-    "twitter": [
-        "s_chng"
-    ]
-}

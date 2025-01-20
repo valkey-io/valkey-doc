@@ -1,7 +1,0 @@
-{
-    "name": "Nhiredis",
-    "description": "A lightweight wrapper around the C client hiredis.",
-    "twitter": [
-        "matt_howlett"
-    ]
-}

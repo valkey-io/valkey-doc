@@ -1,7 +1,0 @@
-{
-    "name": "Rackdis",
-    "description": "A Redis client for Racket",
-    "twitter": [
-        "eu90h"
-    ]
-}
