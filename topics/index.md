@@ -24,7 +24,6 @@ Programming with Valkey
 * [Client side caching](client-side-caching.md): How a client can be notified by the server when a key has changed.
 * [Keyspace notifications](notifications.md): Get notifications of keyspace events via Pub/Sub.
 * [Protocol specification](protocol.md): The client-server protocol, for client authors.
-* [Client list](client-list.md): An overview of recommended Valkey clients and their features.
 
 Server-side scripting in Valkey
 ---

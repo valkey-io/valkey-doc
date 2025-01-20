@@ -61,13 +61,13 @@ They are maintained by their original developers.
 
 All clients are listed under language specific sub-folders of [clients](./clients)
 
-The path follows the pattern: ``clients/{language}/github.com/{owner}/{repository}.json``.
+The path follows the pattern: ``clients/{language}/{repository}.json``.
 The ``{language}`` component of the path is the path-safe representation
 of the full language name which is mapped in [languages.json](./languages.json).
 
 Each client's JSON object represents the details displayed on the [clients documentation page](https://valkey.io/clients/).
 
-For example [clients/python/github.com/valkey-io/valkey-go.json](./clients/python/github.com/valkey-io/valkey-go.json):
+For example [clients/python/valkey-go.json](./clients/python/valkey-go.json):
 
 ```json
 {
