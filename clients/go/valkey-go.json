@@ -5,6 +5,7 @@
     "installation": "go get github.com/valkey-io/valkey-go",
     "language":"go",
     "package_size": "14.5M",
+    "license": "Apache-2.0",
     "read_from_replica": true,
     "smart_backoff_to_prevent_connection_storm": true,
     "pubsub_state_restoration": true,

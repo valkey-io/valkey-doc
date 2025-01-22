@@ -5,6 +5,7 @@
     "installation": "pip install valkey-glide",
     "language":"python",
     "package_size": "25M",
+    "license": "Apache-2.0",
     "read_from_replica": true,
     "smart_backoff_to_prevent_connection_storm": true,
     "pubsub_state_restoration": true,

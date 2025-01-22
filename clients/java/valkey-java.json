@@ -15,6 +15,7 @@
     ],
     "language":"java",
     "package_size": "13M",
+    "license":"MIT",
     "read_from_replica": false,
     "smart_backoff_to_prevent_connection_storm": true,
     "pubsub_state_restoration": false,
