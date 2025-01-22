@@ -1,8 +1,0 @@
-{
-    "name": "rredis",
-    "description": "Redis client for R",
-    "homepage": "https://cran.r-project.org/web/packages/rredis/index.html",
-    "twitter": [
-        "bwlewis"
-    ]
-}

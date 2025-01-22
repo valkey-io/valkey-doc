@@ -1,4 +1,0 @@
-{
-    "name": "finagle",
-    "description": "Redis client based on Finagle"
-}

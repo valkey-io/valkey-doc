@@ -1,0 +1,27 @@
+{
+    "name": "valkey-java",
+    "description": "valkey-java is Valkey's Java client, dedicated to maintaining simplicity and high performance.",
+    "github":"https://github.com/valkey-io/valkey-java",
+    "installation": [
+        {
+            "type": "Maven",
+            "command": "<dependency>\n  <groupId>io.valkey</groupId>\n  <artifactId>valkey-java</artifactId>\n  <version>LATEST</version>\n</dependency>"
+        },
+        {
+            "type": "Gradle",
+            "command":"implementation 'io.valkey:valkey-java:+'"
+
+        }
+    ],
+    "language":"java",
+    "package_size": "13M",
+    "read_from_replica": false,
+    "smart_backoff_to_prevent_connection_storm": true,
+    "pubsub_state_restoration": false,
+    "cluster_scan": false,
+    "latency_based_read_from_replica": false,
+    "AZ_based_read_from_replica": false,
+    "client_side_caching": false,
+    "client_capa_redirect": true,
+    "persistent_connection_pool": true
+}

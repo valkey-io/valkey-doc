@@ -1,8 +1,0 @@
-{
-    "name": "Redis4Cats",
-    "description": "Purely functional Redis client for Cats Effect & Fs2",
-    "homepage": "https://redis4cats.profunktor.dev/",
-    "twitter": [
-        "volpegabriel87"
-    ]
-}

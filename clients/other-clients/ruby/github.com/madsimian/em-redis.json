@@ -1,7 +1,0 @@
-{
-    "name": "em-redis",
-    "description": "An eventmachine-based implementation of the Redis protocol. No longer actively maintained.",
-    "twitter": [
-        "madsimian"
-    ]
-}

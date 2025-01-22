@@ -1,9 +1,0 @@
-{
-    "name": "Jedis",
-    "description": "A blazingly small and sane Redis Java client",
-    "official": true,
-    "twitter": [
-        "xetorthio",
-        "g_korland"
-    ]
-}

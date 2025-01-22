@@ -1,4 +1,0 @@
-{
-    "name": "redis-client",
-    "description": "A Redis client library for Rust."
-}
