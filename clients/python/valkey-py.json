@@ -1,7 +1,7 @@
 {
     "name": "valkey-py",
     "description": "The Python interface to the Valkey key-value store.",
-    "github":"https://github.com/valkey-io/valkey-py",
+    "repo":"https://github.com/valkey-io/valkey-py",
     "installation": "pip install valkey",
     "language":"python",
     "package_size": "18M",

@@ -4,7 +4,7 @@
     "twitter": [
         "JoL1hAHN"
     ], 
-    "github":"https://github.com/predis/predis",
+    "repo":"https://github.com/predis/predis",
     "installation": "composer require predis/predis",
     "language":"php",
     "package_size": "2.8M",

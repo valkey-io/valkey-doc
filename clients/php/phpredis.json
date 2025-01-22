@@ -6,7 +6,7 @@
         "yowgi",
         "yatsukhnenko"
     ],
-    "github":"https://github.com/phpredis/phpredis",
+    "repo":"https://github.com/phpredis/phpredis",
     "installation": "pecl install redis",
     "language":"php",
     "package_size": "4.2M",
