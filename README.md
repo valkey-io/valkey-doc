@@ -67,7 +67,7 @@ of the full language name which is mapped in [languages.json](./languages.json).
 
 Each client's JSON object represents the details displayed on the [clients documentation page](https://valkey.io/clients/), which are also detailed in [clients/README.md](clients/README.md). 
 
-For example [clients/python/valkey-go.json](./clients/python/valkey-go.json):
+For example [clients/go/valkey-go.json](./clients/go/valkey-go.json):
 
 ```json
 {
