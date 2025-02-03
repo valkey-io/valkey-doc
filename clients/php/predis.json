@@ -1,9 +1,6 @@
 {
     "name": "predis",
     "description": "A flexible and feature-complete Redis client for PHP.",
-    "twitter": [
-        "JoL1hAHN"
-    ], 
     "repo":"https://github.com/predis/predis",
     "installation": "composer require predis/predis",
     "language":"php",

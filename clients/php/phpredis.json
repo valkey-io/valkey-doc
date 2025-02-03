@@ -1,11 +1,6 @@
 {
     "name": "phpredis",
     "description": " A PHP extension for Redis, offering high performance and a native API.",
-    "twitter": [
-        "grumi78",
-        "yowgi",
-        "yatsukhnenko"
-    ],
     "repo":"https://github.com/phpredis/phpredis",
     "installation": "pecl install redis",
     "language":"php",
