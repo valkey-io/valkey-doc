@@ -25,15 +25,103 @@ Containers on [Docker Hub](https://hub.docker.com/r/valkey/valkey/).
 
 ### Package managers
 
-Fedora and EPEL package name: [valkey](https://packages.fedoraproject.org/pkgs/valkey/valkey/).
+The following package managers are supported for the time being, but the list is not exhaustive.
+For searching if and what versions are available for your distribution, you can use the [pkgs.org](https://pkgs.org/download/valkey) website (linux/unix only), or [repology.org](https://repology.org/project/valkey/versions).
 
-Homebrew package: [valkey](https://formulae.brew.sh/formula/valkey)
+### Linux/BSD
+
+#### apt (Debian based)
+
+Currently available on:
+Debian/Ubuntu/Mint/Devuan/Raspbian/PureOS
+
+```bash
+sudo apt update
+sudo apt install valkey
+# For symlinked binaries to redis-cli and redis-server
+sudo apt install valkey-compat
+```
+
+#### apt-get (ALT Linux/Old Debian)
+
+```bash
+sudo apt-get update
+sudo apt-get install valkey
+```
+
+#### apk (Alpine Linux/Kali Linux/Wolfi)
+
+```bash
+sudo apk update
+sudo apk add valkey
+# Bellow relevant for Alpine.
+# For valkey-cli
+sudo apk add valkey-cli
+# For symlinked binaries to redis-cli and redis-server
+sudo apk add valkey-compat
+```
+
+#### yum (CentOS/RHEL/Fedora)
+
+```bash
+sudo yum install valkey
+# Some versions of CentOS and RHEL may not have Valkey in their default repositories.
+# You can use the EPEL repository - https://fedoraproject.org/wiki/EPEL to install Valkey.
+# For symlinked binaries to redis-cli and redis-server
+sudo yum install valkey-compat
+```
+
+#### dnf (Fedora)
+
+```bash
+sudo dnf install valkey
+# For symlinked binaries to redis-cli and redis-server
+sudo dnf install valkey-compat
+```
+
+#### Other distributions
+
+```bash
+# Arch Linux/Manjaro
+sudo pacman -Sy valkey
+# FreeBSD
+sudo pkg install valkey
+# NixOS
+nix-env -i valkey
+# openSUSE
+sudo zypper install valkey
+# Solus
+sudo eopkg install valkey
+# Void Linux
+sudo xbps-install -Su valkey
+# Exherbo
+cave resolve -x dev-db/valkey
+```
+
+#### Miscellaneous
+
+Available on [SlackBuilds](https://slackbuilds.org/repository/15.0/system/valkey/)
+and openpkg on [OpenPKG](https://openpkg.com/).
 
 ### MacOS
 
-Use the [Homebrew](https://brew.sh/) package and install Valkey using `brew install valkey`.
-To run Valkey as a service, use `brew services start valkey`.
-Check that it's running using `brew services info valkey` and stop it using `brew services stop valkey`.
+#### Using [Homebrew](https://brew.sh/) to install and run Valkey:
+
+```bash
+brew install valkey.
+# To run Valkey as a service, use
+brew services start valkey.
+# Check that it's running using
+brew services info valkey
+# and stop it using
+brew services stop valkey
+```
+
+#### Using [MacPorts](https://www.macports.org/):
+
+```bash
+sudo port install valkey
+```
 
 ### Windows
 
