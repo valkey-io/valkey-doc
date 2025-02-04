@@ -6,8 +6,8 @@ Each reported event has the following fields:
 * Unix timestamp of the latest latency spike for the event.
 * Latest event latency in millisecond.
 * All-time maximum latency for this event.
-* All-time summary latency for this event, added in 8.1.
-* The event count that trigger the latency, added in 8.1.
+* Sum of the latencies recorded in the time series for this event, added in 8.1.
+* The number of latency spikes recorded in the time series for this event, added in 8.1.
 
 "All-time" means the maximum latency since the Valkey instance was
 started, or the time that events were reset `LATENCY RESET`.
