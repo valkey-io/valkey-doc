@@ -287,6 +287,7 @@ Here is the meaning of all fields in the **server** section:
 *   `uptime_in_days`: Same value expressed in days
 *   `hz`: The server's current frequency setting
 *   `configured_hz`: The server's configured frequency setting
+*   `clients_hz`: Current frequency for client maintenance
 *   `lru_clock`: Clock incrementing every minute, for LRU management
 *   `executable`: The path to the server's executable
 *   `config_file`: The path to the config file
