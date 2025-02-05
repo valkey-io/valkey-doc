@@ -92,7 +92,7 @@ You can use the EPEL repository - https://fedoraproject.org/wiki/EPEL to install
 sudo dnf install valkey
 # For symlinked binaries to redis-cli and redis-server
 sudo dnf install valkey-compat
-# For valkey-doc (can be used with man, i.e `man hageall`, `man valkey.conf`, etc.)
+# For valkey-doc (can be used with man, e.g. `man hgetall`, `man valkey.conf`, etc.)
 sudo dnf install valkey-doc
 ```
 
