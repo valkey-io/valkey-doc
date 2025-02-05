@@ -79,7 +79,7 @@ sudo apk add valkey-compat
 sudo yum install valkey
 # For symlinked binaries to redis-cli and redis-server
 sudo yum install valkey-compat
-# For valkey-doc (can be used with man, i.e `man hageall`, `man valkey.conf`, etc.)
+# For valkey-doc (can be used with man, e.g. `man hgetall`, `man valkey.conf`, etc.)
 sudo yum install valkey-doc
 ```
 
