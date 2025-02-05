@@ -23,12 +23,30 @@ Unpack the tarball (e.g. `tar -xzvf valkey-8.0.1.tar.gz`) and follow the instruc
 
 Containers on [Docker Hub](https://hub.docker.com/r/valkey/valkey/).
 
-### Package managers
+### MacOS
 
-The following package managers are supported for the time being, but the list is not exhaustive.
-For searching if and what versions are available for your distribution, you can use the [pkgs.org](https://pkgs.org/download/valkey) website (linux/unix only), or [repology.org](https://repology.org/project/valkey/versions).
+#### Using [Homebrew](https://brew.sh/) to install and run Valkey:
 
-### Linux/BSD
+```bash
+brew install valkey.
+# To run Valkey as a service, use
+brew services start valkey.
+# Check that it's running using
+brew services info valkey
+# and stop it using
+brew services stop valkey
+```
+
+#### Using [MacPorts](https://www.macports.org/):
+
+```bash
+sudo port install valkey
+```
+
+### Linux/BSD package managers
+
+The following package managers are known to be supported, but the list is not exhaustive and not maintained directly by valkey-io.
+You can use the [pkgs.org](https://pkgs.org/download/valkey) website (linux/unix only) or [repology.org](https://repology.org/project/valkey/versions) to check which versions of Valkey are available for your distributions.
 
 #### apt (Debian based)
 
@@ -42,19 +60,12 @@ sudo apt install valkey
 sudo apt install valkey-compat
 ```
 
-#### apt-get (ALT Linux/Old Debian)
-
-```bash
-sudo apt-get update
-sudo apt-get install valkey
-```
-
 #### apk (Alpine Linux/Kali Linux/Wolfi)
 
 ```bash
 sudo apk update
 sudo apk add valkey
-# Bellow relevant for Alpine.
+# Below relevant for Alpine.
 # For valkey-cli
 sudo apk add valkey-cli
 # For symlinked binaries to redis-cli and redis-server
@@ -65,11 +76,12 @@ sudo apk add valkey-compat
 
 ```bash
 sudo yum install valkey
-# Some versions of CentOS and RHEL may not have Valkey in their default repositories.
-# You can use the EPEL repository - https://fedoraproject.org/wiki/EPEL to install Valkey.
 # For symlinked binaries to redis-cli and redis-server
 sudo yum install valkey-compat
 ```
+
+Some versions of CentOS and RHEL may not have Valkey in their default repositories.
+You can use the EPEL repository - https://fedoraproject.org/wiki/EPEL to install Valkey.
 
 #### dnf (Fedora)
 
@@ -82,6 +94,8 @@ sudo dnf install valkey-compat
 #### Other distributions
 
 ```bash
+# ALT Linux
+sudo apt-get install valkey
 # Arch Linux/Manjaro
 sudo pacman -Sy valkey
 # FreeBSD
@@ -102,26 +116,6 @@ cave resolve -x dev-db/valkey
 
 Available on [SlackBuilds](https://slackbuilds.org/repository/15.0/system/valkey/)
 and openpkg on [OpenPKG](https://openpkg.com/).
-
-### MacOS
-
-#### Using [Homebrew](https://brew.sh/) to install and run Valkey:
-
-```bash
-brew install valkey.
-# To run Valkey as a service, use
-brew services start valkey.
-# Check that it's running using
-brew services info valkey
-# and stop it using
-brew services stop valkey
-```
-
-#### Using [MacPorts](https://www.macports.org/):
-
-```bash
-sudo port install valkey
-```
 
 ### Windows
 
