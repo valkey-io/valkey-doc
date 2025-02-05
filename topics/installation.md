@@ -79,6 +79,8 @@ sudo apk add valkey-compat
 sudo yum install valkey
 # For symlinked binaries to redis-cli and redis-server
 sudo yum install valkey-compat
+# For valkey-doc (can be used with man, i.e `man hageall`, `man valkey.conf`, etc.)
+sudo yum install valkey-doc
 ```
 
 Some versions of CentOS and RHEL may not have Valkey in their default repositories.
@@ -90,6 +92,8 @@ You can use the EPEL repository - https://fedoraproject.org/wiki/EPEL to install
 sudo dnf install valkey
 # For symlinked binaries to redis-cli and redis-server
 sudo dnf install valkey-compat
+# For valkey-doc (can be used with man, i.e `man hageall`, `man valkey.conf`, etc.)
+sudo dnf install valkey-doc
 ```
 
 #### Other distributions
