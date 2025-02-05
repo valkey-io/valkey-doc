@@ -1,7 +1,7 @@
 ---
 title: "Installation"
 description: >
-    Install Valkey on Linux, macOS, and Windows
+  Install Valkey on Linux, macOS, and Windows
 ---
 
 This is a an installation guide. You'll learn how to install, run, and experiment with the Valkey server process.
@@ -23,17 +23,104 @@ Unpack the tarball (e.g. `tar -xzvf valkey-8.0.1.tar.gz`) and follow the instruc
 
 Containers on [Docker Hub](https://hub.docker.com/r/valkey/valkey/).
 
-### Package managers
-
-Fedora and EPEL package name: [valkey](https://packages.fedoraproject.org/pkgs/valkey/valkey/).
-
-Homebrew package: [valkey](https://formulae.brew.sh/formula/valkey)
-
 ### MacOS
 
-Use the [Homebrew](https://brew.sh/) package and install Valkey using `brew install valkey`.
-To run Valkey as a service, use `brew services start valkey`.
-Check that it's running using `brew services info valkey` and stop it using `brew services stop valkey`.
+#### Using [Homebrew](https://brew.sh/) to install and run Valkey:
+
+```bash
+brew install valkey.
+# To run Valkey as a service, use
+brew services start valkey.
+# Check that it's running using
+brew services info valkey
+# and stop it using
+brew services stop valkey
+```
+
+#### Using [MacPorts](https://www.macports.org/):
+
+```bash
+sudo port install valkey
+```
+
+### Linux/BSD package managers
+
+The following package managers are known to be supported, but the list is not exhaustive and may not be up to date.
+If you see an issue, feel free to submit a PR to update this list.
+You can use the [pkgs.org](https://pkgs.org/download/valkey) website (linux/unix only) or [repology.org](https://repology.org/project/valkey/versions) to check which versions of Valkey are available for your distributions.
+
+#### apt (Debian based)
+
+Currently available on:
+Debian/Ubuntu/Mint/Devuan/Raspbian/PureOS
+
+```bash
+sudo apt update
+sudo apt install valkey
+# For symlinked binaries to redis-cli and redis-server
+sudo apt install valkey-compat
+```
+
+#### apk (Alpine Linux/Kali Linux/Wolfi)
+
+```bash
+sudo apk update
+sudo apk add valkey
+# Below relevant for Alpine.
+# For valkey-cli
+sudo apk add valkey-cli
+# For symlinked binaries to redis-cli and redis-server
+sudo apk add valkey-compat
+```
+
+#### yum (CentOS/RHEL/Fedora)
+
+```bash
+sudo yum install valkey
+# For symlinked binaries to redis-cli and redis-server
+sudo yum install valkey-compat
+# For valkey-doc (can be used with man, e.g. `man hgetall`, `man valkey.conf`, etc.)
+sudo yum install valkey-doc
+```
+
+Some versions of CentOS and RHEL may not have Valkey in their default repositories.
+You can use the EPEL repository - https://fedoraproject.org/wiki/EPEL to install Valkey.
+
+#### dnf (Fedora)
+
+```bash
+sudo dnf install valkey
+# For symlinked binaries to redis-cli and redis-server
+sudo dnf install valkey-compat
+# For valkey-doc (can be used with man, e.g. `man hgetall`, `man valkey.conf`, etc.)
+sudo dnf install valkey-doc
+```
+
+#### Other distributions
+
+```bash
+# ALT Linux
+sudo apt-get install valkey
+# Arch Linux/Manjaro
+sudo pacman -Sy valkey
+# FreeBSD
+sudo pkg install valkey
+# NixOS
+nix-env -i valkey
+# openSUSE
+sudo zypper install valkey
+# Solus
+sudo eopkg install valkey
+# Void Linux
+sudo xbps-install -Su valkey
+# Exherbo
+cave resolve -x dev-db/valkey
+```
+
+#### Miscellaneous
+
+Available on [SlackBuilds](https://slackbuilds.org/repository/15.0/system/valkey/)
+and openpkg on [OpenPKG](https://openpkg.com/).
 
 ### Windows
 
@@ -83,7 +170,6 @@ Of course using Valkey just from the command line interface is not enough as the
 
 You'll find a [full list of clients for different languages in this page](../clients/).
 
-
 ## Valkey persistence
 
 You can learn [how Valkey persistence works on this page](persistence.md).
@@ -111,52 +197,52 @@ The remainder of this section explains how to set up Valkey using an init script
 
 If you have not yet run `make install` after building the Valkey source, you will need to do so before continuing. By default, `make install` will copy the `valkey-server` and `valkey-cli` binaries to `/usr/local/bin`.
 
-* Create a directory in which to store your Valkey config files and your data:
+- Create a directory in which to store your Valkey config files and your data:
 
-    ```
-    sudo mkdir /etc/valkey
-    sudo mkdir /var/valkey
-    ```
+  ```
+  sudo mkdir /etc/valkey
+  sudo mkdir /var/valkey
+  ```
 
-* Copy the init script that you'll find in the Valkey distribution under the **utils** directory into `/etc/init.d`. We suggest calling it with the name of the port where you are running this instance of Valkey. Make sure the resulting file has `0755` permissions.
-    
-    ```
-    sudo cp utils/valkey_init_script /etc/init.d/valkey_6379
-    ```
+- Copy the init script that you'll find in the Valkey distribution under the **utils** directory into `/etc/init.d`. We suggest calling it with the name of the port where you are running this instance of Valkey. Make sure the resulting file has `0755` permissions.
 
-* Edit the init script.
+  ```
+  sudo cp utils/valkey_init_script /etc/init.d/valkey_6379
+  ```
 
-    ```
-    sudo vi /etc/init.d/valkey_6379
-    ```
+- Edit the init script.
+
+  ```
+  sudo vi /etc/init.d/valkey_6379
+  ```
 
 Make sure to set the `VALKEYPORT` variable to the port you are using.
 Both the pid file path and the configuration file name depend on the port number.
 
-* Copy the template configuration file you'll find in the root directory of the Valkey distribution into `/etc/valkey/` using the port number as the name, for instance:
+- Copy the template configuration file you'll find in the root directory of the Valkey distribution into `/etc/valkey/` using the port number as the name, for instance:
 
-    ```
-    sudo cp valkey.conf /etc/valkey/6379.conf
-    ```
+  ```
+  sudo cp valkey.conf /etc/valkey/6379.conf
+  ```
 
-* Create a directory inside `/var/valkey` that will work as both data and working directory for this Valkey instance:
+- Create a directory inside `/var/valkey` that will work as both data and working directory for this Valkey instance:
 
-    ```
-    sudo mkdir /var/valkey/6379
-    ```
+  ```
+  sudo mkdir /var/valkey/6379
+  ```
 
-* Edit the configuration file, making sure to perform the following changes:
-    * Set **daemonize** to yes (by default it is set to no).
-    * Set the **pidfile** to `/var/run/valkey_6379.pid`, modifying the port as necessary.
-    * Change the **port** accordingly. In our example it is not needed as the default port is already `6379`.
-    * Set your preferred **loglevel**.
-    * Set the **logfile** to `/var/log/valkey_6379.log`.
-    * Set the **dir** to `/var/valkey/6379` (very important step!).
-* Finally, add the new Valkey init script to all the default runlevels using the following command:
+- Edit the configuration file, making sure to perform the following changes:
+  - Set **daemonize** to yes (by default it is set to no).
+  - Set the **pidfile** to `/var/run/valkey_6379.pid`, modifying the port as necessary.
+  - Change the **port** accordingly. In our example it is not needed as the default port is already `6379`.
+  - Set your preferred **loglevel**.
+  - Set the **logfile** to `/var/log/valkey_6379.log`.
+  - Set the **dir** to `/var/valkey/6379` (very important step!).
+- Finally, add the new Valkey init script to all the default runlevels using the following command:
 
-    ```
-    sudo update-rc.d valkey_6379 defaults
-    ```
+  ```
+  sudo update-rc.d valkey_6379 defaults
+  ```
 
 You are done! Now you can try running your instance with:
 
