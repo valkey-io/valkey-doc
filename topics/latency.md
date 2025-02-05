@@ -156,7 +156,7 @@ as the main event loop.
 In most situations, these kind of system level optimizations are not needed.
 Only do them if you require them, and if you are familiar with them.
 
-Single threaded nature of Valkey
+Valkey sequential command execution
 -------------------------------
 
 Valkey uses a *mostly* single threaded design for command execution. This means that a single process
