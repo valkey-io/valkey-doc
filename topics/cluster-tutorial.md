@@ -726,12 +726,12 @@ This is what you see in the replica log when you perform a manual failover:
     # Starting a failover election for epoch 7545.
     # Failover election won: I'm the new primary.
 
-Basically clients connected to the primary we are failing over are stopped.
-At the same time the primary sends its replication offset to the replica, that
+Clients sending commands to the primary are blocked during the failover.
+When the primary sends its replication offset to the replica, the replica
 waits to reach the offset on its side. When the replication offset is reached,
 the failover starts, and the old primary is informed about the configuration
-switch. When the clients are unblocked on the old primary, they are redirected
-to the new primary.
+switch. When the switch is complete, the clients are unblocked on the old
+primary and they are redirected to the new primary.
 
 **Note:**
 To promote a replica to primary, it must first be known as a replica by a majority of the primaries in the cluster.
@@ -928,16 +928,53 @@ it with an updated version of Valkey. If there are clients scaling reads using
 replica nodes, they should be able to reconnect to a different replica if a given
 one is not available.
 
-Upgrading primaries is a bit more complex, and the suggested procedure is:
+Upgrading primaries is a bit more complex. The suggested procedure is to trigger
+a manual failover to turn the old primary into a replica and then upgrading it.
 
-1. Use `CLUSTER FAILOVER` to trigger a manual failover of the primary to one of its replicas.
-   (See the [Manual failover](#manual-failover) in this topic.)
-2. Wait for the primary to turn into a replica.
-3. Finally upgrade the node as you do for replicas.
-4. If you want the primary to be the node you just upgraded, trigger a new manual failover in order to turn back the upgraded node into a primary.
+A complete rolling upgrade of all nodes in a cluster can be performed by
+repeating the following procedure for each shard (a primary and its replicas):
 
-Following this procedure you should upgrade one node after the other until
-all the nodes are upgraded.
+1. Add one or more upgraded nodes as new replicas to the primary. This step is
+   optional but it ensures that the number of replicas is not compromised during
+   the rolling upgrade. An alternative is to upgrade one replica at a time and
+   have fewer replicas online during the upgrade. To add a new node, use
+   [`CLUSTER MEET`](../commands/cluster-meet.md) and [`CLUSTER
+   REPLICATE`](../commands/cluster-replicate.md) or use `valkey-cli` as descibed
+   under [Add a new node as a replica](#add-a-new-node-as-a-replica).
+
+2. Upgrade the existing replicas you want to keep by restarting them with the
+   updated version of Valkey. If you're replacing all the old nodes with new
+   nodes, you can skip this step.
+
+3. Select one of the upgraded replicas to be the new primary. Wait until this
+   replica has caught up the replication offset with the primary. You can use
+   [`INFO REPLICATION`](../commands/info.md) and check for the line
+   `master_link_status:up` to be present. This indicates that the sync with the
+   primary is complete.
+
+4. Check that the new replica is known by all nodes in the cluster, or at least
+   by the primaries in the cluster. You can send [`CLUSTER
+   NODES`](../commands/cluster-nodes.md) to each of the nodes in the cluster and
+   check that they all are aware of the new node. Wait for some time and repeat
+   the check if necessary.
+
+5. Trigger a manual failover by sending [`CLUSTER
+   FAILOVER`](../commands/cluster-failover.md) to the replica node selected to
+   become the new primary. See the [Manual failover](#manual-failover) section
+   in this document for more information.
+
+6. Wait for the failover to complete. To check, you can use
+   [`ROLE`](../commands/role.md), [`INFO REPLICATION`](../commands/info.md)
+   (which indicates “role:master” after successful failover) or [`CLUSTER
+   NODES`](../commands/cluster-nodes.md) to verify that the state of the cluster
+   has changed sometime after the command was sent.
+
+7. Take the old primary (now a replica) out of service, or upgrade it and add it
+   again as a replica. Remove additional replicas kept for redundancy during the
+   upgrade, if any.
+
+Repeat this sequence for each shard (each primary and its replicas) until all
+nodes in the cluster have been upgraded.
 
 #### Migrate to Valkey Cluster
 
