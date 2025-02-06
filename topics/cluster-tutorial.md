@@ -727,11 +727,11 @@ This is what you see in the replica log when you perform a manual failover:
     # Failover election won: I'm the new primary.
 
 Clients sending write commands to the primary are blocked during the failover.
-When the primary sends its replication offset to the replica, the replica waits
-to reach the offset on its side. When the replication offset is reached, the
-failover starts, and the old primary is informed about the configuration switch.
-When the switch is complete, the clients are unblocked on the old primary and
-they are redirected to the new primary.
+When the primary sends its replication offset to the replica, the replica
+waits to reach the offset on its side. When the replication offset is reached,
+the failover starts, and the old primary is informed about the configuration
+switch. When the switch is complete, the clients are unblocked on the old
+primary and they are redirected to the new primary.
 
 **Note:**
 To promote a replica to primary, it must first be known as a replica by a majority of the primaries in the cluster.
