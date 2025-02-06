@@ -939,8 +939,8 @@ repeating the following procedure for each shard (a primary and its replicas):
    the rolling upgrade. An alternative is to upgrade one replica at a time and
    have fewer replicas online during the upgrade. To add a new node, use
    [`CLUSTER MEET`](../commands/cluster-meet.md) and [`CLUSTER
-   REPLICATE`](../commands/cluster-replicate.md) or use `valkey-cli` as descibed
-   under [Add a new node as a replica](#add-a-new-node-as-a-replica).
+   REPLICATE`](../commands/cluster-replicate.md) or use `valkey-cli` as
+   described under [Add a new node as a replica](#add-a-new-node-as-a-replica).
 
 2. Upgrade the existing replicas you want to keep by restarting them with the
    updated version of Valkey. If you're replacing all the old nodes with new
