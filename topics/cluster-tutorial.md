@@ -936,21 +936,31 @@ repeating the following procedure for each shard (a primary and its replicas):
 
 1. Add one or more upgraded nodes as new replicas to the primary. This step is
    optional but it ensures that the number of replicas is not compromised during
-   the rolling upgrade. An alternative is to upgrade one replica at a time and
-   have fewer replicas online during the upgrade. To add a new node, use
-   [`CLUSTER MEET`](../commands/cluster-meet.md) and [`CLUSTER
+   the rolling upgrade. To add a new node, use [`CLUSTER
+   MEET`](../commands/cluster-meet.md) and [`CLUSTER
    REPLICATE`](../commands/cluster-replicate.md) or use `valkey-cli` as
    described under [Add a new node as a replica](#add-a-new-node-as-a-replica).
 
-2. Upgrade the existing replicas you want to keep by restarting them with the
-   updated version of Valkey. If you're replacing all the old nodes with new
-   nodes, you can skip this step.
+   An alternative is to upgrade one replica at a time and have fewer replicas
+   online during the upgrade.
+
+2. Upgrade the old replicas you want to keep by restarting them with the updated
+   version of Valkey. If you're replacing all the old nodes with new nodes, you
+   can skip this step.
 
 3. Select one of the upgraded replicas to be the new primary. Wait until this
    replica has caught up the replication offset with the primary. You can use
    [`INFO REPLICATION`](../commands/info.md) and check for the line
-   `master_link_status:up` to be present. This indicates that the sync with the
-   primary is complete.
+   `master_link_status:up` to be present. This indicates that the initial sync
+   with the primary is complete.
+
+   After the initial full sync, the replica might still lag behind in
+   replication. Send `INFO REPLICATION` to the primary and the replica and
+   compare the field `master_repl_offset` returned by both nodes. If the offsets
+   match, it means that all writes have been replicated. However, if the primary
+   receives a constant stream of writes, it's possible that the offsets will
+   never be equal. In this step, you can accept a small difference. It's usually
+   enough to wait for some seconds to minimize the difference.
 
 4. Check that the new replica is known by all nodes in the cluster, or at least
    by the primaries in the cluster. You can send [`CLUSTER
@@ -965,9 +975,9 @@ repeating the following procedure for each shard (a primary and its replicas):
 
 6. Wait for the failover to complete. To check, you can use
    [`ROLE`](../commands/role.md), [`INFO REPLICATION`](../commands/info.md)
-   (which indicates “role:master” after successful failover) or [`CLUSTER
+   (which indicates `role:master` after successful failover) or [`CLUSTER
    NODES`](../commands/cluster-nodes.md) to verify that the state of the cluster
-   has changed sometime after the command was sent.
+   has changed shortly after the command was sent.
 
 7. Take the old primary (now a replica) out of service, or upgrade it and add it
    again as a replica. Remove additional replicas kept for redundancy during the
