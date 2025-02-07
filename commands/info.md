@@ -71,6 +71,9 @@ clients_in_timeout_table:0
 total_watched_keys:0
 total_blocking_keys:0
 total_blocking_keys_on_nokey:0
+paused_reason:none
+paused_actions:none
+paused_timeout_milliseconds:0
 
 # Memory
 used_memory:4757704
@@ -315,6 +318,8 @@ Here is the meaning of all fields in the **clients** section:
 *   `total_watched_keys`: Number of watched keys. Added in Valkey 8.0.
 *   `total_blocking_keys`: Number of blocking keys.
 *   `total_blocking_keys_on_nokey`: Number of blocking keys that one or more clients that would like to be unblocked when the key is deleted.
+*   `paused_reason`: The current paused reason of the instance: "client_pause" means trigger by `CLIENT PAUSE`,
+    "shutdown_in_progress", "failover_in_progress" and "none" means no clients are paused. Added in Valkey 8.1.
 *   `paused_actions`: The current paused actions of the instance: "all" means all clients are paused,
     "write" means clients executing write commands are paused,
     and "none" means no clients are paused. Added in Valkey 8.1.
