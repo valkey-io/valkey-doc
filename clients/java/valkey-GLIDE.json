@@ -12,8 +12,9 @@
             "command":"implementation 'io.valkey:valkey-glide:+"
         }
     ],
+    "version":"v1.2.1",
+    "version_released":"2025-12-29",
     "language":"java",
-    "package_size": "22M",
     "license": "Apache-2.0",
     "read_from_replica": true,
     "smart_backoff_to_prevent_connection_storm": true,
