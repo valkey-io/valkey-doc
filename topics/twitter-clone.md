@@ -1,6 +1,5 @@
 ---
-title: "Valkey patterns example"
-linkTitle: "Patterns example"
+title: "Patterns example"
 description: Learn several Valkey patterns by building a Twitter clone
 ---
 

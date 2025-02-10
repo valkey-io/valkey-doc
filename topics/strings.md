@@ -1,6 +1,5 @@
 ﻿---
 title: "Strings"
-linkTitle: "Strings"
 description: >
     Introduction to Strings
 ---

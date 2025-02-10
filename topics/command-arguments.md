@@ -1,6 +1,5 @@
 ---
-title: "Valkey command arguments"
-linkTitle: "Command arguments"
+title: "Command arguments"
 description: How Valkey commands expose their documentation programmatically
 ---
 

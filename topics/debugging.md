@@ -1,6 +1,5 @@
 ---
 title: "Debugging"
-linkTitle: "Debugging"
 description: >
     A guide to debugging Valkey server processes
 ---

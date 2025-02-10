@@ -1,6 +1,5 @@
 ---
-title: Valkey cluster specification
-linkTitle: Cluster spec
+title: Cluster specification
 description: >
     Detailed specification for Valkey cluster
 ---
@@ -17,8 +16,8 @@ of Valkey.
 Valkey Cluster is a distributed implementation of Valkey with the following goals in order of importance in the design:
 
 * High performance and linear scalability up to 1000 nodes. There are no proxies, asynchronous replication is used, and no merge operations are performed on values.
-* Acceptable degree of write safety: the system tries (in a best-effort way) to retain all the writes originating from clients connected with the majority of the master nodes. Usually there are small windows where acknowledged writes can be lost. Windows to lose acknowledged writes are larger when clients are in a minority partition.
-* Availability: Valkey Cluster is able to survive partitions where the majority of the master nodes are reachable and there is at least one reachable replica for every master node that is no longer reachable. Moreover using *replicas migration*, masters no longer replicated by any replica will receive one from a master which is covered by multiple replicas.
+* Acceptable degree of write safety: the system tries (in a best-effort way) to retain all the writes originating from clients connected with the majority of the primary nodes. Usually there are small windows where acknowledged writes can be lost. Windows to lose acknowledged writes are larger when clients are in a minority partition.
+* Availability: Valkey Cluster is able to survive partitions where the majority of the primary nodes are reachable and there is at least one reachable replica for every primary node that is no longer reachable. Moreover using *replicas migration*, primaries no longer replicated by any replica will receive one from a primary which is covered by multiple replicas.
 
 ### Implemented subset
 
@@ -40,7 +39,7 @@ of Valkey. We only support database `0`; the `SELECT` command is not allowed.
 In Valkey Cluster, nodes are responsible for holding the data,
 and taking the state of the cluster, including mapping keys to the right nodes.
 Cluster nodes are also able to auto-discover other nodes, detect non-working
-nodes, and promote replica nodes to master when needed in order
+nodes, and promote replica nodes to primary when needed in order
 to continue to operate when a failure occurs.
 
 To perform their tasks all the cluster nodes are connected using a
@@ -64,40 +63,40 @@ keys and nodes can improve the performance in a sensible way.
 
 ### Write safety
 
-Valkey Cluster uses asynchronous replication between nodes, and **last failover wins** implicit merge function. This means that the last elected master dataset eventually replaces all the other replicas. There is always a window of time when it is possible to lose writes during partitions. However these windows are very different in the case of a client that is connected to the majority of masters, and a client that is connected to the minority of masters.
+Valkey Cluster uses asynchronous replication between nodes, and **last failover wins** implicit merge function. This means that the last elected primary dataset eventually replaces all the other replicas. There is always a window of time when it is possible to lose writes during partitions. However these windows are very different in the case of a client that is connected to the majority of primaries, and a client that is connected to the minority of primaries.
 
-Valkey Cluster tries harder to retain writes that are performed by clients connected to the majority of masters, compared to writes performed in the minority side.
+Valkey Cluster tries harder to retain writes that are performed by clients connected to the majority of primaries, compared to writes performed in the minority side.
 The following are examples of scenarios that lead to loss of acknowledged
 writes received in the majority partitions during failures:
 
-1. A write may reach a master, but while the master may be able to reply to the client, the write may not be propagated to replicas via the asynchronous replication used between master and replica nodes. If the master dies without the write reaching the replicas, the write is lost forever if the master is unreachable for a long enough period that one of its replicas is promoted. This is usually hard to observe in the case of a total, sudden failure of a master node since masters try to reply to clients (with the acknowledge of the write) and replicas (propagating the write) at about the same time. However it is a real world failure mode.
+1. A write may reach a primary, but while the primary may be able to reply to the client, the write may not be propagated to replicas via the asynchronous replication used between primary and replica nodes. If the primary dies without the write reaching the replicas, the write is lost forever if the primary is unreachable for a long enough period that one of its replicas is promoted. This is usually hard to observe in the case of a total, sudden failure of a primary node since primaries try to reply to clients (with the acknowledge of the write) and replicas (propagating the write) at about the same time. However it is a real world failure mode.
 
 2. Another theoretically possible failure mode where writes are lost is the following:
 
-* A master is unreachable because of a partition.
+* A primary is unreachable because of a partition.
 * It gets failed over by one of its replicas.
 * After some time it may be reachable again.
-* A client with an out-of-date routing table may write to the old master before it is converted into a replica (of the new master) by the cluster.
+* A client with an out-of-date routing table may write to the old primary before it is converted into a replica (of the new primary) by the cluster.
 
-The second failure mode is unlikely to happen because master nodes unable to communicate with the majority of the other masters for enough time to be failed over will no longer accept writes, and when the partition is fixed writes are still refused for a small amount of time to allow other nodes to inform about configuration changes. This failure mode also requires that the client's routing table has not yet been updated.
+The second failure mode is unlikely to happen because primary nodes are unable to communicate with the majority of the other primaries for enough time to be failed over will no longer accept writes, and when the partition is fixed writes are still refused for a small amount of time to allow other nodes to inform about configuration changes. This failure mode also requires that the client's routing table has not yet been updated.
 
-Writes targeting the minority side of a partition have a larger window in which to get lost. For example, Valkey Cluster loses a non-trivial number of writes on partitions where there is a minority of masters and at least one or more clients, since all the writes sent to the masters may potentially get lost if the masters are failed over in the majority side.
+Writes targeting the minority side of a partition have a larger window in which to get lost. For example, Valkey Cluster loses a non-trivial number of writes on partitions where there is a minority of primaries and at least one or more clients, since all the writes sent to the primaries may potentially get lost if the primaries are failed over in the majority side.
 
-Specifically, for a master to be failed over it must be unreachable by the majority of masters for at least `NODE_TIMEOUT`, so if the partition is fixed before that time, no writes are lost. When the partition lasts for more than `NODE_TIMEOUT`, all the writes performed in the minority side up to that point may be lost. However the minority side of a Valkey Cluster will start refusing writes as soon as `NODE_TIMEOUT` time has elapsed without contact with the majority, so there is a maximum window after which the minority becomes no longer available. Hence, no writes are accepted or lost after that time.
+Specifically, for a primary to be failed over it must be unreachable by the majority of primaries for at least `NODE_TIMEOUT`, so if the partition is fixed before that time, no writes are lost. When the partition lasts for more than `NODE_TIMEOUT`, all the writes performed in the minority side up to that point may be lost. However the minority side of a Valkey Cluster will start refusing writes as soon as `NODE_TIMEOUT` time has elapsed without contact with the majority, so there is a maximum window after which the minority becomes no longer available. Hence, no writes are accepted or lost after that time.
 
 ### Availability
 
-Valkey Cluster is not available in the minority side of the partition. In the majority side of the partition assuming that there are at least the majority of masters and a replica for every unreachable master, the cluster becomes available again after `NODE_TIMEOUT` time plus a few more seconds required for a replica to get elected and failover its master (failovers are usually executed in a matter of 1 or 2 seconds).
+Valkey Cluster is not available in the minority side of the partition. In the majority side of the partition assuming that there are at least the majority of primaries and a replica for every unreachable primary, the cluster becomes available again after `NODE_TIMEOUT` time plus a few more seconds required for a replica to get elected and failover its primary (failovers are usually executed in a matter of 1 or 2 seconds).
 
 This means that Valkey Cluster is designed to survive failures of a few nodes in the cluster, but it is not a suitable solution for applications that require availability in the event of large net splits.
 
-In the example of a cluster composed of N master nodes where every node has a single replica, the majority side of the cluster will remain available as long as a single node is partitioned away, and will remain available with a probability of `1-(1/(N*2-1))` when two nodes are partitioned away (after the first node fails we are left with `N*2-1` nodes in total, and the probability of the only master without a replica to fail is `1/(N*2-1))`.
+In the example of a cluster composed of N primary nodes where every node has a single replica, the majority side of the cluster will remain available as long as a single node is partitioned away, and will remain available with a probability of `1-(1/(N*2-1))` when two nodes are partitioned away (after the first node fails we are left with `N*2-1` nodes in total, and the probability of the only primary without a replica to fail is `1/(N*2-1))`.
 
 For example, in a cluster with 5 nodes and a single replica per node, there is a `1/(5*2-1) = 11.11%` probability that after two nodes are partitioned away from the majority, the cluster will no longer be available.
 
 Thanks to a Valkey Cluster feature called **replicas migration** the Cluster
 availability is improved in many real world scenarios by the fact that
-replicas migrate to orphaned masters (masters no longer having replicas).
+replicas migrate to orphaned primaries (primaries no longer having replicas).
 So at every successful failure event, the cluster may reconfigure the replicas
 layout in order to better resist the next failure.
 
@@ -111,7 +110,7 @@ Because of the use of asynchronous replication, nodes do not wait for other node
 
 Also, because multi-key commands are only limited to *near* keys, data is never moved between nodes except when resharding.
 
-Normal operations are handled exactly as in the case of a single Valkey instance. This means that in a Valkey Cluster with N master nodes you can expect the same performance as a single Valkey instance multiplied by N as the design scales linearly. At the same time the query is usually performed in a single round trip, since clients usually retain persistent connections with the nodes, so latency figures are also the same as the single standalone Valkey node case.
+Normal operations are handled exactly as in the case of a single Valkey instance. This means that in a Valkey Cluster with N primary nodes you can expect the same performance as a single Valkey instance multiplied by N as the design scales linearly. At the same time the query is usually performed in a single round trip, since clients usually retain persistent connections with the nodes, so latency figures are also the same as the single standalone Valkey node case.
 
 Very high performance and scalability while preserving weak but
 reasonable forms of data safety and availability is the main goal of
@@ -132,10 +131,10 @@ non-clustered Valkey deployment.
 ### Key distribution model
 
 The cluster's key space is split into 16384 slots, effectively setting an upper limit
-for the cluster size of 16384 master nodes (however, the suggested max size of
+for the cluster size of 16384 primary nodes (however, the suggested max size of
 nodes is on the order of ~ 1000 nodes).
 
-Each master node in a cluster handles a subset of the 16384 hash slots.
+Each primary node in a cluster handles a subset of the 16384 hash slots.
 The cluster is **stable** when there is no cluster reconfiguration in
 progress (i.e. where hash slots are being moved from one node to another).
 When the cluster is stable, a single hash slot will be served by a single node
@@ -275,7 +274,7 @@ a node was pinged, is instead local to each node.
 
 Every node maintains the following information about other nodes that it is
 aware of in the cluster: The node ID, IP and port of the node, a set of
-flags, what is the master of the node if it is flagged as `replica`, last time
+flags, what is the primary of the node if it is flagged as `replica`, last time
 the node was pinged and the last time the pong was received, the current
 *configuration epoch* of the node (explained later in this specification),
 the link state and finally the set of hash slots served.
@@ -284,7 +283,7 @@ A detailed [explanation of all the node fields](../commands/cluster-nodes.md) is
 
 The `CLUSTER NODES` command can be sent to any node in the cluster and provides the state of the cluster and the information for each node according to the local view the queried node has of the cluster.
 
-The following is sample output of the `CLUSTER NODES` command sent to a master
+The following is sample output of the `CLUSTER NODES` command sent to a primary
 node in a small cluster of three nodes.
 
     $ valkey-cli cluster nodes
@@ -436,7 +435,7 @@ The following subcommands are available (among others not useful in this case):
 
 The first four commands, `ADDSLOTS`, `DELSLOTS`, `ADDSLOTSRANGE` and `DELSLOTSRANGE`, are simply used to assign
 (or remove) slots to a Valkey node. Assigning a slot means to tell a given
-master node that it will be in charge of storing and serving content for
+primary node that it will be in charge of storing and serving content for
 the specified hash slot.
 
 After the hash slots are assigned they will propagate across the cluster
@@ -444,7 +443,7 @@ using the gossip protocol, as specified later in the
 *configuration propagation* section.
 
 The `ADDSLOTS` and `ADDSLOTSRANGE` commands are usually used when a new cluster is created
-from scratch to assign each master node a subset of all the 16384 hash
+from scratch to assign each primary node a subset of all the 16384 hash
 slots available.
 
 The `DELSLOTS`  and `DELSLOTSRANGE` are mainly used for manual modification of a cluster configuration
@@ -466,7 +465,7 @@ by the client, the query is redirected to the real hash slot owner via
 a `-MOVED` redirection error, as would happen normally.
 
 Let's make this clearer with an example of hash slot migration.
-Assume that we have two Valkey master nodes, called A and B.
+Assume that we have two Valkey primary nodes, called A and B.
 We want to move hash slot 8 from A to B, so we issue commands like this:
 
 * We send B: CLUSTER SETSLOT 8 IMPORTING A
@@ -606,12 +605,12 @@ addresses in two different situations:
 Note that a client may handle the `MOVED` redirection by updating just the
 moved slot in its table; however this is usually not efficient because often
 the configuration of multiple slots will be modified at once. For example, if a
-replica is promoted to master, all of the slots served by the old master will
+replica is promoted to primary, all of the slots served by the old primary will
 be remapped). It is much simpler to react to a `MOVED` redirection by
 fetching the full map of slots to nodes from scratch.
 
 Client can issue a `CLUSTER SLOTS` command to retrieve an array of slot
-ranges and the associated master and replica nodes serving the specified ranges.
+ranges and the associated primary and replica nodes serving the specified ranges.
 
 The following is an example of output of `CLUSTER SLOTS`:
 
@@ -639,7 +638,7 @@ The following is an example of output of `CLUSTER SLOTS`:
 
 The first two sub-elements of every element of the returned array are the
 start and end slots of the range. The additional elements represent address-port
-pairs. The first address-port pair is the master serving the slot, and the
+pairs. The first address-port pair is the primary serving the slot, and the
 additional address-port pairs are the replicas serving the same slot. Replicas
 will be listed only when not in an error condition (i.e., when their FAIL flag is not set).
 
@@ -680,7 +679,7 @@ multi-key operations are available again for that hash slot.
 
 ### Scaling reads using replica nodes
 
-Normally replica nodes will redirect clients to the authoritative master for
+Normally replica nodes will redirect clients to the authoritative primary for
 the hash slot involved in a given command, however clients can use replicas
 in order to scale reads using the `READONLY` command.
 
@@ -689,9 +688,9 @@ possibly stale data and is not interested in running write queries.
 
 When the connection is in readonly mode, the cluster will send a redirection
 to the client only if the operation involves keys not served
-by the replica's master node. This may happen because:
+by the replica's primary node. This may happen because:
 
-1. The client sent a command about hash slots never served by the master of this replica.
+1. The client sent a command about hash slots never served by the primary of this replica.
 2. The cluster was reconfigured (for example resharded) and the replica is no longer able to serve commands for a given hash slot.
 
 When this happens the client should update its hash slot map as explained in
@@ -729,13 +728,13 @@ Ping and pong packets contain a header that is common to all types of packets (f
 The common header has the following information:
 
 * Node ID, a 160 bit pseudorandom string that is assigned the first time a node is created and remains the same for all the life of a Valkey Cluster node.
-* The `currentEpoch` and `configEpoch` fields of the sending node that are used to mount the distributed algorithms used by Valkey Cluster (this is explained in detail in the next sections). If the node is a replica the `configEpoch` is the last known `configEpoch` of its master.
-* The node flags, indicating if the node is a replica, a master, and other single-bit node information.
-* A bitmap of the hash slots served by the sending node, or if the node is a replica, a bitmap of the slots served by its master.
+* The `currentEpoch` and `configEpoch` fields of the sending node that are used to mount the distributed algorithms used by Valkey Cluster (this is explained in detail in the next sections). If the node is a replica the `configEpoch` is the last known `configEpoch` of its primary.
+* The node flags, indicating if the node is a replica, a primary, and other single-bit node information.
+* A bitmap of the hash slots served by the sending node, or if the node is a replica, a bitmap of the slots served by its primary.
 * The sender TCP base port that is the port used by Valkey to accept client commands.
 * The cluster port that is the port used by Valkey for node-to-node communication.
 * The state of the cluster from the point of view of the sender (down or ok).
-* The master node ID of the sending node, if it is a replica.
+* The primary node ID of the sending node, if it is a replica.
 
 Ping and pong packets also contain a gossip section. This section offers to the receiver a view of what the sender node thinks about other nodes in the cluster. The gossip section only contains information about a few random nodes among the set of nodes known to the sender. The number of nodes mentioned in a gossip section is proportional to the cluster size.
 
@@ -749,13 +748,13 @@ Gossip sections allow receiving nodes to get information about the state of othe
 
 ### Failure detection
 
-Valkey Cluster failure detection is used to recognize when a master or replica node is no longer reachable by the majority of nodes and then respond by promoting a replica to the role of master. When replica promotion is not possible the cluster is put in an error state to stop receiving queries from clients.
+Valkey Cluster failure detection is used to recognize when a primary or replica node is no longer reachable by the majority of nodes and then respond by promoting a replica to the role of primary. When replica promotion is not possible the cluster is put in an error state to stop receiving queries from clients.
 
-As already mentioned, every node takes a list of flags associated with other known nodes. There are two flags that are used for failure detection that are called `PFAIL` and `FAIL`. `PFAIL` means *Possible failure*, and is a non-acknowledged failure type. `FAIL` means that a node is failing and that this condition was confirmed by a majority of masters within a fixed amount of time.
+As already mentioned, every node takes a list of flags associated with other known nodes. There are two flags that are used for failure detection that are called `PFAIL` and `FAIL`. `PFAIL` means *Possible failure*, and is a non-acknowledged failure type. `FAIL` means that a node is failing and that this condition was confirmed by a majority of primaries within a fixed amount of time.
 
 **PFAIL flag:**
 
-A node flags another node with the `PFAIL` flag when the node is not reachable for more than `NODE_TIMEOUT` time. Both master and replica nodes can flag another node as `PFAIL`, regardless of its type.
+A node flags another node with the `PFAIL` flag when the node is not reachable for more than `NODE_TIMEOUT` time. Both primary and replica nodes can flag another node as `PFAIL`, regardless of its type.
 
 The concept of non-reachability for a Valkey Cluster node is that we have an **active ping** (a ping that we sent for which we have yet to get a reply) pending for longer than `NODE_TIMEOUT`. For this mechanism to work the `NODE_TIMEOUT` must be large compared to the network round trip time. In order to add reliability during normal operations, nodes will try to reconnect with other nodes in the cluster as soon as half of the `NODE_TIMEOUT` has elapsed without a reply to a ping. This mechanism ensures that connections are kept alive so broken connections usually won't result in false failure reports between nodes.
 
@@ -768,8 +767,8 @@ As outlined in the node heartbeats section of this document, every node sends go
 A `PFAIL` condition is escalated to a `FAIL` condition when the following set of conditions are met:
 
 * Some node, that we'll call A, has another node B flagged as `PFAIL`.
-* Node A collected, via gossip sections, information about the state of B from the point of view of the majority of masters in the cluster.
-* The majority of masters signaled the `PFAIL` or `FAIL` condition within `NODE_TIMEOUT * FAIL_REPORT_VALIDITY_MULT` time. (The validity factor is set to 2 in the current implementation, so this is just two times the `NODE_TIMEOUT` time).
+* Node A collected, via gossip sections, information about the state of B from the point of view of the majority of primaries in the cluster.
+* The majority of primaries signaled the `PFAIL` or `FAIL` condition within `NODE_TIMEOUT * FAIL_REPORT_VALIDITY_MULT` time. (The validity factor is set to 2 in the current implementation, so this is just two times the `NODE_TIMEOUT` time).
 
 If all the above conditions are true, Node A will:
 
@@ -781,21 +780,21 @@ The `FAIL` message will force every receiving node to mark the node in `FAIL` st
 Note that *the FAIL flag is mostly one way*. That is, a node can go from `PFAIL` to `FAIL`, but a `FAIL` flag can only be cleared in the following situations:
 
 * The node is already reachable and is a replica. In this case the `FAIL` flag can be cleared as replicas are not failed over.
-* The node is already reachable and is a master not serving any slot. In this case the `FAIL` flag can be cleared as masters without slots do not really participate in the cluster and are waiting to be configured in order to join the cluster.
-* The node is already reachable and is a master, but a long time (N times the `NODE_TIMEOUT`) has elapsed without any detectable replica promotion. It's better for it to rejoin the cluster and continue in this case.
+* The node is already reachable and is a primary not serving any slot. In this case the `FAIL` flag can be cleared as primaries without slots do not really participate in the cluster and are waiting to be configured in order to join the cluster.
+* The node is already reachable and is a primary, but a long time (N times the `NODE_TIMEOUT`) has elapsed without any detectable replica promotion. It's better for it to rejoin the cluster and continue in this case.
 
 It is useful to note that while the `PFAIL` -> `FAIL` transition uses a form of agreement, the agreement used is weak:
 
-1. Nodes collect views of other nodes over some time period, so even if the majority of master nodes need to "agree", actually this is just state that we collected from different nodes at different times and we are not sure, nor we require, that at a given moment the majority of masters agreed. However we discard failure reports which are old, so the failure was signaled by the majority of masters within a window of time.
+1. Nodes collect views of other nodes over some time period, so even if the majority of primary nodes need to "agree", actually this is just state that we collected from different nodes at different times and we are not sure, nor we require, that at a given moment the majority of primaries agreed. However we discard failure reports which are old, so the failure was signaled by the majority of primaries within a window of time.
 2. While every node detecting the `FAIL` condition will force that condition on other nodes in the cluster using the `FAIL` message, there is no way to ensure the message will reach all the nodes. For instance a node may detect the `FAIL` condition and because of a partition will not be able to reach any other node.
 
 However the Valkey Cluster failure detection has a liveness requirement: eventually all the nodes should agree about the state of a given node. There are two cases that can originate from split brain conditions. Either some minority of nodes believe the node is in `FAIL` state, or a minority of nodes believe the node is not in `FAIL` state. In both the cases eventually the cluster will have a single view of the state of a given node:
 
-**Case 1**: If a majority of masters have flagged a node as `FAIL`, because of failure detection and the *chain effect* it generates, every other node will eventually flag the master as `FAIL`, since in the specified window of time enough failures will be reported.
+**Case 1**: If a majority of primaries have flagged a node as `FAIL`, because of failure detection and the *chain effect* it generates, every other node will eventually flag the primary as `FAIL`, since in the specified window of time enough failures will be reported.
 
-**Case 2**: When only a minority of masters have flagged a node as `FAIL`, the replica promotion will not happen (as it uses a more formal algorithm that makes sure everybody knows about the promotion eventually) and every node will clear the `FAIL` state as per the `FAIL` state clearing rules above (i.e. no promotion after N times the `NODE_TIMEOUT` has elapsed).
+**Case 2**: When only a minority of primaries have flagged a node as `FAIL`, the replica promotion will not happen (as it uses a more formal algorithm that makes sure everybody knows about the promotion eventually) and every node will clear the `FAIL` state as per the `FAIL` state clearing rules above (i.e. no promotion after N times the `NODE_TIMEOUT` has elapsed).
 
-**The `FAIL` flag is only used as a trigger to run the safe part of the algorithm** for the replica promotion. In theory a replica may act independently and start a replica promotion when its master is not reachable, and wait for the masters to refuse to provide the acknowledgment if the master is actually reachable by the majority. However the added complexity of the `PFAIL -> FAIL` state, the weak agreement, and the `FAIL` message forcing the propagation of the state in the shortest amount of time in the reachable part of the cluster, have practical advantages. Because of these mechanisms, usually all the nodes will stop accepting writes at about the same time if the cluster is in an error state. This is a desirable feature from the point of view of applications using Valkey Cluster. Also erroneous election attempts initiated by replicas that can't reach its master due to local problems (the master is otherwise reachable by the majority of other master nodes) are avoided.
+**The `FAIL` flag is only used as a trigger to run the safe part of the algorithm** for the replica promotion. In theory a replica may act independently and start a replica promotion when its primary is not reachable, and wait for the primaries to refuse to provide the acknowledgment if the primary is actually reachable by the majority. However the added complexity of the `PFAIL -> FAIL` state, the weak agreement, and the `FAIL` message forcing the propagation of the state in the shortest amount of time in the reachable part of the cluster, have practical advantages. Because of these mechanisms, usually all the nodes will stop accepting writes at about the same time if the cluster is in an error state. This is a desirable feature from the point of view of applications using Valkey Cluster. Also erroneous election attempts initiated by replicas that can't reach its primary due to local problems (the primary is otherwise reachable by the majority of other primary nodes) are avoided.
 
 ## Configuration handling, propagation, and failovers
 
@@ -805,7 +804,7 @@ Valkey Cluster uses a concept similar to the Raft algorithm "term". In Valkey Cl
 
 The `currentEpoch` is a 64 bit unsigned number.
 
-At node creation every Valkey Cluster node, both replicas and master nodes, set the `currentEpoch` to 0.
+At node creation every Valkey Cluster node, both replicas and primary nodes, set the `currentEpoch` to 0.
 
 Every time a packet is received from another node, if the epoch of the sender (part of the cluster bus messages header) is greater than the local node epoch, the `currentEpoch` is updated to the sender epoch.
 
@@ -817,18 +816,18 @@ Currently this happens only during replica promotion, as described in the next s
 
 ### Configuration epoch
 
-Every master always advertises its `configEpoch` in ping and pong packets along with a bitmap advertising the set of slots it serves.
+Every primary always advertises its `configEpoch` in ping and pong packets along with a bitmap advertising the set of slots it serves.
 
-The `configEpoch` is set to zero in masters when a new node is created.
+The `configEpoch` is set to zero in primaries when a new node is created.
 
-A new `configEpoch` is created during replica election. replicas trying to replace
-failing masters increment their epoch and try to get authorization from
-a majority of masters. When a replica is authorized, a new unique `configEpoch`
-is created and the replica turns into a master using the new `configEpoch`.
+A new `configEpoch` is created during replica election. Replicas trying to replace
+failing primaries increment their epoch and try to get authorization from
+a majority of primaries. When a replica is authorized, a new unique `configEpoch`
+is created and the replica turns into a primary using the new `configEpoch`.
 
 As explained in the next sections the `configEpoch` helps to resolve conflicts when different nodes claim divergent configurations (a condition that may happen because of network partitions and node failures).
 
-replica nodes also advertise the `configEpoch` field in ping and pong packets, but in the case of replicas the field represents the `configEpoch` of its master as of the last time they exchanged packets. This allows other instances to detect when a replica has an old configuration that needs to be updated (master nodes will not grant votes to replicas with an old configuration).
+Replica nodes also advertise the `configEpoch` field in ping and pong packets, but in the case of replicas the field represents the `configEpoch` of its primary as of the last time they exchanged packets. This allows other instances to detect when a replica has an old configuration that needs to be updated (primary nodes will not grant votes to replicas with an old configuration).
 
 Every time the `configEpoch` changes for some known node, it is permanently stored in the nodes.conf file by all the nodes that receive this information. The same also happens for the `currentEpoch` value. These two variables are guaranteed to be saved and `fsync-ed` to disk when updated before a node continues its operations.
 
@@ -837,93 +836,93 @@ are guaranteed to be new, incremental, and unique.
 
 ### Replica election and promotion
 
-Replica election and promotion is handled by replica nodes, with the help of master nodes that vote for the replica to promote.
-A replica election happens when a master is in `FAIL` state from the point of view of at least one of its replicas that has the prerequisites in order to become a master.
+Replica election and promotion is handled by replica nodes, with the help of the primary nodes that vote for the replica to promote.
+A replica election happens when a primary is in `FAIL` state from the point of view of at least one of its replicas that has the prerequisites in order to become a primary.
 
-In order for a replica to promote itself to master, it needs to start an election and win it. All the replicas for a given master can start an election if the master is in `FAIL` state, however only one replica will win the election and promote itself to master.
+In order for a replica to promote itself to primary, it needs to start an election and win it. All the replicas for a given primary can start an election if the primary is in `FAIL` state, however only one replica will win the election and promote itself to primary.
 
 A replica starts an election when the following conditions are met:
 
-* The replica's master is in `FAIL` state.
-* The master was serving a non-zero number of slots.
-* The replica replication link was disconnected from the master for no longer than a given amount of time, in order to ensure the promoted replica's data is reasonably fresh. This time is user configurable.
+* The replica's primary is in `FAIL` state.
+* The primary was serving a non-zero number of slots.
+* The replica replication link was disconnected from the primary for no longer than a given amount of time, in order to ensure the promoted replica's data is reasonably fresh. This time is user configurable.
 
-In order to be elected, the first step for a replica is to increment its `currentEpoch` counter, and request votes from master instances.
+In order to be elected, the first step for a replica is to increment its `currentEpoch` counter, and request votes from primary instances.
 
-Votes are requested by the replica by broadcasting a `FAILOVER_AUTH_REQUEST` packet to every master node of the cluster. Then it waits for a maximum time of two times the `NODE_TIMEOUT` for replies to arrive (but always for at least 2 seconds).
+Votes are requested by the replica by broadcasting a `FAILOVER_AUTH_REQUEST` packet to every primary node of the cluster. Then it waits for a maximum time of two times the `NODE_TIMEOUT` for replies to arrive (but always for at least 2 seconds).
 
-Once a master has voted for a given replica, replying positively with a `FAILOVER_AUTH_ACK`, it can no longer vote for another replica of the same master for a period of `NODE_TIMEOUT * 2`. In this period it will not be able to reply to other authorization requests for the same master. This is not needed to guarantee safety, but useful for preventing multiple replicas from getting elected (even if with a different `configEpoch`) at around the same time, which is usually not wanted.
+Once a primary has voted for a given replica, replying positively with a `FAILOVER_AUTH_ACK`, it can no longer vote for another replica of the same primary for a period of `NODE_TIMEOUT * 2`. In this period it will not be able to reply to other authorization requests for the same primary. This is not needed to guarantee safety, but useful for preventing multiple replicas from getting elected (even if with a different `configEpoch`) at around the same time, which is usually not wanted.
 
 A replica discards any `AUTH_ACK` replies with an epoch that is less than the `currentEpoch` at the time the vote request was sent. This ensures it doesn't count votes intended for a previous election.
 
-Once the replica receives ACKs from the majority of masters, it wins the election.
+Once the replica receives ACKs from the majority of primaries, it wins the election.
 Otherwise if the majority is not reached within the period of two times `NODE_TIMEOUT` (but always at least 2 seconds), the election is aborted and a new one will be tried again after `NODE_TIMEOUT * 4` (and always at least 4 seconds).
 
 ### Replica rank
 
-As soon as a master is in `FAIL` state, a replica waits a short period of time before trying to get elected. That delay is computed as follows:
+As soon as a primary is in `FAIL` state, a replica waits a short period of time before trying to get elected. That delay is computed as follows:
 
     DELAY = 500 milliseconds + random delay between 0 and 500 milliseconds +
             REPLICA_RANK * 1000 milliseconds.
 
-The fixed delay ensures that we wait for the `FAIL` state to propagate across the cluster, otherwise the replica may try to get elected while the masters are still unaware of the `FAIL` state, refusing to grant their vote.
+The fixed delay ensures that we wait for the `FAIL` state to propagate across the cluster, otherwise the replica may try to get elected while the primaries are still unaware of the `FAIL` state, refusing to grant their vote.
 
 The random delay is used to desynchronize replicas so they're unlikely to start an election at the same time.
 
-The `REPLICA_RANK` is the rank of this replica regarding the amount of replication data it has processed from the master.
-Replicas exchange messages when the master is failing in order to establish a (best effort) rank:
+The `REPLICA_RANK` is the rank of this replica regarding the amount of replication data it has processed from the primary.
+Replicas exchange messages when the primary is failing in order to establish a (best effort) rank:
 the replica with the most updated replication offset is at rank 0, the second most updated at rank 1, and so forth.
 In this way the most updated replicas try to get elected before others.
 
 Rank order is not strictly enforced; if a replica of higher rank fails to be
 elected, the others will try shortly.
 
-Once a replica wins the election, it obtains a new unique and incremental `configEpoch` which is higher than that of any other existing master. It starts advertising itself as master in ping and pong packets, providing the set of served slots with a `configEpoch` that will win over the past ones.
+Once a replica wins the election, it obtains a new unique and incremental `configEpoch` which is higher than that of any other existing primary. It starts advertising itself as primary in ping and pong packets, providing the set of served slots with a `configEpoch` that will win over the past ones.
 
 In order to speedup the reconfiguration of other nodes, a pong packet is broadcast to all the nodes of the cluster. Currently unreachable nodes will eventually be reconfigured when they receive a ping or pong packet from another node or will receive an `UPDATE` packet from another node if the information it publishes via heartbeat packets are detected to be out of date.
 
-The other nodes will detect that there is a new master serving the same slots served by the old master but with a greater `configEpoch`, and will upgrade their configuration. Replicas of the old master (or the failed over master if it rejoins the cluster) will not just upgrade the configuration but will also reconfigure to replicate from the new master. How nodes rejoining the cluster are configured is explained in the next sections.
+The other nodes will detect that there is a new primary serving the same slots served by the old primary but with a greater `configEpoch`, and will upgrade their configuration. Replicas of the old primary (or the failed over primary if it rejoins the cluster) will not just upgrade the configuration but will also reconfigure to replicate from the new primary. How nodes rejoining the cluster are configured is explained in the next sections.
 
 ### Masters reply to replica vote request
 
-In the previous section, we discussed how replicas try to get elected. This section explains what happens from the point of view of a master that is requested to vote for a given replica.
+In the previous section, we discussed how replicas try to get elected. This section explains what happens from the point of view of a primary that is requested to vote for a given replica.
 
 Masters receive requests for votes in form of `FAILOVER_AUTH_REQUEST` requests from replicas.
 
 For a vote to be granted the following conditions need to be met:
 
-1. A master only votes a single time for a given epoch, and refuses to vote for older epochs: every master has a lastVoteEpoch field and will refuse to vote again as long as the `currentEpoch` in the auth request packet is not greater than the lastVoteEpoch. When a master replies positively to a vote request, the lastVoteEpoch is updated accordingly, and safely stored on disk.
-2. A master votes for a replica only if the replica's master is flagged as `FAIL`.
-3. Auth requests with a `currentEpoch` that is less than the master `currentEpoch` are ignored. Because of this the master reply will always have the same `currentEpoch` as the auth request. If the same replica asks again to be voted, incrementing the `currentEpoch`, it is guaranteed that an old delayed reply from the master can not be accepted for the new vote.
+1. A primary only votes a single time for a given epoch, and refuses to vote for older epochs: every primary has a lastVoteEpoch field and will refuse to vote again as long as the `currentEpoch` in the auth request packet is not greater than the lastVoteEpoch. When a primary replies positively to a vote request, the lastVoteEpoch is updated accordingly, and safely stored on disk.
+2. A primary votes for a replica only if the replica's primary is flagged as `FAIL`.
+3. Auth requests with a `currentEpoch` that is less than the primary `currentEpoch` are ignored. Because of this the primary reply will always have the same `currentEpoch` as the auth request. If the same replica asks again to be voted, incrementing the `currentEpoch`, it is guaranteed that an old delayed reply from the primary can not be accepted for the new vote.
 
 Example of the issue caused by not using rule number 3:
 
-Master `currentEpoch` is 5, lastVoteEpoch is 1 (this may happen after a few failed elections)
+Primary `currentEpoch` is 5, lastVoteEpoch is 1 (this may happen after a few failed elections)
 
 * Replica `currentEpoch` is 3.
-* Replica tries to be elected with epoch 4 (3+1), master replies with an ok with `currentEpoch` 5, however the reply is delayed.
+* Replica tries to be elected with epoch 4 (3+1), primary replies with an ok with `currentEpoch` 5, however the reply is delayed.
 * Replica will try to be elected again, at a later time, with epoch 5 (4+1), the delayed reply reaches the replica with `currentEpoch` 5, and is accepted as valid.
 
-4. Masters don't vote for a replica of the same master before `NODE_TIMEOUT * 2` has elapsed if a replica of that master was already voted for. This is not strictly required as it is not possible for two replicas to win the election in the same epoch. However, in practical terms it ensures that when a replica is elected it has plenty of time to inform the other replicas and avoid the possibility that another replica will win a new election, performing an unnecessary second failover.
-5. Masters make no effort to select the best replica in any way. If the replica's master is in `FAIL` state and the master did not vote in the current term, a positive vote is granted. The best replica is the most likely to start an election and win it before the other replicas, since it will usually be able to start the voting process earlier because of its *higher rank* as explained in the previous section.
-6. When a master refuses to vote for a given replica there is no negative response, the request is simply ignored.
-7. Masters don't vote for replicas sending a `configEpoch` that is less than any `configEpoch` in the master table for the slots claimed by the replica. Remember that the replica sends the `configEpoch` of its master, and the bitmap of the slots served by its master. This means that the replica requesting the vote must have a configuration for the slots it wants to failover that is newer or equal the one of the master granting the vote.
+4. Primaries don't vote for a replica of the same primary before `NODE_TIMEOUT * 2` has elapsed if a replica of that primary was already voted for. This is not strictly required as it is not possible for two replicas to win the election in the same epoch. However, in practical terms it ensures that when a replica is elected it has plenty of time to inform the other replicas and avoid the possibility that another replica will win a new election, performing an unnecessary second failover.
+5. Primaries make no effort to select the best replica in any way. If the replica's primary is in `FAIL` state and the primary did not vote in the current term, a positive vote is granted. The best replica is the most likely to start an election and win it before the other replicas, since it will usually be able to start the voting process earlier because of its *higher rank* as explained in the previous section.
+6. When a primary refuses to vote for a given replica there is no negative response, the request is simply ignored.
+7. Primaries don't vote for replicas sending a `configEpoch` that is less than any `configEpoch` in the primary table for the slots claimed by the replica. Remember that the replica sends the `configEpoch` of its primary, and the bitmap of the slots served by its primary. This means that the replica requesting the vote must have a configuration for the slots it wants to failover that is newer or equal the one of the primary granting the vote.
 
 ### Practical example of configuration epoch usefulness during partitions
 
 This section illustrates how the epoch concept is used to make the replica promotion process more resistant to partitions.
 
-* A master is no longer reachable indefinitely. The master has three replicas A, B, C.
-* Replica A wins the election and is promoted to master.
+* A primary is no longer reachable indefinitely. The primary has three replicas A, B, C.
+* Replica A wins the election and is promoted to primary.
 * A network partition makes A not available for the majority of the cluster.
-* Replica B wins the election and is promoted as master.
+* Replica B wins the election and is promoted as primary.
 * A partition makes B not available for the majority of the cluster.
 * The previous partition is fixed, and A is available again.
 
-At this point B is down and A is available again with a role of master (actually `UPDATE` messages would reconfigure it promptly, but here we assume all `UPDATE` messages were lost). At the same time, replica C will try to get elected in order to fail over B. This is what happens:
+At this point B is down and A is available again with a role of primary (actually `UPDATE` messages would reconfigure it promptly, but here we assume all `UPDATE` messages were lost). At the same time, replica C will try to get elected in order to fail over B. This is what happens:
 
-1. C will try to get elected and will succeed, since for the majority of masters its master is actually down. It will obtain a new incremental `configEpoch`.
-2. A will not be able to claim to be the master for its hash slots, because the other nodes already have the same hash slots associated with a higher configuration epoch (the one of B) compared to the one published by A.
+1. C will try to get elected and will succeed, since for the majority of primaries its primary is actually down. It will obtain a new incremental `configEpoch`.
+2. A will not be able to claim to be the primary for its hash slots, because the other nodes already have the same hash slots associated with a higher configuration epoch (the one of B) compared to the one published by A.
 3. So, all the nodes will upgrade their table to assign the hash slots to C, and the cluster will continue its operations.
 
 As you'll see in the next sections, a stale node rejoining a cluster
@@ -933,14 +932,14 @@ has stale information and will send an `UPDATE` message.
 
 ### Hash slots configuration propagation
 
-An important part of Valkey Cluster is the mechanism used to propagate the information about which cluster node is serving a given set of hash slots. This is vital to both the startup of a fresh cluster and the ability to upgrade the configuration after a replica was promoted to serve the slots of its failing master.
+An important part of Valkey Cluster is the mechanism used to propagate the information about which cluster node is serving a given set of hash slots. This is vital to both the startup of a fresh cluster and the ability to upgrade the configuration after a replica was promoted to serve the slots of its failing primary.
 
 The same mechanism allows nodes partitioned away for an indefinite amount of
 time to rejoin the cluster in a sensible way.
 
 There are two ways hash slot configurations are propagated:
 
-1. Heartbeat messages. The sender of a ping or pong packet always adds information about the set of hash slots it (or its master, if it is a replica) serves.
+1. Heartbeat messages. The sender of a ping or pong packet always adds information about the set of hash slots it (or its primary, if it is a replica) serves.
 2. `UPDATE` messages. Since in every heartbeat packet there is information about the sender `configEpoch` and set of hash slots served, if a receiver of a heartbeat packet finds the sender information is stale, it will send a packet with new information, forcing the stale node to update its info.
 
 The receiver of a heartbeat or `UPDATE` message uses certain simple rules in
@@ -968,23 +967,23 @@ So if we receive a heartbeat from node A claiming to serve hash slots 1 and 2 wi
 16383 -> NULL
 ```
 
-When a new cluster is created, a system administrator needs to manually assign (using the `CLUSTER ADDSLOTS` command, via the valkey-cli command line tool, or by any other means) the slots served by each master node only to the node itself, and the information will rapidly propagate across the cluster.
+When a new cluster is created, a system administrator needs to manually assign (using the `CLUSTER ADDSLOTS` command, via the valkey-cli command line tool, or by any other means) the slots served by each primary node only to the node itself, and the information will rapidly propagate across the cluster.
 
 However this rule is not enough. We know that hash slot mapping can change
 during two events:
 
-1. A replica replaces its master during a failover.
+1. A replica replaces its primary during a failover.
 2. A slot is resharded from a node to a different one.
 
-For now let's focus on failovers. When a replica fails over its master, it obtains
+For now let's focus on failovers. When a replica fails over its primary, it obtains
 a configuration epoch which is guaranteed to be greater than the one of its
-master (and more generally greater than any other configuration epoch
+primary (and more generally greater than any other configuration epoch
 generated previously). For example node B, which is a replica of A, may failover
 A with configuration epoch of 4. It will start to send heartbeat packets
 (the first time mass-broadcasting cluster-wide) and because of the following
 second rule, receivers will update their hash slot tables:
 
-**Rule 2**: If a hash slot is already assigned, and a known node is advertising it using a `configEpoch` that is greater than the `configEpoch` of the master currently associated with the slot, I'll rebind the hash slot to the new node.
+**Rule 2**: If a hash slot is already assigned, and a known node is advertising it using a `configEpoch` that is greater than the `configEpoch` of the primary currently associated with the slot, it'll rebind the hash slot to the new node.
 
 So after receiving messages from B that claim to serve hash slots 1 and 2 with configuration epoch of 4, the receivers will update their table in the following way:
 
@@ -1021,57 +1020,57 @@ The same basic mechanism is used when a node rejoins a cluster.
 Continuing with the example above, node A will be notified
 that hash slots 1 and 2 are now served by B. Assuming that these two were
 the only hash slots served by A, the count of hash slots served by A will
-drop to 0! So A will **reconfigure to be a replica of the new master**.
+drop to 0! So A will **reconfigure to be a replica of the new primary**.
 
 The actual rule followed is a bit more complex than this. In general it may
 happen that A rejoins after a lot of time, in the meantime it may happen that
 hash slots originally served by A are served by multiple nodes, for example
 hash slot 1 may be served by B, and hash slot 2 by C.
 
-So the actual *Valkey Cluster node role switch rule* is: **A master node will change its configuration to replicate (be a replica of) the node that stole its last hash slot**.
+So the actual *Valkey Cluster node role switch rule* is: **A primary node will change its configuration to replicate (be a replica of) the node that stole its last hash slot**.
 
-During reconfiguration, eventually the number of served hash slots will drop to zero, and the node will reconfigure accordingly. Note that in the base case this just means that the old master will be a replica of the replica that replaced it after a failover. However in the general form the rule covers all possible cases.
+During reconfiguration, eventually the number of served hash slots will drop to zero, and the node will reconfigure accordingly. Note that in the base case this just means that the old primary will be a replica of the replica that replaced it after a failover. However in the general form the rule covers all possible cases.
 
 Replicas do exactly the same: they reconfigure to replicate the node that
-stole the last hash slot of its former master.
+stole the last hash slot of its former primary.
 
 ### Replica migration
 
 Valkey Cluster implements a concept called *replica migration* in order to
 improve the availability of the system. The idea is that in a cluster with
-a master-replica setup, if the map between replicas and masters is fixed
+a primary-replica setup, if the map between replicas and primaries is fixed
 availability is limited over time if multiple independent failures of single
 nodes happen.
 
-For example in a cluster where every master has a single replica, the cluster
-can continue operations as long as either the master or the replica fail, but not
+For example in a cluster where every primary has a single replica, the cluster
+can continue operations as long as either the primary or the replica fail, but not
 if both fail the same time. However there is a class of failures that are
 the independent failures of single nodes caused by hardware or software issues
 that can accumulate over time. For example:
 
 * Master A has a single replica A1.
-* Master A fails. A1 is promoted as new master.
+* Master A fails. A1 is promoted as new primary.
 * Three hours later A1 fails in an independent manner (unrelated to the failure of A). No other replica is available for promotion since node A is still down. The cluster cannot continue normal operations.
 
-If the map between masters and replicas is fixed, the only way to make the cluster
-more resistant to the above scenario is to add replicas to every master, however
+If the map between primaries and replicas is fixed, the only way to make the cluster
+more resistant to the above scenario is to add replicas to every primary, however
 this is costly as it requires more instances of Valkey to be executed, more
 memory, and so forth.
 
 An alternative is to create an asymmetry in the cluster, and let the cluster
 layout automatically change over time. For example the cluster may have three
-masters A, B, C. A and B have a single replica each, A1 and B1. However the master
+primaries A, B, C. A and B have a single replica each, A1 and B1. However, the primary
 C is different and has two replicas: C1 and C2.
 
 Replica migration is the process of automatic reconfiguration of a replica
-in order to *migrate* to a master that has no longer coverage (no working
+in order to *migrate* to a primary that has no longer coverage (no working
 replicas). With replica migration the scenario mentioned above turns into the
 following:
 
 * Master A fails. A1 is promoted.
 * C2 migrates as replica of A1, that is otherwise not backed by any replica.
 * Three hours later A1 fails as well.
-* C2 is promoted as new master to replace A1.
+* C2 is promoted as a new primary to replace A1.
 * The cluster can continue the operations.
 
 ### Replica migration algorithm
@@ -1079,43 +1078,43 @@ following:
 The migration algorithm does not use any form of agreement since the replica
 layout in a Valkey Cluster is not part of the cluster configuration that needs
 to be consistent and/or versioned with config epochs. Instead it uses an
-algorithm to avoid mass-migration of replicas when a master is not backed.
+algorithm to avoid mass-migration of replicas when a primary is not backed.
 The algorithm guarantees that eventually (once the cluster configuration is
-stable) every master will be backed by at least one replica.
+stable) every primary will be backed by at least one replica.
 
 This is how the algorithm works. To start we need to define what is a
 *good replica* in this context: a good replica is a replica not in `FAIL` state
 from the point of view of a given node.
 
 The execution of the algorithm is triggered in every replica that detects that
-there is at least a single master without good replicas. However among all the
+there is at least a single primary without good replicas. However among all the
 replicas detecting this condition, only a subset should act. This subset is
 actually often a single replica unless different replicas have in a given moment
 a slightly different view of the failure state of other nodes.
 
-The *acting replica* is the replica among the masters with the maximum number
+The *acting replica* is the replica among the primaries with the maximum number
 of attached replicas, that is not in FAIL state and has the smallest node ID.
 
-So for example if there are 10 masters with 1 replica each, and 2 masters with
-5 replicas each, the replica that will try to migrate is - among the 2 masters
+So for example if there are 10 primaries with 1 replica each, and 2 primaries with
+5 replicas each, the replica that will try to migrate is - among the 2 primaries
 having 5 replicas - the one with the lowest node ID. Given that no agreement
 is used, it is possible that when the cluster configuration is not stable,
 a race condition occurs where multiple replicas believe themselves to be
 the non-failing replica with the lower node ID (it is unlikely for this to happen
 in practice). If this happens, the result is multiple replicas migrating to the
-same master, which is harmless. If the race happens in a way that will leave
-the ceding master without replicas, as soon as the cluster is stable again
+same primary, which is harmless. If the race happens in a way that will leave
+the ceding primary without replicas, as soon as the cluster is stable again
 the algorithm will be re-executed again and will migrate a replica back to
-the original master.
+the original primary.
 
-Eventually every master will be backed by at least one replica. However,
-the normal behavior is that a single replica migrates from a master with
-multiple replicas to an orphaned master.
+Eventually every primary will be backed by at least one replica. However,
+the normal behavior is that a single replica migrates from a primary with
+multiple replicas to an orphaned primary.
 
 The algorithm is controlled by a user-configurable parameter called
-`cluster-migration-barrier`: the number of good replicas a master
+`cluster-migration-barrier`: the number of good replicas a primary
 must be left with before a replica can migrate away. For example, if this
-parameter is set to 2, a replica can try to migrate only if its master remains
+parameter is set to 2, a replica can try to migrate only if its primary remains
 with two working replicas.
 
 ### configEpoch conflicts resolution algorithm
@@ -1128,7 +1127,7 @@ created in an unsafe way, just incrementing the local `currentEpoch` of
 the local node and hoping there are no conflicts at the same time.
 Both the events are system-administrator triggered:
 
-1. `CLUSTER FAILOVER` command with `TAKEOVER` option is able to manually promote a replica node into a master *without the majority of masters being available*. This is useful, for example, in multi data center setups.
+1. `CLUSTER FAILOVER` command with `TAKEOVER` option is able to manually promote a replica node into a primary *without the majority of primaries being available*. This is useful, for example, in multi data center setups.
 2. Migration of slots for cluster rebalancing also generates new configuration epochs inside the local node without agreement for performance reasons.
 
 Specifically, during manual resharding, when a hash slot is migrated from
@@ -1153,19 +1152,19 @@ they are not propagated fast enough.
 Moreover, software bugs and filesystem corruptions can also contribute
 to multiple nodes having the same configuration epoch.
 
-When masters serving different hash slots have the same `configEpoch`, there
-are no issues. It is more important that replicas failing over a master have
+When primaries serving different hash slots have the same `configEpoch`, there
+are no issues. It is more important that replicas failing over a primary have
 unique configuration epochs.
 
 That said, manual interventions or resharding may change the cluster
 configuration in different ways. The Valkey Cluster main liveness property
 requires that slot configurations always converge, so under every circumstance
-we really want all the master nodes to have a different `configEpoch`.
+we really want all the primary nodes to have a different `configEpoch`.
 
 In order to enforce this, **a conflict resolution algorithm** is used in the
 event that two nodes end up with the same `configEpoch`.
 
-* IF a master node detects another master node is advertising itself with
+* IF a primary node detects another primary node is advertising itself with
 the same `configEpoch`.
 * AND IF the node has a lexicographically smaller Node ID compared to the other node claiming the same `configEpoch`.
 * THEN it increments its `currentEpoch` by 1, and uses it as the new `configEpoch`.
@@ -1197,7 +1196,7 @@ provided, a soft reset is performed.
 
 The following is a list of operations performed by a reset:
 
-1. Soft and hard reset: If the node is a replica, it is turned into a master, and its dataset is discarded. If the node is a master and contains keys the reset operation is aborted.
+1. Soft and hard reset: If the node is a replica, it is turned into a primary, and its dataset is discarded. If the node is a primary and contains keys the reset operation is aborted.
 2. Soft and hard reset: All the slots are released, and the manual failover state is reset.
 3. Soft and hard reset: All the other nodes in the nodes table are removed, so the node no longer knows any other node.
 4. Hard reset only: `currentEpoch`, `configEpoch`, and `lastVoteEpoch` are set to 0.
@@ -1208,7 +1207,7 @@ Master nodes with non-empty data sets can't be reset (since normally you want to
 ### Removing nodes from a cluster
 
 It is possible to practically remove a node from an existing cluster by
-resharding all its data to other nodes (if it is a master node) and
+resharding all its data to other nodes (if it is a primary node) and
 shutting it down. However, the other nodes will still remember its node
 ID and address, and will attempt to connect with it.
 
@@ -1236,7 +1235,7 @@ It will simply broadcast each published message to all other nodes.
 
 Redis OSS 7.0 and later features sharded pub/sub, in which shard channels are assigned to slots by the same algorithm used to assign keys to slots. 
 A shard message must be sent to a node that owns the slot the shard channel is hashed to. 
-The cluster makes sure the published shard messages are forwarded to all nodes in the shard, so clients can subscribe to a shard channel by connecting to either the master responsible for the slot, or to any of its replicas.
+The cluster makes sure the published shard messages are forwarded to all nodes in the shard, so clients can subscribe to a shard channel by connecting to either the primary responsible for the slot, or to any of its replicas.
 
 ## Appendix
 

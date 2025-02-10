@@ -27,6 +27,12 @@
   "ACL LIST": [
     "[Array reply](../topics/protocol.md#arrays): an array of [Bulk string reply](../topics/protocol.md#bulk-strings) elements."
   ],
+  "ACL LOAD": [
+    "[Simple string reply](../topics/protocol.md#simple-strings): `OK` on success.",
+    "",
+    "The command may fail with an error for several reasons: if the file is not readable, if there is an error inside the file, and in such cases, the error will be reported to the user in the error.",
+    "Finally, the command will fail if the server is not configured to use an external ACL file."
+  ],
   "ACL LOG": [
     "When called to show security events:",
     "* [Array reply](../topics/protocol.md#arrays): an array of [Bulk string reply](../topics/protocol.md#bulk-strings) elements representing ACL security events.",
@@ -46,12 +52,6 @@
   ],
   "ACL WHOAMI": [
     "[Bulk string reply](../topics/protocol.md#bulk-strings): the username of the current connection."
-  ],
-  "ACL-LOAD": [
-    "[Simple string reply](../topics/protocol.md#simple-strings): `OK` on success.",
-    "",
-    "The command may fail with an error for several reasons: if the file is not readable, if there is an error inside the file, and in such cases, the error will be reported to the user in the error.",
-    "Finally, the command will fail if the server is not configured to use an external ACL file."
   ],
   "APPEND": [
     "[Integer reply](../topics/protocol.md#integers): the length of the string after the append operation."
@@ -144,6 +144,9 @@
   "CLIENT CACHING": [
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK` or an error if the argument is not \"yes\" or \"no\"."
   ],
+  "CLIENT CAPA": [
+    "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
+  ],
   "CLIENT GETNAME": [
     "One of the following:",
     "* [Bulk string reply](../topics/protocol.md#bulk-strings): the connection name of the current connection.",
@@ -163,6 +166,9 @@
   ],
   "CLIENT INFO": [
     "[Bulk string reply](../topics/protocol.md#bulk-strings): a unique string for the current client, as described at the `CLIENT LIST` page."
+  ],
+  "CLIENT IMPORT-SOURCE": [
+    "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
   ],
   "CLIENT KILL": [
     "One of the following:",
@@ -229,10 +235,10 @@
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK` if the command was successful. Otherwise an error is returned."
   ],
   "CLUSTER FAILOVER": [
-    "[Simple string reply](../topics/protocol.md#simple-strings): `OK` if the command was accepted and a manual failover is going to be attempted. An error if the operation cannot be executed, for example if the client is connected to a node that is already a master."
+    "[Simple string reply](../topics/protocol.md#simple-strings): `OK` if the command was accepted and a manual failover is going to be attempted. An error if the operation cannot be executed, for example if the client is connected to a node that is already a primary."
   ],
   "CLUSTER FLUSHSLOTS": [
-    "[Simple string reply](../topics/protocol.md#simple-strings): `OK`"
+    "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
   ],
   "CLUSTER FORGET": [
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK` if the command was executed successfully. Otherwise an error is returned."
@@ -265,7 +271,7 @@
     "[Bulk string reply](../topics/protocol.md#bulk-strings): the serialized cluster configuration."
   ],
   "CLUSTER REPLICAS": [
-    "[Array reply](../topics/protocol.md#arrays): a list of replica nodes replicating from the specified master node provided in the same format used by `CLUSTER NODES`."
+    "[Array reply](../topics/protocol.md#arrays): a list of replica nodes replicating from the specified primary node provided in the same format used by `CLUSTER NODES`."
   ],
   "CLUSTER REPLICATE": [
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK` if the command was successful. Otherwise an error is returned."
@@ -286,10 +292,13 @@
     "[Array reply](../topics/protocol.md#arrays): a nested list of a map of hash ranges and shard nodes describing individual shards."
   ],
   "CLUSTER SLAVES": [
-    "[Array reply](../topics/protocol.md#arrays): a list of replica nodes replicating from the specified master node provided in the same format used by `CLUSTER NODES`."
+    "[Array reply](../topics/protocol.md#arrays): a list of replica nodes replicating from the specified primary node provided in the same format used by `CLUSTER NODES`."
   ],
   "CLUSTER SLOTS": [
     "[Array reply](../topics/protocol.md#arrays): nested list of slot ranges with networking information."
+  ],
+  "CLUSTER SLOT-STATS": [
+    "[Array reply](../topics/protocol.md#arrays): nested list of slot usage statistics."
   ],
   "COMMAND": [
     "[Array reply](../topics/protocol.md#arrays): a nested list of command details. The order of the commands in the array is random."
@@ -301,7 +310,7 @@
     "[Array reply](../topics/protocol.md#arrays): a map, as a flattened array, where each key is a command name, and each value is the documentary information."
   ],
   "COMMAND GETKEYS": [
-    "[Array reply](../topics/protocol.md#arrays): list of keys from the given command."
+    "[Array reply](../topics/protocol.md#arrays): a list of keys from the given command."
   ],
   "COMMAND GETKEYSANDFLAGS": [
     "[Array reply](../topics/protocol.md#arrays): a list of keys from the given command and their usage flags."
@@ -354,7 +363,7 @@
   ],
   "DUMP": [
     "One of the following:",
-    "* [Bulk string reply](../topics/protocol.md#bulk-strings): The serialized value of the key.",
+    "* [Bulk string reply](../topics/protocol.md#bulk-strings): the serialized value of the key.",
     "* [Nil reply](../topics/protocol.md#bulk-strings): the key does not exist."
   ],
   "ECHO": [
@@ -422,7 +431,7 @@
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
   ],
   "FUNCTION HELP": [
-    "[Array reply](../topics/protocol.md#arrays): a list of sub-commands and their descriptions"
+    "[Array reply](../topics/protocol.md#arrays): a list of sub-commands and their descriptions."
   ],
   "FUNCTION KILL": [
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
@@ -451,7 +460,7 @@
     "[Array reply](../topics/protocol.md#arrays): an array where each element is the Geohash corresponding to each member name passed as an argument to the command."
   ],
   "GEOPOS": [
-    "[Array reply](../topics/protocol.md#arrays): An array where each element is a two elements array representing longitude and latitude (x,y) of each member name passed as argument to the command. Non-existing elements are reported as [Nil reply](../topics/protocol.md#bulk-strings) elements of the array."
+    "[Array reply](../topics/protocol.md#arrays): an array where each element is a two elements array representing longitude and latitude (x,y) of each member name passed as argument to the command. Non-existing elements are reported as [Nil reply](../topics/protocol.md#bulk-strings) elements of the array."
   ],
   "GEORADIUS": [
     "One of the following:",
@@ -554,7 +563,7 @@
     "[Bulk string reply](../topics/protocol.md#bulk-strings): the value of the field after the increment operation."
   ],
   "HKEYS": [
-    "[Array reply](../topics/protocol.md#arrays): a list of fields in the hash, or an empty list when the key does not exist"
+    "[Array reply](../topics/protocol.md#arrays): a list of fields in the hash, or an empty list when the key does not exist."
   ],
   "HLEN": [
     "[Integer reply](../topics/protocol.md#integers): the number of fields in the hash, or 0 when the key does not exist."
@@ -575,7 +584,7 @@
   "HSCAN": [
     "[Array reply](../topics/protocol.md#arrays): a two-element array.",
     "* The first element is a [Bulk string reply](../topics/protocol.md#bulk-strings) that represents an unsigned 64-bit number, the cursor.",
-    "* The second element is an [Array reply](../topics/protocol.md#arrays) of field/value pairs that were scanned."
+    "* The second element is an [Array reply](../topics/protocol.md#arrays) of field/value pairs that were scanned. When `NOVALUES` option is on, a list of keys from the hash."
   ],
   "HSET": [
     "[Integer reply](../topics/protocol.md#integers): the number of fields that were added."
@@ -589,7 +598,7 @@
     "[Integer reply](../topics/protocol.md#integers): the string length of the value associated with the _field_, or zero when the _field_ isn't present in the hash or the _key_ doesn't exist at all."
   ],
   "HVALS": [
-    "[Array reply](../topics/protocol.md#arrays): a list of values in the hash, or an empty list when the key does not exist"
+    "[Array reply](../topics/protocol.md#arrays): a list of values in the hash, or an empty list when the key does not exist."
   ],
   "INCR": [
     "[Integer reply](../topics/protocol.md#integers): the value of the key after the increment."
@@ -699,10 +708,10 @@
     "[Bulk string reply](../topics/protocol.md#bulk-strings): a memory problems report."
   ],
   "MEMORY HELP": [
-    "[Array reply](../topics/protocol.md#arrays): a list of sub-commands and their descriptions"
+    "[Array reply](../topics/protocol.md#arrays): a list of sub-commands and their descriptions."
   ],
   "MEMORY MALLOC-STATS": [
-    "[Bulk string reply](../topics/protocol.md#bulk-strings): the memory allocator's internal statistics report"
+    "[Bulk string reply](../topics/protocol.md#bulk-strings): the memory allocator's internal statistics report."
   ],
   "MEMORY PURGE": [
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
@@ -772,7 +781,7 @@
     "[Nil reply](../topics/protocol.md#bulk-strings): if _key_ doesn't exist."
   ],
   "OBJECT HELP": [
-    "[Array reply](../topics/protocol.md#arrays): a list of sub-commands and their descriptions"
+    "[Array reply](../topics/protocol.md#arrays): a list of sub-commands and their descriptions."
   ],
   "OBJECT IDLETIME": [
     "One of the following:",
@@ -832,7 +841,7 @@
     "When successful, this command doesn't return anything. Instead, for each pattern, one message with the first element being the string `psubscribe` is pushed as a confirmation that the command succeeded."
   ],
   "PSYNC": [
-    "**Non-standard return value**, a bulk transfer of the data followed by `PING` and write requests from the master."
+    "**Non-standard return value**, a bulk transfer of the data followed by `PING` and write requests from the primary."
   ],
   "PTTL": [
     "One of the following:",
@@ -866,12 +875,12 @@
     "When successful, this command doesn't return anything. Instead, for each pattern, one message with the first element being the string `punsubscribe` is pushed as a confirmation that the command succeeded."
   ],
   "QUIT": [
-    "[Simple string reply](../topics/protocol.md#simple-strings): OK."
+    "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
   ],
   "RANDOMKEY": [
     "One of the following:",
     "* [Nil reply](../topics/protocol.md#bulk-strings): when the database is empty.",
-    "* [Bulk string reply](../topics/protocol.md#bulk-strings): a random key in database."
+    "* [Bulk string reply](../topics/protocol.md#bulk-strings): a random key in the database."
   ],
   "READONLY": [
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
@@ -955,6 +964,9 @@
   "SCRIPT LOAD": [
     "[Bulk string reply](../topics/protocol.md#bulk-strings): the SHA1 digest of the script added into the script cache."
   ],
+  "SCRIPT SHOW": [
+    "[Bulk string reply](../topics/protocol.md#bulk-strings): Lua script if sha1 hash exists in script cache."
+  ],
   "SDIFF": [
     "[Array reply](../topics/protocol.md#arrays): a list with members of the resulting set."
   ],
@@ -965,11 +977,16 @@
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
   ],
   "SET": [
-    "Any of the following:",
-    "* [Nil reply](../topics/protocol.md#bulk-strings): `GET` not given: Operation was aborted (conflict with one of the `XX`/`NX` options).",
-    "* [Simple string reply](../topics/protocol.md#simple-strings): `OK`. `GET` not given: The key was set.",
-    "* [Nil reply](../topics/protocol.md#bulk-strings): `GET` given: The key didn't exist before the `SET`.",
-    "* [Bulk string reply](../topics/protocol.md#bulk-strings): `GET` given: The previous value of the key."
+    "If `GET` not given, any of the following:",
+    "* [Nil reply](../topics/protocol.md#bulk-strings): Operation was aborted (conflict with one of the `XX`/`NX` options).",
+    "* [Simple string reply](../topics/protocol.md#simple-strings): `OK`: The key was set.",
+    "If `GET` given, any of the following:",
+    "* [Nil reply](../topics/protocol.md#bulk-strings): The key didn't exist before the `SET`.",
+    "* [Bulk string reply](../topics/protocol.md#bulk-strings): The previous value of the key.",
+    "Note that when using `GET` together with `XX`/`NX`/`IFEQ`, the reply indirectly indicates whether the key was set:",
+    "* `GET` and `XX` given: Non-[Nil reply](../topics/protocol.md#bulk-strings) indicates the key was set.",
+    "* `GET` and `NX` given: [Nil reply](../topics/protocol.md#bulk-strings) indicates the key was set.",
+    "* `GET` and `IFEQ` given: The key was set if the reply is equal to `comparison-value`."
   ],
   "SETBIT": [
     "[Integer reply](../topics/protocol.md#integers): the original bit value stored at _offset_."
@@ -1083,7 +1100,7 @@
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
   ],
   "SYNC": [
-    "**Non-standard return value**, a bulk transfer of the data followed by `PING` and write requests from the master."
+    "**Non-standard return value**, a bulk transfer of the data followed by `PING` and write requests from the primary."
   ],
   "TIME": [
     "[Array reply](../topics/protocol.md#arrays): specifically, a two-element array consisting of the Unix timestamp in seconds and the microseconds' count."
@@ -1110,11 +1127,11 @@
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
   ],
   "WAIT": [
-    "[Integer reply](../topics/protocol.md#integers): the command returns the number of replicas reached by all the writes performed in the context of the current connection."
+    "[Integer reply](../topics/protocol.md#integers): the number of replicas reached by all the writes performed in the context of the current connection."
   ],
   "WAITAOF": [
     "[Array reply](../topics/protocol.md#arrays): The command returns an array of two integers:",
-    "1. The first is the number of local Redises (0 or 1) that have fsynced to AOF  all writes performed in the context of the current connection",
+    "1. The first is the number of local Valkey nodes (0 or 1) that have fsynced to AOF all writes performed in the context of the current connection",
     "2. The second is the number of replicas that have acknowledged doing the same."
   ],
   "WATCH": [
@@ -1173,8 +1190,8 @@
   ],
   "XINFO STREAM": [
     "One of the following:",
-    "* [Array reply](../topics/protocol.md#arrays): when the _FULL_ argument is used, a list of information about a stream in summary form.",
-    "* [Array reply](../topics/protocol.md#arrays): when the _FULL_ argument is used, a list of information about a stream in extended form."
+    "* [Array reply](../topics/protocol.md#arrays): when the _FULL_ argument was not given, a list of information about a stream in summary form.",
+    "* [Array reply](../topics/protocol.md#arrays): when the _FULL_ argument was given, a list of information about a stream in extended form."
   ],
   "XLEN": [
     "[Integer reply](../topics/protocol.md#integers): the number of entries of the stream at _key_."
@@ -1289,10 +1306,10 @@
     "[Integer reply](../topics/protocol.md#integers): the number of members removed."
   ],
   "ZREVRANGE": [
-    "* [Array reply](../topics/protocol.md#arrays): a list of members in the specified range, optionally with their scores if _WITHSCORE_ was used."
+    "* [Array reply](../topics/protocol.md#arrays): a list of the members in the specified range, optionally with their scores if _WITHSCORE_ was used."
   ],
   "ZREVRANGEBYLEX": [
-    "[Array reply](../topics/protocol.md#arrays): a list of members in the specified score range."
+    "[Array reply](../topics/protocol.md#arrays): a list of the members in the specified score range."
   ],
   "ZREVRANGEBYSCORE": [
     "* [Array reply](../topics/protocol.md#arrays): a list of the members and, optionally, their scores in the specified score range."
@@ -1304,7 +1321,9 @@
     "* [Array reply](../topics/protocol.md#arrays): The rank and score of the member when _WITHSCORE_ is used."
   ],
   "ZSCAN": [
-    "[Array reply](../topics/protocol.md#arrays): cursor and scan response in array form."
+    "[Array reply](../topics/protocol.md#arrays): a two-element array.",
+    "* The first element is a [Bulk string reply](../topics/protocol.md#bulk-strings) that represents an unsigned 64-bit number, the cursor.",
+    "* The second element is an [Array reply](../topics/protocol.md#arrays) of member/score pairs that were scanned. When `NOSCORES` option is on, a list of members from the sorted set."
   ],
   "ZSCORE": [
     "One of the following:",

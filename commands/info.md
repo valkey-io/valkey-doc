@@ -8,7 +8,7 @@ The optional parameter can be used to select a specific section of information:
 *   `memory`: Memory consumption related information
 *   `persistence`: RDB and AOF related information
 *   `stats`: General statistics
-*   `replication`: Master/replica replication information
+*   `replication`: primary/replica replication information
 *   `cpu`: CPU consumption statistics
 *   `commandstats`: Valkey command statistics
 *   `latencystats`: Valkey command latency percentile distribution statistics
@@ -55,6 +55,7 @@ lru_clock:3425456
 executable:/home/viktor/repos/valkey/src/./valkey-server
 config_file:
 io_threads_active:0
+availability_zone:
 listener0:name=tcp,bind=*,bind=-::*,port=6379
 
 # Clients
@@ -71,6 +72,9 @@ clients_in_timeout_table:0
 total_watched_keys:0
 total_blocking_keys:0
 total_blocking_keys_on_nokey:0
+paused_reason:none
+paused_actions:none
+paused_timeout_milliseconds:0
 
 # Memory
 used_memory:4757704
@@ -287,10 +291,12 @@ Here is the meaning of all fields in the **server** section:
 *   `uptime_in_days`: Same value expressed in days
 *   `hz`: The server's current frequency setting
 *   `configured_hz`: The server's configured frequency setting
+*   `clients_hz`: Current frequency for client maintenance
 *   `lru_clock`: Clock incrementing every minute, for LRU management
 *   `executable`: The path to the server's executable
 *   `config_file`: The path to the config file
 *   `io_threads_active`: Flag indicating if I/O threads are active
+*   `availability_zone`: Inform Valkey of the Availability zone if running in a cloud environment, see `availability-zone` config for more details. Added in Valkey 8.0.
 *   `shutdown_in_milliseconds`: The maximum time remaining for replicas to catch up the replication before completing the shutdown sequence.
     This field is only present during shutdown.
 
@@ -314,6 +320,12 @@ Here is the meaning of all fields in the **clients** section:
 *   `total_watched_keys`: Number of watched keys. Added in Valkey 8.0.
 *   `total_blocking_keys`: Number of blocking keys.
 *   `total_blocking_keys_on_nokey`: Number of blocking keys that one or more clients that would like to be unblocked when the key is deleted.
+*   `paused_reason`: The current paused reason of the instance: "client_pause" means trigger by `CLIENT PAUSE`,
+    "shutdown_in_progress", "failover_in_progress" and "none" means no clients are paused. Added in Valkey 8.1.
+*   `paused_actions`: The current paused actions of the instance: "all" means all clients are paused,
+    "write" means clients executing write commands are paused,
+    and "none" means no clients are paused. Added in Valkey 8.1.
+*   `paused_timeout_milliseconds`: The remaining time of the paused actions. Added in Valkey 8.1.
 
 Here is the meaning of all fields in the **memory** section:
 
@@ -557,8 +569,8 @@ Here is the meaning of all fields in the **stats** section:
 
 Here is the meaning of all fields in the **replication** section:
 
-*   `role`: Value is "master" if the instance is replica of no one, or "slave" if the instance is a replica of some master instance.
-     Note that a replica can be master of another replica (chained replication).
+*   `role`: Value is "master" if the instance is replica of no one, or "slave" if the instance is a replica of some primary instance.
+     Note that a replica can be primary of another replica (chained replication).
 *   `master_failover_state`: The state of an ongoing failover, if any.
 *   `master_replid`: The replication ID of the Valkey server.
 *   `master_replid2`: The secondary replication ID, used for PSYNC after a failover.
@@ -566,19 +578,19 @@ Here is the meaning of all fields in the **replication** section:
 *   `second_repl_offset`: The offset up to which replication IDs are accepted
 *   `repl_backlog_active`: Flag indicating replication backlog is active
 *   `repl_backlog_size`: Total size in bytes of the replication backlog buffer
-*   `repl_backlog_first_byte_offset`: The master offset of the replication
+*   `repl_backlog_first_byte_offset`: The primary offset of the replication
      backlog buffer
 *   `repl_backlog_histlen`: Size in bytes of the data in the replication backlog
      buffer
 
 If the instance is a replica, these additional fields are provided:
 
-*   `master_host`: Host or IP address of the master
-*   `master_port`: Master listening TCP port
+*   `master_host`: Host or IP address of the primary
+*   `master_port`: Primary listening TCP port
 *   `master_link_status`: Status of the link (up/down)
 *   `master_last_io_seconds_ago`: Number of seconds since the last interaction
-     with master
-*   `master_sync_in_progress`: Indicate the master is syncing to the replica
+     with primary
+*   `master_sync_in_progress`: Indicate the primary is syncing to the replica
 *   `slave_read_repl_offset`: The read replication offset of the replica instance.
 *   `slave_repl_offset`: The replication offset of the replica instance
 *   `slave_priority`: The priority of the instance as a candidate for failover
@@ -599,7 +611,7 @@ If a SYNC operation is on-going, these additional fields are provided:
 *   `master_sync_last_io_seconds_ago`: Number of seconds since last transfer I/O
      during a SYNC operation
 
-If the link between master and replica is down, an additional field is provided:
+If the link between primary and replica is down, an additional field is provided:
 
 *   `master_link_down_since_seconds`: Number of seconds since the link is down
 
@@ -656,7 +668,7 @@ For each error type, the following line is added:
 
 The **sentinel** section is only available in Valkey Sentinel instances. It consists of the following fields:
 
-*   `sentinel_masters`: Number of Valkey masters monitored by this Sentinel instance
+*   `sentinel_masters`: Number of Valkey primaries monitored by this Sentinel instance
 *   `sentinel_tilt`: A value of 1 means this sentinel is in TILT mode
 *   `sentinel_tilt_since_seconds`: Duration in seconds of current TILT, or -1 if not TILTed.
 *   `sentinel_running_scripts`: The number of scripts this Sentinel is currently executing
@@ -687,6 +699,6 @@ It won't be included when `INFO` or `INFO ALL` are called, and it is returned on
 
 [hcgcpgp]: http://code.google.com/p/google-perftools/
 
-**A note about the word slave used in this man page**: If not for backward compatibility, the Valkey project no longer uses the word slave. Unfortunately in this command the word slave is part of the protocol, so we'll be able to remove such occurrences only when this API will be naturally deprecated.
+**A note about the word slave used in this man page**: If not for backward compatibility, the Valkey project no longer uses the words "master" and "slave". Unfortunately in the given commands these words are part of the protocol, so we'll be able to remove such occurrences only when this API will be naturally deprecated.
 
 **Modules generated sections**: Starting with Valkey 6, modules can inject their info into the `INFO` command, these are excluded by default even when the `all` argument is provided (it will include a list of loaded modules but not their generated info fields). To get these you must use either the `modules` argument or `everything`.,

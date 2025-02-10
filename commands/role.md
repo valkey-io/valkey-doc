@@ -1,4 +1,4 @@
-Provide information on the role of a Valkey instance in the context of replication, by returning if the instance is currently a `master`, `slave`, or `sentinel`. The command also returns additional information about the state of the replication (if the role is master or slave) or the list of monitored master names (if the role is sentinel).
+Provide information on the role of a Valkey instance in the context of replication, by returning if the instance is currently a `master`, `slave`, or `sentinel`. The command also returns additional information about the state of the replication (if the role is primary or replica) or the list of monitored primary names (if the role is sentinel).
 
 ## Output format
 
@@ -11,9 +11,9 @@ the instance, as one of the following three strings:
 
 The additional elements of the array depends on the role.
 
-## Master output
+## Primary output
 
-An example of output when `ROLE` is called in a master instance:
+An example of output when `ROLE` is called in a primary instance:
 
 ```
 1) "master"
@@ -26,10 +26,10 @@ An example of output when `ROLE` is called in a master instance:
       3) "3129543"
 ```
 
-The master output is composed of the following parts:
+The primary output is composed of the following parts:
 
 1. The string `master`.
-2. The current master replication offset, which is an offset that masters and replicas share to understand, in partial resynchronizations, the part of the replication stream the replicas needs to fetch to continue.
+2. The current primary replication offset, which is an offset that primaries and replicas share to understand, in partial resynchronizations, the part of the replication stream the replicas needs to fetch to continue.
 3. An array composed of three elements array representing the connected replicas. Every sub-array contains the replica IP, port, and the last acknowledged replication offset.
 
 ## Output of the command on replicas
@@ -47,10 +47,10 @@ An example of output when `ROLE` is called in a replica instance:
 The replica output is composed of the following parts:
 
 1. The string `slave`, because of Redis OSS compatibility (see note at the end of this page).
-2. The IP of the master.
-3. The port number of the master.
-4. The state of the replication from the point of view of the master, that can be `connect` (the instance needs to connect to its master), `connecting` (the master-replica connection is in progress), `sync` (the master and replica are trying to perform the synchronization), `connected` (the replica is online).
-5. The amount of data received from the replica so far in terms of master replication offset.
+2. The IP of the primary.
+3. The port number of the primary.
+4. The state of the replication from the point of view of the primary, that can be `connect` (the instance needs to connect to its primary), `connecting` (the primary-replica connection is in progress), `sync` (the primary and replica are trying to perform the synchronization), `connected` (the replica is online).
+5. The amount of data received from the replica so far in terms of primary replication offset.
 
 ## Sentinel output
 
@@ -67,7 +67,7 @@ An example of Sentinel output:
 The sentinel output is composed of the following parts:
 
 1. The string `sentinel`.
-2. An array of master names monitored by this Sentinel instance.
+2. An array of primary names monitored by this Sentinel instance.
 
 ## Examples
 
@@ -78,4 +78,4 @@ The sentinel output is composed of the following parts:
 3) (empty array)
 ```
 
-**A note about the word slave used in this man page**: If not for Redis OSS compatibility, the Valkey project does not use the word slave. Unfortunately in this command the word slave is part of the protocol, so we'll be able to remove such occurrences only when this API will be naturally deprecated.
+**A note about the word slave used in this man page**: If not for backward compatibility, the Valkey project no longer uses the words "master" and "slave". Unfortunately in the given commands these words are part of the protocol, so we'll be able to remove such occurrences only when this API will be naturally deprecated.

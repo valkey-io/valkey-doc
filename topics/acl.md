@@ -1,6 +1,5 @@
 ---
 title: "ACL"
-linkTitle: "ACL"
 description: Valkey Access Control List
 ---
 
@@ -532,7 +531,7 @@ In case you don't want to provide Valkey replicas and Valkey Sentinel instances
 full access to your Valkey instances, the following is the set of commands
 that must be allowed in order for everything to work correctly.
 
-For Sentinel, allow the user to access the following commands both in the master and replica instances:
+For Sentinel, allow the user to access the following commands both in the primary and replica instances:
 
 * AUTH, CLIENT, SUBSCRIBE, SCRIPT, PUBLISH, PING, INFO, MULTI, SLAVEOF, CONFIG, CLIENT, EXEC.
 
@@ -540,7 +539,7 @@ Sentinel does not need to access any key in the database but does use Pub/Sub, s
 
     ACL SETUSER sentinel-user on >somepassword allchannels +multi +slaveof +ping +exec +subscribe +config|rewrite +role +publish +info +client|setname +client|kill +script|kill
 
-Valkey replicas require the following commands to be allowed on the master instance:
+Valkey replicas require the following commands to be allowed on the primary instance:
 
 * PSYNC, REPLCONF, PING
 
@@ -548,4 +547,4 @@ No keys need to be accessed, so this translates to the following rules:
 
     ACL setuser replica-user on >somepassword +psync +replconf +ping
 
-Note that you don't need to configure the replicas to allow the master to be able to execute any set of commands. The master is always authenticated as the root user from the point of view of replicas.
+Note that you don't need to configure the replicas to allow the primary to be able to execute any set of commands. The primary is always authenticated as the root user from the point of view of replicas.

@@ -1,6 +1,5 @@
 ---
-title: Scale with Valkey Cluster
-linkTitle: Scale with Valkey Cluster
+title: Cluster tutorial
 description: Horizontal scaling with Valkey Cluster
 ---
 
@@ -14,7 +13,7 @@ If you plan to run a production Valkey Cluster deployment or want to understand 
 
 Valkey Cluster provides a way to run a Valkey installation where data is automatically sharded across multiple Valkey nodes. 
 Valkey Cluster also provides some degree of availability during partitions&mdash;in practical terms, the ability to continue operations when some nodes fail or are unable to communicate. 
-However, the cluster will become unavailable in the event of larger failures (for example, when the majority of masters are unavailable).
+However, the cluster will become unavailable in the event of larger failures (for example, when the majority of primaries are unavailable).
 
 So, with Valkey Cluster, you get the ability to:
 
@@ -83,11 +82,11 @@ Hash tags are documented in the Valkey Cluster specification, but the gist is
 that if there is a substring between {} brackets in a key, only what is
 inside the string is hashed. For example, the keys `user:{123}:profile` and `user:{123}:account` are guaranteed to be in the same hash slot because they share the same hash tag. As a result, you can operate on these two keys in the same multi-key operation.
 
-#### Valkey Cluster master-replica model
+#### Valkey Cluster primary-replica model
 
-To remain available when a subset of master nodes are failing or are
+To remain available when a subset of primary nodes are failing or are
 not able to communicate with the majority of nodes, Valkey Cluster uses a
-master-replica model where every hash slot has from 1 (the master itself) to N
+primary-replica model where every hash slot has from 1 (the primary itself) to N
 replicas (N-1 additional replica nodes).
 
 In our example cluster with nodes A, B, C, if node B fails the cluster is not
@@ -95,12 +94,12 @@ able to continue, since we no longer have a way to serve hash slots in the
 range 5501-11000.
 
 However, when the cluster is created (or at a later time), we add a replica
-node to every master, so that the final cluster is composed of A, B, C
-that are master nodes, and A1, B1, C1 that are replica nodes.
+node to every primary, so that the final cluster is composed of A, B, C
+that are primary nodes, and A1, B1, C1 that are replica nodes.
 This way, the system can continue if node B fails.
 
 Node B1 replicates B, and B fails, the cluster will promote node B1 as the new
-master and will continue to operate correctly.
+primary and will continue to operate correctly.
 
 However, note that if nodes B and B1 fail at the same time, Valkey Cluster will not be able to continue to operate.
 
@@ -114,15 +113,15 @@ The first reason why Valkey Cluster can lose writes is because it uses
 asynchronous replication. This means that during writes the following
 happens:
 
-* Your client writes to the master B.
-* The master B replies OK to your client.
-* The master B propagates the write to its replicas B1, B2 and B3.
+* Your client writes to the primary B.
+* The primary B replies OK to your client.
+* The primary B propagates the write to its replicas B1, B2 and B3.
 
 As you can see, B does not wait for an acknowledgement from B1, B2, B3 before
 replying to the client, since this would be a prohibitive latency penalty
 for Valkey, so if your client writes something, B acknowledges the write,
 but crashes before being able to send the write to its replicas, one of the
-replicas (that did not receive the write) can be promoted to master, losing
+replicas (that did not receive the write) can be promoted to primary, losing
 the write forever.
 
 This is very similar to what happens with most databases that are
@@ -141,37 +140,37 @@ implemented via the `WAIT` command. This makes losing writes a lot less
 likely. However, note that Valkey Cluster does not implement strong consistency
 even when synchronous replication is used: it is always possible, under more
 complex failure scenarios, that a replica that was not able to receive the write
-will be elected as master.
+will be elected as primary.
 
 There is another notable scenario where Valkey Cluster will lose writes, that
 happens during a network partition where a client is isolated with a minority
-of instances including at least a master.
+of instances including at least a primary.
 
 Take as an example our 6 nodes cluster composed of A, B, C, A1, B1, C1,
-with 3 masters and 3 replicas. There is also a client, that we will call Z1.
+with 3 primaries and 3 replicas. There is also a client, that we will call Z1.
 
 After a partition occurs, it is possible that in one side of the
 partition we have A, C, A1, B1, C1, and in the other side we have B and Z1.
 
 Z1 is still able to write to B, which will accept its writes. If the
 partition heals in a very short time, the cluster will continue normally.
-However, if the partition lasts enough time for B1 to be promoted to master
+However, if the partition lasts enough time for B1 to be promoted to primary
 on the majority side of the partition, the writes that Z1 has sent to B
 in the meantime will be lost.
 
 **Note:**
 There is a **maximum window** to the amount of writes Z1 will be able
 to send to B: if enough time has elapsed for the majority side of the
-partition to elect a replica as master, every master node in the minority
+partition to elect a replica as primary, every primary node in the minority
 side will have stopped accepting writes.
 
 This amount of time is a very important configuration directive of Valkey
 Cluster, and is called the **node timeout**.
 
-After node timeout has elapsed, a master node is considered to be failing,
+After node timeout has elapsed, a primary node is considered to be failing,
 and can be replaced by one of its replicas.
-Similarly, after node timeout has elapsed without a master node to be able
-to sense the majority of the other master nodes, it enters an error state
+Similarly, after node timeout has elapsed without a primary node to be able
+to sense the majority of the other primary nodes, it enters an error state
 and stops accepting writes.
 
 ## Valkey Cluster configuration parameters
@@ -182,11 +181,11 @@ in the `valkey.conf` file.
 
 * **cluster-enabled `<yes/no>`**: If yes, enables Valkey Cluster support in a specific Valkey instance. Otherwise the instance starts as a standalone instance as usual.
 * **cluster-config-file `<filename>`**: Note that despite the name of this option, this is not a user editable configuration file, but the file where a Valkey Cluster node automatically persists the cluster configuration (the state, basically) every time there is a change, in order to be able to re-read it at startup. The file lists things like the other nodes in the cluster, their state, persistent variables, and so forth. Often this file is rewritten and flushed on disk as a result of some message reception.
-* **cluster-node-timeout `<milliseconds>`**: The maximum amount of time a Valkey Cluster node can be unavailable, without it being considered as failing. If a master node is not reachable for more than the specified amount of time, it will be failed over by its replicas. This parameter controls other important things in Valkey Cluster. Notably, every node that can't reach the majority of master nodes for the specified amount of time, will stop accepting queries.
-* **cluster-slave-validity-factor `<factor>`**: If set to zero, a replica will always consider itself valid, and will therefore always try to failover a master, regardless of the amount of time the link between the master and the replica remained disconnected. If the value is positive, a maximum disconnection time is calculated as the *node timeout* value multiplied by the factor provided with this option, and if the node is a replica, it will not try to start a failover if the master link was disconnected for more than the specified amount of time. For example, if the node timeout is set to 5 seconds and the validity factor is set to 10, a replica disconnected from the master for more than 50 seconds will not try to failover its master. Note that any value different than zero may result in Valkey Cluster being unavailable after a master failure if there is no replica that is able to failover it. In that case the cluster will return to being available only when the original master rejoins the cluster.
-* **cluster-migration-barrier `<count>`**: Minimum number of replicas a master will remain connected with, for another replica to migrate to a master which is no longer covered by any replica. See the appropriate section about replica migration in this tutorial for more information.
+* **cluster-node-timeout `<milliseconds>`**: The maximum amount of time a Valkey Cluster node can be unavailable, without it being considered as failing. If a primary node is not reachable for more than the specified amount of time, it will be failed over by its replicas. This parameter controls other important things in Valkey Cluster. Notably, every node that can't reach the majority of primary nodes for the specified amount of time, will stop accepting queries.
+* **cluster-replica-validity-factor `<factor>`**: If set to zero, a replica will always consider itself valid, and will therefore always try to failover a primary, regardless of the amount of time the link between the primary and the replica remained disconnected. If the value is positive, a maximum disconnection time is calculated as the *node timeout* value multiplied by the factor provided with this option, and if the node is a replica, it will not try to start a failover if the primary link was disconnected for more than the specified amount of time. For example, if the node timeout is set to 5 seconds and the validity factor is set to 10, a replica disconnected from the primary for more than 50 seconds will not try to failover its primary. Note that any value different than zero may result in Valkey Cluster being unavailable after a primary failure if there is no replica that is able to failover it. In that case the cluster will return to being available only when the original primary rejoins the cluster.
+* **cluster-migration-barrier `<count>`**: Minimum number of replicas a primary will remain connected with, for another replica to migrate to a primary which is no longer covered by any replica. See the appropriate section about replica migration in this tutorial for more information.
 * **cluster-require-full-coverage `<yes/no>`**: If this is set to yes, as it is by default, the cluster stops accepting writes if some percentage of the key space is not covered by any node. If the option is set to no, the cluster will still serve queries even if only requests about a subset of keys can be processed.
-* **cluster-allow-reads-when-down `<yes/no>`**: If this is set to no, as it is by default, a node in a Valkey Cluster will stop serving all traffic when the cluster is marked as failed, either when a node can't reach a quorum of masters or when full coverage is not met. This prevents reading potentially inconsistent data from a node that is unaware of changes in the cluster. This option can be set to yes to allow reads from a node during the fail state, which is useful for applications that want to prioritize read availability but still want to prevent inconsistent writes. It can also be used for when using Valkey Cluster with only one or two shards, as it allows the nodes to continue serving writes when a master fails but automatic failover is impossible.
+* **cluster-allow-reads-when-down `<yes/no>`**: If this is set to no, as it is by default, a node in a Valkey Cluster will stop serving all traffic when the cluster is marked as failed, either when a node can't reach a quorum of primaries or when full coverage is not met. This prevents reading potentially inconsistent data from a node that is unaware of changes in the cluster. This option can be set to yes to allow reads from a node during the fail state, which is useful for applications that want to prioritize read availability but still want to prevent inconsistent writes. It can also be used for when using Valkey Cluster with only one or two shards, as it allows the nodes to continue serving writes when a primary fails but automatic failover is impossible.
 
 ## Create and use a Valkey Cluster
 
@@ -228,8 +227,8 @@ This file is never touched by humans; it is simply generated at startup
 by the Valkey Cluster instances, and updated every time it is needed.
 
 Note that the **minimal cluster** that works as expected must contain
-at least three master nodes. For deployment, we strongly recommend
-a six-node cluster, with three masters and three replicas.
+at least three primary nodes. For deployment, we strongly recommend
+a six-node cluster, with three primaries and three replicas.
 
 You can test this locally by creating the following directories named
 after the port number of the instance you'll run inside any given directory.
@@ -278,7 +277,7 @@ To create the cluster, run:
     --cluster-replicas 1
 
 The command used here is **create**, since we want to create a new cluster.
-The option `--cluster-replicas 1` means that we want a replica for every master created.
+The option `--cluster-replicas 1` means that we want a replica for every primary created.
 
 The other arguments are the list of addresses of the instances I want to use
 to create the new cluster.
@@ -289,7 +288,7 @@ bootstrapped into talking with each other. Finally, if everything has gone well,
 
     [OK] All 16384 slots covered
 
-This means that there is at least one master instance serving each of the
+This means that there is at least one primary instance serving each of the
 16384 available slots.
 
 If you don't want to create a Valkey Cluster by configuring and executing
@@ -299,7 +298,7 @@ system (but you'll not learn the same amount of operational details).
 Find the `utils/create-cluster` directory in the Valkey distribution.
 There is a script called `create-cluster` inside (same name as the directory
 it is contained into), it's a simple bash script. In order to start
-a 6 nodes cluster with 3 masters and 3 replicas just type the following
+a 6 nodes cluster with 3 primaries and 3 replicas just type the following
 commands:
 
 1. `create-cluster start`
@@ -506,7 +505,7 @@ call.
 
 Then valkey-cli needs to know what is the target of the resharding, that is,
 the node that will receive the hash slots.
-I'll use the first master node, that is, 127.0.0.1:7000, but I need
+I'll use the first primary node, that is, 127.0.0.1:7000, but I need
 to specify the Node ID of the instance. This was already printed in a
 list by valkey-cli, but I can always find the ID of a node with the following
 command if I need:
@@ -520,7 +519,7 @@ Ok so my target node is 97a3a64667477371c4479320d683e4c8db5858b1.
 
 Now you'll get asked from what nodes you want to take those keys.
 I'll just type `all` in order to take a bit of hash slots from all the
-other master nodes.
+other primary nodes.
 
 After the final confirmation you'll see a message for every slot that
 valkey-cli is going to move from a node to another, and a dot will be printed
@@ -535,7 +534,7 @@ the following command:
 
     valkey-cli --cluster check 127.0.0.1:7000
 
-All the slots will be covered as usual, but this time the master at
+All the slots will be covered as usual, but this time the primary at
 127.0.0.1:7000 will have more hash slots, something around 6461.
 
 Resharding can be performed automatically without the need to manually
@@ -623,13 +622,13 @@ to test the Valkey Cluster failover.
 
 To trigger the failover, the simplest thing we can do (that is also
 the semantically simplest failure that can occur in a distributed system)
-is to crash a single process, in our case a single master.
+is to crash a single process, in our case a single primary.
 
 **Note:**
 During this test, you should take a tab open with the consistency test
 application running.
 
-We can identify a master and crash it with the following command:
+We can identify a primary and crash it with the following command:
 
 ```
 $ valkey-cli -p 7000 cluster nodes | grep master
@@ -638,7 +637,7 @@ $ valkey-cli -p 7000 cluster nodes | grep master
 97a3a64667477371c4479320d683e4c8db5858b1 :0 myself,master - 0 0 0 connected 0-5959 10922-11422
 ```
 
-Ok, so 7000, 7001, and 7002 are masters. Let's crash node 7002 with the
+Ok, so 7000, 7001, and 7002 are primaries. Let's crash node 7002 with the
 **DEBUG SEGFAULT** command:
 
 ```
@@ -685,8 +684,8 @@ a211e242fc6b22a9427fed61285e85892fa04e08 127.0.0.1:7003 slave 97a3a64667477371c4
 2938205e12de373867bf38f1ca29d31d0ddb3e46 127.0.0.1:7002 slave 3c3a0c74aae0b56170ccb03a76b60cfe7dc1912e 0 1385503418016 3 connected
 ```
 
-Now the masters are running on ports 7000, 7001 and 7005. What was previously
-a master, that is the Valkey instance running on port 7002, is now a replica of
+Now the primaries are running on ports 7000, 7001 and 7005. What was previously
+a primary, that is the Valkey instance running on port 7002, is now a replica of
 7005.
 
 The output of the `CLUSTER NODES` command may look intimidating, but it is actually pretty simple, and is composed of the following tokens:
@@ -704,48 +703,48 @@ The output of the `CLUSTER NODES` command may look intimidating, but it is actua
 #### Manual failover
 
 Sometimes it is useful to force a failover without actually causing any problem
-on a master. For example, to upgrade the Valkey process of one of the
-master nodes it is a good idea to failover it to turn it into a replica
+on a primary. For example, to upgrade the Valkey process of one of the
+primary nodes it is a good idea to failover it to turn it into a replica
 with minimal impact on availability.
 
 Manual failovers are supported by Valkey Cluster using the `CLUSTER FAILOVER`
-command, that must be executed in one of the replicas of the master you want
+command, that must be executed in one of the replicas of the primary you want
 to failover.
 
 Manual failovers are special and are safer compared to failovers resulting from
-actual master failures. They occur in a way that avoids data loss in the
-process, by switching clients from the original master to the new master only
-when the system is sure that the new master processed all the replication stream
+actual primary failures. They occur in a way that avoids data loss in the
+process, by switching clients from the original primary to the new primary only
+when the system is sure that the new primary processed all the replication stream
 from the old one.
 
 This is what you see in the replica log when you perform a manual failover:
 
     # Manual failover user request accepted.
-    # Received replication offset for paused master manual failover: 347540
-    # All master replication stream processed, manual failover can start.
+    # Received replication offset for paused primary manual failover: 347540
+    # All primary replication stream processed, manual failover can start.
     # Start of election delayed for 0 milliseconds (rank #0, offset 347540).
     # Starting a failover election for epoch 7545.
-    # Failover election won: I'm the new master.
+    # Failover election won: I'm the new primary.
 
-Basically clients connected to the master we are failing over are stopped.
-At the same time the master sends its replication offset to the replica, that
+Clients sending write commands to the primary are blocked during the failover.
+When the primary sends its replication offset to the replica, the replica
 waits to reach the offset on its side. When the replication offset is reached,
-the failover starts, and the old master is informed about the configuration
-switch. When the clients are unblocked on the old master, they are redirected
-to the new master.
+the failover starts, and the old primary is informed about the configuration
+switch. When the switch is complete, the clients are unblocked on the old
+primary and they are redirected to the new primary.
 
 **Note:**
-To promote a replica to master, it must first be known as a replica by a majority of the masters in the cluster.
+To promote a replica to primary, it must first be known as a replica by a majority of the primaries in the cluster.
   Otherwise, it cannot win the failover election.
-  If the replica has just been added to the cluster (see [Add a new node as a replica](#add-a-new-node-as-a-replica)), you may need to wait a while before sending the `CLUSTER FAILOVER` command, to make sure the masters in cluster are aware of the new replica.
+  If the replica has just been added to the cluster (see [Add a new node as a replica](#add-a-new-node-as-a-replica)), you may need to wait a while before sending the `CLUSTER FAILOVER` command, to make sure the primaries in cluster are aware of the new replica.
 
 #### Add a new node
 
 Adding a new node is basically the process of adding an empty node and then
-moving some data into it, in case it is a new master, or telling it to
+moving some data into it, in case it is a new primary, or telling it to
 setup as a replica of a known node, in case it is a replica.
 
-We'll show both, starting with the addition of a new master instance.
+We'll show both, starting with the addition of a new primary instance.
 
 In both cases the first step to perform is **adding an empty node**.
 
@@ -792,10 +791,10 @@ a211e242fc6b22a9427fed61285e85892fa04e08 127.0.0.1:7003 slave 97a3a64667477371c4
 
 Note that since this node is already connected to the cluster it is already
 able to redirect client queries correctly and is generally speaking part of
-the cluster. However it has two peculiarities compared to the other masters:
+the cluster. However it has two peculiarities compared to the other primaries:
 
 * It holds no data as it has no assigned hash slots.
-* Because it is a master without assigned slots, it does not participate in the election process when a replica wants to become a master.
+* Because it is a primary without assigned slots, it does not participate in the election process when a replica wants to become a primary.
 
 Now it is possible to assign hash slots to this node using the resharding
 feature of `valkey-cli`. 
@@ -806,31 +805,31 @@ having as a target the empty node.
 ##### Add a new node as a replica
 
 Adding a new replica can be performed in two ways. The obvious one is to
-use valkey-cli again, but with the --cluster-slave option, like this:
+use valkey-cli again, but with the --cluster-replica option, like this:
 
-    valkey-cli --cluster add-node 127.0.0.1:7006 127.0.0.1:7000 --cluster-slave
+    valkey-cli --cluster add-node 127.0.0.1:7006 127.0.0.1:7000 --cluster-replica
 
 Note that the command line here is exactly like the one we used to add
-a new master, so we are not specifying to which master we want to add
+a new primary, so we are not specifying to which primary we want to add
 the replica. In this case, what happens is that valkey-cli will add the new
-node as replica of a random master among the masters with fewer replicas.
+node as replica of a random primary among the primaries with fewer replicas.
 
-However you can specify exactly what master you want to target with your
+However you can specify exactly what primary you want to target with your
 new replica with the following command line:
 
-    valkey-cli --cluster add-node 127.0.0.1:7006 127.0.0.1:7000 --cluster-slave --cluster-master-id 3c3a0c74aae0b56170ccb03a76b60cfe7dc1912e
+    valkey-cli --cluster add-node 127.0.0.1:7006 127.0.0.1:7000 --cluster-replica --cluster-master-id 3c3a0c74aae0b56170ccb03a76b60cfe7dc1912e
 
-This way we assign the new replica to a specific master.
+This way we assign the new replica to a specific primary.
 
-A more manual way to add a replica to a specific master is to add the new
-node as an empty master, and then turn it into a replica using the
+A more manual way to add a replica to a specific primary is to add the new
+node as an empty primary, and then turn it into a replica using the
 `CLUSTER REPLICATE` command. This also works if the node was added as a replica
-but you want to move it as a replica of a different master.
+but you want to move it as a replica of a different primary.
 
 For example in order to add a replica for the node 127.0.0.1:7005 that is
 currently serving hash slots in the range 11423-16383, that has a Node ID
 3c3a0c74aae0b56170ccb03a76b60cfe7dc1912e, all I need to do is to connect
-with the new node (already added as empty master) and send the command:
+with the new node (already added as empty primary) and send the command:
 
     valkey 127.0.0.1:7006> cluster replicate 3c3a0c74aae0b56170ccb03a76b60cfe7dc1912e
 
@@ -840,8 +839,8 @@ update their config). We can verify with the following command:
 
 ```
 $ valkey-cli -p 7000 cluster nodes | grep slave | grep 3c3a0c74aae0b56170ccb03a76b60cfe7dc1912e
-f093c80dde814da99c5cf72a7dd01590792b783b 127.0.0.1:7006 slave 3c3a0c74aae0b56170ccb03a76b60cfe7dc1912e 0 1385543617702 3 connected
-2938205e12de373867bf38f1ca29d31d0ddb3e46 127.0.0.1:7002 slave 3c3a0c74aae0b56170ccb03a76b60cfe7dc1912e 0 1385543617198 3 connected
+f093c80dde814da99c5cf72a7dd01590792b783b 127.0.0.1:7006 replica 3c3a0c74aae0b56170ccb03a76b60cfe7dc1912e 0 1385543617702 3 connected
+2938205e12de373867bf38f1ca29d31d0ddb3e46 127.0.0.1:7002 replica 3c3a0c74aae0b56170ccb03a76b60cfe7dc1912e 0 1385543617198 3 connected
 ```
 
 The node 3c3a0c... now has two replicas, running on ports 7002 (the existing one) and 7006 (the new one).
@@ -855,14 +854,14 @@ To remove a replica node just use the `del-node` command of valkey-cli:
 The first argument is just a random node in the cluster, the second argument
 is the ID of the node you want to remove.
 
-You can remove a master node in the same way as well, **however in order to
-remove a master node it must be empty**. If the master is not empty you need
-to reshard data away from it to all the other master nodes before.
+You can remove a primary node in the same way as well, **however in order to
+remove a primary node it must be empty**. If the primary is not empty you need
+to reshard data away from it to all the other primary nodes before.
 
-An alternative to remove a master node is to perform a manual failover of it
+An alternative to remove a primary node is to perform a manual failover of it
 over one of its replicas and remove the node after it turned into a replica of the
-new master. Obviously this does not help when you want to reduce the actual
-number of masters in your cluster, in that case, a resharding is needed.
+new primary. Obviously this does not help when you want to reduce the actual
+number of primaries in your cluster, in that case, a resharding is needed.
 
 There is a special scenario where you want to remove a failed node.
 You should not use the `del-node` command because it tries to connect to all nodes and you will encounter a "connection refused" error.
@@ -875,12 +874,12 @@ This command will execute `CLUSTER FORGET` command on every node.
 #### Replica migration
 
 In Valkey Cluster, you can reconfigure a replica to replicate with a
-different master at any time just using this command:
+different primary at any time just using this command:
 
     CLUSTER REPLICATE <master-node-id>
 
 However there is a special scenario where you want replicas to move from one
-master to another one automatically, without the help of the system administrator.
+primary to another one automatically, without the help of the system administrator.
 The automatic reconfiguration of replicas is called *replicas migration* and is
 able to improve the reliability of a Valkey Cluster.
 
@@ -888,38 +887,38 @@ able to improve the reliability of a Valkey Cluster.
 You can read the details of replicas migration in the [Valkey Cluster Specification](cluster-spec.md), here we'll only provide some information about the
 general idea and what you should do in order to benefit from it.
 
-The reason why you may want to let your cluster replicas to move from one master
+The reason why you may want to let your cluster replicas to move from one primary
 to another under certain condition, is that usually the Valkey Cluster is as
-resistant to failures as the number of replicas attached to a given master.
+resistant to failures as the number of replicas attached to a given primary.
 
-For example a cluster where every master has a single replica can't continue
-operations if the master and its replica fail at the same time, simply because
-there is no other instance to have a copy of the hash slots the master was
+For example a cluster where every primary has a single replica can't continue
+operations if the primary and its replica fail at the same time, simply because
+there is no other instance to have a copy of the hash slots the primary was
 serving. However while net-splits are likely to isolate a number of nodes
 at the same time, many other kind of failures, like hardware or software failures
 local to a single node, are a very notable class of failures that are unlikely
 to happen at the same time, so it is possible that in your cluster where
-every master has a replica, the replica is killed at 4am, and the master is killed
+every primary has a replica, the replica is killed at 4am, and the primary is killed
 at 6am. This still will result in a cluster that can no longer operate.
 
 To improve reliability of the system we have the option to add additional
-replicas to every master, but this is expensive. Replica migration allows to
-add more replicas to just a few masters. So you have 10 masters with 1 replica
+replicas to every primary, but this is expensive. Replica migration allows to
+add more replicas to just a few primaries. So you have 10 primaries with 1 replica
 each, for a total of 20 instances. However you add, for example, 3 instances
-more as replicas of some of your masters, so certain masters will have more
+more as replicas of some of your primaries, so certain primaries will have more
 than a single replica.
 
-With replicas migration what happens is that if a master is left without
-replicas, a replica from a master that has multiple replicas will migrate to
-the *orphaned* master. So after your replica goes down at 4am as in the example
-we made above, another replica will take its place, and when the master
+With replicas migration what happens is that if a primary is left without
+replicas, a replica from a primary that has multiple replicas will migrate to
+the *orphaned* primary. So after your replica goes down at 4am as in the example
+we made above, another replica will take its place, and when the primary
 will fail as well at 5am, there is still a replica that can be elected so that
 the cluster can continue to operate.
 
 So what you should know about replicas migration in short?
 
-* The cluster will try to migrate a replica from the master that has the greatest number of replicas in a given moment.
-* To benefit from replica migration you have just to add a few more replicas to a single master in your cluster, it does not matter what master.
+* The cluster will try to migrate a replica from the primary that has the greatest number of replicas in a given moment.
+* To benefit from replica migration you have just to add a few more replicas to a single primary in your cluster, it does not matter what primary.
 * There is a configuration parameter that controls the replica migration feature that is called `cluster-migration-barrier`: you can read more about it in the example `valkey.conf` file provided with Valkey Cluster.
 
 #### Upgrade nodes in a Valkey Cluster
@@ -929,20 +928,67 @@ it with an updated version of Valkey. If there are clients scaling reads using
 replica nodes, they should be able to reconnect to a different replica if a given
 one is not available.
 
-Upgrading masters is a bit more complex, and the suggested procedure is:
+Upgrading primaries is a bit more complex. The suggested procedure is to trigger
+a manual failover to turn the old primary into a replica and then upgrading it.
 
-1. Use `CLUSTER FAILOVER` to trigger a manual failover of the master to one of its replicas.
-   (See the [Manual failover](#manual-failover) in this topic.)
-2. Wait for the master to turn into a replica.
-3. Finally upgrade the node as you do for replicas.
-4. If you want the master to be the node you just upgraded, trigger a new manual failover in order to turn back the upgraded node into a master.
+A complete rolling upgrade of all nodes in a cluster can be performed by
+repeating the following procedure for each shard (a primary and its replicas):
 
-Following this procedure you should upgrade one node after the other until
-all the nodes are upgraded.
+1. Add one or more upgraded nodes as new replicas to the primary. This step is
+   optional but it ensures that the number of replicas is not compromised during
+   the rolling upgrade. To add a new node, use [`CLUSTER
+   MEET`](../commands/cluster-meet.md) and [`CLUSTER
+   REPLICATE`](../commands/cluster-replicate.md) or use `valkey-cli` as
+   described under [Add a new node as a replica](#add-a-new-node-as-a-replica).
+
+   An alternative is to upgrade one replica at a time and have fewer replicas
+   online during the upgrade.
+
+2. Upgrade the old replicas you want to keep by restarting them with the updated
+   version of Valkey. If you're replacing all the old nodes with new nodes, you
+   can skip this step.
+
+3. Select one of the upgraded replicas to be the new primary. Wait until this
+   replica has caught up the replication offset with the primary. You can use
+   [`INFO REPLICATION`](../commands/info.md) and check for the line
+   `master_link_status:up` to be present. This indicates that the initial sync
+   with the primary is complete.
+
+   After the initial full sync, the replica might still lag behind in
+   replication. Send `INFO REPLICATION` to the primary and the replica and
+   compare the field `master_repl_offset` returned by both nodes. If the offsets
+   match, it means that all writes have been replicated. However, if the primary
+   receives a constant stream of writes, it's possible that the offsets will
+   never be equal. In this step, you can accept a small difference. It's usually
+   enough to wait for some seconds to minimize the difference.
+
+4. Check that the new replica is known by all nodes in the cluster, or at least
+   by the primaries in the cluster. You can send [`CLUSTER
+   NODES`](../commands/cluster-nodes.md) to each of the nodes in the cluster and
+   check that they all are aware of the new node. Wait for some time and repeat
+   the check if necessary.
+
+5. Trigger a manual failover by sending [`CLUSTER
+   FAILOVER`](../commands/cluster-failover.md) to the replica node selected to
+   become the new primary. See the [Manual failover](#manual-failover) section
+   in this document for more information.
+
+6. Wait for the failover to complete. To check, you can use
+   [`ROLE`](../commands/role.md), [`INFO REPLICATION`](../commands/info.md)
+   (which indicates `role:master` after successful failover) or [`CLUSTER
+   NODES`](../commands/cluster-nodes.md) to verify that the state of the cluster
+   has changed shortly after the command was sent.
+
+7. Take the old primary (now a replica) out of service, or upgrade it and add it
+   again as a replica. Remove additional replicas kept for redundancy during the
+   upgrade, if any.
+
+Repeat this sequence for each shard (each primary and its replicas) until all
+nodes in the cluster have been upgraded.
 
 #### Migrate to Valkey Cluster
 
-Users willing to migrate to Valkey Cluster may have just a single master, or
+Users willing to migrate to Valkey Cluster may have just a single primary, or
 may already using a preexisting sharding setup, where keys
 are split among N nodes, using some in-house algorithm or a sharding algorithm
 implemented by their client library or Valkey proxy.
@@ -962,14 +1008,14 @@ the context of the same hash tag.
 Case 1 and 2 are covered, so we'll focus on those two cases, that are handled
 in the same way, so no distinction will be made in the documentation.
 
-Assuming you have your preexisting data set split into N masters, where
+Assuming you have your preexisting data set split into N primaries, where
 N=1 if you have no preexisting sharding, the following steps are needed
 in order to migrate your data set to Valkey Cluster:
 
 1. Stop your clients. No automatic live-migration to Valkey Cluster is currently possible. You may be able to do it orchestrating a live migration in the context of your application / environment.
-2. Generate an append only file for all of your N masters using the `BGREWRITEAOF` command, and waiting for the AOF file to be completely generated.
+2. Generate an append only file for all of your N primaries using the `BGREWRITEAOF` command, and waiting for the AOF file to be completely generated.
 3. Save your AOF files from aof-1 to aof-N somewhere. At this point you can stop your old instances if you wish (this is useful since in non-virtualized deployments you often need to reuse the same computers).
-4. Create a Valkey Cluster composed of N masters and zero replicas. You'll add replicas later. Make sure all your nodes are using the append only file for persistence.
+4. Create a Valkey Cluster composed of N primaries and zero replicas. You'll add replicas later. Make sure all your nodes are using the append only file for persistence.
 5. Stop all the cluster nodes, substitute their append only file with your pre-existing append only files, aof-1 for the first node, aof-2 for the second node, up to aof-N.
 6. Restart your Valkey Cluster nodes with the new AOF files. They'll complain that there are keys that should not be there according to their configuration.
 7. Use `valkey-cli --cluster fix` command in order to fix the cluster so that keys will be migrated according to the hash slots each node is authoritative or not.
@@ -983,7 +1029,7 @@ The command moves all the keys of a running instance (deleting the keys from
 the source instance) to the specified pre-existing Valkey Cluster. 
 
 **Note:**
-If not for backward compatibility, the Valkey project no longer uses the word slave. Unfortunately in this command the word slave is part of the protocol, so we'll be able to remove such occurrences only when this API will be naturally deprecated.
+If not for backward compatibility, the Valkey project no longer uses the words "master" and "slave". Unfortunately in this command these words are part of the protocol, so we'll be able to remove such occurrences only when this API will be naturally deprecated.
 
 ## Learn more
 

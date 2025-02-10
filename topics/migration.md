@@ -1,13 +1,12 @@
 ---
 title: Migration from Redis to Valkey
-linkTitle: Migration
 description: How to migrate from Redis to Valkey
 ---
 
-This is a migration guide from Redis Community Edition to Valkey. 
+This is a migration guide from Redis open source versions to Valkey.
 You will learn how to migrate a standalone Redis server instance and a Redis Cluster. 
 
-This guide provides migration steps for Redis server and Valkey deployed in Docker; however, they should also apply for on-premises deployments. 
+This guide provides migration steps for Redis server and Valkey deployed in Docker; however, they should also apply for other deployments.
 Refer to [install Valkey](installation.md) for installation options.
 
 ## Why to migrate to Valkey?
@@ -18,15 +17,19 @@ Refer to [install Valkey](installation.md) for installation options.
 
 ### Migration compatibility matrix
 
-You can migrate Redis server to Valkey. 
+You can migrate a Redis server to Valkey.
+Valkey is compatible with Redis OSS 7.2 and all earlier open source Redis versions.
+Migrating from any open source Redis version to Valkey is effectively an upgrade.
+Redis Community Edition (CE), versions 7.4 and later, are not open source and the data files are not compatible with Valkey.
+It may be possible to migrate the data to Valkey from proprietary Redis versions and other Redis-like software but it requires another method and is not covered by this document.
+
 The following table provides migration options depending on the Redis version you run:
 
-| Redis | Valkey |
-|-------|--------|
-| 6.x   | 7.2.x  |
-| 7.2.x | 7.2.x  |
-| 7.2.x | 8.0.x  |
-| 7.4   | n/a    |
+| Redis                 | Valkey |
+|-----------------------|--------|
+| OSS 2.x - 7.2.x       | 7.2.x  |
+| OSS 2.x - 7.2.x       | 8.0    |
+| CE 7.4                | n/a    |
 
 ## Migrate a standalone instance
 
@@ -282,7 +285,7 @@ For this scenario, we assume that you have Redis Cluster consisting of 3 primary
 
     ``` 
     $ docker exec -it <redis-1> bash
-    $ redis-cli --cluster add-node <valkey-node-IP>:6379 <existing-node-IP>:6379 --cluster-slave
+    $ redis-cli --cluster add-node <valkey-node-IP>:6379 <existing-node-IP>:6379 --cluster-replica
     ```
 
 6. Check the cluster status
@@ -326,7 +329,7 @@ For this scenario, we assume that you have Redis Cluster consisting of 3 primary
     b. Add a new node to a specific primary:
 
       ```
-      $ valkey-cli --cluster add-node 172.22.0.10:6379 172.22.0.2:6379 --cluster-slave --cluster-master-id <node-ID>
+      $ valkey-cli --cluster add-node 172.22.0.10:6379 172.22.0.2:6379 --cluster-replica --cluster-master-id <node-ID>
       ```
     
 12. Remove Redis nodes:
@@ -337,5 +340,5 @@ For this scenario, we assume that you have Redis Cluster consisting of 3 primary
 
      The first argument is just a random node in the cluster, the second argument is the ID of the node you want to remove.
 
-> NOTE: If not for backward compatibility, the Valkey project no longer uses the words "master" and "slave". Unfortunately in the given commands these words are part of the protocol, so we’ll be able to remove such occurrences only when this API will be naturally deprecated.
+> NOTE: If not for backward compatibility, the Valkey project no longer uses the words "master" and "slave". Unfortunately in the given commands these words are part of the protocol, so we'll be able to remove such occurrences only when this API will be naturally deprecated.
 

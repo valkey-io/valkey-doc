@@ -1,6 +1,5 @@
 ---
 title: "Keyspace"
-linkTitle: "Keyspace"
 description: >
     Managing keys in Valkey: Key expiration, scanning, altering and querying the key space
 ---

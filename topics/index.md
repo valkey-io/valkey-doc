@@ -1,10 +1,9 @@
 ---
 title: "Valkey Documentation"
-linkTitle: "Documentation"
 ---
 
 The Valkey documentation is managed in markdown files in the
-[valkey-doc repository](http://github.com/valkey-io/valkey-doc).
+[valkey-doc repository](https://github.com/valkey-io/valkey-doc).
 It's released under the
 [Creative Commons Attribution-ShareAlike 4.0 International license](https://creativecommons.org/licenses/by-sa/4.0/).
 
@@ -41,9 +40,11 @@ Administration
 * [valkey-server](server.md): How to run the Valkey server.
 * [Configuration](valkey.conf.md): How to configure Valkey.
 * [Replication](replication.md): What you need to know to set up primary-replica replication.
+* [Migration](migration.md): How to migrate from Redis to Valkey.
 * [Persistence](persistence.md): Options for configuring durability using disk backups.
 * [Administration](admin.md): Various administration topics.
 * [Security](security.md): An overview of Valkey's security.
+* [RDMA](RDMA.md): An overview of RDMA support.
 * [Access Control Lists](acl.md): ACLs make it possible to allow users to run only selected commands and access only specific key patterns.
 * [Encryption](encryption.md): How to use TLS for communication.
 * [Signals Handling](signals.md): How Valkey handles signals.

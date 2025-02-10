@@ -1,6 +1,5 @@
 ﻿---
 title: "Hashes"
-linkTitle: "Hashes"
 description: >
     Introduction to Hashes
 ---
@@ -50,8 +49,6 @@ as well, like `HINCRBY`:
 (integer) 4972
 ```
 
-You can find the [full list of hash commands in the documentation](https://redis.io/commands#hash).
-
 It is worth noting that small hashes (i.e., a few elements with small values) are
 encoded in special way in memory that make them very memory efficient.
 
@@ -63,7 +60,6 @@ encoded in special way in memory that make them very memory efficient.
 * `HINCRBY` increments the value at a given field by the integer provided.
 
 See the [complete list of hash commands](../commands/#hash).
-
 
 ## Examples
 

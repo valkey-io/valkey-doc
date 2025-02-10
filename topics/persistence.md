@@ -1,6 +1,5 @@
 ---
-title: Valkey persistence
-linkTitle: Persistence
+title: Persistence
 description: How Valkey writes data to disk
 ---
 
@@ -67,6 +66,16 @@ dataset to disk every 60 seconds if at least 1000 keys changed:
     save 60 1000
 
 This strategy is known as _snapshotting_.
+
+## No persistence
+
+If you prefer **not** to have persistence (for example when using a Valkey instance solely as a cache) that is also a possibility.
+
+RDB snapshotting is enabled by default. To disable it, set the `save` configuration parameter to the empty string `""` and remove any excess `save` lines that are present in the current configuration file.
+
+    save ""
+
+Alternatively, you can also use the `--save ""` argument on the `valkey-server` binary.
 
 ### How it works
 

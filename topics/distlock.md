@@ -1,6 +1,5 @@
 ---
-title: "Distributed Locks with Valkey"
-linkTitle: "Distributed locks"
+title: "Distributed Locks"
 description: >
     A distributed lock pattern with Valkey
 ---
@@ -29,8 +28,8 @@ already available that can be used for reference.
 * [Redlock-py](https://github.com/SPSCommerce/redlock-py) (Python implementation).
 * [Pottery](https://github.com/brainix/pottery#redlock) (Python implementation).
 * [Aioredlock](https://github.com/joanvila/aioredlock) (Asyncio Python implementation).
+* [RedisMutex](https://github.com/malkusch/lock#redismutex) (PHP implementation with both [Redis extension](https://github.com/phpredis/phpredis) and [Predis library](https://github.com/predis/predis) clients support).
 * [Redlock-php](https://github.com/ronnylt/redlock-php) (PHP implementation).
-* [PHPRedisMutex](https://github.com/malkusch/lock#phpredismutex) (further PHP implementation).
 * [cheprasov/php-redis-lock](https://github.com/cheprasov/php-redis-lock) (PHP library for locks).
 * [rtckit/react-redlock](https://github.com/rtckit/reactphp-redlock) (Async PHP implementation).
 * [Redsync](https://github.com/go-redsync/redsync) (Go implementation).
@@ -60,14 +59,15 @@ To understand what we want to improve, let’s analyze the current state of affa
 
 The simplest way to use Valkey to lock a resource is to create a key in an instance. The key is usually created with a limited time to live, using the Valkey expires feature, so that eventually it will get released (property 2 in our list). When the client needs to release the resource, it deletes the key.
 
-Superficially this works well, but there is a problem: this is a single point of failure in our architecture. What happens if the Valkey master goes down?
-Well, let’s add a replica! And use it if the master is unavailable. This is unfortunately not viable. By doing so we can’t implement our safety property of mutual exclusion, because Valkey replication is asynchronous.
+Superficially this works well, but there is a problem: this is a single point of failure in our architecture. What happens if the Valkey primary goes down?
+
+Well, let’s add a replica! And use it if the primary is unavailable. This is unfortunately not viable. By doing so we can’t implement our safety property of mutual exclusion, because Valkey replication is asynchronous.
 
 There is a race condition with this model:
 
-1. Client A acquires the lock in the master.
-2. The master crashes before the write to the key is transmitted to the replica.
-3. The replica gets promoted to master.
+1. Client A acquires the lock in the primary.
+2. The primary crashes before the write to the key is transmitted to the replica.
+3. The replica gets promoted to primary.
 4. Client B acquires the lock to the same resource A already holds a lock for. **SAFETY VIOLATION!**
 
 Sometimes it is perfectly fine that, under special circumstances, for example during a failure, multiple clients can hold the lock at the same time.
@@ -105,7 +105,7 @@ So now we have a good way to acquire and release the lock. With this system, rea
 
 ## The Redlock Algorithm
 
-In the distributed version of the algorithm we assume we have N Valkey masters. Those nodes are totally independent, so we don’t use replication or any other implicit coordination system. We already described how to acquire and release the lock safely in a single instance. We take for granted that the algorithm will use this method to acquire and release the lock in a single instance. In our examples we set N=5, which is a reasonable value, so we need to run 5 Valkey masters on different computers or virtual machines in order to ensure that they’ll fail in a mostly independent way.
+In the distributed version of the algorithm we assume we have N Valkey primaries. Those nodes are totally independent, so we don’t use replication or any other implicit coordination system. We already described how to acquire and release the lock safely in a single instance. We take for granted that the algorithm will use this method to acquire and release the lock in a single instance. In our examples we set N=5, which is a reasonable value, so we need to run 5 Valkey primaries on different computers or virtual machines in order to ensure that they’ll fail in a mostly independent way.
 
 In order to acquire the lock, the client performs the following operations:
 
@@ -227,4 +227,4 @@ Thanks in advance!
 ## Analysis of Redlock
 ---
 
-1. Martin Kleppmann [analyzed Redlock here](https://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html). A counterpoint to this analysis can be [found here](http://antirez.com/news/101).
+1. Martin Kleppmann [analyzed Redlock here](https://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html). A counterpoint to this analysis can be [found here](https://web.archive.org/web/20241209045142/http://antirez.com/news/101).

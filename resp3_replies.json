@@ -144,6 +144,9 @@
   "CLIENT CACHING": [
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK` or an error if the argument is not \"yes\" or \"no\"."
   ],
+  "CLIENT CAPA": [
+    "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
+  ],
   "CLIENT GETNAME": [
     "One of the following:",
     "* [Bulk string reply](../topics/protocol.md#bulk-strings): the connection name of the current connection.",
@@ -163,6 +166,9 @@
   ],
   "CLIENT INFO": [
     "[Bulk string reply](../topics/protocol.md#bulk-strings): a unique string for the current client, as described at the `CLIENT LIST` page."
+  ],
+  "CLIENT IMPORT-SOURCE": [
+    "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
   ],
   "CLIENT KILL": [
     "One of the following:",
@@ -229,7 +235,7 @@
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK` if the command was successful. Otherwise an error is returned."
   ],
   "CLUSTER FAILOVER": [
-    "[Simple string reply](../topics/protocol.md#simple-strings): `OK` if the command was accepted and a manual failover is going to be attempted. An error if the operation cannot be executed, for example if the client is connected to a node that is already a master."
+    "[Simple string reply](../topics/protocol.md#simple-strings): `OK` if the command was accepted and a manual failover is going to be attempted. An error if the operation cannot be executed, for example if the client is connected to a node that is already a primary."
   ],
   "CLUSTER FLUSHSLOTS": [
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
@@ -244,7 +250,7 @@
     "[Array reply](../topics/protocol.md#arrays): a list of subcommands and their descriptions."
   ],
   "CLUSTER INFO": [
-    "[Bulk string reply](../topics/protocol.md#bulk-strings): A map between named fields and values in the form of <field>:<value> lines separated by newlines composed by the two bytes CRLF"
+    "[Bulk string reply](../topics/protocol.md#bulk-strings): A map between named fields and values in the form of `<field>:<value>` lines separated by newlines composed by the two bytes `CRLF`."
   ],
   "CLUSTER KEYSLOT": [
     "[Integer reply](../topics/protocol.md#integers): The hash slot number for the specified key"
@@ -265,7 +271,7 @@
     "[Bulk string reply](../topics/protocol.md#bulk-strings): the serialized cluster configuration."
   ],
   "CLUSTER REPLICAS": [
-    "[Array reply](../topics/protocol.md#arrays): a list of replica nodes replicating from the specified master node provided in the same format used by `CLUSTER NODES`."
+    "[Array reply](../topics/protocol.md#arrays): a list of replica nodes replicating from the specified primary node provided in the same format used by `CLUSTER NODES`."
   ],
   "CLUSTER REPLICATE": [
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK` if the command was successful. Otherwise an error is returned."
@@ -286,10 +292,13 @@
     "[Array reply](../topics/protocol.md#arrays): a nested list of [Map reply](../topics/protocol.md#maps) of hash ranges and shard nodes describing individual shards."
   ],
   "CLUSTER SLAVES": [
-    "[Array reply](../topics/protocol.md#arrays): a list of replica nodes replicating from the specified master node provided in the same format used by `CLUSTER NODES`."
+    "[Array reply](../topics/protocol.md#arrays): a list of replica nodes replicating from the specified primary node provided in the same format used by `CLUSTER NODES`."
   ],
   "CLUSTER SLOTS": [
     "[Array reply](../topics/protocol.md#arrays): nested list of slot ranges with networking information."
+  ],
+  "CLUSTER SLOT-STATS": [
+    "[Array reply](../topics/protocol.md#arrays): nested list of slot usage statistics."
   ],
   "COMMAND": [
     "[Array reply](../topics/protocol.md#arrays): a nested list of command details. The order of the commands in the array is random."
@@ -448,10 +457,10 @@
     "* [Bulk string reply](../topics/protocol.md#bulk-strings): distance as a double (represented as a string) in the specified units."
   ],
   "GEOHASH": [
-    "[Array reply](../topics/protocol.md#arrays): An array where each element is the Geohash corresponding to each member name passed as an argument to the command."
+    "[Array reply](../topics/protocol.md#arrays): an array where each element is the Geohash corresponding to each member name passed as an argument to the command."
   ],
   "GEOPOS": [
-    "[Array reply](../topics/protocol.md#arrays): An array where each element is a two elements array representing longitude and latitude (x,y) of each member name passed as argument to the command. Non-existing elements are reported as [Null reply](../topics/protocol.md#nulls) elements of the array."
+    "[Array reply](../topics/protocol.md#arrays): an array where each element is a two elements array representing longitude and latitude (x,y) of each member name passed as argument to the command. Non-existing elements are reported as [Null reply](../topics/protocol.md#nulls) elements of the array."
   ],
   "GEORADIUS": [
     "One of the following:",
@@ -503,7 +512,7 @@
   "GET": [
     "One of the following:",
     "* [Bulk string reply](../topics/protocol.md#bulk-strings): the value of the key.",
-    "* [Null reply](../topics/protocol.md#nulls): key does not exist."
+    "* [Null reply](../topics/protocol.md#nulls): if the key does not exist."
   ],
   "GETBIT": [
     "The bit value stored at _offset_, one of the following:",
@@ -528,7 +537,7 @@
     "* [Null reply](../topics/protocol.md#nulls): if the key does not exist."
   ],
   "HDEL": [
-    "[Integer reply](../topics/protocol.md#integers): The number of fields that were removed from the hash, excluding any specified but non-existing fields."
+    "[Integer reply](../topics/protocol.md#integers): the number of fields that were removed from the hash, excluding any specified but non-existing fields."
   ],
   "HELLO": [
     "[Map reply](../topics/protocol.md#maps): a list of server properties.",
@@ -551,13 +560,13 @@
     "[Integer reply](../topics/protocol.md#integers): the value of the field after the increment operation."
   ],
   "HINCRBYFLOAT": [
-    "[Bulk string reply](../topics/protocol.md#bulk-strings): The value of the field after the increment operation."
+    "[Bulk string reply](../topics/protocol.md#bulk-strings): the value of the field after the increment operation."
   ],
   "HKEYS": [
     "[Array reply](../topics/protocol.md#arrays): a list of fields in the hash, or an empty list when the key does not exist."
   ],
   "HLEN": [
-    "[Integer reply](../topics/protocol.md#integers): the number of the fields in the hash, or 0 when the key does not exist."
+    "[Integer reply](../topics/protocol.md#integers): the number of fields in the hash, or 0 when the key does not exist."
   ],
   "HMGET": [
     "[Array reply](../topics/protocol.md#arrays): a list of values associated with the given fields, in the same order as they are requested."
@@ -575,7 +584,7 @@
   "HSCAN": [
     "[Array reply](../topics/protocol.md#arrays): a two-element array.",
     "* The first element is a [Bulk string reply](../topics/protocol.md#bulk-strings) that represents an unsigned 64-bit number, the cursor.",
-    "* The second element is an [Array reply](../topics/protocol.md#arrays) of field/value pairs that were scanned."
+    "* The second element is an [Array reply](../topics/protocol.md#arrays) of field/value pairs that were scanned. When `NOVALUES` option is on, a list of keys from the hash."
   ],
   "HSET": [
     "[Integer reply](../topics/protocol.md#integers): the number of fields that were added."
@@ -702,7 +711,7 @@
     "[Array reply](../topics/protocol.md#arrays): a list of sub-commands and their descriptions."
   ],
   "MEMORY MALLOC-STATS": [
-    "[Bulk string reply](../topics/protocol.md#bulk-strings): The memory allocator's internal statistics report."
+    "[Bulk string reply](../topics/protocol.md#bulk-strings): the memory allocator's internal statistics report."
   ],
   "MEMORY PURGE": [
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
@@ -811,7 +820,7 @@
     "* [Integer reply](../topics/protocol.md#integers): `0` if no HyperLogLog internal registers were altered."
   ],
   "PFCOUNT": [
-    "[Integer reply](../topics/protocol.md#integers): the approximated number of unique elements observed via `PFADD`"
+    "[Integer reply](../topics/protocol.md#integers): the approximated number of unique elements observed via `PFADD`."
   ],
   "PFDEBUG": [],
   "PFMERGE": [
@@ -832,7 +841,7 @@
     "When successful, this command doesn't return anything. Instead, for each pattern, one message with the first element being the string `psubscribe` is pushed as a confirmation that the command succeeded."
   ],
   "PSYNC": [
-    "**Non-standard return value**, a bulk transfer of the data followed by `PING` and write requests from the master."
+    "**Non-standard return value**, a bulk transfer of the data followed by `PING` and write requests from the primary."
   ],
   "PTTL": [
     "One of the following:",
@@ -934,7 +943,7 @@
     "* The second element is an [Array reply](../topics/protocol.md#arrays) with the names of scanned keys."
   ],
   "SCARD": [
-    "[Integer reply](../topics/protocol.md#integers): The cardinality (number of elements) of the set, or 0 if the key does not exist."
+    "[Integer reply](../topics/protocol.md#integers): the cardinality (number of elements) of the set, or `0` if the key does not exist."
   ],
   "SCRIPT": [],
   "SCRIPT DEBUG": [
@@ -955,6 +964,9 @@
   "SCRIPT LOAD": [
     "[Bulk string reply](../topics/protocol.md#bulk-strings): the SHA1 digest of the script added into the script cache."
   ],
+  "SCRIPT SHOW": [
+    "[Bulk string reply](../topics/protocol.md#bulk-strings): Lua script if sha1 hash exists in script cache."
+  ],
   "SDIFF": [
     "[Set reply](../topics/protocol.md#sets): the resulting set."
   ],
@@ -965,7 +977,7 @@
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
   ],
   "SENTINEL CKQUORUM": [
-    "[Bulk string reply](../topics/protocol.md#bulk-strings): Returns OK if the current Sentinel configuration is able to reach the quorum needed to failover a master, and the majority needed to authorize the failover."
+    "[Bulk string reply](../topics/protocol.md#bulk-strings): Returns OK if the current Sentinel configuration is able to reach the quorum needed to failover a primary, and the majority needed to authorize the failover."
   ],
   "SENTINEL CONFIG": [
     "One of the following:",
@@ -978,24 +990,24 @@
     "* [Map reply](../topics/protocol.md#maps): List of configurable time parameters and their values (milliseconds)."
   ],
   "SENTINEL FAILOVER": [
-    "[Simple string reply](../topics/protocol.md#simple-strings): `OK`. Force a fail over as if the master was not reachable, and without asking for agreement to other Sentinels."
+    "[Simple string reply](../topics/protocol.md#simple-strings): `OK`. Force a fail over as if the primary was not reachable, and without asking for agreement to other Sentinels."
   ],
   "SENTINEL FLUSHCONFIG": [
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK`. Force Sentinel to rewrite its configuration on disk, including the current Sentinel state."
   ],
-  "SENTINEL GET MASTER-ADDR-BY-NAME": [],
+  "SENTINEL GET PRIMARY-ADDR-BY-NAME": [],
   "SENTINEL HELP": [
     "[Array reply](../topics/protocol.md#arrays): Helpful text about subcommands."
   ],
   "SENTINEL INFO CACHE": [
-    "[Array reply](../topics/protocol.md#arrays): This is actually a map, the odd entries are a master name, and the even entries are the last cached INFO output from that master and all its replicas."
+    "[Array reply](../topics/protocol.md#arrays): This is actually a map, the odd entries are a primary name, and the even entries are the last cached INFO output from that primary and all its replicas."
   ],
-  "SENTINEL IS MASTER-DOWN-BY-ADDR": [],
-  "SENTINEL MASTER": [
-    "[Map reply](../topics/protocol.md#maps): The state and info of the specified master."
+  "SENTINEL IS PRIMARY-DOWN-BY-ADDR": [],
+  "SENTINEL PRIMARY": [
+    "[Map reply](../topics/protocol.md#maps): The state and info of the specified primary."
   ],
-  "SENTINEL MASTERS": [
-    "[Array reply](../topics/protocol.md#arrays): List of monitored Valkey masters, and their state."
+  "SENTINEL PRIMARIES": [
+    "[Array reply](../topics/protocol.md#arrays): List of monitored Valkey primaries, and their state."
   ],
   "SENTINEL MONITOR": [
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
@@ -1010,10 +1022,10 @@
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
   ],
   "SENTINEL REPLICAS": [
-    "[Array reply](../topics/protocol.md#arrays): List of replicas for this master, and their state."
+    "[Array reply](../topics/protocol.md#arrays): List of replicas for this primary, and their state."
   ],
   "SENTINEL RESET": [
-    "[Integer reply](../topics/protocol.md#integers): The number of masters that were reset."
+    "[Integer reply](../topics/protocol.md#integers): The number of primaries that were reset."
   ],
   "SENTINEL SENTINELS": [
     "[Array reply](../topics/protocol.md#arrays): List of sentinel instances, and their state."
@@ -1030,11 +1042,16 @@
     "[Array reply](../topics/protocol.md#arrays): List of monitored replicas, and their state."
   ],
   "SET": [
-    "Any of the following:",
-    "* [Null reply](../topics/protocol.md#nulls): `GET` not given: Operation was aborted (conflict with one of the `XX`/`NX` options).",
-    "* [Simple string reply](../topics/protocol.md#simple-strings): `OK`. `GET` not given: The key was set.",
-    "* [Null reply](../topics/protocol.md#nulls): `GET` given: The key didn't exist before the `SET`.",
-    "* [Bulk string reply](../topics/protocol.md#bulk-strings): `GET` given: The previous value of the key."
+    "If `GET` not given, any of the following:",
+    "* [Null reply](../topics/protocol.md#nulls): Operation was aborted (conflict with one of the `XX`/`NX` options).",
+    "* [Simple string reply](../topics/protocol.md#simple-strings): `OK`: The key was set.",
+    "If `GET` given, any of the following:",
+    "* [Null reply](../topics/protocol.md#nulls): The key didn't exist before the `SET`.",
+    "* [Bulk string reply](../topics/protocol.md#bulk-strings): The previous value of the key.",
+    "Note that when using `GET` together with `XX`/`NX`/`IFEQ`, the reply indirectly indicates whether the key was set:",
+    "* `GET` and `XX` given: Non-[Null reply](../topics/protocol.md#nulls) indicates the key was set.",
+    "* `GET` and `NX` given: [Null reply](../topics/protocol.md#nulls) indicates the key was set.",
+    "* `GET` and `IFEQ` given: The key was set if the reply is equal to `comparison-value`."
   ],
   "SETBIT": [
     "[Integer reply](../topics/protocol.md#integers): the original bit value stored at _offset_."
@@ -1057,10 +1074,10 @@
     "[Set reply](../topics/protocol.md#sets): the resulting set."
   ],
   "SINTERCARD": [
-    "[Integer reply](../topics/protocol.md#integers): the number of the elements in the resulting intersection."
+    "[Integer reply](../topics/protocol.md#integers): the number of elements in the resulting intersection."
   ],
   "SINTERSTORE": [
-    "[Integer reply](../topics/protocol.md#integers): the number of the elements in the result set."
+    "[Integer reply](../topics/protocol.md#integers): the number of elements in the resulting set."
   ],
   "SISMEMBER": [
     "One of the following:",
@@ -1116,7 +1133,7 @@
     "* [Array reply](../topics/protocol.md#arrays): when the optional _count_ argument is passed, the command returns an array of members, or an empty array when _key_ doesn't exist."
   ],
   "SREM": [
-    "[Integer reply](../topics/protocol.md#integers): Number of members that were removed from the set, not including non existing members."
+    "[Integer reply](../topics/protocol.md#integers): the number of members that were removed from the set, not including non existing members."
   ],
   "SSCAN": [
     "[Array reply](../topics/protocol.md#arrays): specifically, an array with two elements:",
@@ -1124,7 +1141,7 @@
     "* The second element is an [Array reply](../topics/protocol.md#arrays) with the names of scanned members."
   ],
   "SSUBSCRIBE": [
-    "When successful, this command doesn't return anything. Instead, for each shard channel, one message with the first element being the string 'ssubscribe' is pushed as a confirmation that the command succeeded. Note that this command can also return a -MOVED redirect."
+    "When successful, this command doesn't return anything. Instead, for each shard channel, one message with the first element being the string `ssubscribe` is pushed as a confirmation that the command succeeded. Note that this command can also return a -MOVED redirect."
   ],
   "STRLEN": [
     "[Integer reply](../topics/protocol.md#integers): the length of the string stored at key, or 0 when the key does not exist."
@@ -1139,7 +1156,7 @@
     "[Set reply](../topics/protocol.md#sets): the resulting set."
   ],
   "SUNIONSTORE": [
-    "[Integer reply](../topics/protocol.md#integers): Number of the elements in the resulting set."
+    "[Integer reply](../topics/protocol.md#integers): the number of elements in the resulting set."
   ],
   "SUNSUBSCRIBE": [
     "When successful, this command doesn't return anything. Instead, for each shard channel, one message with the first element being the string `sunsubscribe` is pushed as a confirmation that the command succeeded."
@@ -1148,7 +1165,7 @@
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
   ],
   "SYNC": [
-    "**Non-standard return value**, a bulk transfer of the data followed by `PING` and write requests from the master."
+    "**Non-standard return value**, a bulk transfer of the data followed by `PING` and write requests from the primary."
   ],
   "TIME": [
     "[Array reply](../topics/protocol.md#arrays): specifically, a two-element array consisting of the Unix timestamp in seconds and the microseconds' count."
@@ -1179,7 +1196,7 @@
   ],
   "WAITAOF": [
     "[Array reply](../topics/protocol.md#arrays): The command returns an array of two integers:",
-    "1. The first is the number of local Redises (0 or 1) that have fsynced to AOF  all writes performed in the context of the current connection",
+    "1. The first is the number of local Valkey nodes (0 or 1) that have fsynced to AOF all writes performed in the context of the current connection",
     "2. The second is the number of replicas that have acknowledged doing the same."
   ],
   "WATCH": [
@@ -1345,19 +1362,19 @@
     "[Integer reply](../topics/protocol.md#integers): the number of members removed from the sorted set, not including non-existing members."
   ],
   "ZREMRANGEBYLEX": [
-    "[Integer reply](../topics/protocol.md#integers): Number of members removed."
+    "[Integer reply](../topics/protocol.md#integers): the number of members removed."
   ],
   "ZREMRANGEBYRANK": [
-    "[Integer reply](../topics/protocol.md#integers): Number of members removed."
+    "[Integer reply](../topics/protocol.md#integers): the number of members removed."
   ],
   "ZREMRANGEBYSCORE": [
-    "[Integer reply](../topics/protocol.md#integers): Number of members removed."
+    "[Integer reply](../topics/protocol.md#integers): the number of members removed."
   ],
   "ZREVRANGE": [
-    "* [Array reply](../topics/protocol.md#arrays): a list of members in the specified range, optionally with their scores if _WITHSCORE_ was used."
+    "* [Array reply](../topics/protocol.md#arrays): a list of the members in the specified range, optionally with their scores if _WITHSCORE_ was used."
   ],
   "ZREVRANGEBYLEX": [
-    "[Array reply](../topics/protocol.md#arrays): List of the elements in the specified score range."
+    "[Array reply](../topics/protocol.md#arrays): a list of the members in the specified score range."
   ],
   "ZREVRANGEBYSCORE": [
     "* [Array reply](../topics/protocol.md#arrays): a list of the members and, optionally, their scores in the specified score range."
@@ -1369,12 +1386,14 @@
     "* [Array reply](../topics/protocol.md#arrays): The rank and score of the member when _WITHSCORE_ is used."
   ],
   "ZSCAN": [
-    "[Array reply](../topics/protocol.md#arrays): cursor and scan response in array form."
+    "[Array reply](../topics/protocol.md#arrays): a two-element array.",
+    "* The first element is a [Bulk string reply](../topics/protocol.md#bulk-strings) that represents an unsigned 64-bit number, the cursor.",
+    "* The second element is an [Array reply](../topics/protocol.md#arrays) of member/score pairs that were scanned. When `NOSCORES` option is on, a list of members from the sorted set."
   ],
   "ZSCORE": [
     "One of the following:",
     "* [Double reply](../topics/protocol.md#doubles): the score of the member (a double-precision floating point number).",
-    "* [Nil reply](../topics/protocol.md#bulk-strings): if _member_ does not exist in the sorted set, or the key does not exist."
+    "* [Null reply](../topics/protocol.md#nulls): if _member_ does not exist in the sorted set, or the key does not exist."
   ],
   "ZUNION": [
     "[Array reply](../topics/protocol.md#arrays): the result of the union with, optionally, their scores when _WITHSCORES_ is used."

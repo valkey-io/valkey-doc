@@ -1,6 +1,5 @@
 ---
-title: "Valkey keyspace notifications"
-linkTitle: "Keyspace notifications"
+title: "Keyspace notifications"
 description: >
     Monitor changes to Valkey keys and values in real time
 ---

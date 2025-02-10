@@ -4,6 +4,7 @@
 .rdb
 ˈrɛd-ɪs
 A1
+AArch64
 acknowledgement
 ACKs
 acl
@@ -20,6 +21,7 @@ allkeys-random
 allocator
 allocator's
 allocators
+amd64
 AMD64
 analytics
 antirez
@@ -44,6 +46,7 @@ Async
 async
 Asyncio
 atomicity
+Atomics
 Atomicvar
 Attribution-ShareAlike
 Auth
@@ -159,6 +162,8 @@ ctx
 daemonize
 daemonized
 daemontools
+Datacenter
+datacenter
 dataset
 datastore
 dbid
@@ -196,7 +201,10 @@ Diskless
 diskless
 DistLock
 distlock
+distro
+distros
 dnf
+DragonFlyBSD
 dup-sentinel
 Dynomite
 earts
@@ -345,10 +353,12 @@ Identinal
 idletime
 idx
 idx'-th
+Illumos
 incr
 incrby
 incrby_get_mget
 indexable
+Infiniband
 ing
 init
 int_vals
@@ -739,6 +749,7 @@ runlevels
 RW
 Rx/Tx
 S[1-9]
+s390x
 SaaS
 sadd
 sadd_smembers
@@ -786,6 +797,7 @@ Snapcraft
 snapd
 Snapshotting
 snapshotting
+Solaris
 Solaris-derived
 somekey
 SomeOtherValue
@@ -836,6 +848,7 @@ SYNC_RDB_START
 syncd
 syscall
 systemctl
+systemd
 T1
 T2
 taskset
@@ -900,6 +913,7 @@ v[0-9\.]+
 Valkey's
 Valkey[A-Z].*
 Valkey.
+valkey-server's
 value-ptr
 ValueN
 Variadic
@@ -924,7 +938,11 @@ wherefrom
 whitespace
 whitespaces
 whos-using-redis
+WQE
+WQEs
 WSL2
+x86
+x86-64
 xack
 xadd
 xadd_2
@@ -972,3 +990,13 @@ zeroed-ACLs
 Zhao
 ziplists
 zset
+linux
+Devuan
+Raspbian
+PureOS
+apk
+Wolfi
+SlackBuilds
+openpkg
+OpenPKG
+MacPorts

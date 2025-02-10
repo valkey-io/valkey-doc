@@ -1,6 +1,5 @@
 ---
-title: "Valkey releases and versioning"
-linkTitle: "Valkey releases"
+title: "Releases and versioning"
 description: How new versions of Valkey are released and supported
 ---
 
@@ -62,8 +61,9 @@ When breaking changes are required, we will also strive to provide a way to miti
 
 ## Release schedule
 
-The Valkey community strives to release a stable major version once a year.
-Stable minor versions are created as needed in between major releases, and we aim to release at least one minor version a year.
+The Valkey community typically releases a stable major version once each year.
+Stable minor versions are introduced as needed between major releases,
+with at least one minor version published annually.
 
 ### Release candidate
 
@@ -96,6 +96,7 @@ For contacting the TSC on sensitive matters and security issues, please see [SEC
 
 | Version | Initial release | Maintenance support end | Extended Security support end |
 | -- | -- | -- | -- |
+| 8.0 | 2024-09-15 | 2027-09-15 | N/A |
 | 7.2 | 2024-04-16 | 2027-04-16 | 2029-04-16 |
 
 ## Unstable tree

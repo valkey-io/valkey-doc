@@ -1,22 +1,24 @@
 ---
-title: "Valkey functions"
-linkTitle: "Functions"
+title: "Functions"
 description: >
-   Scripting with Redis OSS 7 and beyond
+   Scripting with functions stored on the server
 ---
 
-Valkey Functions is an API for managing code to be executed on the server. This feature, which became available in Redis OSS 7, supersedes the use of [EVAL](eval-intro.md) in prior versions of Valkey.
+Valkey Functions is an API for managing code to be executed on the server.
+This feature is as a complement to [EVAL scripts](eval-intro.md).
 
-## Prologue (or, what's wrong with Eval Scripts?)
+## What's wrong with EVAL?
 
-Prior versions of Valkey made scripting available only via the `EVAL` command, which allows a Lua script to be sent for execution by the server.
-The core use cases for [Eval Scripts](eval-intro.md) is executing part of your application logic inside Valkey, efficiently and atomically.
+There's nothing wrong with `EVAL`, but there are some differences between EVAL scripts and Functions.
+With the [`EVAL`](../commands/eval.md) command, scripts are sent to the server for immediate execution.
+The core use cases for `EVAL` scripts is executing part of your application logic inside Valkey, efficiently and atomically.
 Such script can perform conditional updates across multiple keys, possibly combining several different data types.
 
 Using `EVAL` requires that the application sends the entire script for execution every time.
-Because this results in network and script compilation overheads, Valkey provides an optimization in the form of the `EVALSHA` command. By first calling `SCRIPT LOAD` to obtain the script's SHA1, the application can invoke it repeatedly afterward with its digest alone.
+Because this results in network and script compilation overheads, Valkey provides an optimization in the form of the [`EVALSHA`](../commands/evalsha.md) command.
+By first calling [`SCRIPT LOAD`](../commands/script-load.md) to obtain the script's SHA1, the application can invoke it repeatedly afterward with its digest alone.
 
-By design, Valkey only caches the loaded scripts.
+Valkey only caches the loaded scripts.
 That means that the script cache can become lost at any time, such as after calling `SCRIPT FLUSH`, after restarting the server, or when failing over to a replica.
 The application is responsible for reloading scripts during runtime if any are missing.
 The underlying assumption is that scripts are a part of the application and not maintained by the Valkey server.
@@ -25,48 +27,29 @@ This approach suits many light-weight scripting use cases, but introduces severa
 
 1. All client application instances must maintain a copy of all scripts. That means having some mechanism that applies script updates to all of the application's instances.
 1. Calling cached scripts within the context of a [transaction](transactions.md) increases the probability of the transaction failing because of a missing script. Being more likely to fail makes using cached scripts as building blocks of workflows less attractive.
-1. SHA1 digests are meaningless, making debugging the system extremely hard (e.g., in a `MONITOR` session).
-1. When used naively, `EVAL` promotes an anti-pattern in which scripts the client application renders verbatim scripts instead of responsibly using the [`!KEYS` and `ARGV` Lua APIs](lua-api.md#runtime-globals).
-1. Because they are ephemeral, a script can't call another script. This makes sharing and reusing code between scripts nearly impossible, short of client-side preprocessing (see the first point).
+1. SHA1 digests are not readable for humans, making debugging the system hard (e.g. in a [`MONITOR`](../commands/monitor.md) session).
+1. When used naively, `EVAL` promotes an anti-pattern in which the client application renders verbatim scripts instead of responsibly using the [`KEYS` and `ARGV` Lua APIs](lua-api.md#runtime-globals).
+1. Because they are ephemeral, a script can't call another script. This makes sharing and reusing code between scripts nearly impossible, short of client-side preprocessing.
 
-To address these needs while avoiding breaking changes to already-established and well-liked ephemeral scripts, Redis OSS v7.0 introduces Valkey Functions.
+To address these needs while avoiding breaking changes to already-established and well-liked ephemeral scripts, functions were introduced in version 7.0.
 
 ## What are Valkey Functions?
 
-Valkey functions are an evolutionary step from ephemeral scripting.
-
-Functions provide the same core functionality as scripts but are first-class software artifacts of the database.
+Functions provide the same core functionality as scripts but are first-class artifacts of the database.
 Valkey manages functions as an integral part of the database and ensures their availability via data persistence and replication.
 Because functions are part of the database and therefore declared before use, applications aren't required to load them during runtime nor risk aborted transactions.
 An application that uses functions depends only on their APIs rather than on the embedded script logic in the database.
 
 Whereas ephemeral scripts are considered a part of the application's domain, functions extend the database server itself with user-provided logic.
-They can be used to expose a richer API composed of core Valkey commands, similar to modules, developed once, loaded at startup, and used repeatedly by various applications / clients.
-Every function has a unique user-defined name, making it much easier to call and trace its execution.
-
-The design of Valkey Functions also attempts to demarcate between the programming language used for writing functions and their management by the server.
-Lua, the only language interpreter that Valkey presently support as an embedded execution engine, is meant to be simple and easy to learn.
-However, the choice of Lua as a language still presents many Valkey users with a challenge.
-
-The Valkey Functions feature makes no assumptions about the implementation's language.
-An execution engine that is part of the definition of the function handles running it.
-An engine can theoretically execute functions in any language as long as it respects several rules (such as the ability to terminate an executing function).
-
-Presently, as noted above, Valkey ships with a single embedded [Lua 5.1](lua-api.md) engine.
-There are plans to support additional engines in the future.
-Valkey functions can use all of Lua's available capabilities to ephemeral scripts,
-with the only exception being the [Valkey Lua scripts debugger](ldb.md).
+They can be loaded at startup and be used repeatedly by various applications and clients.
+Functions are also persisted to the AOF file and replicated from primary to replicas, so they are as durable as the data itself.
+When Valkey is used as an ephemeral cache, additional mechanisms (described below) are required to make functions more durable.
 
 Functions also simplify development by enabling code sharing.
-Every function belongs to a single library, and any given library can consist of multiple functions.
+Every function has a user-defined name and belongs to a library, and a library can consist of multiple functions.
 The library's contents are immutable, and selective updates of its functions aren't allowed.
 Instead, libraries are updated as a whole with all of their functions together in one operation.
 This allows calling functions from other functions within the same library, or sharing code between functions by using a common code in library-internal methods, that can also take language native arguments.
-
-Functions are intended to better support the use case of maintaining a consistent view for data entities through a logical schema, as mentioned above.
-As such, functions are stored alongside the data itself.
-Functions are also persisted to the AOF file and replicated from master to replicas, so they are as durable as the data itself.
-When Valkey is used as an ephemeral cache, additional mechanisms (described below) are required to make functions more durable.
 
 Like all other operations in Valkey, the execution of a function is atomic.
 A function's execution blocks all server activities during its entire time, similarly to the semantics of [transactions](transactions.md).
@@ -74,19 +57,23 @@ These semantics mean that all of the script's effects either have yet to happen 
 The blocking semantics of an executed function apply to all connected clients at all times.
 Because running a function blocks the Valkey server, functions are meant to finish executing quickly, so you should avoid using long-running functions.
 
+Functions are written in [Lua 5.1](lua-api.md).
+Valkey functions can use all of Lua's available capabilities to ephemeral scripts,
+with the only exception being the [Valkey Lua scripts debugger](ldb.md).
+
 ## Loading libraries and functions
 
 Let's explore Valkey Functions via some tangible examples and Lua snippets.
 
 At this point, if you're unfamiliar with Lua in general and specifically in Valkey, you may benefit from reviewing some of the examples in [Introduction to Eval Scripts](eval-intro.md) and [Lua API](lua-api.md) pages for a better grasp of the language.
 
-Every Valkey function belongs to a single library that's loaded to Valkey.
-Loading a library to the database is done with the `FUNCTION LOAD` command.
-The command gets the library payload as input,
-the library payload must start with Shebang statement that provides a metadata about the library (like the engine to use and the library name).
+Every Valkey function belongs to a library.
+Loading a library to the database is done with the [`FUNCTION LOAD`](../commands/function-load.md) command.
+The library source code must start with a Shebang line that provides metadata about the library, like the language (always "lua") and the library name.
 The Shebang format is:
+
 ```
-#!<engine name> name=<library name>
+#!lua name=<library name>
 ```
 
 Let's try loading an empty library:
@@ -125,7 +112,7 @@ mylib
 
 Notice that the `FUNCTION LOAD` command returns the name of the loaded library, this name can later be used `FUNCTION LIST` and `FUNCTION DELETE`.
 
-We've provided `FCALL` with two arguments: the function's registered name and the numeric value `0`. This numeric value indicates the number of key names that follow it (the same way `EVAL` and `EVALSHA` work).
+We've provided [`FCALL`](../commands/fcall.md) with two arguments: the function's registered name and the numeric value `0`. This numeric value indicates the number of key names that follow it (the same way `EVAL` and `EVALSHA` works).
 
 We'll explain immediately how key names and additional arguments are available to the function. As this simple example doesn't involve keys, we simply use 0 for now.
 
@@ -142,10 +129,10 @@ To ensure the correct execution of Valkey Functions, both in standalone and clus
 Any input to the function that isn't the name of a key is a regular input argument.
 
 Now, let's pretend that our application stores some of its data in Hashes.
-We want an `HSET`-like way to set and update fields in said Hashes and store the last modification time in a new field named `_last_modified_`.
+We want an [`HSET`](../commands/hset.md)-like way to set and update fields in said Hashes and store the last modification time in a new field named `_last_modified_`.
 We can implement a function to do all that.
 
-Our function will call `TIME` to get the server's clock reading and update the target Hash with the new fields' values and the modification's timestamp.
+Our function will call [`TIME`](../commands/time.md) to get the server's clock reading and update the target Hash with the new fields' values and the modification's timestamp.
 The function we'll implement accepts the following input arguments: the Hash's key name and the field-value pairs to update.
 
 The Lua API for Valkey Functions makes these inputs accessible as the first and second arguments to the function's callback.
@@ -234,7 +221,7 @@ server.register_function('my_hlastmodified', my_hlastmodified)
 ```
 
 While all of the above should be straightforward, note that the `my_hgetall` also calls [`server.setresp(3)`](lua-api.md#server.setresp).
-That means that the function expects [RESP3](https://github.com/redis/redis-specifications/blob/master/protocol/RESP3.md) replies after calling `server.call()`, which, unlike the default RESP2 protocol, provides dictionary (associative arrays) replies.
+That means that the function expects [RESP3](protocol.md) replies after calling `server.call()`, which, unlike the default RESP2 protocol, returns the replies as maps (associative arrays).
 Doing so allows the function to delete (or set to `nil` as is the case with Lua tables) specific fields from the reply, and in our case, the `_last_modified_` field.
 
 Assuming you've saved the library's implementation in the _mylib.lua_ file, you can replace it with:
@@ -308,7 +295,7 @@ local function check_keys(keys)
   end
 
   if error ~= nil then
-    server.log(redis.LOG_WARNING, error);
+    server.log(server.LOG_WARNING, error);
     return server.error_reply(error)
   end
   return nil
@@ -373,9 +360,9 @@ And your Valkey log file should have lines in it that are similar to:
 ## Functions in cluster
 
 As noted above, Valkey automatically handles propagation of loaded functions to replicas.
-In a Valkey Cluster, it is also necessary to load functions to all cluster nodes. This is not handled automatically by Valkey Cluster, and needs to be handled by the cluster administrator (like module loading, configuration setting, etc.).
+In a [cluster](cluster-tutorial.md), it is necessary to load functions to all primaries.
 
-As one of the goals of functions is to live separately from the client application, this should not be part of the Valkey client library responsibilities. Instead, `valkey-cli --cluster-only-masters --cluster call host:port FUNCTION LOAD ...` can be used to execute the load command on all master nodes.
+As one of the goals of functions is to live separately from the client application, this should not be part of the Valkey client library responsibilities. Instead, `valkey-cli --cluster-only-primaries --cluster call host:port FUNCTION LOAD ...` can be used to execute the load command on all primary nodes.
 
 Also, note that `valkey-cli --cluster add-node` automatically takes care to propagate the loaded functions from one of the existing nodes to the new node.
 

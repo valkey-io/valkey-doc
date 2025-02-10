@@ -1,6 +1,5 @@
 ---
-title: "Client-side caching in Valkey"
-linkTitle: "Client-side caching"
+title: "Client-side caching"
 description: >
     Server-assisted, client-side caching in Valkey
 ---

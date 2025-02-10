@@ -1,6 +1,5 @@
 ---
-title: "Valkey security"
-linkTitle: "Security"
+title: "Security"
 description: Security model and features in Valkey
 ---
 

@@ -1,6 +1,5 @@
 ---
 title: Transactions
-linkTitle: Transactions
 description: How transactions work in Valkey
 ---
 
@@ -120,10 +119,52 @@ MULTI
 +OK
 INCR a b c
 -ERR wrong number of arguments for 'incr' command
+EXEC
+-EXECABORT Transaction discarded because of previous errors.
 ```
 
 This time due to the syntax error the bad `INCR` command is not queued
-at all.
+at all. And the `EXEC` command will receive an `EXECABORT` error.
+
+When the `EXEC` command is processed, the server will check if a failover or slot migration has occurred since queuing the commands.
+If either event has occurred, a `-MOVED` or `-REDIRECT` error will be returned if needed without processing the transaction.
+
+For cluster mode:
+
+```
+MULTI    ==>  +OK
+SET x y  ==>  +QUEUED
+slot {x} is migrated to other node
+EXEC     ==>  -MOVED
+```
+
+For standalone mode:
+
+```
+MULTI    ==>  +OK
+SET x y  ==>  +QUEUED
+failover
+EXEC     ==>  -REDIRECT
+```
+
+Before the `EXEC` command is processed, if a command accesses data that does not belong to the current node,
+a `-MOVED` or `-REDIRECT` error will be returned immediately, and the `EXEC` command will receive an `EXECABORT` error.
+
+For cluster mode:
+
+```
+MULTI    ==>  +OK
+SET x y  ==>  -MOVED
+EXEC     ==>  -EXECABORT
+```
+
+For standalone mode:
+
+```
+MULTI    ==>  +OK
+SET x y  ==>  -REDIRECT
+EXEC     ==>  -EXECABORT
+```
 
 ## What about rollbacks?
 

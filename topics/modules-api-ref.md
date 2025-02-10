@@ -1,6 +1,5 @@
 ---
 title: "Modules API reference"
-linkTitle: "API reference"
 description: >
     Reference for the Valkey Modules API
 ---
@@ -339,7 +338,7 @@ example "write deny-oom". The set of flags are:
                    Starting from Redis OSS 7.0 this flag has been deprecated.
                    Declaring a command as "random" can be done using
                    command tips, see https://valkey.io/topics/command-tips.
-* **"allow-stale"**: The command is allowed to run on slaves that don't
+* **"allow-stale"**: The command is allowed to run on replicas that don't
                      serve stale data. Don't use if you don't know what
                      this means.
 * **"no-monitor"**: Don't propagate the command on monitor. Use this if
@@ -1899,7 +1898,7 @@ The function always returns `VALKEYMODULE_OK`.
 
 **Available since:** 4.0.0
 
-Replicate the specified command and arguments to slaves and AOF, as effect
+Replicate the specified command and arguments to replicas and AOF, as effect
 of execution of the calling command implementation.
 
 The replicated commands are always wrapped into the MULTI/EXEC that
@@ -1951,7 +1950,7 @@ a MULTI/EXEC stanza, so it should not be mixed with other replication
 commands.
 
 Basically this form of replication is useful when you want to propagate
-the command to the slaves and AOF file exactly as it was called, since
+the command to the replicas and AOF file exactly as it was called, since
 the command can just be re-executed to deterministically re-create the
 new state starting from the old one.
 
@@ -2168,16 +2167,16 @@ Available flags and their meaning:
 
  * `VALKEYMODULE_CTX_FLAGS_LOADING`: Server is loading RDB/AOF
 
- * `VALKEYMODULE_CTX_FLAGS_REPLICA_IS_STALE`: No active link with the master.
+ * `VALKEYMODULE_CTX_FLAGS_REPLICA_IS_STALE`: No active link with the primary.
 
  * `VALKEYMODULE_CTX_FLAGS_REPLICA_IS_CONNECTING`: The replica is trying to
-                                                connect with the master.
+                                                connect with the primary.
 
  * `VALKEYMODULE_CTX_FLAGS_REPLICA_IS_TRANSFERRING`: Master -> Replica RDB
                                                   transfer is in progress.
 
  * `VALKEYMODULE_CTX_FLAGS_REPLICA_IS_ONLINE`: The replica has an active link
-                                            with its master. This is the
+                                            with its primary. This is the
                                             contrary of STALE state.
 
  * `VALKEYMODULE_CTX_FLAGS_ACTIVE_CHILD`: There is currently some background
@@ -2204,16 +2203,16 @@ Available flags and their meaning:
 
 Returns true if a client sent the CLIENT PAUSE command to the server or
 if the Cluster does a manual failover, pausing the clients.
-This is needed when we have a master with replicas, and want to write,
+This is needed when we have a primary with replicas, and want to write,
 without adding further data to the replication channel, that the replicas
-replication offset, match the one of the master. When this happens, it is
-safe to failover the master without data loss.
+replication offset, match the one of the primary. When this happens, it is
+safe to failover the primary without data loss.
 
 However modules may generate traffic by calling [`ValkeyModule_Call()`](#ValkeyModule_Call) with
 the "!" flag, or by calling [`ValkeyModule_Replicate()`](#ValkeyModule_Replicate), in a context outside
 commands execution, for instance in timeout callbacks, threads safe
 contexts, and so forth. When modules will generate too much traffic, it
-will be hard for the master and replicas offset to match, because there
+will be hard for the primary and replicas offset to match, because there
 is more data to send in the replication channel.
 
 So modules may want to try to avoid very heavy background work that has
@@ -5218,7 +5217,7 @@ is returned.
 
 The arguments `ip`, `master_id`, `port` and `flags` can be NULL in case we don't
 need to populate back certain info. If an `ip` and `master_id` (only populated
-if the instance is a slave) are specified, they point to buffers holding
+if the instance is a replica) are specified, they point to buffers holding
 at least `VALKEYMODULE_NODE_ID_LEN` bytes. The strings written back as `ip`
 and `master_id` are not null terminated.
 
@@ -5229,7 +5228,7 @@ The list of flags reported is the following:
 * `VALKEYMODULE_NODE_REPLICA`:      The node is a replica
 * `VALKEYMODULE_NODE_PFAIL`:        We see the node as failing
 * `VALKEYMODULE_NODE_FAIL`:         The cluster agrees the node is failing
-* `VALKEYMODULE_NODE_NOFAILOVER`:   The slave is configured to never failover
+* `VALKEYMODULE_NODE_NOFAILOVER`:   The replica is configured to never failover
 
 <span id="ValkeyModule_SetClusterFlags"></span>
 
@@ -5250,7 +5249,7 @@ message bus. Flags that can be set:
 
 With the following effects:
 
-* `NO_FAILOVER`: prevent Cluster slaves from failing over a dead master.
+* `NO_FAILOVER`: prevent Cluster replicas from failing over a dead primary.
                Also disables the replica migration feature.
 
 * `NO_REDIRECTION`: Every node will accept any key, without trying to perform
@@ -6458,7 +6457,7 @@ filter applies in all execution paths including:
 1. Invocation by a client.
 2. Invocation through [`ValkeyModule_Call()`](#ValkeyModule_Call) by any module.
 3. Invocation through Lua `redis.call()`.
-4. Replication of a command from a master.
+4. Replication of a command from a primary.
 
 The filter executes in a special filter context, which is different and more
 limited than a `ValkeyModuleCtx`.  Because the filter affects any command, it
@@ -6911,10 +6910,10 @@ Here is a list of events you can use as 'eid' and related sub events:
 
 * `ValkeyModuleEvent_ReplicationRoleChanged`:
 
-    This event is called when the instance switches from master
+    This event is called when the instance switches from primary
     to replica or the other way around, however the event is
     also called when the replica remains a replica but starts to
-    replicate with a different master.
+    replicate with a different primary.
 
     The following sub events are available:
 
@@ -6924,9 +6923,9 @@ Here is a list of events you can use as 'eid' and related sub events:
     The 'data' field can be casted by the callback to a
     `ValkeyModuleReplicationInfo` structure with the following fields:
 
-        int master; // true if master, false if replica
-        char *masterhost; // master instance hostname for NOW_REPLICA
-        int masterport; // master instance port for NOW_REPLICA
+        int master; // true if primary, false if replica
+        char *masterhost; // primary instance hostname for NOW_REPLICA
+        int masterport; // primary instance port for NOW_REPLICA
         char *replid1; // Main replication ID
         char *replid2; // Secondary replication ID
         uint64_t repl1_offset; // Main replication offset
@@ -6983,7 +6982,7 @@ Here is a list of events you can use as 'eid' and related sub events:
 
     Called on loading operations: at startup when the server is
     started, but also after a first synchronization when the
-    replica is loading the RDB file from the master.
+    replica is loading the RDB file from the primary.
     The following sub events are available:
 
     * `VALKEYMODULE_SUBEVENT_LOADING_RDB_START`
@@ -7012,7 +7011,7 @@ Here is a list of events you can use as 'eid' and related sub events:
 * `ValkeyModuleEvent_ReplicaChange`
 
     This event is called when the instance (that can be both a
-    master or a replica) get a new online replica, or lose a
+    primary or a replica) get a new online replica, or lose a
     replica since it gets disconnected.
     The following sub events are available:
 
@@ -7040,9 +7039,9 @@ Here is a list of events you can use as 'eid' and related sub events:
 * `ValkeyModuleEvent_PrimaryLinkChange`
 
     This is called for replicas in order to notify when the
-    replication link becomes functional (up) with our master,
+    replication link becomes functional (up) with our primary,
     or when it goes down. Note that the link is not considered
-    up when we just connected to the master, but only if the
+    up when we just connected to the primary, but only if the
     replication is happening correctly.
     The following sub events are available:
 
@@ -7110,7 +7109,7 @@ Here is a list of events you can use as 'eid' and related sub events:
 
 * `ValkeyModuleEvent_ReplAsyncLoad`
 
-    Called when repl-diskless-load config is set to swapdb and a replication with a master of same
+    Called when repl-diskless-load config is set to swapdb and a replication with a primary of the same
     data set history (matching replication ID) occurs.
     In which case the server serves current data set while loading new database in memory from socket.
     Modules must have declared they support this mechanism in order to activate it, through

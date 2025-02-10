@@ -1,6 +1,5 @@
 ---
 title: "Bitmaps"
-linkTitle: "Bitmaps"
 description: >
     Introduction to Bitmaps
 ---

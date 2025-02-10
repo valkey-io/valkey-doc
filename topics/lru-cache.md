@@ -1,6 +1,5 @@
 ---
 title: Key eviction
-linkTitle: Eviction
 description: Overview of Valkey key eviction policies (LRU, LFU, etc.)
 ---
 
@@ -27,11 +26,20 @@ following directive inside the `valkey.conf` file:
 Setting `maxmemory` to zero results into no memory limits. This is the
 default behavior for 64 bit systems, while 32 bit systems use an implicit
 memory limit of 3GB.
-
 When the specified amount of memory is reached, how **eviction policies** are configured determines the default behavior.
 Valkey can return errors for commands that could result in more memory
 being used, or it can evict some old data to return back to the
 specified limit every time new data is added.
+
+### Considerations for `maxmemory` when using replication
+
+If you have set up replication, Valkey needs some RAM as a buffer to send data to the replicas and AOF files. This memory is not included in the used memory count that is compared against the `maxmemory` to trigger eviction. 
+
+The reason for that is that the key eviction process itself generates some changes that need to be added to the replication and AOF buffers. If these buffers were counted for the key eviction, this would result in a loop where a freed memory would immediately be used up by these updates causing more keys to be deleted repeatedly until the database is empty.
+
+For Valkey with replication configured, it's recommended to set the `maxmemory` value lower than for a single instance without replication. This way you ensure there's enough memory for AOF and replication buffers, and other processes. 
+
+You can estimate how much memory is used by the replication and AOF buffers using the `mem_not_counted_for_evict` value of the INFO memory command output. 
 
 ## Eviction policies
 
@@ -40,7 +48,7 @@ configured using the `maxmemory-policy` configuration directive.
 
 The following policies are available:
 
-* **noeviction**: New values aren’t saved when memory limit is reached. When a database uses replication, this applies to the primary database
+* **noeviction**: New values aren't saved when memory limit is reached. When a database uses replication, this applies to the primary database
 * **allkeys-lru**: Keeps most recently used keys; removes least recently used (LRU) keys
 * **allkeys-lfu**: Keeps frequently used keys; removes least frequently used (LFU) keys
 * **volatile-lru**: Removes least recently used keys with a time-to-live (TTL) set.
@@ -81,6 +89,49 @@ It is important to understand that the eviction process works like this:
 So we continuously cross the boundaries of the memory limit, by going over it, and then by evicting keys to return back under the limits.
 
 If a command results in a lot of memory being used (like a big set intersection stored into a new key) for some time, the memory limit can be surpassed by a noticeable amount.
+
+## Monitor eviction
+
+To monitor the point when Valkey starts to evict data, use the `INFO MEMORY` command. The following fields provide the information about the memory usage and the condition to trigger key eviction:
+
+* `used_memory`: The total number of bytes that the server allocated for storing data. It is the sum of the `used_memory_overhead` and the `used_memory_dataset` outputs.
+* `mem_not_counted_for_evict`: The amount of memory not counted for eviction. This includes the replication buffer and AOF buffer.
+
+Thus, the memory usage to trigger eviction is calculated as follows:
+
+```
+used_memory - mem_not_counted_for_evict > maxmemory
+```
+
+Let's see how this works in practice. 
+
+Consider the following INFO memory output:
+
+```
+# Memory
+used_memory:12498952
+...
+maxmemory:10737418240
+...
+mem_not_counted_for_evict:12336
+...
+```
+
+In this example, Valkey will not start data eviction because the actual memory usage is `12498952 - 12336 = 12486616` which is considerably less than `maxmemory`.
+
+The following example shows that we're nearing eviction:
+
+```
+# Memory
+used_memory:12498952
+...
+maxmemory:12500000
+...
+mem_not_counted_for_evict:12336
+```
+
+Once eviction happens, additional information is available through the `INFO STATS` metrics. The `total_eviction_exceeded_time` metric shows the total time in milliseconds that `used_memory` exceeded `maxmemory`.
+
 
 ## Approximated LRU algorithm
 
@@ -133,7 +184,7 @@ the `CONFIG SET maxmemory-samples <count>` command, is very simple.
 
 ## The LFU mode
 
-The [Least Frequently Used eviction mode](http://antirez.com/news/109) is available as an alternative to LRU.
+The [Least Frequently Used eviction mode](https://web.archive.org/web/20241019222228/http://antirez.com/news/109) is available as an alternative to LRU.
 This mode may work better (provide a better
 hits/misses ratio) in certain cases. In LFU mode, Valkey will try to track
 the frequency of access of items, so the ones used rarely are evicted. This means

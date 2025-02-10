@@ -1,6 +1,5 @@
 ---
 title: Secondary indexing
-linkTitle: Secondary indexing
 description: >
     Building secondary indexes in Valkey
 ---
@@ -655,35 +654,37 @@ removing the elements which are outside our search box.
 
 Turning this into code is simple. Here is a Ruby example:
 
-    def spacequery(x0,y0,x1,y1,exp)
-        bits=exp*2
-        x_start = x0/(2**exp)
-        x_end = x1/(2**exp)
-        y_start = y0/(2**exp)
-        y_end = y1/(2**exp)
-        (x_start..x_end).each{|x|
-            (y_start..y_end).each{|y|
-                x_range_start = x*(2**exp)
-                x_range_end = x_range_start | ((2**exp)-1)
-                y_range_start = y*(2**exp)
-                y_range_end = y_range_start | ((2**exp)-1)
-                puts "#{x},#{y} x from #{x_range_start} to #{x_range_end}, y from #{y_range_start} to #{y_range_end}"
+```ruby
+def spacequery(x0,y0,x1,y1,exp)
+    bits=exp*2
+    x_start = x0/(2**exp)
+    x_end = x1/(2**exp)
+    y_start = y0/(2**exp)
+    y_end = y1/(2**exp)
+    (x_start..x_end).each{|x|
+        (y_start..y_end).each{|y|
+            x_range_start = x*(2**exp)
+            x_range_end = x_range_start | ((2**exp)-1)
+            y_range_start = y*(2**exp)
+            y_range_end = y_range_start | ((2**exp)-1)
+            puts "#{x},#{y} x from #{x_range_start} to #{x_range_end}, y from #{y_range_start} to #{y_range_end}"
 
-                # Turn it into interleaved form for ZRANGE query.
-                # We assume we need 9 bits for each integer, so the final
-                # interleaved representation will be 18 bits.
-                xbin = x_range_start.to_s(2).rjust(9,'0')
-                ybin = y_range_start.to_s(2).rjust(9,'0')
-                s = xbin.split("").zip(ybin.split("")).flatten.compact.join("")
-                # Now that we have the start of the range, calculate the end
-                # by replacing the specified number of bits from 0 to 1.
-                e = s[0..-(bits+1)]+("1"*bits)
-                puts "ZRANGE myindex [#{s} [#{e} BYLEX"
-            }
+            # Turn it into interleaved form for ZRANGE query.
+            # We assume we need 9 bits for each integer, so the final
+            # interleaved representation will be 18 bits.
+            xbin = x_range_start.to_s(2).rjust(9,'0')
+            ybin = y_range_start.to_s(2).rjust(9,'0')
+            s = xbin.split("").zip(ybin.split("")).flatten.compact.join("")
+            # Now that we have the start of the range, calculate the end
+            # by replacing the specified number of bits from 0 to 1.
+            e = s[0..-(bits+1)]+("1"*bits)
+            puts "ZRANGE myindex [#{s} [#{e} BYLEX"
         }
-    end
+    }
+end
 
-    spacequery(50,100,100,300,6)
+spacequery(50,100,100,300,6)
+```
 
 While non immediately trivial this is a very useful indexing strategy that
 in the future may be implemented in Valkey in a native way.

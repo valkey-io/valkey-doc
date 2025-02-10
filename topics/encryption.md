@@ -1,6 +1,5 @@
 ---
 title: "TLS"
-linkTitle: "TLS"
 description: Valkey TLS support
 ---
 
@@ -87,12 +86,12 @@ You may use `tls-auth-clients no` to disable client authentication.
 
 ### Replication
 
-A Valkey master server handles connecting clients and replica servers in the same
+A Valkey primary server handles connecting clients and replica servers in the same
 way, so the above `tls-port` and `tls-auth-clients` directives apply to
 replication links as well.
 
 On the replica server side, it is necessary to specify `tls-replication yes` to
-use TLS for outgoing connections to the master.
+use TLS for outgoing connections to the primary.
 
 ### Cluster
 
@@ -104,7 +103,7 @@ cluster bus and cross-node connections.
 Sentinel inherits its networking configuration from the common Valkey
 configuration, so all of the above applies to Sentinel as well.
 
-When connecting to master servers, Sentinel will use the `tls-replication`
+When connecting to primary servers, Sentinel will use the `tls-replication`
 directive to determine if a TLS or non-TLS connection is required.
 
 In addition, the very same `tls-replication` directive will determine whether Sentinel's

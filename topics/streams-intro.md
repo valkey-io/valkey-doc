@@ -1,6 +1,5 @@
 ---
 title: "Streams"
-linkTitle: "Streams"
 description: >
     Introduction to Streams
 ---
@@ -188,7 +187,7 @@ To query the stream by range we are only required to specify two IDs, *start* an
       8) "2"
 ```
 
-Each entry returned is an array of two items: the ID and the list of field-value pairs. We already said that the entry IDs have a relation with the time, because the part at the left of the `-` character is the Unix time in milliseconds of the local node that created the stream entry, at the moment the entry was created (however note that streams are replicated with fully specified `XADD` commands, so the replicas will have identical IDs to the master). This means that I could query a range of time using `XRANGE`. In order to do so, however, I may want to omit the sequence part of the ID: if omitted, in the start of the range it will be assumed to be 0, while in the end part it will be assumed to be the maximum sequence number available. This way, querying using just two milliseconds Unix times, we get all the entries that were generated in that range of time, in an inclusive way. For instance, if I want to query a two milliseconds period I could use:
+Each entry returned is an array of two items: the ID and the list of field-value pairs. We already said that the entry IDs have a relation with the time, because the part at the left of the `-` character is the Unix time in milliseconds of the local node that created the stream entry, at the moment the entry was created (however note that streams are replicated with fully specified `XADD` commands, so the replicas will have identical IDs to the primary). This means that I could query a range of time using `XRANGE`. In order to do so, however, I may want to omit the sequence part of the ID: if omitted, in the start of the range it will be assumed to be 0, while in the end part it will be assumed to be the maximum sequence number available. This way, querying using just two milliseconds Unix times, we get all the entries that were generated in that range of time, in an inclusive way. For instance, if I want to query a two milliseconds period I could use:
 
 ```
 127.0.0.1:6379> XRANGE race:france 1692632086369 1692632086371
@@ -477,7 +476,7 @@ There are a few things to keep in mind:
 
 * Consumers are auto-created the first time they are mentioned, no need for explicit creation.
 * Even with `XREADGROUP` you can read from multiple keys at the same time, however for this to work, you need to create a consumer group with the same name in every stream. This is not a common need, but it is worth mentioning that the feature is technically available.
-* `XREADGROUP` is a *write command* because even if it reads from the stream, the consumer group is modified as a side effect of reading, so it can only be called on master instances.
+* `XREADGROUP` is a *write command* because even if it reads from the stream, the consumer group is modified as a side effect of reading, so it can only be called on primary instances.
 
 An example of a consumer implementation, using consumer groups, written in the Ruby language could be the following. The Ruby code is aimed to be readable by virtually any experienced programmer, even if they do not know Ruby:
 
@@ -840,12 +839,12 @@ So we have `-`, `+`, `$`, `>` and `*`, and all have a different meaning, and mos
 
 ## Persistence, replication and message safety
 
-A Stream, like any other Valkey data structure, is asynchronously replicated to replicas and persisted into AOF and RDB files. However what may not be so obvious is that also the consumer groups full state is propagated to AOF, RDB and replicas, so if a message is pending in the master, also the replica will have the same information. Similarly, after a restart, the AOF will restore the consumer groups' state.
+A Stream, like any other Valkey data structure, is asynchronously replicated to replicas and persisted into AOF and RDB files. However what may not be so obvious is that also the consumer groups full state is propagated to AOF, RDB and replicas, so if a message is pending in the primary, also the replica will have the same information. Similarly, after a restart, the AOF will restore the consumer groups' state.
 
 However note that Streams and consumer groups are persisted and replicated using the Valkey default replication, so:
 
 * AOF must be used with a strong fsync policy if persistence of messages is important in your application.
-* By default the asynchronous replication will not guarantee that `XADD` commands or consumer groups state changes are replicated: after a failover something can be missing depending on the ability of replicas to receive the data from the master.
+* By default the asynchronous replication will not guarantee that `XADD` commands or consumer groups state changes are replicated: after a failover something can be missing depending on the ability of replicas to receive the data from the primary.
 * The `WAIT` command may be used in order to force the propagation of the changes to a set of replicas. However note that while this makes it very unlikely that data is lost, the Valkey failover process as operated by Sentinel or Valkey Cluster performs only a *best effort* check to failover to the replica which is the most updated, and under certain specific failure conditions may promote a replica that lacks some data.
 
 So when designing an application using Streams and consumer groups, make sure to understand the semantical properties your application should have during failures, and configure things accordingly, evaluating whether it is safe enough for your use case.

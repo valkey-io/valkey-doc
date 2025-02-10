@@ -1,6 +1,6 @@
 `CLUSTER SHARDS` returns details about the shards of the cluster.
 A shard is defined as a collection of nodes that serve the same set of slots and that replicate from each other.
-A shard may only have a single master at a given time, but may have multiple or no replicas.
+A shard may only have a single primary at a given time, but may have multiple or no replicas.
 It is possible for a shard to not be serving any slots while still having replicas.
 
 This command replaces the `CLUSTER SLOTS` command, by providing a more efficient and extensible representation of the cluster. 
