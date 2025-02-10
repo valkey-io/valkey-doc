@@ -55,6 +55,7 @@ lru_clock:3425456
 executable:/home/viktor/repos/valkey/src/./valkey-server
 config_file:
 io_threads_active:0
+availability_zone:
 listener0:name=tcp,bind=*,bind=-::*,port=6379
 
 # Clients
@@ -292,6 +293,7 @@ Here is the meaning of all fields in the **server** section:
 *   `executable`: The path to the server's executable
 *   `config_file`: The path to the config file
 *   `io_threads_active`: Flag indicating if I/O threads are active
+*   `availability_zone`: Inform Valkey of the Availability zone if running in a cloud environment, see `availability-zone` config for more details. Added in Valkey 8.0.
 *   `shutdown_in_milliseconds`: The maximum time remaining for replicas to catch up the replication before completing the shutdown sequence.
     This field is only present during shutdown.
 

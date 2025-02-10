@@ -14,7 +14,8 @@ RESP2, although future version may default to RESP3.
 
 `HELLO` always replies with a list of current server and connection properties,
 such as: versions, modules loaded, client ID, replication role and so forth.
-(The availability_zone field only shows up when it is set in the configs.)
+The `availability_zone` field only shows up when it is set in the configs,
+see `availability-zone` config for more details, added in Valkey 8.1.
 
 When called without any arguments and its default use of RESP2
 protocol, the reply looks like this:
