@@ -1,0 +1,19 @@
+{
+    "name": "phpredis",
+    "description": " A PHP extension for Redis, offering high performance and a native API.",
+    "repo":"https://github.com/phpredis/phpredis",
+    "installation": "pecl install redis",
+    "version":"6.1.0",
+    "version_released":"204-10-05",
+    "language":"php",
+    "license": "PHP-3.01",
+    "read_from_replica": true,
+    "smart_backoff_to_prevent_connection_storm": true,
+    "pubsub_state_restoration": false,
+    "cluster_scan": false,
+    "latency_based_read_from_replica": false,
+    "AZ_based_read_from_replica": false,
+    "client_side_caching": false,
+    "client_capa_redirect": false,
+    "persistent_connection_pool": true
+}

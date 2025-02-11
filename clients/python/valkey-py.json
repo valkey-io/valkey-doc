@@ -1,0 +1,20 @@
+{
+    "name": "valkey-py",
+    "description": "The Python interface to the Valkey key-value store.",
+    "repo":"https://github.com/valkey-io/valkey-py",
+    "installation": "pip install valkey",
+    "version":"6.0.2",
+    "version_released":"2024-09-11",
+    "language":"python",
+    "license": "MIT",
+    "read_from_replica": true,
+    "smart_backoff_to_prevent_connection_storm": true,
+    "pubsub_state_restoration": false,
+    "cluster_scan": false,
+    "latency_based_read_from_replica": false,
+    "AZ_based_read_from_replica": false,
+    "client_side_caching": false,
+    "client_capa_redirect": false,
+    "persistent_connection_pool": true,
+    "specific_properties": ["Available in sync and async API"]
+}

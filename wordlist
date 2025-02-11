@@ -59,10 +59,12 @@ autoload
 autoloader
 autoloading
 Autoloading
+AZs
 B1
 B2
 B3
 backend
+Backoff
 backported
 backslashed
 backticks
@@ -309,6 +311,7 @@ go-redis
 Gottlieb
 gpg
 Gradle
+Golang
 Hacktoberfest
 hacktoberfest
 handleClientsWithPendingWrites
@@ -368,6 +371,8 @@ invalidations
 iojob
 IOPs
 iostat
+iovalkey
+ioredis
 IoT
 ip
 ip:port
@@ -589,6 +594,7 @@ perf_events
 performance-on-cpu
 PFAIL
 php-redis-lock
+phpredis
 PHPRedisMutex
 pid
 pidfile
@@ -633,6 +639,7 @@ programmatically-generated
 pseudorandom
 PSR-4
 Pubsub
+PubSub
 pubsub
 PubSub-related
 Pubsub.
