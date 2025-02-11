@@ -33,6 +33,7 @@ Here is the meaning of the fields:
 * `age`: total duration of the connection in seconds
 * `idle`: idle time of the connection in seconds
 * `flags`: client flags (see below)
+* `capa`: client capabilities (see below). Added in Valkey 8.1
 * `db`: current database ID
 * `sub`: number of channel subscriptions
 * `psub`: number of pattern matching subscriptions
@@ -81,6 +82,12 @@ T: the client will not touch the LRU/LFU of the keys it accesses
 R: the client tracking target client is invalid
 B: the client enabled broadcast tracking mode
 I: the client is an import source
+```
+
+Client's capabilities can be:
+
+```
+r: the client can handle redirect messages
 ```
 
 The file descriptor events can be:
