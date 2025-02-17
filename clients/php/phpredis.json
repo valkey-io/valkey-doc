@@ -4,7 +4,7 @@
     "repo":"https://github.com/phpredis/phpredis",
     "installation": "pecl install redis",
     "version":"6.1.0",
-    "version_released":"204-10-05",
+    "version_released":"2024-10-05",
     "language":"php",
     "license": "PHP-3.01",
     "read_from_replica": true,
