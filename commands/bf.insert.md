@@ -22,7 +22,11 @@ Due to the nature of `NONSCALING` and `VALIDATESCALETO` arguments, specifying `N
 127.0.0.1:6379> BF.INSERT key ITEMS item1 item2
 1) (integer) 1
 2) (integer) 1
+<<<<<<< HEAD
 # This does not update the capacity since the filter already exists. It only adds the provided items.
+=======
+# This does not update the capcity but uses the origianl filters values
+>>>>>>> 6f84713d (Adding bloom command meta data and bloom group, adding bloom data type)
 127.0.0.1:6379> BF.INSERT key CAPACITY 1000 ITEMS item2 item3
 1) (integer) 0
 2) (integer) 1
@@ -32,6 +36,7 @@ Due to the nature of `NONSCALING` and `VALIDATESCALETO` arguments, specifying `N
 
 ```
 127.0.0.1:6379> BF.INSERT key NONSCALING VALIDATESCALETO 100
+<<<<<<< HEAD
 (error) ERR cannot use NONSCALING and VALIDATESCALETO options together
 127.0.0.1:6379> BF.INSERT key CAPACITY 1000  VALIDATESCALETO 999999999999999999 ITEMS item2 item3
 (error) ERR provided VALIDATESCALETO causes bloom object to exceed memory limit
@@ -41,4 +46,15 @@ Due to the nature of `NONSCALING` and `VALIDATESCALETO` arguments, specifying `N
 ```
 127.0.0.1:6379> BF.INSERT key NOCREATE ITEMS item1 item2
 (error) ERR not found
+=======
+cannot use NONSCALING and VALIDATESCALETO options together
+127.0.0.1:6379> BF.INSERT key CAPACITY 1000  VALIDATESCALETO 999999999999999999999 ITEMS item2 item3
+provided VALIDATESCALETO causes bloom object to exceed memory limit
+127.0.0.1:6379> BF.INSERT key VALIDATESCALETO 999999999999999999999 EXPANSION 1 ITEMS item2 item3
+provided VALIDATESCALETO causes false positive to degrade to 0
+```
+```
+127.0.0.1:6379> BF.INSERT key NOCREATE ITEMS item1 item2
+not found
+>>>>>>> 6f84713d (Adding bloom command meta data and bloom group, adding bloom data type)
 ```
