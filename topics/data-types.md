@@ -92,6 +92,14 @@ The [HyperLogLog](hyperloglogs.md) data structures provide probabilistic estimat
 * [Overview of HyperLogLog](hyperloglogs.md)
 * [HyperLogLog command reference](../commands/#hyperloglog)
 
+## Bloom Filter
+
+[Bloom filters](bloomfilters.md) provides a space efficient probabilistic data structure that allows checking if an element is a member of a set. False positives are possible, but it guarantees no false negatives.
+For more information, see:
+
+* [Overview of Bloom Filters](bloomfilters.md)
+* [Bloom filter command reference](../commands/#bloom)
+
 ## Extensions
 
 To extend the features provided by the included data types, use one of these options:
