@@ -28,9 +28,9 @@ Containers on [Docker Hub](https://hub.docker.com/r/valkey/valkey/).
 #### Using [Homebrew](https://brew.sh/) to install and run Valkey:
 
 ```bash
-brew install valkey.
+brew install valkey
 # To run Valkey as a service, use
-brew services start valkey.
+brew services start valkey
 # Check that it's running using
 brew services info valkey
 # and stop it using
