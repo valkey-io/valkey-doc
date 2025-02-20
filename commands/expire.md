@@ -159,10 +159,10 @@ Changing the `active-expire-effort` value results in a lower percentage of expir
 
 To calculate the new values, use the following formulas:
 
-* `ACTIVE_EXPIRE_CYCLE_KEYS_PER_LOOP + (ACTIVE_EXPIRE_CYCLE_KEYS_PER_LOOP / 4 * effort)`
-* `ACTIVE_EXPIRE_CYCLE_FAST_DURATION + (ACTIVE_EXPIRE_CYCLE_FAST_DURATION / 4 * effort)`
-* `ACTIVE_EXPIRE_CYCLE_SLOW_TIME_PERC + (2 * effort)`
-* `ACTIVE_EXPIRE_CYCLE_ACCEPTABLE_STALE - effort`
+* `ACTIVE_EXPIRE_CYCLE_KEYS_PER_LOOP + (ACTIVE_EXPIRE_CYCLE_KEYS_PER_LOOP / 4 * (effort - 1))`
+* `ACTIVE_EXPIRE_CYCLE_FAST_DURATION + (ACTIVE_EXPIRE_CYCLE_FAST_DURATION / 4 * (effort - 1))`
+* `ACTIVE_EXPIRE_CYCLE_SLOW_TIME_PERC + (2 * (effort - 1))`
+* `ACTIVE_EXPIRE_CYCLE_ACCEPTABLE_STALE - (effort - 1)`
 
 where `ACTIVE_EXPIRE_CYCLE_KEYS_PER_LOOP`, `ACTIVE_EXPIRE_CYCLE_FAST_DURATION`, `ACTIVE_EXPIRE_CYCLE_SLOW_TIME_PERC`, and `ACTIVE_EXPIRE_CYCLE_ACCEPTABLE_STALE` are the base values, and `effort` is calculated as the specified `active-expire-effort` value minus 1.
 
