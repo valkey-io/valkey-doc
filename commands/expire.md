@@ -142,9 +142,11 @@ lasting for 1000 seconds.
 
 Valkey reclaims expired keys in two ways: on access and in the background in what is called the "active expire key" cycles. On access expiration is when a client tries to access a key with the expiration time which is found to be timed out. Such a key is deleted on this access attempt.
 
-Relying solely on the on access expiration only is not enough because there are expired keys that will never be accessed again. To address this, Valkey uses the background expiration known as the "active expire key" effort. Valkey slowly and interactively scans the keyspace to identify and reclaim expired keys. This slow cycle is the main way to collect expired keys and operates with the server's hertz frequency (usually 10 hertz).
+Relying solely on the on access expiration only is not enough because there are expired keys that may never be accessed again. To address this, Valkey uses the background expiration algorithm known as the "active expire key" effort. This  algorithm is adaptive: it tries to use less CPU if there are few expired keys to reclaim. Otherwise, it gets more aggressive trying to free more memory by reclaiming more keys in shorter runs but using more CPU. 
 
-During the "slow cycle", Valkey scans 20 keys per database loop. It tolerates having not more than 10% of the expired keys in the memory and tries to use a maximum of 25% CPU power. These default values are adjusted if the user changes the active expire key effort configuration. 
+This is how it works:
+
+Valkey slowly scans the keyspace to identify and reclaim expired keys. This "slow cycle" is the main way to collect expired keys and operates with the server's hertz frequency (usually 10 hertz). During the slow cycle, Valkey tolerates having not more than 10% of the expired keys in the memory and tries to use a maximum of 25% CPU power. These default values are adjusted if the user changes the active expire key effort configuration. 
 
 If the number of expired keys remains high after the slow cycle, the active expire key effort transitions into the "fast cycle", trying to do less work but more often. The fast cycle runs no longer than 1000 microseconds and repeats at the same interval. During the fast cycle, the check of every database is interrupted once the number of already expired keys in the database is estimated to be lower than 10%. This is done to avoid doing too much work to gain too little memory. 
 
@@ -164,7 +166,7 @@ To calculate the new values, use the following formulas:
 * `ACTIVE_EXPIRE_CYCLE_SLOW_TIME_PERC + (2 * (effort - 1))`
 * `ACTIVE_EXPIRE_CYCLE_ACCEPTABLE_STALE - (effort - 1)`
 
-where `ACTIVE_EXPIRE_CYCLE_KEYS_PER_LOOP`, `ACTIVE_EXPIRE_CYCLE_FAST_DURATION`, `ACTIVE_EXPIRE_CYCLE_SLOW_TIME_PERC`, and `ACTIVE_EXPIRE_CYCLE_ACCEPTABLE_STALE` are the base values, and `effort` is calculated as the specified `active-expire-effort` value minus 1.
+where `ACTIVE_EXPIRE_CYCLE_KEYS_PER_LOOP`, `ACTIVE_EXPIRE_CYCLE_FAST_DURATION`, `ACTIVE_EXPIRE_CYCLE_SLOW_TIME_PERC`, and `ACTIVE_EXPIRE_CYCLE_ACCEPTABLE_STALE` are the base values, and `effort` is the specified `active-expire-effort`.
 
 
 ## How expires are handled in the replication link and AOF file
