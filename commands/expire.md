@@ -138,32 +138,36 @@ you set a key with a time to live of 1000 seconds, and then set your computer
 time 2000 seconds in the future, the key will be expired immediately, instead of
 lasting for 1000 seconds.
 
-## How Valkey expires keys
+## How Valkey reclaims expired keys
 
-Valkey keys are expired in two ways: a passive way, and an active way.
+Valkey reclaims expired keys in two ways: on access and in the background in what is called the "active expire key" cycles. On access expiration is when a client tries to access a key with the expiration time which is found to be timed out. Such a key is deleted on this access attempt.
 
-A key is passively expired simply when some client tries to access it, and the
-key is found to be timed out.
+Relying solely on the on access expiration only is not enough because there are expired keys that may never be accessed again. To address this, Valkey uses the background expiration algorithm known as the "active expire key" effort. This  algorithm is adaptive: it tries to use less CPU if there are few expired keys to reclaim. Otherwise, it gets more aggressive trying to free more memory by reclaiming more keys in shorter runs but using more CPU. 
 
-Of course this is not enough as there are expired keys that will never be
-accessed again.
-These keys should be expired anyway, so periodically Valkey tests a few keys at
-random among keys with an expire set.
-All the keys that are already expired are deleted from the keyspace.
+This is how it works:
 
-Specifically this is what Valkey does 10 times per second:
+Valkey slowly scans the keyspace to identify and reclaim expired keys. This "slow cycle" is the main way to collect expired keys and operates with the server's hertz frequency (usually 10 hertz). During the slow cycle, Valkey tolerates having not more than 10% of the expired keys in the memory and tries to use a maximum of 25% CPU power. These default values are adjusted if the user changes the active expire key effort configuration. 
 
-1. Test 20 random keys from the set of keys with an associated expire.
-2. Delete all the keys found expired.
-3. If more than 25% of keys were expired, start again from step 1.
+If the number of expired keys remains high after the slow cycle, the active expire key effort transitions into the "fast cycle", trying to do less work but more often. The fast cycle runs no longer than 1000 microseconds and repeats at the same interval. During the fast cycle, the check of every database is interrupted once the number of already expired keys in the database is estimated to be lower than 10%. This is done to avoid doing too much work to gain too little memory. 
 
-This is a trivial probabilistic algorithm, basically the assumption is that our
-sample is representative of the whole key space, and we continue to expire until
-the percentage of keys that are likely to be expired is under 25%
+You can modify the active expire key effort with the `active-expire-effort` parameter in the configuration file up to the maximum value of `10`. The default `active-expire-effort` value is `1`, and it is described by the following base values:
 
-This means that at any given moment the maximum amount of keys already expired
-that are using memory is at max equal to max amount of write operations per
-second divided by 4.
+* `ACTIVE_EXPIRE_CYCLE_KEYS_PER_LOOP` = 20 - The number of keys for each DB loop.    
+* `ACTIVE_EXPIRE_CYCLE_FAST_DURATION` = 1000 – The maximum duration of the fast cycle in microseconds. 
+* `ACTIVE_EXPIRE_CYCLE_SLOW_TIME_PERC` = 25 – The maximum % of CPU to use during the slow cycle.
+* `ACTIVE_EXPIRE_CYCLE_ACCEPTABLE_STALE` = 10 – The maximum % of expired keys to tolerate in memory. 
+
+Changing the `active-expire-effort` value results in a lower percentage of expired keys tolerated in memory. However, it will lead to longer cycles and increased CPU usage, which may introduce latency.
+
+To calculate the new values, use the following formulas:
+
+* `ACTIVE_EXPIRE_CYCLE_KEYS_PER_LOOP + (ACTIVE_EXPIRE_CYCLE_KEYS_PER_LOOP / 4 * (effort - 1))`
+* `ACTIVE_EXPIRE_CYCLE_FAST_DURATION + (ACTIVE_EXPIRE_CYCLE_FAST_DURATION / 4 * (effort - 1))`
+* `ACTIVE_EXPIRE_CYCLE_SLOW_TIME_PERC + (2 * (effort - 1))`
+* `ACTIVE_EXPIRE_CYCLE_ACCEPTABLE_STALE - (effort - 1)`
+
+where `ACTIVE_EXPIRE_CYCLE_KEYS_PER_LOOP`, `ACTIVE_EXPIRE_CYCLE_FAST_DURATION`, `ACTIVE_EXPIRE_CYCLE_SLOW_TIME_PERC`, and `ACTIVE_EXPIRE_CYCLE_ACCEPTABLE_STALE` are the base values, and `effort` is the specified `active-expire-effort`.
+
 
 ## How expires are handled in the replication link and AOF file
 
