@@ -4,7 +4,7 @@
     "description": "Operations on the Bitmap data type"
   },
   "bloom": {
-    "display": "Bloom",
+    "display": "Bloom filter",
     "description": "Operations on the Bloom filter data type"
   },
   "cluster": {

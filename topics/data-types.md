@@ -94,11 +94,14 @@ The [HyperLogLog](hyperloglogs.md) data structures provide probabilistic estimat
 
 ## Bloom Filter
 
-[Bloom filters](bloomfilters.md) provides a space efficient probabilistic data structure that allows checking if an element is a member of a set. False positives are possible, but it guarantees no false negatives.
+[Bloom filters](bloomfilters.md) are a space efficient data type that can tell you if something is definitely not in a set, or it might be in the set. 
+
+Bloom filters are provided by the module `valkey-bloom`
 For more information, see:
 
 * [Overview of Bloom Filters](bloomfilters.md)
 * [Bloom filter command reference](../commands/#bloom)
+* [The valkey-bloom module on GitHub](https://github.com/valkey-io/valkey-bloom/)
 
 ## Extensions
 

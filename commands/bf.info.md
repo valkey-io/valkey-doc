@@ -1,17 +1,19 @@
-Returns information about a bloomfilter
+Returns information about a bloom filter
 
-## Arguments
-* key (required) - A valkey key of bloom data type
-* CAPACITY (optional) - Returns the number of unique items that would need to be added before scaling would happen
-* SIZE (optional) - Returns the memory size which is the number of bytes allocated
-* FILTERS (optional) - Returns the number of filters in the specified key
-* ITEMS (optional) - Returns the number of unique items that have been added the the Bloom filter
-* ERROR (optional) - Returns the false positive rate for the bloom filter
-* EXPANSION (optional) - Returns the expansion rate
-* MAXSCALEDCAPACITY (optional) - Returns the maximum capacity that can be reached before an error occurs
+## Info Fields
+
+* CAPACITY - Returns the number of unique items that would need to be added before scaling would happen
+* SIZE - Returns the number of bytes allocated
+* FILTERS - Returns the number of filters in the specified key
+* ITEMS - Returns the number of unique items that have been added the the bloom filter
+* ERROR - Returns the false positive rate for the bloom filter
+* EXPANSION - Returns the expansion rate
+* MAXSCALEDCAPACITY - Returns the maximum capacity that can be reached before an error occurs
+
 If none of the optional fields are specified, all the fields will be returned. MAXSCALEDCAPACITY will be an unrecognized argument on non scaling filters
  
 ## Examples
+
 ```
 127.0.0.1:6379> BF.ADD key val
 1

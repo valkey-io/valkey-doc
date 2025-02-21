@@ -1,12 +1,14 @@
 Creates an empty bloom object with the capacity and false positive rate specified
-## Arguments
-* key (required) -  A Valkey key of Bloom data type
-* error_rate (required) - The fp rate the bloom filter will be created with
-* capacity (required) -  The starting capacity the bloom filter will be created with
-* EXPANSION expansion(optional)- The rate in which filters will increase by
-* NONSCALING (optional) - Setting this will make it so the bloom object can’t expand past its initial capacity
+
+## Reserve fields
+
+* error_rate - The false positive rate the bloom filter will be created with
+* capacity -  The starting capacity the bloom filter will be created with
+* EXPANSION expansion - The rate in which filters will increase by
+* NONSCALING - Setting this will make it so the bloom object can’t expand past its initial capacity
 
 ## Examples
+
 ```
 127.0.0.1:6379> BF.RESERVE key 0.01 1000
 OK

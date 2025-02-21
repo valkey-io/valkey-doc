@@ -1,8 +1,9 @@
-Adds one or more items to a Bloom Filter, if the specified filter does not exist creates a default bloom filter with that name.
-## Arguments
-* key (required) - Is the key name for a Bloom filter to add the item to
-* item (requires at least 1 item but can add as many as wanted ) - Is the item/s to add
+Adds one or more items to a Bloom Filter, if the bloom filter does not exist creates a default bloom filter.
+
+If you want to create a bloom filter with non-standard options, use the `BF.INSERT` or `BF.RESERVE` command.
+
 ## Examples
+
 ```
 127.0.0.1:6379> BF.MADD key item1 item2
 1) (integer) 1

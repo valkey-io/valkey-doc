@@ -4,30 +4,26 @@ description: >
     Introduction to Bloom Filters
 ---
 
+The bloom filter data type is taken from a [separate module](https://github.com/valkey-io/valkey-bloom) that users will need to install in order to use. 
+
 Bloom filters are a space efficient probabilistic data structure that allows checking whether an element is member of a set. False positives are possible, but it guarantees no false negatives.
 
-## Bloom commands
+## Basic Bloom commands
+
 * `BF.ADD` adds an item to a bloom filter
 * `BF.CARD` returns the cardinality of a bloom filter
 * `BF.EXISTS` checks if an item has been added to a bloom filter
 * `BF.INFO` returns information about a bloom filter
-* `BF.INSERT` can create and/or add items to a bloom filter
-* `BF.LOAD` load a bloom filter from a dump
-* `BF.MADD` adds one or more items to a bloom filter
-* `BF.MEXISTS` checks if one of more items are present in a bloomfilter
-* `BF.RESERVE` creates an empty bloom filter
 
-See the [bloom commands in more detail](../commands/#bloom).
+See the [complete list of bloom filter commands](../commands/#bloom).
 
 ## Common use cases for bloom filters
 
-**Financial fraud detection**
+### Financial fraud detection
 
-Bloom filters can help answer the question "Has the user paid from this location before?", which can then give insights if there has been suspicious activity in shopping habits.
+Bloom filters can help answer the question "Has this card been flagged as stolen?", use a bloom filter that has cards reported stolen added to it. Check a card on use that it is not present in the bloom filter. If it isn't then the card is not marked as stolen, if present then a check to the main database can happen or deny the purchase.
 
-For the above each user would have a Bloom filter which is then checked for every transaction.
-
-**Ad placement**
+### Ad placement
 
 Bloom filters can help answer the following questions to advertisers:
 * Has the user already seen this ad?
@@ -38,14 +34,14 @@ Use a Bloom filter for every user, storing all bought products. The recommendati
 * If no, the ad is shown to the user and is added to the Bloom filter.
 * If yes, the process restarts and repeats until it finds a product that is not present in the filter.
 
-**Check if URL's are malicious**
+### Check if URL's are malicious
 
-Bloom filters can answer the question is a URL malicious. Any URL inputted would be checked against a malicious URL bloom filter. 
+Bloom filters can answer the question "is a URL malicious?". Any URL inputted would be checked against a malicious URL bloom filter. 
 
 * If no then we allow access to the site
 * If yes then we can deny access or perform a full check of the URL
 
-**Check if a username is taken**
+### Check if a username is taken
 
 Bloom filters can answer the question: Has this username/email/domain name/slug already been used?
 
@@ -95,7 +91,8 @@ There are a few bloom commands that are O(1) as they don't work on items but ins
 
 The consumption of memory by a single Bloom object is limited to a default of 128 MB (configurable in the bloom module), which is the size of the in-memory data structure not the capacity of the Bloom object. You can check the amount of memory consumed by a Bloom object by using the BF.INFO command. When a bloom filter scales out it will add another filter, there is a limit on the number of filters that can be added. This filter limit will change depending on the false positive rate, capacity, expansion and tightening ratio, where this filter limit is specified on the memory limit of the bloom objects.
 
-We have implemented an optional argument into insert (VALIDATESCALETO) that can help you determine the max capacity of the objects on creation. The VALIDATESCALETO when specified would check a few things, the first is that when a bloom filter has scaled out to the desired capacity will the tightening ratio reach zero, and if so we will reject the creation. The second thing it will check is that once we reach the capacity that is desired will the bloom object be less than the max memory limit (by default 128 MB).
+We have implemented an optional argument into BF.INSERT (VALIDATESCALETO) that can help you determine the max capacity of the objects on creation. The VALIDATESCALETO when specified would check a few things, the first is that when a bloom filter has scaled out to the desired capacity will the tightening ratio reach zero, and if so we will reject the creation. The second thing it will check is that once we reach the capacity that is desired will the bloom object be less than the max memory limit (by default 128 MB).
+
 There is also a way to check the max capacity that can be reached for Bloom objects. Using MAXSCALEDCAPACITY in BF.INFO will provide the exact capacity that the bloom object can reach.
 
 Example usage for a default bloom object:

@@ -1,11 +1,14 @@
-Determines if a specified item has been added to the specified bloom filter.
-Syntax
+Determines if an item has been added to the bloom filter. 
 
-## Arguments
-* key (required) -  A Valkey key of Bloom data type
-* item (required) -  The item that we are checking if it exists in the bloom object
+A Bloom filter has two possible responses when you check if an item exists:
+
+* "No" (Definite) - If the filter says an item is NOT present, this is 100% certain. The item is definitely not in the set.
+
+* "Maybe" (Probabilistic) - If the filter says an item IS present, this is uncertain. There's a chance it's a false positive. The item might be in the set, but may not be
+
 
 ## Examples
+
 ```
 127.0.0.1:6379> BF.ADD key val
 1

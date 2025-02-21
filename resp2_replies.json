@@ -64,8 +64,8 @@
   ],
   "BF.ADD": [
     "One of the following:",
-    "* [Integer reply](../topics/protocol.md#integers): '1'. The item was successfully added",
-    "* [Integer reply](../topics/protocol.md#integers): '0'. The item already existed in the bloom filter",
+    "* [Integer reply](../topics/protocol.md#integers): `1` if the item was successfully added",
+    "* [Integer reply](../topics/protocol.md#integers): `0` if the item already existed in the bloom filter",
     "",
     "The command may fail with an error for several reasons: if the wrong number of arguments are provided, if attempting to add to a non scaling filter that is full"
   ],
@@ -76,23 +76,23 @@
   ],
   "BF.EXISTS": [
     "One of the following:",
-    "* [Integer reply](../topics/protocol.md#integers): '1'. The item exists in the bloom filter",
-    "* [Integer reply](../topics/protocol.md#integers): '0'. The bloom filter does not exist or the item has not been added to the bloom filter",
+    "* [Integer reply](../topics/protocol.md#integers): `1` if the item exists in the bloom filter",
+    "* [Integer reply](../topics/protocol.md#integers): `0` if the bloom filter does not exist or the item has not been added to the bloom filter",
     "",
     "The command will fail if the wrong number of arguments are provided"
   ],
   "BF.INFO": [
     "When no optional arguments are provided:",
-    "[Array reply](../topics/protocol.md#arrays): List of information about the bloom filter.",
-    "When an optional argument is provided:",
+    "* [Array reply](../topics/protocol.md#arrays): List of information about the bloom filter.",
+    "When an optional argument excluding ERROR is provided:",
     "* [Integer reply](../topics/protocol.md#integers): argument value",
-    "* [String reply??](../topics/protocol.md#simple-strings): argument value",
+    "When ERROR is provided as an optional argument:",
+    "* [String reply](../topics/protocol.md#simple-strings): argument value",
     "",
     "The command may fail with an error for several reasons: if the wrong number of arguments are provided, if trying to get MAXSCALEDCAPACITY of a non scaling filter"
   ],
   "BF.INSERT": [
     "[Array reply](../topics/protocol.md#arrays): Array of ints (1’s and 0’s) - if filter already exists or if creation was successful. An empty array if no items are provided",
-    "[String reply??](../topics/protocol.md#simple-strings): not found, if the filter does not exist and NOCREATE is specified",
     "",
     "The command may fail with an error for several reasons: if the wrong number of arguments are provided, if the provided VALIDATESCALETO is not possible, if the provided optional args are not valid"
   ],
