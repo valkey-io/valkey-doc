@@ -16,6 +16,12 @@ This way clients are moved away from the old primary to the new primary
 atomically and only when the replica that is turning into the new primary
 has processed all of the replication stream from the old primary.
 
+There is a built-in timeout for the primary to resume processing queries if the
+replica does not catch quickly enough or is unable to secure the votes to take over.
+The default failover timeout is 5000ms. It is possible to configure the timeout
+via the `cluster-manual-failover-timeout` configuration parameter (added in Valkey 8.1)
+and decide how long the primary will pause in the worst case scenario.
+
 ## FORCE option: manual failover when the primary is down
 
 The command behavior can be modified by two options: **FORCE** and **TAKEOVER**.
