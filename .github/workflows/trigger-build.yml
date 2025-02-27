@@ -1,18 +1,16 @@
-name: Trigger master website deploy
+name: Trigger website deploy
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
-  trigger:
+  deploy:
     runs-on: ubuntu-latest
     steps:
-      - run: |
-          echo "'$DATA'" | xargs \
-          curl \
-          -X POST https://api.netlify.com/build_hooks/${NETLIFY_BUILD_HOOK_ID} \
-          -d
-        env:
-          NETLIFY_BUILD_HOOK_ID: ${{ secrets.NETLIFY_BUILD_HOOK_ID }}
-          DATA: '{"type": "core", "id": "redis_docs", "repository":"${{ github.repository }}", "sha":"${{ github.sha }}", "ref":"${{ github.ref }}"}}'
+      - name: Repository Dispatch
+        uses: peter-evans/repository-dispatch@ff45666b9427631e3450c54a1bcbee4d9ff4d7c0 # v3.0.0
+        with:
+          token: ${{ secrets.DEPLOY_ACCESS_TOKEN }}
+          repository: valkey-io/valkey-io.github.io
+          event-type: deploy
