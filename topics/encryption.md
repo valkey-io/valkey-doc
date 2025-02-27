@@ -119,7 +119,3 @@ versions, ciphers and cipher suites, etc. Please consult the self documented
 ### Performance considerations
 
 TLS adds a layer to the communication stack with overheads due to writing/reading to/from an SSL connection, encryption/decryption and integrity checks. Consequently, using TLS results in a decrease of the achievable throughput per Valkey instance.
-
-### Limitations
-
-I/O threading is currently not supported with TLS.
