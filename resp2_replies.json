@@ -259,7 +259,7 @@
     "[Array reply](../topics/protocol.md#arrays): an array of maps where each map contains various attributes and their values of a cluster link."
   ],
   "CLUSTER MEET": [
-    "[Simple string reply](../topics/protocol.md#simple-strings): `OK` if the command was successful. If the address or port specified are invalid an error is returned."
+    "[Simple string reply](../topics/protocol.md#simple-strings): `OK` if the command was successful. If the port or cluster bus port number is out of range, an error is returned. If the ip address is invalid, Invalid node address message is returned."
   ],
   "CLUSTER MYID": [
     "[Bulk string reply](../topics/protocol.md#bulk-strings): the node ID."
