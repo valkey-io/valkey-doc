@@ -8,7 +8,7 @@ DATE ?= 2025-01-08
 
 # Path to the code repo.
 VALKEY_ROOT ?= ../valkey
-
+VALKEY_BLOOM_ROOT ?= ../valkey-bloom
 # Where to install man pages
 INSTALL_MAN_DIR ?= /usr/local/share/man
 
@@ -27,6 +27,10 @@ all: man
 # ---- Sanity check ----
 
 ifeq ("$(wildcard $(VALKEY_ROOT))","")
+    $(error Please provide the VALKEY_ROOT variable pointing to the Valkey source code)
+endif
+
+ifeq ("$(wildcard $(VALKEY_BLOOM_ROOT))","")
     $(error Please provide the VALKEY_ROOT variable pointing to the Valkey source code)
 endif
 
@@ -54,7 +58,9 @@ endif
 
 documented_commands = $(wildcard commands/*.md)
 commands_json_files = $(wildcard $(VALKEY_ROOT)/src/commands/*.json)
-existing_commands = $(commands_json_files:$(VALKEY_ROOT)/src/commands/%.json=commands/%.md)
+bloom_commands_json_files = $(wildcard $(VALKEY_BLOOM_ROOT)/src/commands/*.json)
+existing_commands = $(commands_json_files:$(VALKEY_ROOT)/src/commands/%.json=commands/%.md) \
+                   $(bloom_commands_json_files:$(VALKEY_BLOOM_ROOT)/src/commands/%.json=commands/%.md)
 
 topics   = $(wildcard topics/*)
 commands = $(filter $(existing_commands),$(documented_commands))
@@ -65,7 +71,9 @@ topics_pics = $(filter-out %.md,$(topics))
 # ---- Temp files ----
 
 # JSON files for the commands that have a .md file (excluding undocumented commands).
-json_for_documented_commands = $(commands:commands/%.md=$(VALKEY_ROOT)/src/commands/%.json)
+json_for_documented_commands = \
+    $(patsubst commands/%.md,$(VALKEY_ROOT)/src/commands/%.json,$(filter $(commands_json_files:$(VALKEY_ROOT)/src/commands/%.json=commands/%.md),$(commands))) \
+    $(patsubst commands/%.md,$(VALKEY_BLOOM_ROOT)/src/commands/%.json,$(filter $(bloom_commands_json_files:$(VALKEY_BLOOM_ROOT)/src/commands/%.json=commands/%.md),$(commands)))
 
 $(BUILD_DIR)/.commands-per-group.json: $(VALKEY_ROOT)/src/commands/. utils/build-command-groups.py | $(BUILD_DIR)
 	utils/build-command-groups.py $(json_for_documented_commands) > $@~~
@@ -175,11 +183,14 @@ $(MAN_DIR)/man1/valkey-%.1.gz: topics/%.md $(man_scripts)
 	utils/preprocess-markdown.py --man --page-type program \
 	 --version $(VERSION) --date $(DATE) \$< \
 	 | utils/links-to-man.py - | $(to_man) > $@
-$(MAN_DIR)/man3/%.3valkey.gz: commands/%.md $(VALKEY_ROOT)/src/commands/%.json $(BUILD_DIR)/.commands-per-group.json $(man_scripts)
+$(MAN_DIR)/man3/%.3valkey.gz: commands/%.md $(BUILD_DIR)/.commands-per-group.json $(man_scripts)
+	$(eval VALKEY_ROOTS := $(VALKEY_ROOT) $(VALKEY_BLOOM_ROOT))
+	$(eval FINAL_ROOT := $(firstword $(foreach root,$(VALKEY_ROOTS),$(if $(wildcard $(root)/src/commands/$*.json),$(root)))))
+	$(if $(FINAL_ROOT),,$(eval FINAL_ROOT := $(lastword $(VALKEY_ROOTS))))
 	utils/preprocess-markdown.py --man --page-type command \
 	 --version $(VERSION) --date $(DATE) \
 	 --commands-per-group-json $(BUILD_DIR)/.commands-per-group.json \
-	 --valkey-root $(VALKEY_ROOT) $< \
+	 --valkey-root $(FINAL_ROOT) $< \
 	 | utils/links-to-man.py - | $(to_man) > $@
 $(MAN_DIR)/man5/%.5.gz: topics/%.md $(man_scripts)
 	utils/preprocess-markdown.py --man --page-type config \
