@@ -5,11 +5,11 @@
     "installation": [
         {
             "type": "Maven",
-            "command": "<dependency>\n  <groupId>io.valkey</groupId>\n  <artifactId>valkey-glide</artifactId>\n  <version>LATEST</version>\n</dependency>"
+            "command": "//Choose the appropriate classifier \n <dependency>\n  <groupId>io.valkey</groupId>\n  <artifactId>valkey-glide</artifactId>\n  <classifier>osx-aarch_64 OR linux-aarch_64 OR linux-x86_64</classifier> \n  <version>[1.0.0,2.0.0)</version>\n</dependency>"
         },
         {
             "type": "Gradle",
-            "command":"implementation 'io.valkey:valkey-glide:+"
+            "command":"//Choose the appropriate classifier \n implementation group: 'io.valkey', name: 'valkey-glide', version: '1.+', classifier: 'osx-aarch_64 OR linux-aarch_64 OR linux-x86_64'"
         }
     ],
     "version":"v1.3.0",
