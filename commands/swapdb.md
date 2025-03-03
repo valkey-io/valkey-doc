@@ -1,6 +1,12 @@
 This command swaps two Valkey databases, so that immediately all the
 clients connected to a given database will see the data of the other database, and
-the other way around. Example:
+the other way around. 
+
+**Note:** `SWAPDB` is **disabled in cluster mode** to prevent shard inconsistencies, 
+as swapping databases on one shard while leaving others unchanged could lead to 
+data inconsistencies.
+
+Example:
 
     SWAPDB 0 1
 
