@@ -134,6 +134,12 @@ Example of default bloom filter information:
 16) (integer) 26214300
 ```
 
+### Advanced Properties
+
+Seed - The seed used by the bloom filter can be specified by the user in the BF.INSERT command. This property is only useful if you have a specific 32 byte seed that you want your bloom filter to use. By defualt every bloom filter will use a random seed. 
+
+Tightening Ratio - We do not recommend fine tuning this unless there is a specific use case for lower memory usage with higher false positive or vice versa. 
+
 ## Performance
 
 The bloom commands which involve adding items or checking the existence of items have a time complexity of O(N * K) where N is the number of hash functions used by the bloom filter and K is the number of elements being inserted. This means that both BF.ADD and BF.EXISTS are both O(N) as they only operate on one item.

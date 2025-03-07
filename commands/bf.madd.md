@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 Adds one or more items to a bloom filter. If the specified bloom filter does not exist, a bloom filter is created with the provided name with default properties.
+=======
+Adds one or more items to a bloom filter. If the specified bloom filter does not exist, a bloom filter is created with the provided name with default properties
+>>>>>>> f062a8a0 (Changes based on feedback for bloom commands and documentation)
 
 If you want to create a bloom filter with non-default properties, use the `BF.INSERT` or `BF.RESERVE` command.
 
