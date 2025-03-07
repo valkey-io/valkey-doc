@@ -1,14 +1,14 @@
-Returns information about a bloom filter
+Returns usage information and properties of a specific bloom filter
 
 ## Info Fields
 
-* CAPACITY - Returns the number of unique items that would need to be added before scaling would happen
-* SIZE - Returns the number of bytes allocated
+* CAPACITY - The number of unique items that would need to be added before a scale out occurs or (non scaling) before it rejects addition of unique items. 
+* SIZE - The number of bytes allocated by this bloom filter.
 * FILTERS - Returns the number of filters in the specified key
-* ITEMS - Returns the number of unique items that have been added the the bloom filter
-* ERROR - Returns the false positive rate for the bloom filter
-* EXPANSION - Returns the expansion rate
-* MAXSCALEDCAPACITY - Returns the maximum capacity that can be reached before an error occurs
+* ITEMS - The number of unique items that have been added to the bloom filter
+* ERROR - The false positive rate of the bloom filter
+* EXPANSION - The expansion rate of the bloom filter. Non scaling filters will have an expansion rate of nil.
+* MAXSCALEDCAPACITY - The [maximum capacity](../topics/bloomfilters.md) that a scalable bloom filter can be expand to and reach before a subsequent scale out will fail.
 
 If none of the optional fields are specified, all the fields will be returned. MAXSCALEDCAPACITY will be an unrecognized argument on non scaling filters
  

@@ -1,1 +1,1 @@
-Loads a bloom filter from a dump of an existing bloom object with all the properties and bit vector dump.
+Restores a bloom filter from a dump of an existing bloom filter with all of its specific the properties and bit vector dump of sub filter/s. This command is only generated during AOF Rewrite to restore a bloom filter in the future.

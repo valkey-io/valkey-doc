@@ -1,4 +1,4 @@
-Gets the cardinality of a Bloom filter - number of items that have been successfully added to a Bloom filter. 
+Returns the cardinality of a Bloom filter which is the number of items that have been successfully added to it. 
 
 ## Examples
 
@@ -7,6 +7,6 @@ Gets the cardinality of a Bloom filter - number of items that have been successf
 1
 127.0.0.1:6379> BF.CARD key
 1
-127.0.0.1:6379> BF.CARD missing
+127.0.0.1:6379> BF.CARD nonexistentkey
 0
 ```

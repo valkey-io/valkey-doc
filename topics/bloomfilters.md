@@ -50,6 +50,20 @@ For example for usernames. Use a Bloom filter for every username that has signed
 * If no, the user is created and the username is added to the Bloom filter.
 * If yes, the app can decide to either check the main database or reject the username.
 
+## Scaling and non scaling bloom filters
+
+The difference between scaling and non scaling bloom filters is that scaling bloom filters do not have a fixed capacity, but a capacity that can grow. While non-scaling bloom filters will have a fixed capacity which also means a fixed size. 
+
+When a scaling filter reaches its capacity, adding a new unique item will cause a new bloom filter to be created and added to the vector of bloom filters. This new bloom filter will have a larger capacity (previous bloom filter's capacity * expansion rate of the bloom object).
+
+When a non scaling filter reaches its capcity, if a user tries to add a new unique item an error will be returned
+
+The expansion rate is the rate that a scaling bloom filter will have its capacity increased by on the scale out. For example we have a bloom filter with capacity 100 at creation with an expansion rate of 2. After adding 101 unique items we will scale out and create a new filter with capacity 200. Then after adding 200 more unique items (301 items total) we will create a new filter of capacity 400 and so on. 
+
+### When should you use scaling vs non-scaling filters
+
+If the data size is known and fixed then using a non-scaling bloom filter is preferred, for example a static dictionary could use a non scaling bloom filter as the amount of items should be fixed. Likewise the reverse case for dynamic data and unknown final sizes is when you should use a scaling bloom filters.   
+
 ## Default bloom properties
 
 Capacity - 100
@@ -81,11 +95,17 @@ Example of default bloom objects information:
 14) (integer) 26214300
 ```
 
+### Advanced Properties
+
+Seed - The seed used by the bloom filter can be specified by the user in the BF.INSERT command. This property is only useful if you have a specific 32 byte seed that you want your bloom filter to use. By defualt every bloom filter will use a random seed. 
+
+Tightening Ratio - We do not recommend fine tuning this unless there is a specific use case for lower memory usage with higher false positive or vice versa. 
+
 ## Performance
 
 Most bloom commands are O(n * k) where n is the number of hash functions used by the bloom filter and k is the number of elements being inserted. This means that both BF.ADD and BF.EXISTS are both O(n) as they only work with one 1 item.
 
-There are a few bloom commands that are O(1) as they don't work on items but instead work on the data about the bloom filter itself.
+There are a few bloom commands that are O(1): BF.CARD, BF.INFO, BF.RESERVE, and BF.INSERT (if no items are specified). These commands have constant time complexity since they don't work on items but instead work on the data about the bloom filter itself.
 
 ## Limits
 
@@ -97,11 +117,11 @@ There is also a way to check the max capacity that can be reached for Bloom obje
 
 Example usage for a default bloom object:
 ```
-127.0.0.1:6379> bf.insert validate_scale_fail VALIDATESCALETO 26214301
+127.0.0.1:6379> BF.INSERT validate_scale_fail VALIDATESCALETO 26214301
 (error) ERR provided VALIDATESCALETO causes bloom object to exceed memory limit
-127.0.0.1:6379> bf.insert validate_scale_valid VALIDATESCALETO 26214300
+127.0.0.1:6379> BF.INSERT validate_scale_valid VALIDATESCALETO 26214300
 []
-127.0.0.1:6379> bf.info validate_scale_valid MAXSCALEDCAPACITY
+127.0.0.1:6379> BF.INFO validate_scale_valid MAXSCALEDCAPACITY
 (integer) 26214300
 ```
 

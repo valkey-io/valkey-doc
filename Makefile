@@ -31,7 +31,7 @@ ifeq ("$(wildcard $(VALKEY_ROOT))","")
 endif
 
 ifeq ("$(wildcard $(VALKEY_BLOOM_ROOT))","")
-    $(error Please provide the VALKEY_ROOT variable pointing to the Valkey source code)
+	$(error Please provide the VALKEY_BLOOM_ROOT variable pointing to the valkey-bloom source code)
 endif
 
 ifeq ("$(shell which pandoc)","")

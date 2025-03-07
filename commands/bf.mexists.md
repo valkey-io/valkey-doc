@@ -1,10 +1,10 @@
-Determines if one or more items has been added to a bloom filter. 
+Determines if the provided item/s have been added to a bloom filter previously.
 
 A Bloom filter has two possible responses when you check if an item exists:
 
-* "No" (Definite) - If the filter says an item is NOT present, this is 100% certain. The item is definitely not in the set.
+* 0 - The item definitely does not exist since with bloom filters, false negatives are not possible.
 
-* "Maybe" (Probabilistic) - If the filter says an item IS present, this is uncertain. There's a chance it's a false positive. The item might be in the set, but may not be
+* 1 - The item exists with a given false positive (fp) percentage. There is an fp rate % chance that the item does not exist. You can create bloom filters with a more strict false positive rate as needed.
 
 ## Examples
 

@@ -1,6 +1,8 @@
-Adds an item to a bloom filter, if the specified bloom filter does not exist creates a bloom filter with default configurations with that name.
+Adds a single item to a bloom filter. If the specified bloom filter does not exist, a bloom filter is created with the provided name with default properties.
 
-If you want to create a bloom filter with non-standard options, use the `BF.INSERT` or `BF.RESERVE` command.
+To add multiple items to a bloom filter, you can use the BF.MADD or BF.INSERT commands.
+
+If you want to create a bloom filter with non-default properties, use the `BF.INSERT` or `BF.RESERVE` command.
 
 ## Examples
 

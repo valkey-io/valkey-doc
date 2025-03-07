@@ -1,11 +1,13 @@
-Creates an empty bloom object with the capacity and false positive rate specified
+Creates an empty bloom filter with the capacity and false positive rate specified. By default, a scaling filter is created with the default expansion rate.
+
+To specify the scaling / non scaling nature of the bloom filter, use the options: NONSCALING or SCALING <expansion rate>. It is invalid to provide both options together.
 
 ## Reserve fields
 
-* error_rate - The false positive rate the bloom filter will be created with
-* capacity -  The starting capacity the bloom filter will be created with
-* EXPANSION expansion - The rate in which filters will increase by
-* NONSCALING - Setting this will make it so the bloom object can’t expand past its initial capacity
+* error_rate - The false positive rate of the bloom filter
+* capacity -  The number of unique items that would need to be added before a scale out occurs or (non scaling) before it rejects addition of unique items. 
+* EXPANSION expansion - This option will specify the bloom filter as scaling and controls the size of the sub filter that will be created upon scale out / expansion of the bloom filter.
+* NONSCALING - This option will configure the bloom filter as non scaling; it cannot expand / scale beyond its specified capacity.
 
 ## Examples
 
