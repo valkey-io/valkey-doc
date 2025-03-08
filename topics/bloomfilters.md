@@ -19,41 +19,6 @@ See the [complete list of bloom filter commands](../commands/#bloom).
 
 ## Common use cases for bloom filters
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-### Advertisement / Campaign placement and deduplication
-=======
-### Fraud detection
->>>>>>> 8e1f3649 (Apply suggestions from code review)
-
-<<<<<<< HEAD
-Bloom filters can help e-commerce sites, streaming services, advertising networks, or marketing platforms answer the following questions:
-=======
-Bloom filters can be used to answer the question, "Has this card been flagged as stolen?". To do this, use a bloom filter that contains cards reported as stolen. When a card is used, check whether it is present in the bloom filter. If the card is not found, it means it is not marked as stolen. If the card is present in the filter, a check can be made against the main database, or the purchase can be denied.
->>>>>>> 47332ac0 (Topic documentation updates for bloomfilter)
-
-<<<<<<< HEAD
-* Has an advertisement already been shown to a user?
-* Has a promotional email or notification already been sent to a user?
-* Has a product already been purchased by a user?
-=======
-### Ad placement / Deduplication
->>>>>>> 8e1f3649 (Apply suggestions from code review)
-
-<<<<<<< HEAD
-Example: For each user, use a Bloom filter to store all the products they have purchased. The recommendation engine can then suggest a new product and check if it is present in the user's Bloom filter.
-
-* If the product is not in the filter, the ad is shown to the user, and the product is added to the filter.
-* If the product is already in the filter, it means the ad has already been shown to the user and the recommendation engine finds a different ad to show.
-
-### Fraud detection
-=======
-Bloom filters can help advertisers answer the following questions:
-* Has the user already seen this ad?
-* Has the user already purchased this product?
-
-For each user, use a Bloom filter to store all the products they have purchased. The recommendation engine can then suggest a new product and check if it is present in the user's Bloom filter.
-=======
 ### Advertisement / Campaign placement and deduplication
 
 Bloom filters can help e-commerce sites, streaming services, advertising networks, or marketing platforms answer the following questions:
@@ -63,20 +28,10 @@ Bloom filters can help e-commerce sites, streaming services, advertising network
 * Has a product already been purchased by a user?
 
 Example: For each user, use a Bloom filter to store all the products they have purchased. The recommendation engine can then suggest a new product and check if it is present in the user's Bloom filter.
->>>>>>> 61f03c06 (Updating for review comments)
 
 * If the product is not in the filter, the ad is shown to the user, and the product is added to the filter.
 * If the product is already in the filter, it means the ad has already been shown to the user and the recommendation engine finds a different ad to show.
->>>>>>> 47332ac0 (Topic documentation updates for bloomfilter)
 
-<<<<<<< HEAD
-Bloom filters can be used to answer the question, "Has this card been flagged as stolen?". To do this, use a bloom filter that contains cards reported as stolen. When a card is used, check whether it is present in the bloom filter. If the card is not found, it means it is not marked as stolen. If the card is present in the filter, a check can be made against the main database, or the purchase can be denied.
-
-### Filtering Spam / Harmful Content
-Bloom filters provide an efficient way to screen content for potential threats and harmful material. Here's how they can be effectively used:
-
-<<<<<<< HEAD
-=======
 ### Fraud detection
 
 Bloom filters can be used to answer the question, "Has this card been flagged as stolen?". To do this, use a bloom filter that contains cards reported as stolen. When a card is used, check whether it is present in the bloom filter. If the card is not found, it means it is not marked as stolen. If the card is present in the filter, a check can be made against the main database, or the purchase can be denied.
@@ -84,7 +39,6 @@ Bloom filters can be used to answer the question, "Has this card been flagged as
 ### Filtering Spam / Harmful Content
 Bloom filters provide an efficient way to screen content for potential threats and harmful material. Here's how they can be effectively used:
 
->>>>>>> 61f03c06 (Updating for review comments)
 Example: Bloom filters can answer the question "is a URL malicious?". Any URL inputted would be checked against a malicious URL bloom filter. 
 
 * If no, then we allow access to the site.
@@ -94,13 +48,6 @@ Example: Bloom filters can answer the question is this content harmful or spam. 
 
 * If no, then the message can be displayed to the user.
 * If yes, then we can send the message to the spam folder or perform a full check on the email or number.
-<<<<<<< HEAD
-=======
-* If no, then we allow access to the site
-* If yes, then we can deny access or perform a full check of the URL
->>>>>>> 47332ac0 (Topic documentation updates for bloomfilter)
-=======
->>>>>>> 61f03c06 (Updating for review comments)
 
 ### Check if a username is taken
 
@@ -113,15 +60,7 @@ In this username example, we can use use a Bloom filter to track every username 
 
 ## Scaling and non scaling bloom filters
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 The bloom filter data type can act either as a "scaling bloom filter" or "non scaling bloom filter" depending on user configuration.
-=======
-The difference between scaling and non scaling bloom filters is that scaling bloom filters do not have a fixed capacity, but a capacity that can grow. While non-scaling bloom filters will have a fixed capacity which also means a fixed size. Scaling bloom filters consist of a vector of “Subfilters” with length >= 1 while non scaling will only contain 1 subfilter.
->>>>>>> 47332ac0 (Topic documentation updates for bloomfilter)
-=======
-The bloom filter data type can act either as a "scaling bloom filter" or "non scaling bloom filter" depending on user configuration.
->>>>>>> 8e1f3649 (Apply suggestions from code review)
 
 The difference between scaling and non scaling bloom filters is that scaling bloom filters do not have a fixed capacity, instead they can grow. Non-scaling bloom filters will have a fixed capacity, meaning only a fixed number of items can be inserted to it. Scaling bloom filters consist of a vector of "Sub filters" with length >= 1, while non scaling will only contain 1 sub filter.
 
@@ -159,7 +98,6 @@ The following two properties can be specified in the `BF.INSERT` command:
 
 These are the default bloom properties along with the commands and configs which allow customizing.
 
-<<<<<<< HEAD
 | Property | Default Value | Command Name | Configuration name |
 |----------|--------------|--------------|-------------------|
 | Capacity | 100 | BF.INSERT, BF.RESERVE | BF.BLOOM-CAPACITY |
@@ -168,52 +106,6 @@ These are the default bloom properties along with the commands and configs which
 | Expansion Rate | 2 | BF.INSERT, BF.RESERVE | BF.BLOOM-EXPANSION |
 | Tightening Ratio | 0.5 | BF.INSERT | BF.BLOOM-TIGHTENING-RATIO |
 | Seed | Random Seed | BF.INSERT | BF.BLOOM-USE-RANDOM-SEED |
-=======
-<table width="100%" border="1" style="border-collapse: collapse; border: 1px solid black" cellpadding="8">
-<tr>
-<th width="20%">Property</th>
-<th width="20%">Default Value</th>
-<th width="30%">Command Name</th>
-<th width="30%">Configuration name</th>
-</tr>
-<tr>
-<td>Capacity</td>
-<td>100</td>
-<td>BF.INSERT, BF.RESERVE</td>
-<td>BF.BLOOM-CAPACITY</td>
-</tr>
-<tr>
-<td>False Positive Rate</td>
-<td>0.01</td>
-<td>BF.INSERT, BF.RESERVE</td>
-<td>BF.BLOOM-FP-RATE</td>
-</tr>
-<tr>
-<td>Scaling / Non Scaling</td>
-<td>Scaling</td>
-<td>BF.INSERT, BF.RESERVE</td>
-<td>BF.BLOOM-EXPANSION</td>
-</tr>
-<tr>
-<td>Expansion Rate</td>
-<td>2</td>
-<td>BF.INSERT, BF.RESERVE</td>
-<td>BF.BLOOM-EXPANSION</td>
-</tr>
-<tr>
-<td>Tightening Ratio</td>
-<td>0.5</td>
-<td>BF.INSERT</td>
-<td>BF.BLOOM-TIGHTENING-RATIO</td>
-</tr>
-<tr>
-<td>Seed</td>
-<td>Random Seed</td>
-<td>BF.INSERT</td>
-<td>BF.BLOOM-USE-RANDOM-SEED</td>
-</tr>
-</table>
->>>>>>> 47332ac0 (Topic documentation updates for bloomfilter)
 
 
 Since bloom filters have a default expansion of 2, this means any default creation as a result of `BF.ADD`, `BF.MADD`, `BF.INSERT` will be a scalable bloom filter. Users can create a non scaling bloom filter using `BF.RESERVE <filter-name> <error-rate> <capacity> NONSCALING` or by specifying `NONSCALING` in `BF.INSERT`. Additionally, the other default properties of a bloom filter creation can be seen in the table above and BF.INFO command response below. These default properties can be configured through configs on the bloom module.
@@ -242,25 +134,11 @@ Example of default bloom filter information:
 16) (integer) 26214300
 ```
 
-### Advanced Properties
-
-Seed - The seed used by the bloom filter can be specified by the user in the BF.INSERT command. This property is only useful if you have a specific 32 byte seed that you want your bloom filter to use. By defualt every bloom filter will use a random seed. 
-
-Tightening Ratio - We do not recommend fine tuning this unless there is a specific use case for lower memory usage with higher false positive or vice versa. 
-
 ## Performance
 
 The bloom commands which involve adding items or checking the existence of items have a time complexity of O(N * K) where N is the number of hash functions used by the bloom filter and K is the number of elements being inserted. This means that both BF.ADD and BF.EXISTS are both O(N) as they only operate on one item.
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 In case of scalable bloom filters, with every scale out, we increase the number of checks (using hash functions of each sub filter) performed during any add / exists operation. For this reason, it is recommended that users choose a capacity and expansion rate after evaluating the use case / workload to avoid several scale outs and reduce the number of checks.
-=======
-Since performance relies on the number of hash functions, choosing the correct capacity and expansion rate can be important. In case of scalable bloom filters, with every scale out, we increase the number of checks (using hash functions of each sub filter) performed during any add / exists operation. For this reason, it is recommended that users choose a capacity after evaluating the use case / workload to avoid several scale outs and reduce the number of checks.
->>>>>>> 8e1f3649 (Apply suggestions from code review)
-=======
-In case of scalable bloom filters, with every scale out, we increase the number of checks (using hash functions of each sub filter) performed during any add / exists operation. For this reason, it is recommended that users choose a capacity and expansion rate after evaluating the use case / workload to avoid several scale outs and reduce the number of checks.
->>>>>>> 61f03c06 (Updating for review comments)
 
 The other bloom filter commands are O(1) time complexity: BF.CARD, BF.INFO, BF.RESERVE, and BF.INSERT (when no items are provided).
 
@@ -303,15 +181,7 @@ bf_bloom_defrag_misses:0
 
 * `bf_bloom_num_objects`: Current total number of bloom filters.
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 * `bf_bloom_num_filters_across_objects`: Current total number of sub filters across all bloom filters.
-=======
-* `bf_bloom_num_filters_across_objects`: Current total number of subfilters across all bloom filters.
->>>>>>> 47332ac0 (Topic documentation updates for bloomfilter)
-=======
-* `bf_bloom_num_filters_across_objects`: Current total number of sub filters across all bloom filters.
->>>>>>> 8e1f3649 (Apply suggestions from code review)
 
 * `bf_bloom_num_items_across_objects`: Current total number of items across all bloom filters.
 
@@ -325,48 +195,20 @@ bf_bloom_defrag_misses:0
 
 ## Handling Large Bloom Filters
 
-<<<<<<< HEAD
 There are two notable validations bloom filters faces.
 
 1. Memory Usage:
 
     The memory usage limit per bloom filter by default is defined by the `BF.BLOOM-MEMORY-USAGE-LIMIT` module configuration which has a default value of 128 MB. If a command results in a creation / scale out causing the overall memory usage to exceed this limit, the command is rejected. This config is modifiable and can be increased as needed.
-=======
-There are two limits a bloom filter faces.
-
-1. Memory Usage Limit:
-
-<<<<<<< HEAD
-    The memory usage limit per bloom filter by default is defined by the BF.BLOOM-MEMORY-USAGE-LIMIT module configuration which has a default value of 128 MB. If a command results in a creation / scale out causing the overall memory usage to exceed this limit, the command is rejected.
->>>>>>> 47332ac0 (Topic documentation updates for bloomfilter)
-=======
-    The memory usage limit per bloom filter by default is defined by the `BF.BLOOM-MEMORY-USAGE-LIMIT` module configuration which has a default value of 128 MB. If a command results in a creation / scale out causing the overall memory usage to exceed this limit, the command is rejected.
->>>>>>> 8e1f3649 (Apply suggestions from code review)
 
 2. Number of sub filters (in case of scalable bloom filters):
 
     When a bloom filter scales out, a new sub filter is added. The limit on the number of sub filters depends on the false positive rate and tightening ratio. Each sub filter has a stricter false positive, and this is controlled by the tightening ratio. If a command attempting a scale out results in the sub filter reaching a false positive of 0, the command is rejected. 
 
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 You can use `VALIDATESCALETO` as an optional arg of `BF.INSERT` to help determine whether the bloom filter can scale out to the reach the specified capacity without hitting either limits mentioned above. It will reject the command otherwise.
 
 As seen below, when trying to create a bloom filter with a capacity that cannot be achieved through scale outs (given the memory limits), the command is rejected. However, if the capacity can be achieved through scale out (even with the limits), then the creation of the bloom filter will succeed.
-=======
-We have implemented VALIDATESCALETO as an optional arg of BF.INSERT to help determine whether the bloom filter can scale out to the reach the specified capacity without hitting either limits mentioned above, and will reject the command otherwise.
-
-As seen below when trying to create a bloom filter with a capacity more than what is possible given the memory limits, the command is rejected. However if the wanted capacity is within the limits then the creation of the bloom filter will succeed.
->>>>>>> 47332ac0 (Topic documentation updates for bloomfilter)
-=======
-We have implemented `VALIDATESCALETO` as an optional arg of `BF.INSERT` to help determine whether the bloom filter can scale out to the reach the specified capacity without hitting either limits mentioned above. It will reject the command otherwise.
-
-<<<<<<< HEAD
-As seen below, when trying to create a bloom filter with a capacity that cannot be achieved through scale outs (given the memory limits), the command is rejected. However, if the capacity can be achieved through scale out (even with the limits) then the creation of the bloom filter will succeed.
->>>>>>> 8e1f3649 (Apply suggestions from code review)
-=======
-As seen below, when trying to create a bloom filter with a capacity that cannot be achieved through scale outs (given the memory limits), the command is rejected. However, if the capacity can be achieved through scale out (even with the limits), then the creation of the bloom filter will succeed.
->>>>>>> 61f03c06 (Updating for review comments)
 
 Example:
 
@@ -377,19 +219,7 @@ Example:
 []
 ```
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
 The `BF.INFO` command's `MAXSCALEDCAPACITY` field can be used to find out the maximum capacity that the scalable bloom filter can expand to hold.
-=======
-We can use the BF.INFO command's MAXSCALEDCAPACITY field to find out the maximum capacity that the scalable bloom filter can expand to hold.
->>>>>>> 47332ac0 (Topic documentation updates for bloomfilter)
-=======
-We can use the `BF.INFO` command's `MAXSCALEDCAPACITY` field to find out the maximum capacity that the scalable bloom filter can expand to hold.
->>>>>>> 8e1f3649 (Apply suggestions from code review)
-=======
-The `BF.INFO` command's `MAXSCALEDCAPACITY` field can be used to find out the maximum capacity that the scalable bloom filter can expand to hold.
->>>>>>> 61f03c06 (Updating for review comments)
 
 ```
 127.0.0.1:6379> BF.INFO validate_scale_valid MAXSCALEDCAPACITY
