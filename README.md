@@ -8,10 +8,11 @@ for generating content for the website and man pages.
 This repo comes with a Makefile to build and install man pages.
 
     make VALKEY_ROOT=path/to/valkey
+    VALKEY_JSON_ROOT=path/to/valkey-json
     sudo make install INSTALL_MAN_DIR=/usr/local/share/man
 
 Prerequisites: GNU Make, Python 3, Python 3 YAML (pyyaml), Pandoc.
-Additionally, the scripts need access to the valkey code repo,
+Additionally, the scripts need access to the valkey and valkey-json code repos,
 where metadata files about the commands are stored.
 
 The pages are generated under `_build/man/` by default. The default install
