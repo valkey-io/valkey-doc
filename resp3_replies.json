@@ -89,7 +89,7 @@
     "When ERROR is provided as an optional argument:",
     "* [String reply](../topics/protocol.md#simple-strings): argument value",
     "",
-    "The command may fail with an error for several reasons: if the wrong number of arguments are provided, if trying to get MAXSCALEDCAPACITY of a non scaling filter"
+    "The command may fail with an error for several reasons: if the wrong number of arguments are provided, if trying to get MAXSCALEDCAPACITY or TIGHTENING of a non scaling filter"
   ],
   "BF.INSERT": [
     "[Array reply](../topics/protocol.md#arrays): Array of ints (1’s and 0’s) - if filter already exists or if creation was successful. An empty array if no items are provided",

@@ -3,7 +3,7 @@
     "description": "A fast Golang Valkey client that does auto pipelining and supports server-assisted client-side caching.",
     "repo":"https://github.com/valkey-io/valkey-go",
     "installation": "go get github.com/valkey-io/valkey-go",
-    "version": "1.0.54",
+    "version": "1.0.55",
     "version_released":"2025-02-03",
     "language":"go",
     "license": "Apache-2.0",

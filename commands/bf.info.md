@@ -8,10 +8,11 @@ Returns usage information and properties of a specific bloom filter
 * ITEMS - The number of unique items that have been added to the bloom filter
 * ERROR - The false positive rate of the bloom filter
 * EXPANSION - The expansion rate of the bloom filter. Non scaling filters will have an expansion rate of nil.
+* TIGHTENING - The tightening ratio of the bloom filter
 * MAXSCALEDCAPACITY - The [maximum capacity](../topics/bloomfilters.md) that a scalable bloom filter can be expand to and reach before a subsequent scale out will fail.
 
-If none of the optional fields are specified, all the fields will be returned. MAXSCALEDCAPACITY will be an unrecognized argument on non scaling filters
- 
+For non-scaling filters, the TIGHTENING and MAXSCALEDCAPACITY fields are not applicable and will not be returned, as they don't provide relevant functionality. When no optional fields are specified, the system will return all available fields for the given filter type.
+
 ## Examples
 
 ```
@@ -30,8 +31,10 @@ If none of the optional fields are specified, all the fields will be returned. M
 10) "0.01"
 11) Expansion rate
 12) (integer) 2
-13) Max scaled capacity
-14) (integer) 26214300
+13) Tightening ratio
+14) "0.5"
+15) Max scaled capacity
+16) (integer) 26214300
 127.0.0.1:6379> BF.INFO key CAPACITY
 100
 ```

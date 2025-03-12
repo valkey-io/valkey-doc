@@ -19,7 +19,7 @@ You can use one or more optional arguments to filter the list:
     - `no`: Includes the client making the request.
 
 - **`MAXAGE milliseconds`**: Filters the list to include only clients whose connection age (time since the client was created) is greater than or equal to the specified number of milliseconds.
-  > Note: This is actually a minimum age, not a maximum age. This filter was first added to CLIENT KILL, where the intention was to keep clients of a maximum age and kill the ones than the max age.
+  > Note: This is actually a minimum age, not a maximum age. This filter was first added to CLIENT KILL, where the intention was to keep clients of a maximum age and kill the ones newer than the max age.
 
 Filters can be combined to perform more precise searches. The command will handle multiple filters via logical AND.
 

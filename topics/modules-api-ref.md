@@ -312,7 +312,7 @@ of the initialization function is not defined.
 
 The command function type is the following:
 
-     int MyCommand_RedisCommand(ValkeyModuleCtx *ctx, ValkeyModuleString **argv, int argc);
+     int MyCommand_ValkeyCommand(ValkeyModuleCtx *ctx, ValkeyModuleString **argv, int argc);
 
 And is supposed to always return `VALKEYMODULE_OK`.
 
@@ -996,7 +996,7 @@ The function must be called as the first function of a command implementation
 that wants to use automatic memory.
 
 When enabled, automatic memory management tracks and automatically frees
-keys, call replies and RedisModuleString objects once the command returns. In most
+keys, call replies and ValkeyModuleString objects once the command returns. In most
 cases this eliminates the need of calling the following functions:
 
 1. [`ValkeyModule_CloseKey()`](#ValkeyModule_CloseKey)
@@ -6456,7 +6456,7 @@ filter applies in all execution paths including:
 
 1. Invocation by a client.
 2. Invocation through [`ValkeyModule_Call()`](#ValkeyModule_Call) by any module.
-3. Invocation through Lua `redis.call()`.
+3. Invocation through Lua `server.call()`.
 4. Replication of a command from a primary.
 
 The filter executes in a special filter context, which is different and more
