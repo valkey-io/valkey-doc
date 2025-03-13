@@ -343,7 +343,7 @@
   "COPY": [
     "One of the following:",
     "* [Integer reply](../topics/protocol.md#integers): `1` if _source_ was copied.",
-    "* [Integer reply](../topics/protocol.md#integers): `0` if _source_ was not copied."
+    "* [Integer reply](../topics/protocol.md#integers): `0` if _source_ was not copied when the destination key already exists."
   ],
   "DBSIZE": [
     "[Integer reply](../topics/protocol.md#integers): the number of keys in the currently-selected database."
@@ -756,7 +756,7 @@
   "MOVE": [
     "One of the following:",
     "* [Integer reply](../topics/protocol.md#integers): `1` if _key_ was moved.",
-    "* [Integer reply](../topics/protocol.md#integers): `0` if _key_ wasn't moved."
+    "* [Integer reply](../topics/protocol.md#integers): `0` if _key_ already exists in the destination database, or it does not exist in the source database."
   ],
   "MSET": [
     "[Simple string reply](../topics/protocol.md#simple-strings): always `OK` because `MSET` can't fail."
