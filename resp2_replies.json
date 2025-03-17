@@ -67,19 +67,15 @@
     "* [Integer reply](../topics/protocol.md#integers): `1` if the item was successfully added",
     "* [Integer reply](../topics/protocol.md#integers): `0` if the item already existed in the bloom filter",
     "",
-    "The command may fail with an error for several reasons: if the wrong number of arguments are provided, if attempting to add to a non scaling filter that is full"
+    "The command may fail with an error when attempting to add to a non scaling filter that is full"
   ],
   "BF.CARD": [
-    "[Integer reply](../topics/protocol.md#integers): The number of items successfully added to the bloom filter, or 0 if the key does not exist",
-    "",
-    "The command will fail if the wrong number of arguments are provided"
+    "[Integer reply](../topics/protocol.md#integers): The number of items successfully added to the bloom filter, or 0 if the key does not exist"
   ],
   "BF.EXISTS": [
     "One of the following:",
     "* [Integer reply](../topics/protocol.md#integers): `1` if the item exists in the bloom filter",
-    "* [Integer reply](../topics/protocol.md#integers): `0` if the bloom filter does not exist or the item has not been added to the bloom filter",
-    "",
-    "The command will fail if the wrong number of arguments are provided"
+    "* [Integer reply](../topics/protocol.md#integers): `0` if the bloom filter does not exist or the item has not been added to the bloom filter"
   ],
   "BF.INFO": [
     "When no optional arguments are provided:",
@@ -89,27 +85,23 @@
     "When ERROR is provided as an optional argument:",
     "* [String reply](../topics/protocol.md#simple-strings): argument value",
     "",
-    "The command may fail with an error for several reasons: if the wrong number of arguments are provided, if trying to get MAXSCALEDCAPACITY or TIGHTENING of a non scaling filter"
+    "The command may fail with an error when trying to get MAXSCALEDCAPACITY or TIGHTENING of a non scaling filter"
   ],
   "BF.INSERT": [
     "[Array reply](../topics/protocol.md#arrays): Array of ints (1’s and 0’s) - if filter already exists or if creation was successful. An empty array if no items are provided",
     "",
-    "The command may fail with an error for several reasons: if the wrong number of arguments are provided, if the provided VALIDATESCALETO is not possible, if the provided optional args are not valid"
+    "The command may fail with an error for several reasons: if the provided VALIDATESCALETO is not possible, if the provided optional args are not valid"
   ],
   "BF.MADD": [
-    "[Array reply](../topics/protocol.md#arrays): Array of ints (1’s and 0’s)",
-    "",
-    "The command will fail if the wrong number of arguments are provided"
+    "[Array reply](../topics/protocol.md#arrays): Array of ints (1’s and 0’s)"
   ],
   "BF.MEXISTS": [
-    "[Array reply](../topics/protocol.md#arrays): Array of ints (1’s and 0’s)",
-    "",
-    "The command will fail if the wrong number of arguments are provided"
+    "[Array reply](../topics/protocol.md#arrays): Array of ints (1’s and 0’s)"
   ],
   "BF.RESERVE": [
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK`.",
     "",
-    "The command may fail with an error for several reasons: if the wrong number of arguments are provided, if the provided arguments are not in the valid range, if the provided bloom filter name already exists"
+    "The command may fail with an error for several reasons: if the provided arguments are not in the valid range, if the provided bloom filter name already exists"
   ],
   "BGREWRITEAOF": [
     "[Simple string reply](../topics/protocol.md#simple-strings): a simple string reply indicating that the rewriting started or is about to start ASAP when the call is executed with success.",

@@ -56,7 +56,7 @@ The difference between scaling and non scaling bloom filters is that scaling blo
 
 When a scaling filter reaches its capacity, adding a new unique item will cause a new bloom filter to be created and added to the vector of bloom filters. This new bloom filter will have a larger capacity (previous bloom filter's capacity * expansion rate of the bloom object).
 
-When a non scaling filter reaches its capcity, if a user tries to add a new unique item an error will be returned
+When a non scaling filter reaches its capacity, if a user tries to add a new unique item an error will be returned
 
 The expansion rate is the rate that a scaling bloom filter will have its capacity increased by on the scale out. For example we have a bloom filter with capacity 100 at creation with an expansion rate of 2. After adding 101 unique items we will scale out and create a new filter with capacity 200. Then after adding 200 more unique items (301 items total) we will create a new filter of capacity 400 and so on. 
 
@@ -66,16 +66,62 @@ If the data size is known and fixed then using a non-scaling bloom filter is pre
 
 There are a few benefits for using non scaling filters, a non scaling filter will have better performance than a filter that has scaled out. A non scaling filter also will use less memory for the capacity that is available. However if you don't want to hit an error and want use-as-you-go capacity, scaling is better.
 
-## Default bloom properties
+## Bloom properties
 
-Capacity - 100
-* The number of unique items that would need to be added before a scale out occurs or (non scaling) before it rejects addition of unique items. 
+* Capacity - The number of unique items that would need to be added before a scale out occurs or (non scaling) before it rejects addition of unique items. 
 
-Error rate - 0.01
-* The probability of the filter incorrectly indicating that an element is present when it actually is not.
+* False Positive Rate (Error rate) - The rate that controls the probability of bloom check/set operations being false positives. Example: An item addition returning 0 (or an item check returning 1) indicating that the item was already added even though it was not.
 
-Expansion - 2
-* The rate that a scaling bloom filter will have its capacity increased by on the scale out. For example we have a bloom filter with capacity 100 at creation with an expansion rate of 2. After adding 101 unique items we will scale out and create a new filter with capacity 200. Then after adding 200 more unique items we will create a new filter of capacity 400 and so forth.
+* Expansion - This is a property of scalable bloom filters which controls the growth in overall capacity when a bloom filter scales out by determining the capacity of the new sub filter which gets created. This new capacity is equal to the previous filters capacity * expansion rate 
+
+### Advanced Properties
+
+The following two properties can be specified in the `BF.INSERT` command:
+
+* Seed -  This is the key with which hash functions are created for the bloom filter. In case of scalable bloom filters, the same seed is used across all sub filters. This property is only useful if you have a specific 32 byte seed that you want your bloom filter to use. By default every bloom filter will use a random seed.
+
+* Tightening Ratio - This is a property of scalable bloom filters which controls the overall correctness of the bloom filter as it scales out by keeping the actual false positive rate closer to the user requested false positive rate when the bloom filter was created. This is done by using the tightening ratio to set a stricter false positive on the new sub filter which gets created during each scale out. We do not recommend fine tuning this unless there is a specific use case for lower memory usage with higher false positive or vice versa.
+
+### Default bloom properties
+
+<table width="100%" border="1" style="border-collapse: collapse; border: 1px solid black" cellpadding="8">
+<tr>
+<th width="30%">Property</th>
+<th width="30%">Default Value</th>
+<th width="40%">Engine Config (Global)</th>
+</tr>
+<tr>
+<td>Capacity</td>
+<td>100</td>
+<td>BF.BLOOM-CAPACITY</td>
+</tr>
+<tr>
+<td>False Positive Rate</td>
+<td>0.01</td>
+<td>BF.BLOOM-FP-RATE</td>
+</tr>
+<tr>
+<td>Scaling / Non Scaling</td>
+<td>Scaling</td>
+<td>BF.BLOOM-EXPANSION</td>
+</tr>
+<tr>
+<td>Expansion Rate</td>
+<td>2</td>
+<td>BF.BLOOM-EXPANSION</td>
+</tr>
+<tr>
+<td>Tightening Ratio</td>
+<td>0.5</td>
+<td>BF.BLOOM-TIGHTENING-RATIO</td>
+</tr>
+<tr>
+<td>Seed</td>
+<td>Random Seed</td>
+<td>BF.BLOOM-USE-RANDOM-SEED</td>
+</tr>
+</table>
+
 
 As bloom filters have a default expansion of 2 this means all default bloom objects will be scaling. These options are used when not specified explicitly in the commands used to create a new bloom object. For example doing a BF.ADD for a new filter will create a filter with the exact above qualities. These default properties can be configured through configs on the bloom module.
 Example of default bloom objects information:
@@ -101,13 +147,6 @@ Example of default bloom objects information:
 15) Max scaled capacity
 16) (integer) 26214300
 ```
-
-### Advanced Properties
-
-The following two properties can be specified in the `BF.INSERT` command:
-* Seed - This property is only useful if you have a specific 32 byte seed that you want your bloom filter to use. By defualt every bloom filter will use a random seed.
-
-* Tightening Ratio - We do not recommend fine tuning this unless there is a specific use case for lower memory usage with higher false positive or vice versa. 
 
 ## Performance
 
@@ -152,21 +191,21 @@ bf_bloom_defrag_misses:0
 
 ### Bloom filter core metrics
 
-* bf_bloom_total_memory_bytes: Current total number of bytes used by all bloom filters.
+* `bf_bloom_total_memory_bytes`: Current total number of bytes used by all bloom filters.
 
-* bf_bloom_num_objects: Current total number of bloom objects.
+* `bf_bloom_num_objects`: Current total number of bloom objects.
 
-* bf_bloom_num_filters_across_objects: Current total number of filters across all bloom objects.
+* `bf_bloom_num_filters_across_objects`: Current total number of filters across all bloom objects.
 
-* bf_bloom_num_items_across_objects: Current total number of items across all bloom objects.
+* `bf_bloom_num_items_across_objects`: Current total number of items across all bloom objects.
 
-* bf_bloom_capacity_across_objects: Current total number of filters across all bloom objects.
+* `bf_bloom_capacity_across_objects`: Current total number of filters across all bloom objects.
 
 ### Bloom filter defrag metrics
 
-* bf_bloom_defrag_hits: Total number of defrag hits that have occured on bloom objects.
+* `bf_bloom_defrag_hits`: Total number of defrag hits that have occurred on bloom objects.
 
-* bf_bloom_defrag_misses: Total number of defrag misses that have occured on bloom objects.
+* `bf_bloom_defrag_misses`: Total number of defrag misses that have occurred on bloom objects.
 
 ## Limits
 

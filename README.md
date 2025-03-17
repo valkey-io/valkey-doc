@@ -11,8 +11,9 @@ This repo comes with a Makefile to build and install man pages.
     sudo make install INSTALL_MAN_DIR=/usr/local/share/man
 
 Prerequisites: GNU Make, Python 3, Python 3 YAML (pyyaml), Pandoc.
-Additionally, the scripts need access to the valkey and valkey-bloom code repos,
-where metadata files about the commands are stored.
+Additionally, the scripts need access to the valkey code repo,
+where metadata files about the commands are stored. Additionally
+access to the valkey-bloom repo is optional.
 
 The pages are generated under `_build/man/` by default. The default install
 location is `/usr/local/share/man` (in the appropriate subdirectories).
