@@ -33,6 +33,7 @@ endif
 ifeq ("$(wildcard $(VALKEY_BLOOM_ROOT))","")
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     $(info Valkey bloom variable pointed to nothing, skipping bloom filter commands)
 =======
     $(error Please provide the VALKEY_ROOT variable pointing to the Valkey source code)
@@ -40,6 +41,9 @@ ifeq ("$(wildcard $(VALKEY_BLOOM_ROOT))","")
 =======
 	$(error Please provide the VALKEY_BLOOM_ROOT variable pointing to the valkey-bloom source code)
 >>>>>>> f062a8a0 (Changes based on feedback for bloom commands and documentation)
+=======
+    $(info Valkey bloom variable pointed to nothing, skipping bloom filter commands)
+>>>>>>> 0249aec8 (Adding table for bloom default properties as well as cleaning up man creation and spelling)
 endif
 
 ifeq ("$(shell which pandoc)","")
