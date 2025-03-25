@@ -272,8 +272,8 @@ Here is the description of fields.
 Here is the meaning of all fields in the **server** section:
 
 *   `redis_version`: Redis OSS version this Valkey server is compatible with
-*   `valkey_version`: Valkey full version number (e.g. 7.2.5)
-*   `valkey_release_stage`: The release status reflects the Valkey server version release stage: "dev" in unstable, "rc1..N" during release, and "ga" when finalized
+*   `valkey_version`: Valkey version number (e.g. 7.2.5)
+*   `valkey_release_stage`: The status of the Valkey version: "ga" for generally available versions; "rc1", "rc2", etc. for release candidates; "dev" for development versions
 *   `redis_git_sha1`:  Git SHA1
 *   `redis_git_dirty`: Git dirty flag
 *   `redis_build_id`: The build id
