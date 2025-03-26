@@ -67,10 +67,14 @@ a default set of tests, or you can supply a custom set of tests.
 : Enable read from replicas in cluster mode.
   This command must be used with the `--cluster` option.
   There are three modes for reading from replicas:
-  _no_ - sends read requests to primaries only (default).
-  _yes_ - sends read requests to replicas only.
-  _all_ - sends read requests to all nodes.
-   Since write commands will not be accepted by replicas,
+  
+  **no** - sends read requests to primaries only (default).
+  
+  **yes** - sends read requests to replicas only.
+  
+  **all** - sends read requests to all nodes.
+  
+   Since write commands will be rejected by replicas,
    it is recommended to enable read from replicas only for read command tests.
 
 **`--enable-tracking`**
