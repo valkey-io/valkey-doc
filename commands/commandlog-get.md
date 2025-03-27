@@ -30,5 +30,4 @@ Each entry from the specific type of command log is comprised of the following s
 6. Client name if set via the `CLIENT SETNAME` command.
 
 The entry's unique ID can be used in order to avoid processing command log entries multiple times (for instance you may have a script sending you an email alert for every new command log entry).
-The ID is never reset in the course of the Valkey server execution, only a server
-restart will reset it.
+The ID is never reset in the course of the Valkey server execution, even after `COMMANDLOG RESET` was executed. In order to reset the ID a server restart is needed.
