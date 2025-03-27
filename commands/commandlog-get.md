@@ -1,7 +1,7 @@
 The `COMMANDLOG GET <count> <type>` command returns entries from the command log of specified type in chronological order.
 
 The Command Log system is used to record commands that consume significant resources during server operation, including CPU, memory, and network bandwidth.
-These commands and the data they access may lead to abnormal instance operations, the commandlog can help users quickly and intuitively locate issues.
+These commands and the data they access may lead to abnormal instance operations, the command log can help users quickly and intuitively locate issues.
 
 Currently, three types of command logs are supported:
 
