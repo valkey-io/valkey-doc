@@ -26,7 +26,7 @@ Each entry from the specific type of command log is comprised of the following s
     * size in bytes for type of large-request
     * size in bytes for type of large-reply
 4. The array composing the arguments of the command.
-5. Client IP address and port.
+5. Client peer information (e.g. Client IP address and port for TCP connected clients or unix path for unix sockets).
 6. Client name if set via the `CLIENT SETNAME` command.
 
 The entry's unique ID can be used in order to avoid processing command log entries multiple times (for instance you may have a script sending you an email alert for every new command log entry).
