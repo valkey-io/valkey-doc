@@ -1,4 +1,4 @@
-This command returns the current number of entries in the specified type of commandlog.
+This command returns the current number of entries in the specified type of command log.
 
 A new entry is added to the specified command log whenever a command exceeds the corresponding threshold. There are currently three different types of command log, each with an independent threshold, including `commandlog-execution-slower-than`, `commandlog-request-larger-than`, and `commandlog-reply-larger-than`.
 
