@@ -6,7 +6,7 @@ description: >
 
 In Valkey, the bloom filter data type / commands are implemented in the [valkey-bloom module](https://github.com/valkey-io/valkey-bloom) which is an official valkey module compatible with versions 8.0 and above. Users will need to load this module onto their valkey server in order to use this feature.
 
-Bloom filters are a space efficient probabilistic data structure that allows checking whether an element is member of a set. False positives are possible, but it guarantees no false negatives. A false positive is when a structure incorrectly indicates that an element is in the set when it actually is not. False negatives are when a structure incorrectly indicates that an element is not in the set when it actually is.
+Bloom filters are a space efficient probabilistic data structure that allows adding elements and checking whether elements exist. False positives are possible where a filter incorrectly indicates that an element exists, even though it was not added. However, Bloom Filters guarantee that false negatives (incorrectly indicating that an element does not exist, even though it was added) do not occur.
 
 ## Basic Bloom commands
 
@@ -19,11 +19,11 @@ See the [complete list of bloom filter commands](../commands/#bloom).
 
 ## Common use cases for bloom filters
 
-### Financial fraud detection
+### Fraud detection
 
 Bloom filters can be used to answer the question, "Has this card been flagged as stolen?". To do this, use a bloom filter that contains cards reported as stolen. When a card is used, check whether it is present in the bloom filter. If the card is not found, it means it is not marked as stolen. If the card is present in the filter, a check can be made against the main database, or the purchase can be denied.
 
-### Ad placement
+### Ad placement / Deduplication
 
 Bloom filters can help advertisers answer the following questions:
 * Has the user already seen this ad?
@@ -52,13 +52,15 @@ In this username example, we can use use a Bloom filter to track every username 
 
 ## Scaling and non scaling bloom filters
 
-The difference between scaling and non scaling bloom filters is that scaling bloom filters do not have a fixed capacity, but a capacity that can grow. While non-scaling bloom filters will have a fixed capacity which also means a fixed size. Scaling bloom filters consist of a vector of “Subfilters” with length >= 1 while non scaling will only contain 1 subfilter.
+The bloom filter data type can act either as a "scaling bloom filter" or "non scaling bloom filter" depending on user configuration.
 
-When a scaling filter reaches its capacity, adding a new unique item will cause a new bloom filter to be created and added to the vector of bloom filters. This new bloom filter will have a larger capacity (previous bloom filter's capacity * expansion rate of the bloom object).
+The difference between scaling and non scaling bloom filters is that scaling bloom filters do not have a fixed capacity, instead they can grow. Non-scaling bloom filters will have a fixed capacity, meaning only a fixed number of items can be inserted to it. Scaling bloom filters consist of a vector of "Sub filters" with length >= 1, while non scaling will only contain 1 sub filter.
 
-When a non scaling filter reaches its capacity, if a user tries to add a new unique item an error will be returned
+When a scaling bloom filter reaches its capacity, adding a new unique item will trigger a scale out and a new sub filter is created and added to the vector of sub filters. This new sub filter will have a larger capacity (previous bloom filter's capacity * expansion rate of the bloom object).
 
-The expansion rate is the rate that a scaling bloom filter will have its capacity increased by on the scale out. For example we have a bloom filter with capacity 100 at creation with an expansion rate of 2. After adding 101 unique items we will scale out and create a new filter with capacity 200. Then after adding 200 more unique items (301 items total) we will create a new filter of capacity 400 and so on. 
+After a non scaling bloom filter reaches its capacity, if a user tries to add a new unique item, an error will be returned
+
+The expansion rate is the rate that a scaling bloom filter's capacity is increased by upon scale out. For example, we have a bloom filter with capacity 100 at creation with an expansion rate of 2. After adding 101 unique items, it will scale out and create a new sub filter with capacity 200. Then, after adding 200 more unique items (301 items total), a new sub filter of capacity 400 is added upon scale out and so on. 
 
 ### When should you use scaling vs non-scaling filters
 
@@ -164,18 +166,18 @@ Example of default bloom filter information:
 
 The bloom commands which involve adding items or checking the existence of items have a time complexity of O(n * k) where n is the number of hash functions used by the bloom filter and k is the number of elements being inserted. This means that both BF.ADD and BF.EXISTS are both O(n) as they only operate on one item.
 
-Since performance relies on the number of hash functions, choosing the correct capacity and expansion rate can be important. In case of scalable bloom filters, with every scale out, we increase the number of checks (using hash functions of each sub filter) performed during any add / exists operation. For this reason, it is recommended that users choose a capacity after evaluating the use case / workload to help avoid several scale outs and reduce the number of checks.
+Since performance relies on the number of hash functions, choosing the correct capacity and expansion rate can be important. In case of scalable bloom filters, with every scale out, we increase the number of checks (using hash functions of each sub filter) performed during any add / exists operation. For this reason, it is recommended that users choose a capacity after evaluating the use case / workload to avoid several scale outs and reduce the number of checks.
 
-There other bloom filter commands are O(1) time complexity: BF.CARD, BF.INFO, BF.RESERVE, and BF.INSERT (when no items are provided).
+The other bloom filter commands are O(1) time complexity: BF.CARD, BF.INFO, BF.RESERVE, and BF.INSERT (when no items are provided).
 
 ## Monitoring 
 
-To check the overall bloom filter metrics not just for specific filters, you can use the following `info bf` or `info modules`. 
+To check the server's overall bloom filter metrics, you can use the `INFO BF` or the `INFO MODULES` command. 
 
-Example of `info bf` calls in different scenarios:
+Example of `INFO BF` calls in different scenarios:
 
 ```
-127.0.0.1:6379> info bf
+127.0.0.1:6379> INFO BF
 # bf_bloom_core_metrics
 bf_bloom_total_memory_bytes:0
 bf_bloom_num_objects:0
@@ -207,7 +209,7 @@ bf_bloom_defrag_misses:0
 
 * `bf_bloom_num_objects`: Current total number of bloom filters.
 
-* `bf_bloom_num_filters_across_objects`: Current total number of subfilters across all bloom filters.
+* `bf_bloom_num_filters_across_objects`: Current total number of sub filters across all bloom filters.
 
 * `bf_bloom_num_items_across_objects`: Current total number of items across all bloom filters.
 
@@ -225,16 +227,16 @@ There are two limits a bloom filter faces.
 
 1. Memory Usage Limit:
 
-    The memory usage limit per bloom filter by default is defined by the BF.BLOOM-MEMORY-USAGE-LIMIT module configuration which has a default value of 128 MB. If a command results in a creation / scale out causing the overall memory usage to exceed this limit, the command is rejected.
+    The memory usage limit per bloom filter by default is defined by the `BF.BLOOM-MEMORY-USAGE-LIMIT` module configuration which has a default value of 128 MB. If a command results in a creation / scale out causing the overall memory usage to exceed this limit, the command is rejected.
 
 2. Number of sub filters (in case of scalable bloom filters):
 
     When a bloom filter scales out, a new sub filter is added. The limit on the number of sub filters depends on the false positive rate and tightening ratio. Each sub filter has a stricter false positive, and this is controlled by the tightening ratio. If a command attempting a scale out results in the sub filter reaching a false positive of 0, the command is rejected. 
 
 
-We have implemented VALIDATESCALETO as an optional arg of BF.INSERT to help determine whether the bloom filter can scale out to the reach the specified capacity without hitting either limits mentioned above, and will reject the command otherwise.
+We have implemented `VALIDATESCALETO` as an optional arg of `BF.INSERT` to help determine whether the bloom filter can scale out to the reach the specified capacity without hitting either limits mentioned above. It will reject the command otherwise.
 
-As seen below when trying to create a bloom filter with a capacity more than what is possible given the memory limits, the command is rejected. However if the wanted capacity is within the limits then the creation of the bloom filter will succeed.
+As seen below, when trying to create a bloom filter with a capacity that cannot be achieved through scale outs (given the memory limits), the command is rejected. However, if the capacity can be achieved through scale out (even with the limits) then the creation of the bloom filter will succeed.
 
 Example:
 
@@ -245,7 +247,7 @@ Example:
 []
 ```
 
-We can use the BF.INFO command's MAXSCALEDCAPACITY field to find out the maximum capacity that the scalable bloom filter can expand to hold.
+We can use the `BF.INFO` command's `MAXSCALEDCAPACITY` field to find out the maximum capacity that the scalable bloom filter can expand to hold.
 
 ```
 127.0.0.1:6379> BF.INFO validate_scale_valid MAXSCALEDCAPACITY

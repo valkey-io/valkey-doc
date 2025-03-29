@@ -1,6 +1,6 @@
-Creates an empty bloom filter with the capacity and false positive rate specified. By default, a scaling filter is created with the default expansion rate.
+Creates an empty bloom filter with the specified capacity and false positive rate. By default, a scaling filter is created with the default expansion rate.
 
-To specify the scaling / non scaling nature of the bloom filter, use the options: NONSCALING or SCALING <expansion rate>. It is invalid to provide both options together.
+To specify the scaling / non scaling nature of the bloom filter, use the options: `NONSCALING` or `SCALING <expansion rate>`. It is invalid to provide both options together.
 
 ## Reserve fields
 

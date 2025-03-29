@@ -67,7 +67,7 @@
     "* [Integer reply](../topics/protocol.md#integers): `1` if the item was successfully added",
     "* [Integer reply](../topics/protocol.md#integers): `0` if the item already existed in the bloom filter",
     "",
-    "The command may fail with an error when attempting to add to a non scaling filter that is full"
+    "The command will be rejected if input is invalid, if a non bloom filter key with the same name already exists, if the bloom filter creation / scale out exceeds limits, or if an item is being added to a full non scaling filter."
   ],
   "BF.CARD": [
     "[Integer reply](../topics/protocol.md#integers): The number of items successfully added to the bloom filter, or 0 if the key does not exist"
@@ -83,17 +83,17 @@
     "When an optional argument excluding ERROR is provided:",
     "* [Integer reply](../topics/protocol.md#integers): argument value",
     "When ERROR is provided as an optional argument:",
-    "* [String reply](../topics/protocol.md#simple-strings): argument value",
-    "",
-    "The command may fail with an error when trying to get MAXSCALEDCAPACITY or TIGHTENING of a non scaling filter"
+    "* [String reply](../topics/protocol.md#simple-strings): argument value"
   ],
   "BF.INSERT": [
     "[Array reply](../topics/protocol.md#arrays): Array of ints (1’s and 0’s) - if filter already exists or if creation was successful. An empty array if no items are provided",
     "",
-    "The command may fail with an error for several reasons: if the provided VALIDATESCALETO is not possible, if the provided optional args are not valid"
+    "The command will be rejected if input is invalid, if a non bloom filter key with the same name already exists, if the bloom filter creation / scale out exceeds limits, or if an item is being added to a full non scaling filter."
   ],
   "BF.MADD": [
-    "[Array reply](../topics/protocol.md#arrays): Array of ints (1’s and 0’s)"
+    "[Array reply](../topics/protocol.md#arrays): Array of ints (1’s and 0’s)",
+    "",
+    "The command will be rejected if input is invalid, if a non bloom filter key with the same name already exists, if the bloom filter creation / scale out exceeds limits, or if an item is being added to a full non scaling filter."
   ],
   "BF.MEXISTS": [
     "[Array reply](../topics/protocol.md#arrays): Array of ints (1’s and 0’s)"
@@ -101,7 +101,7 @@
   "BF.RESERVE": [
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK`.",
     "",
-    "The command may fail with an error for several reasons: if the provided arguments are not in the valid range, if the provided bloom filter name already exists"
+    "The command will be rejected if input is invalid, if a key with the same name already exists, or if the bloom filter creation exceeds limits."
   ],
   "BGREWRITEAOF": [
     "[Simple string reply](../topics/protocol.md#simple-strings): a simple string reply indicating that the rewriting started or is about to start ASAP when the call is executed with success.",
