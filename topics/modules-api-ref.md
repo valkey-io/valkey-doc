@@ -273,8 +273,8 @@ The supported flags are:
 The following is an example of how it could be used:
 
     if (ValkeyModule_IsChannelsPositionRequest(ctx)) {
-        ValkeyModule_ChannelAtPosWithFlags(ctx, 1, VALKEYMODULE_CMD_CHANNEL_SUBSCRIBE |
-`VALKEYMODULE_CMD_CHANNEL_PATTERN`); [`ValkeyModule_ChannelAtPosWithFlags`](#ValkeyModule_ChannelAtPosWithFlags)(ctx, 1, `VALKEYMODULE_CMD_CHANNEL_PUBLISH`);
+        ValkeyModule_ChannelAtPosWithFlags(ctx, 1, VALKEYMODULE_CMD_CHANNEL_SUBSCRIBE | VALKEYMODULE_CMD_CHANNEL_PATTERN); 
+        ValkeyModule_ChannelAtPosWithFlags(ctx, 1, `VALKEYMODULE_CMD_CHANNEL_PUBLISH`);
     }
 
 Note: One usage of declaring channels is for evaluating ACL permissions. In this context,
