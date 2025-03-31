@@ -1,4 +1,4 @@
-Returns the cardinality of a Bloom filter which is the number of items that have been successfully added to it. 
+Returns the cardinality of a bloom filter which is the number of items that have been successfully added to it. 
 
 ## Examples
 

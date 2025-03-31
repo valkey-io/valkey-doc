@@ -1,6 +1,6 @@
 Determines if an item has been added to the bloom filter previously. 
 
-A Bloom filter has two possible responses when you check if an item exists:
+A bloom filter has two possible responses when you check if an item exists:
 
 * 0 - The item definitely does not exist since with bloom filters, false negatives are not possible.
 
