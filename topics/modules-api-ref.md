@@ -3614,7 +3614,10 @@ if the reply type is wrong or the index is out of range.
 
 ### `ValkeyModule_CallReplyMapElement`
 
-    int ValkeyModule_CallReplyMapElement(ValkeyModuleCallReply *reply,;
+    int ValkeyModule_CallReplyMapElement(ValkeyModuleCallReply *reply,
+                                         size_t idx,
+                                         ValkeyModuleCallReply **key,
+                                         ValkeyModuleCallReply **val);
 
 **Available since:** 7.0.0
 
@@ -3641,7 +3644,10 @@ Return the attribute of the given reply, or NULL if no attribute exists.
 
 ### `ValkeyModule_CallReplyAttributeElement`
 
-    int ValkeyModule_CallReplyAttributeElement(ValkeyModuleCallReply *reply,;
+     int ValkeyModule_CallReplyAttributeElement(ValkeyModuleCallReply *reply,
+                                               size_t idx,
+                                               ValkeyModuleCallReply **key,
+                                               ValkeyModuleCallReply **val);
 
 **Available since:** 7.0.0
 
@@ -3658,8 +3664,9 @@ NULL if not required.
 
 ### `ValkeyModule_CallReplyPromiseSetUnblockHandler`
 
-    void ValkeyModule_CallReplyPromiseSetUnblockHandler(ValkeyModuleCallReply *reply,
-                                                        ;
+     void ValkeyModule_CallReplyPromiseSetUnblockHandler(ValkeyModuleCallReply *reply,
+                                                        ValkeyModuleOnUnblocked on_unblock,
+                                                        void *private_data);
 
 **Available since:** 7.2.0
 
@@ -7544,7 +7551,7 @@ Example:
 
     int ValkeyModule_RegisterScriptingEngine(ValkeyModuleCtx *module_ctx,;
 
-**Available since:** unreleased
+**Available since:** 8.1.0
 
 Registers a new scripting engine in the server.
 
@@ -7569,7 +7576,7 @@ message is logged.
     int ValkeyModule_UnregisterScriptingEngine(ValkeyModuleCtx *ctx,
                                                const char *engine_name);
 
-**Available since:** unreleased
+**Available since:** 8.1.0
 
 Removes the scripting engine from the server.
 
@@ -7583,7 +7590,7 @@ Returns `VALKEYMODULE_OK`.
 
     ValkeyModuleScriptingEngineExecutionState ValkeyModule_GetFunctionExecutionState(;
 
-**Available since:** unreleased
+**Available since:** 8.1.0
 
 Returns the state of the current function being executed by the scripting
 engine.
