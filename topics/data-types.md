@@ -101,7 +101,7 @@ For more information, see:
 
 * [Overview of Bloom Filters](bloomfilters.md)
 * [Bloom filter command reference](../commands/#bloom)
-* [The valkey-bloom module on GitHub](https://github.com/valkey-io/valkey-bloom/)
+* [Valkey-bloom module on GitHub](https://github.com/valkey-io/valkey-bloom/)
 
 ## Extensions
 

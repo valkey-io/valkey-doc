@@ -9,7 +9,7 @@ When the `ITEMS` option is provided, all items provided will be attempted to be 
 * EXPANSION *expansion* - This option will specify the bloom filter as scaling and controls the size of the sub filter that will be created upon scale out / expansion of the bloom filter.
 * NOCREATE  - Will not create the bloom filter and add items if the filter does not exist already.
 * TIGHTENING *tightening_ratio* - The tightening ratio for the bloom filter.
-* SEED *seed* - The seed the hash functions will use.
+* SEED *seed* - The 32 byte seed the bloom filter's hash functions will use.
 * NONSCALING - This option will configure the bloom filter as non scaling; it cannot expand / scale beyond its specified capacity.
 * VALIDATESCALETO *validatescaleto* - Validates if the filter can scale out and reach to this capacity based on limits and if not, return an error without creating the bloom filter.
 * ITEMS *item* - One or more items to be added to the bloom filter.

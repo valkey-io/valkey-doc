@@ -19,27 +19,35 @@ See the [complete list of bloom filter commands](../commands/#bloom).
 
 ## Common use cases for bloom filters
 
-### Fraud detection
+### Advertisement / Campaign placement and deduplication
 
-Bloom filters can be used to answer the question, "Has this card been flagged as stolen?". To do this, use a bloom filter that contains cards reported as stolen. When a card is used, check whether it is present in the bloom filter. If the card is not found, it means it is not marked as stolen. If the card is present in the filter, a check can be made against the main database, or the purchase can be denied.
+Bloom filters can help e-commerce sites, streaming services, advertising networks, or marketing platforms answer the following questions:
 
-### Ad placement / Deduplication
+* Has an advertisement already been shown to a user?
+* Has a promotional email or notification already been sent to a user?
+* Has a product already been purchased by a user?
 
-Bloom filters can help advertisers answer the following questions:
-* Has the user already seen this ad?
-* Has the user already purchased this product?
-
-For each user, use a Bloom filter to store all the products they have purchased. The recommendation engine can then suggest a new product and check if it is present in the user's Bloom filter.
+Example: For each user, use a Bloom filter to store all the products they have purchased. The recommendation engine can then suggest a new product and check if it is present in the user's Bloom filter.
 
 * If the product is not in the filter, the ad is shown to the user, and the product is added to the filter.
 * If the product is already in the filter, it means the ad has already been shown to the user and the recommendation engine finds a different ad to show.
 
-### Check if URL's are malicious
+### Fraud detection
 
-Bloom filters can answer the question "is a URL malicious?". Any URL inputted would be checked against a malicious URL bloom filter. 
+Bloom filters can be used to answer the question, "Has this card been flagged as stolen?". To do this, use a bloom filter that contains cards reported as stolen. When a card is used, check whether it is present in the bloom filter. If the card is not found, it means it is not marked as stolen. If the card is present in the filter, a check can be made against the main database, or the purchase can be denied.
 
-* If no, then we allow access to the site
-* If yes, then we can deny access or perform a full check of the URL
+### Filtering Spam / Harmful Content
+Bloom filters provide an efficient way to screen content for potential threats and harmful material. Here's how they can be effectively used:
+
+Example: Bloom filters can answer the question "is a URL malicious?". Any URL inputted would be checked against a malicious URL bloom filter. 
+
+* If no, then we allow access to the site.
+* If yes, then we can deny access or perform a full check of the URL.
+
+Example: Bloom filters can answer the question is this content harmful or spam. Create a bloom filter that contains spam email addresses or spam phone numbers. When an email or text is received then check if the number or email is present in the bloom filter. 
+
+* If no, then the message can be displayed to the user.
+* If yes, then we can send the message to the spam folder or perform a full check on the email or number.
 
 ### Check if a username is taken
 
@@ -164,9 +172,9 @@ Example of default bloom filter information:
 
 ## Performance
 
-The bloom commands which involve adding items or checking the existence of items have a time complexity of O(n * k) where n is the number of hash functions used by the bloom filter and k is the number of elements being inserted. This means that both BF.ADD and BF.EXISTS are both O(n) as they only operate on one item.
+The bloom commands which involve adding items or checking the existence of items have a time complexity of O(N * K) where N is the number of hash functions used by the bloom filter and K is the number of elements being inserted. This means that both BF.ADD and BF.EXISTS are both O(N) as they only operate on one item.
 
-Since performance relies on the number of hash functions, choosing the correct capacity and expansion rate can be important. In case of scalable bloom filters, with every scale out, we increase the number of checks (using hash functions of each sub filter) performed during any add / exists operation. For this reason, it is recommended that users choose a capacity after evaluating the use case / workload to avoid several scale outs and reduce the number of checks.
+In case of scalable bloom filters, with every scale out, we increase the number of checks (using hash functions of each sub filter) performed during any add / exists operation. For this reason, it is recommended that users choose a capacity and expansion rate after evaluating the use case / workload to avoid several scale outs and reduce the number of checks.
 
 The other bloom filter commands are O(1) time complexity: BF.CARD, BF.INFO, BF.RESERVE, and BF.INSERT (when no items are provided).
 
@@ -236,7 +244,7 @@ There are two limits a bloom filter faces.
 
 We have implemented `VALIDATESCALETO` as an optional arg of `BF.INSERT` to help determine whether the bloom filter can scale out to the reach the specified capacity without hitting either limits mentioned above. It will reject the command otherwise.
 
-As seen below, when trying to create a bloom filter with a capacity that cannot be achieved through scale outs (given the memory limits), the command is rejected. However, if the capacity can be achieved through scale out (even with the limits) then the creation of the bloom filter will succeed.
+As seen below, when trying to create a bloom filter with a capacity that cannot be achieved through scale outs (given the memory limits), the command is rejected. However, if the capacity can be achieved through scale out (even with the limits), then the creation of the bloom filter will succeed.
 
 Example:
 
@@ -247,7 +255,7 @@ Example:
 []
 ```
 
-We can use the `BF.INFO` command's `MAXSCALEDCAPACITY` field to find out the maximum capacity that the scalable bloom filter can expand to hold.
+The `BF.INFO` command's `MAXSCALEDCAPACITY` field can be used to find out the maximum capacity that the scalable bloom filter can expand to hold.
 
 ```
 127.0.0.1:6379> BF.INFO validate_scale_valid MAXSCALEDCAPACITY
