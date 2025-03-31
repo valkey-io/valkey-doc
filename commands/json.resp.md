@@ -1,4 +1,14 @@
-Return the JSON value at the given path in Valkey Serialization Protocol (RESP).\nIf the value is container, the response is RESP array or nested array.\n\n* JSON null is mapped to the RESP Null Bulk String.\n* JSON boolean values are mapped to the respective RESP Simple Strings.\n* Integer numbers are mapped to RESP Integers.\n* Floating point numbers are mapped to RESP Bulk Strings.\n* JSON Strings are mapped to RESP Bulk Strings.\n* JSON Arrays are represented as RESP Arrays, where the first element is the simple string [,\n  followed by the array's elements.\n* JSON Objects are represented as RESP Arrays, where the first element is the simple string {,\n  followed by key-value pairs, each of which is a RESP bulk string.
+Return the JSON value at the given path in Redis Serialization Protocol (RESP).
+If the value is container, the response is RESP array or nested array.
+
+
+* JSON null is mapped to the RESP Null Bulk String.
+* JSON boolean values are mapped to the respective RESP Simple Strings.
+* Integer numbers are mapped to RESP Integers.
+* Floating point numbers are mapped to RESP Bulk Strings.
+* JSON Strings are mapped to RESP Bulk Strings.
+* JSON Arrays are represented as RESP Arrays, where the first element is the simple string [,\n  followed by the array's elements.
+* JSON Objects are represented as RESP Arrays, where the first element is the simple string {,\n  followed by key-value pairs, each of which is a RESP bulk string.
 
 ## Syntax
 

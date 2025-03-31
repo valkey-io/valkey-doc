@@ -1,4 +1,12 @@
-Report information. Supported subcommands are:\n\n* MEMORY <key> [path] - report memory usage in bytes of a JSON value. Path defaults to the root if not provided.\n* DEPTH <key> - report the maximum path depth of the JSON document.\n* FIELDS <key> [path] - report the number of fields at the specified document path. Path defaults to the root if not provided.\n  Each non-container JSON value counts as one field. Objects and arrays recursively count one field for each of their\n  containing JSON values. Each container value, except the root container, counts as one additional field.\n* HELP - print help messages of the command.
+Report information. Supported subcommands are:
+
+
+* MEMORY <key> [path] - report memory usage in bytes of a JSON value. Path defaults to the root if not provided.
+* DEPTH <key> - report the maximum path depth of the JSON document.
+* FIELDS <key> [path] - report the number of fields at the specified document path. Path defaults to the root if not provided.
+  Each non-container JSON value counts as one field. Objects and arrays recursively count one field for each of their
+  containing JSON values. Each container value, except the root container, counts as one additional field.
+* HELP - print help messages of the command.
 
 ## Syntax
 

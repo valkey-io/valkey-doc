@@ -1,4 +1,10 @@
-Trim arrays at the path so that it becomes subarray [start, end], both inclusive.\n\n* If the array is empty, do nothing, return 0.\n* If start < 0, treat it as 0.\n* If end >= size (size of the array), treat it as size-1.\n* If start >= size or start > end, empty the array and return 0.
+Trim arrays at the path so that it becomes subarray [start, end], both inclusive.
+
+
+* If the array is empty, do nothing, return 0.
+* If start < 0, treat it as 0.
+* If end >= size (size of the array), treat it as size-1.
+* If start >= size or start > end, empty the array and return 0.
 
 ## Syntax
 
