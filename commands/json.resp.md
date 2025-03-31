@@ -7,8 +7,8 @@ If the value is container, the response is RESP array or nested array.
 * Integer numbers are mapped to RESP Integers.
 * Floating point numbers are mapped to RESP Bulk Strings.
 * JSON Strings are mapped to RESP Bulk Strings.
-* JSON Arrays are represented as RESP Arrays, where the first element is the simple string [,\n  followed by the array's elements.
-* JSON Objects are represented as RESP Arrays, where the first element is the simple string {,\n  followed by key-value pairs, each of which is a RESP bulk string.
+* JSON Arrays are represented as RESP Arrays, where the first element is the simple string [, followed by the array's elements.
+* JSON Objects are represented as RESP Arrays, where the first element is the simple string {, followed by key-value pairs, each of which is a RESP bulk string.
 
 ## Syntax
 

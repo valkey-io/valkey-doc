@@ -13,7 +13,7 @@ JSON.GET <key>
 
 * key - required, Redis key of document type
 * INDENT/NEWLINE/SPACE - optional, controls the format of the returned JSON string, i.e., "pretty print". The default
-  value of each one is empty string. They can be overidden in any combination. They can be specified in any order.
+  value of each one is empty string. They can be overridden in any combination. They can be specified in any order.
 * NOESCAPE - optional, allowed to be present for legacy compatibility and has no other effect.
 * path - optional, zero or more JSON paths, defaults to the root path if none is given. The path arguments must be
   placed at the end.
