@@ -1,3 +1,5 @@
+Get length of the array at the path.
+
 ## Syntax
 
 ```bash

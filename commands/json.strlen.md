@@ -1,3 +1,5 @@
+Get lengths of the JSON string values at the path.
+
 ## Syntax
 
 ```bash

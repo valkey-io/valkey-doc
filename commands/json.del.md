@@ -1,3 +1,5 @@
+Delete the JSON values at the path in a document key. If the path is the root path, it is equivalent to deleting\nthe key from Valkey.
+
 ## Syntax
 
 ```bash

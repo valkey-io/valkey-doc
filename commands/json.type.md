@@ -1,3 +1,5 @@
+Report type of the values at the given path.
+
 ## Syntax
 
 ```bash

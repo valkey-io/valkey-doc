@@ -1,3 +1,5 @@
+Search for the first occurrence of a scalar JSON value in the arrays at the path.\n\n* Out of range errors are treated by rounding the index to the array's start and end.\n* If start > end, return -1 (not found).
+
 ## Syntax
 
 ```bash

@@ -1,3 +1,5 @@
+Insert one or more values into the array values at path before the index.\n\n* Inserting at index 0 prepends to the array.\n* A negative index values is interpreted as starting from the end.\n* The index must be in the array's boundary.
+
 ## Syntax
 
 ```bash

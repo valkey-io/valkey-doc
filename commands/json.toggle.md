@@ -1,3 +1,5 @@
+Toggle boolean values between true and false at the path.
+
 ## Syntax
 
 ```bash

@@ -1,3 +1,5 @@
+Remove and return element at the index from the array. Popping an empty array returns null.
+
 ## Syntax
 
 ```bash

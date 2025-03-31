@@ -1,3 +1,5 @@
+Clear the arrays or an objects at the path.
+
 ## Syntax
 
 ```bash

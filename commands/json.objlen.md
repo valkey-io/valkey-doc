@@ -1,3 +1,5 @@
+Get number of keys in the object values at the path.
+
 ## Syntax
 
 ```bash

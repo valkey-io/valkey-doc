@@ -1,3 +1,5 @@
+Get key names in the object values at the path.
+
 ## Syntax
 
 ```bash

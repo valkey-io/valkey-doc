@@ -1,3 +1,5 @@
+Get serialized JSON objects from multiple document keys at the specified path. Return null for non-existent keys or JSON paths.
+
 ## Syntax
 
 ```bash

@@ -1,3 +1,5 @@
+Get the serialized JSON at one or multiple paths.
+
 ## Syntax
 
 ```bash

@@ -1,3 +1,5 @@
+Append a string to the JSON strings at the path.
+
 ## Syntax
 
 ```bash
