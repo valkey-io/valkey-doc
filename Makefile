@@ -196,7 +196,6 @@ $(MAN_DIR)/man1/valkey-%.1.gz: topics/%.md $(man_scripts)
 	 --version $(VERSION) --date $(DATE) \$< \
 	 | utils/links-to-man.py - | $(to_man) > $@
 $(MAN_DIR)/man3/%.3valkey.gz: commands/%.md $(BUILD_DIR)/.commands-per-group.json $(man_scripts)
-$(MAN_DIR)/man3/%.3valkey.gz: commands/%.md $(BUILD_DIR)/.commands-per-group.json $(man_scripts)
 	$(eval VALKEY_ROOTS := $(VALKEY_ROOT) $(VALKEY_JSON_ROOT)) 
 	$(eval FINAL_ROOT := $(firstword $(foreach root,$(VALKEY_ROOTS),$(if $(wildcard $(root)/src/commands/$*.json),$(root)))))
 	$(if $(FINAL_ROOT),,$(eval FINAL_ROOT := $(lastword $(VALKEY_ROOTS))))
