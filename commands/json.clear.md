@@ -9,13 +9,6 @@ JSON.CLEAR <key> <path>
 * key - required, Redis key of document type.
 * path - optional, a JSON path. Defaults to the root path if not provided
 
-## Return
-
-* Integer, the number of containers cleared.
-* Clearing an empty array or object accounts for 0 container cleared.
-* Clearing a non-container value returns 0.
-* If no array or object value is located by the path, the command returns 0.
-
 ## Examples
 
 ```bash

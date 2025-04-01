@@ -18,27 +18,6 @@ JSON.GET <key>
 * path - optional, zero or more JSON paths, defaults to the root path if none is given. The path arguments must be
   placed at the end.
 
-## Return
-
-* Enhanced path syntax:
-    * If one path is given:
-        * Return serialized string of an array of values.
-        * If no value is selected, the command returns an empty array.
-    * If multiple paths are given:
-        * Return a stringified JSON object, in which each path is a key.
-        * If there are mixed enhanced and restricted path syntax, the result conforms to the enhanced syntax.
-        * If a path does not exist, its corresponding value is an empty array.
-
-* Restricted path syntax:
-    * If one path is given:
-        * Return serialized string of the value at the path.
-        * If multiple values are selected, the command returns the first value.
-        * If the path does not exist, the command returns NONEXISTENT error.
-    * If multiple paths are given:
-        * Return a stringified JSON object, in which each path is a key.
-        * The result conforms to the restricted path syntax if and only if all paths are restricted paths.
-        * If a path does not exist, the command returns NONEXISTENT error
-
 ## Examples
 
 Enhanced path syntax:

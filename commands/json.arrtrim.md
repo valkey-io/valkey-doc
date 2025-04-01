@@ -17,19 +17,6 @@ JSON.ARRTRIM <key> <path> <start> <end>
 * start - required, start index, inclusive.
 * end - required, end index, inclusive.
 
-## Return
-
-* If the path is restricted syntax:
-    * Array of integers, representing the new length of the array at each path.
-    * If a value is an empty array, its corresponding return value is null.
-    * If a value is not an array, its corresponding return value is null.
-    * OUTOFBOUNDARIES error if an index argument is out of bounds.
-
-* If the path is restricted syntax:
-    * Integer, the new length of the array.
-    * Null if the array is empty.
-    * WRONGTYPE error if the value at the path is not an array.
-    * OUTOFBOUNDARIES error if an index argument is out of bounds.
 
 ## Examples
 

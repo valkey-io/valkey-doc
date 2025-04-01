@@ -18,16 +18,6 @@ JSON.RESP <key> [path]
 * key - required, Redis key of document type
 * path - optional, a JSON path. Defaults to the root path if not provided
 
-## Return
-
-* If the path is enhanced syntax:
-    * Array of arrays. Each array element represents the RESP form of the value at one path.
-    * Empty array if the document key does not exist.
-
-* If the path is restricted syntax:
-    * Array, representing the RESP form of the value at the path.
-    * Null if the document key does not exist.
-
 ## Examples
 
 Enhanced path syntax:

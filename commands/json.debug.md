@@ -14,30 +14,6 @@ Report information. Supported subcommands are:
 JSON.DEBUG <subcommand & arguments>
 ```
 
-## Return
-
-Depends on the subcommand:
-
-* MEMORY
-    * If the path is enhanced syntax:
-        * returns an array of integers, representing memory size (in bytes) of JSON value at each path.
-        * returns an empty array if the Redis key does not exist.
-    * If the path is restricted syntax:
-        * returns an integer, memory size the JSON value in bytes.
-        * returns null if the Redis key does not exist.
-* DEPTH
-    * returns an integer, the maximum path depth of the JSON document.
-    * returns null if the Redis key does not exist.
-* FIELDS
-    * If the path is enhanced syntax:
-        * returns an array of integers, representing number of fields of JSON value at each path.
-        * returns an empty array if the Redis key does not exist.
-    * If the path is restricted syntax:
-        * returns an integer, number of fields of the JSON value.
-        * returns null if the Redis key does not exist.
-* HELP
-    * returns an array of help messages
-
 ## Examples
 
 Enhanced path syntax:

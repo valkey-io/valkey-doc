@@ -10,23 +10,6 @@ JSON.NUMINCRBY <key> <path> <number>
 * path - required, a JSON path
 * number - required, a number
 
-## Return
-
-* If the path is enhanced syntax:
-    * Array of bulk Strings representing the resulting value at each path.
-    * If a value is not a number, its corresponding return value is null.
-    * WRONGTYPE error if the number cannot be parsed.
-    * OVERFLOW error if the result is out of the range of double.
-    * NONEXISTENT if the document key does not exist.
-
-* If the path is restricted syntax:
-    * Bulk String representing the resulting value.
-    * If multiple values are selected, the command returns the result of the last updated value.
-    * WRONGTYPE error if the value at the path is not a number.
-    * WRONGTYPE error if the number cannot be parsed.
-    * OVERFLOW error if the result is out of the range of double.
-    * NONEXISTENT if the document key does not exist.
-
 ## Examples
 
 Enhanced path syntax:

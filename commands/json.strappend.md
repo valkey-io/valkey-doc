@@ -10,21 +10,6 @@ JSON.STRAPPEND <key> [path] <json_string>
 * path - optional, a JSON path. Defaults to the root path if not provided
 * json_string - required, JSON representation of a string. Note that a JSON string must be quoted, i.e., '"foo"'.
 
-## Return
-
-* If the path is enhanced syntax:
-    * Array of integers, representing the new length of the string at each path.
-    * If a value at the path is not a string, its corresponding return value is null.
-    * SYNTAXERR error if the input json argument is not a valid JSON string.
-    * NONEXISTENT error if the path does not exist.
-
-* If the path is restricted syntax:
-    * Integer, the string's new length.
-    * If multiple string values are selected, the command returns the new length of the last updated string.
-    * WRONGTYPE error if the value at the path is not a string.
-    * WRONGTYPE error if the input json argument is not a valid JSON string.
-    * NONEXISTENT error if the path does not exist.
-
 ## Examples
 
 Enhanced path syntax:

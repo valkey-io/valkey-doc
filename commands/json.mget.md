@@ -9,13 +9,6 @@ JSON.MGET <key> [key ...] <path>
 * key - required, one or more Redis keys of document type
 * path - required, a JSON path
 
-## Return
-
-* Array of Bulk Strings. The size of the array is equal to the number of keys in the command. Each element of the array
-  is populated with either (a) the serialized JSON as located by the path or (b) Null if the key does not exist or the
-  path does not exist in the document or the path is invalid (syntax error).
-* If any of the specified keys exists and is not a JSON key, the command returns WRONGTYPE error.
-
 ## Examples
 
 Enhanced path syntax:

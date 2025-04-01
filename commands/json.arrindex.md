@@ -18,16 +18,6 @@ JSON.ARRINDEX <key> <path> <json-scalar> [start [end]]
 * end - optional, end index, exclusive. Defaults to 0 if not provided, which means the last element is included.
   0 or -1 means the last element is included.
 
-## Return
-
-* If the path is enhanced syntax:
-    * Array of integers. Each value is the index of the matching element in the array at the path. The value is -1 if not found.
-    * If a value is not an array, its corresponding return value is null.
-
-* If the path is restricted syntax:
-    * Integer, the index of matching element, or -1 if not found.
-    * WRONGTYPE error if the value at the path is not an array.
-
 ## Examples
 
 Enhanced path syntax:

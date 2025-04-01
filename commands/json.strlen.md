@@ -9,20 +9,6 @@ JSON.STRLEN <key> [path]
 * key - required, Redis key of document type
 * path - optional, a JSON path. Defaults to the root path if not provided
 
-## Return
-
-* If the path is enhanced syntax:
-    * Array of integers, representing the length of string value at each path.
-    * If a value is not a string, its corresponding return value is null.
-    * Null if the document key does not exist.
-
-* If the path is restricted syntax:
-    * Integer, the string's length.
-    * If multiple string values are selected, the command returns the first string's length.
-    * WRONGTYPE error if the value at the path is not a string.
-    * NONEXISTENT error if the path does not exist.
-    * Null if the document key does not exist.
-
 ## Examples
 
 Enhanced path syntax:

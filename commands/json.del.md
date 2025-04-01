@@ -9,12 +9,6 @@ JSON.DEL <key> [path]
 * key - required, Redis key of document type
 * path - optional, a JSON path. Defaults to the root path if not provided
 
-## Return
-
-* Number of elements deleted.
-* 0 if the Redis key does not exist.
-* 0 if the JSON path is invalid or does not exist.
-
 ## Examples
 
 Enhanced path syntax:

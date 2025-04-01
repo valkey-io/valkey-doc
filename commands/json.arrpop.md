@@ -13,18 +13,6 @@ JSON.ARRPOP <key> [path [index]]
     * Negative value means position from the last element.
     * Out of boundary indexes are rounded to their respective array boundaries.
 
-## Return
-
-* If the path is enhanced syntax:
-    * Array of bulk strings, representing popped values at each path.
-    * If a value is an empty array, its corresponding return value is null.
-    * If a value is not an array, its corresponding return value is null.
-
-* If the path is restricted syntax:
-    * Bulk string, representing the popped JSON value
-    * Null if the array is empty.
-    * WRONGTYPE error if the value at the path is not an array.
-
 ## Examples
 
 Enhanced path syntax:

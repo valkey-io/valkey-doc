@@ -29,11 +29,6 @@ JSON.SET <key> <path> <json> [NX | XX]
 * XX - optional. If the path is the root path, set the value only if the Redis key exists, i.e., replace the existing document.
   If the path is not the root path, set the value only if the path exists, i.e., update the existing value.
 
-## Return
-
-* Simple String 'OK' on success.
-* Null if the NX or XX condition is not met.
-
 ## Examples
 
 Enhanced path syntax:

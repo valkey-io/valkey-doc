@@ -9,20 +9,6 @@ JSON.OBJKEYS <key> [path]
 * key - required, Redis key of document type
 * path - optional, a JSON path. Defaults to the root path if not provided
 
-## Return
-
-* If the path is enhanced syntax:
-    * Array of array of bulk strings. Each element is an array of keys in a matching object.
-    * If a value is not an object, its corresponding return value is empty value.
-    * Null if the document key does not exist.
-
-* If the path is restricted syntax:
-    * Array of bulk strings. Each element is a key name in the object.
-    * If multiple objects are selected, the command returns the keys of the first object.
-    * WRONGTYPE error if the value at the path is not an object.
-    * NONEXISTENT error if the path does not exist.
-    * Null if the document key does not exist.
-
 ## Examples
 
 Enhanced path syntax:

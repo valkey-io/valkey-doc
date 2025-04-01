@@ -24,11 +24,6 @@ JSON.MSET <key> <path> <value> [key <path> <value> ...]
 * path - required, a JSON path to set the value at
 * value - required, a JSON value to set at the specified path
 
-## Return
-
-* Simple String 'OK' if the operation was successful
-* Error on failure
-
 ## Examples
 
 Enhanced path syntax:

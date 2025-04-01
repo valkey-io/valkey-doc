@@ -16,18 +16,6 @@ JSON.ARRINSERT <key> <path> <index> <json> [json ...]
 * index - required, array index before which values are inserted.
 * json - required, JSON value to be appended to the array
 
-## Return
-
-* If the path is restricted syntax:
-    * Array of integers, representing the new length of the array at each path.
-    * If a value is an empty array, its corresponding return value is null.
-    * If a value is not an array, its corresponding return value is null.
-    * OUTOFBOUNDARIES error if the index argument is out of bounds.
-
-* If the path is restricted syntax:
-    * Integer, the new length of the array.
-    * WRONGTYPE error if the value at the path is not an array.
-    * OUTOFBOUNDARIES error if the index argument is out of bounds.
 
 ## Examples
 

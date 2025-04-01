@@ -9,18 +9,6 @@ JSON.TOGGLE <key> [path]
 * key - required, Redis key of document type
 * path - optional, a JSON path. Defaults to the root path if not provided
 
-## Return
-
-* If the path is enhanced syntax:
-    * Array of integers (0 - false, 1 - true) representing the resulting boolean value at each path.
-    * If a value is a not boolean, its corresponding return value is null.
-    * NONEXISTENT if the document key does not exist.
-
-* If the path is restricted syntax:
-    * String ("true"/"false") representing the resulting boolean value.
-    * NONEXISTENT if the document key does not exist.
-    * WRONGTYPE error if the value at the path is not a boolean.
-
 ## Examples
 
 Enhanced path syntax:

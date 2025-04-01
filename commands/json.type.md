@@ -9,18 +9,6 @@ JSON.TYPE <key> [path]
 * key - required, Redis key of document type
 * path - optional, a JSON path. Defaults to the root path if not provided
 
-## Return
-
-* If the path is enhanced syntax:
-    * Array of strings, representing type of the value at each path. The type is one of {"null", "boolean", "string", "number", "integer", "object" and "array"}.
-    * If a path does not exist, its corresponding return value is null.
-    * Empty array if the document key does not exist.
-
-* If the path is restricted syntax:
-    * String, type of the value
-    * Null if the document key does not exist.
-    * Null if the JSON path is invalid or does not exist.
-
 ## Examples
 
 Enhanced path syntax:
