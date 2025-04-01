@@ -1,14 +1,5 @@
 Toggle boolean values between true and false at the path.
 
-## Syntax
-
-```bash
-JSON.TOGGLE <key> [path]
-```
-
-* key - required, Redis key of document type
-* path - optional, a JSON path. Defaults to the root path if not provided
-
 ## Examples
 
 Enhanced path syntax:

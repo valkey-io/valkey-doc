@@ -1,14 +1,5 @@
 Get key names in the object values at the path.
 
-## Syntax
-
-```bash
-JSON.OBJKEYS <key> [path]
-```
-
-* key - required, Redis key of document type
-* path - optional, a JSON path. Defaults to the root path if not provided
-
 ## Examples
 
 Enhanced path syntax:

@@ -6,18 +6,6 @@ Trim arrays at the path so that it becomes subarray [start, end], both inclusive
 * If end >= size (size of the array), treat it as size-1.
 * If start >= size or start > end, empty the array and return 0.
 
-## Syntax
-
-```bash
-JSON.ARRTRIM <key> <path> <start> <end>
-```
-
-* key - required, Redis key of document type.
-* path - required, a JSON path.
-* start - required, start index, inclusive.
-* end - required, end index, inclusive.
-
-
 ## Examples
 
 Enhanced path syntax:

@@ -1,14 +1,5 @@
 Get serialized JSON objects from multiple document keys at the specified path. Return null for non-existent keys or JSON paths.
 
-## Syntax
-
-```bash
-JSON.MGET <key> [key ...] <path>
-```
-
-* key - required, one or more Redis keys of document type
-* path - required, a JSON path
-
 ## Examples
 
 Enhanced path syntax:

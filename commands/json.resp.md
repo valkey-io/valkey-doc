@@ -10,14 +10,6 @@ If the value is container, the response is RESP array or nested array.
 * JSON Arrays are represented as RESP Arrays, where the first element is the simple string [, followed by the array's elements.
 * JSON Objects are represented as RESP Arrays, where the first element is the simple string {, followed by key-value pairs, each of which is a RESP bulk string.
 
-## Syntax
-
-```bash
-JSON.RESP <key> [path]
-```
-* key - required, Redis key of document type
-* path - optional, a JSON path. Defaults to the root path if not provided
-
 ## Examples
 
 Enhanced path syntax:

@@ -1,14 +1,5 @@
 Get lengths of the JSON string values at the path.
 
-## Syntax
-
-```bash
-JSON.STRLEN <key> [path]
-```
-
-* key - required, Redis key of document type
-* path - optional, a JSON path. Defaults to the root path if not provided
-
 ## Examples
 
 Enhanced path syntax:

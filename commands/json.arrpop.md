@@ -1,18 +1,5 @@
 Remove and return element at the index from the array. Popping an empty array returns null.
 
-## Syntax
-
-```bash
-JSON.ARRPOP <key> [path [index]]
-```
-
-* key - required, Redis key of document type
-* path - optional, a JSON path. Defaults to the root path if not provided
-* index - optional, position in the array to start popping from.
-    * Defaults -1 if not provided, which means the last element.
-    * Negative value means position from the last element.
-    * Out of boundary indexes are rounded to their respective array boundaries.
-
 ## Examples
 
 Enhanced path syntax:

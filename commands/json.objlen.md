@@ -1,14 +1,5 @@
 Get number of keys in the object values at the path.
 
-## Syntax
-
-```bash
-JSON.OBJLEN <key> [path]
-```
-
-* key - required, Redis key of document type
-* path - optional, a JSON path. Defaults to the root path if not provided
-
 ## Examples
 
 Enhanced path syntax:

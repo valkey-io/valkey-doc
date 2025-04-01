@@ -1,15 +1,5 @@
 Increment the number values at the path by a given number.
 
-## Syntax
-
-```bash
-JSON.NUMINCRBY <key> <path> <number>
-```
-
-* key - required, Redis key of document type
-* path - required, a JSON path
-* number - required, a number
-
 ## Examples
 
 Enhanced path syntax:

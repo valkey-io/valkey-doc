@@ -8,12 +8,6 @@ Report information. Supported subcommands are:
   containing JSON values. Each container value, except the root container, counts as one additional field.
 * HELP - print help messages of the command.
 
-## Syntax
-
-```bash
-JSON.DEBUG <subcommand & arguments>
-```
-
 ## Examples
 
 Enhanced path syntax:

@@ -1,15 +1,5 @@
 Append a string to the JSON strings at the path.
 
-## Syntax
-
-```bash
-JSON.STRAPPEND <key> [path] <json_string>
-```
-
-* key - required, Redis key of document type
-* path - optional, a JSON path. Defaults to the root path if not provided
-* json_string - required, JSON representation of a string. Note that a JSON string must be quoted, i.e., '"foo"'.
-
 ## Examples
 
 Enhanced path syntax:

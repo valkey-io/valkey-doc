@@ -1,14 +1,5 @@
 Delete the JSON values at the path in a document key. If the path is the root path, it is equivalent to deleting the key from Valkey.
 
-## Syntax
-
-```bash
-JSON.DEL <key> [path]
-```
-
-* key - required, Redis key of document type
-* path - optional, a JSON path. Defaults to the root path if not provided
-
 ## Examples
 
 Enhanced path syntax:

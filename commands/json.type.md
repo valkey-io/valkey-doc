@@ -1,14 +1,5 @@
 Report type of the values at the given path.
 
-## Syntax
-
-```bash
-JSON.TYPE <key> [path]
-```
-
-* key - required, Redis key of document type
-* path - optional, a JSON path. Defaults to the root path if not provided
-
 ## Examples
 
 Enhanced path syntax:

@@ -15,20 +15,6 @@ Set JSON values at the path.
     * If the parent element exists and the index is valid, the element will be replaced by the new JSON value.
 * If the path calls for an object or array, the value (object or array) will be replaced by the new JSON value.
 
-## Syntax
-
-```bash
-JSON.SET <key> <path> <json> [NX | XX]
-```
-
-* key - required, Redis key of document type.
-* path - required, JSON path. For a new Redis key, the JSON path must be the root path ".".
-* json - required, JSON representing the new value
-* NX - optional. If the path is the root path, set the value only if the Redis key does not exist, i.e., insert a new document.
-  If the path is not the root path, set the value only if the path does not exist, i.e., insert a value into the document.
-* XX - optional. If the path is the root path, set the value only if the Redis key exists, i.e., replace the existing document.
-  If the path is not the root path, set the value only if the path exists, i.e., update the existing value.
-
 ## Examples
 
 Enhanced path syntax:

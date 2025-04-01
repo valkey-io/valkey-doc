@@ -1,15 +1,5 @@
 Append one or more values to the array values at the path.
 
-## Syntax
-
-```bash
-JSON.ARRAPPEND <key> <path> <json> [json ...]
-```
-
-* key - required, Redis key of document type
-* path - required, a JSON path
-* json - required, JSON value to be appended to the array
-
 ## Examples
 
 Enhanced path syntax:

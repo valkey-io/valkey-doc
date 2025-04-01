@@ -5,18 +5,6 @@ Insert one or more values into the array values at path before the index.
 * A negative index values is interpreted as starting from the end.
 * The index must be in the array's boundary.
 
-## Syntax
-
-```bash
-JSON.ARRINSERT <key> <path> <index> <json> [json ...]
-```
-
-* key - required, Redis key of document type
-* path - required, a JSON path
-* index - required, array index before which values are inserted.
-* json - required, JSON value to be appended to the array
-
-
 ## Examples
 
 Enhanced path syntax:
