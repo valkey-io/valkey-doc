@@ -98,50 +98,14 @@ The following two properties can be specified in the `BF.INSERT` command:
 
 These are the default bloom properties along with the commands and configs which allow customizing.
 
-<table width="100%" border="1" style="border-collapse: collapse; border: 1px solid black" cellpadding="8">
-<tr>
-<th width="20%">Property</th>
-<th width="20%">Default Value</th>
-<th width="30%">Command Name</th>
-<th width="30%">Configuration name</th>
-</tr>
-<tr>
-<td>Capacity</td>
-<td>100</td>
-<td>BF.INSERT, BF.RESERVE</td>
-<td>BF.BLOOM-CAPACITY</td>
-</tr>
-<tr>
-<td>False Positive Rate</td>
-<td>0.01</td>
-<td>BF.INSERT, BF.RESERVE</td>
-<td>BF.BLOOM-FP-RATE</td>
-</tr>
-<tr>
-<td>Scaling / Non Scaling</td>
-<td>Scaling</td>
-<td>BF.INSERT, BF.RESERVE</td>
-<td>BF.BLOOM-EXPANSION</td>
-</tr>
-<tr>
-<td>Expansion Rate</td>
-<td>2</td>
-<td>BF.INSERT, BF.RESERVE</td>
-<td>BF.BLOOM-EXPANSION</td>
-</tr>
-<tr>
-<td>Tightening Ratio</td>
-<td>0.5</td>
-<td>BF.INSERT</td>
-<td>BF.BLOOM-TIGHTENING-RATIO</td>
-</tr>
-<tr>
-<td>Seed</td>
-<td>Random Seed</td>
-<td>BF.INSERT</td>
-<td>BF.BLOOM-USE-RANDOM-SEED</td>
-</tr>
-</table>
+| Property | Default Value | Command Name | Configuration name |
+|----------|--------------|--------------|-------------------|
+| Capacity | 100 | BF.INSERT, BF.RESERVE | BF.BLOOM-CAPACITY |
+| False Positive Rate | 0.01 | BF.INSERT, BF.RESERVE | BF.BLOOM-FP-RATE |
+| Scaling / Non Scaling | Scaling | BF.INSERT, BF.RESERVE | BF.BLOOM-EXPANSION |
+| Expansion Rate | 2 | BF.INSERT, BF.RESERVE | BF.BLOOM-EXPANSION |
+| Tightening Ratio | 0.5 | BF.INSERT | BF.BLOOM-TIGHTENING-RATIO |
+| Seed | Random Seed | BF.INSERT | BF.BLOOM-USE-RANDOM-SEED |
 
 
 Since bloom filters have a default expansion of 2, this means any default creation as a result of `BF.ADD`, `BF.MADD`, `BF.INSERT` will be a scalable bloom filter. Users can create a non scaling bloom filter using `BF.RESERVE <filter-name> <error-rate> <capacity> NONSCALING` or by specifying `NONSCALING` in `BF.INSERT`. Additionally, the other default properties of a bloom filter creation can be seen in the table above and BF.INFO command response below. These default properties can be configured through configs on the bloom module.
@@ -229,20 +193,20 @@ bf_bloom_defrag_misses:0
 
 * `bf_bloom_defrag_misses`: Total number of defrag misses that have occurred on bloom filters.
 
-## Limits
+## Handling Large Bloom Filters
 
-There are two limits a bloom filter faces.
+There are two notable validations bloom filters faces.
 
-1. Memory Usage Limit:
+1. Memory Usage:
 
-    The memory usage limit per bloom filter by default is defined by the `BF.BLOOM-MEMORY-USAGE-LIMIT` module configuration which has a default value of 128 MB. If a command results in a creation / scale out causing the overall memory usage to exceed this limit, the command is rejected.
+    The memory usage limit per bloom filter by default is defined by the `BF.BLOOM-MEMORY-USAGE-LIMIT` module configuration which has a default value of 128 MB. If a command results in a creation / scale out causing the overall memory usage to exceed this limit, the command is rejected. This config is modifiable and can be increased as needed.
 
 2. Number of sub filters (in case of scalable bloom filters):
 
     When a bloom filter scales out, a new sub filter is added. The limit on the number of sub filters depends on the false positive rate and tightening ratio. Each sub filter has a stricter false positive, and this is controlled by the tightening ratio. If a command attempting a scale out results in the sub filter reaching a false positive of 0, the command is rejected. 
 
 
-We have implemented `VALIDATESCALETO` as an optional arg of `BF.INSERT` to help determine whether the bloom filter can scale out to the reach the specified capacity without hitting either limits mentioned above. It will reject the command otherwise.
+You can use `VALIDATESCALETO` as an optional arg of `BF.INSERT` to help determine whether the bloom filter can scale out to the reach the specified capacity without hitting either limits mentioned above. It will reject the command otherwise.
 
 As seen below, when trying to create a bloom filter with a capacity that cannot be achieved through scale outs (given the memory limits), the command is rejected. However, if the capacity can be achieved through scale out (even with the limits), then the creation of the bloom filter will succeed.
 

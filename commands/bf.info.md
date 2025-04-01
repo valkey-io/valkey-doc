@@ -18,7 +18,7 @@ When no optional fields are specified, all available fields for the given filter
 
 ```
 127.0.0.1:6379> BF.ADD key val
-1
+(integer) 1
 127.0.0.1:6379> BF.INFO key
  1) Capacity
  2) (integer) 100
@@ -37,5 +37,5 @@ When no optional fields are specified, all available fields for the given filter
 15) Max scaled capacity
 16) (integer) 26214300
 127.0.0.1:6379> BF.INFO key CAPACITY
-100
+(integer) 100
 ```

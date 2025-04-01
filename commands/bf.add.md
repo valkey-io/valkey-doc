@@ -8,7 +8,7 @@ To create a bloom filter with non-default properties, use the `BF.INSERT` or `BF
 
 ```
 127.0.0.1:6379> BF.ADD key val
-1 
+(integer) 1
 127.0.0.1:6379> BF.ADD key val
-0
+(integer) 0
 ```

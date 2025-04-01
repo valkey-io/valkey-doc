@@ -10,9 +10,9 @@ A bloom filter has two possible responses when you check if an item exists:
 
 ```
 127.0.0.1:6379> BF.ADD key val
-1
+(integer) 1
 127.0.0.1:6379> BF.EXISTS key val
-1
+(integer) 1
 127.0.0.1:6379> BF.EXISTS key nonexistent
-0
+(integer) 0
 ```

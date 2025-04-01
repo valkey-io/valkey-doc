@@ -4,9 +4,9 @@ Returns the cardinality of a bloom filter which is the number of items that have
 
 ```
 127.0.0.1:6379> BF.ADD key val
-1
+(integer) 1
 127.0.0.1:6379> BF.CARD key
-1
+(integer) 1
 127.0.0.1:6379> BF.CARD nonexistentkey
-0
+(integer) 0
 ```
