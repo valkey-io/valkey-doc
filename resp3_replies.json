@@ -62,6 +62,47 @@
   "AUTH": [
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK`, or an error if the password, or username/password pair, is invalid."
   ],
+  "BF.ADD": [
+    "One of the following:",
+    "* [Integer reply](../topics/protocol.md#integers): `1` if the item was successfully added",
+    "* [Integer reply](../topics/protocol.md#integers): `0` if the item already existed in the bloom filter",
+    "",
+    "The command will be rejected if input is invalid, if a non bloom filter key with the same name already exists, if the bloom filter creation / scale out exceeds limits, or if an item is being added to a full non scaling filter."
+  ],
+  "BF.CARD": [
+    "[Integer reply](../topics/protocol.md#integers): The number of items successfully added to the bloom filter, or 0 if the key does not exist"
+  ],
+  "BF.EXISTS": [
+    "One of the following:",
+    "* [Integer reply](../topics/protocol.md#integers): `1` if the item exists in the bloom filter",
+    "* [Integer reply](../topics/protocol.md#integers): `0` if the bloom filter does not exist or the item has not been added to the bloom filter"
+  ],
+  "BF.INFO": [
+    "When no optional arguments are provided:",
+    "* [Array reply](../topics/protocol.md#arrays): List of information about the bloom filter.",
+    "When an optional argument excluding ERROR is provided:",
+    "* [Integer reply](../topics/protocol.md#integers): argument value",
+    "When ERROR is provided as an optional argument:",
+    "* [String reply](../topics/protocol.md#simple-strings): argument value"
+  ],
+  "BF.INSERT": [
+    "[Array reply](../topics/protocol.md#arrays): Array of ints (1’s and 0’s) - if filter already exists or if creation was successful. An empty array if no items are provided",
+    "",
+    "The command will be rejected if input is invalid, if a non bloom filter key with the same name already exists, if the bloom filter creation / scale out exceeds limits, or if an item is being added to a full non scaling filter."
+  ],
+  "BF.MADD": [
+    "[Array reply](../topics/protocol.md#arrays): Array of ints (1’s and 0’s)",
+    "",
+    "The command will be rejected if input is invalid, if a non bloom filter key with the same name already exists, if the bloom filter creation / scale out exceeds limits, or if an item is being added to a full non scaling filter."
+  ],
+  "BF.MEXISTS": [
+    "[Array reply](../topics/protocol.md#arrays): Array of ints (1’s and 0’s)"
+  ],
+  "BF.RESERVE": [
+    "[Simple string reply](../topics/protocol.md#simple-strings): `OK`.",
+    "",
+    "The command will be rejected if input is invalid, if a key with the same name already exists, or if the bloom filter creation exceeds limits."
+  ],
   "BGREWRITEAOF": [
     "[Bulk string reply](../topics/protocol.md#bulk-strings): a simple string reply indicating that the rewriting started or is about to start ASAP when the call is executed with success.",
     "",
