@@ -94,7 +94,7 @@ To perform a physical migration:
      Copy the RDB file from the host directory mounted to the Redis container to the host directory being mounted to the Valkey container.
 
 
-   - Redis container not mounted to host directory:
+   - If the Redis container is not mounted to a host directory but the Valkey container is:
 
      Use `docker cp` to copy the RDB file from within the Redis container to the host directory that will be mounted to your Valkey container.
 
@@ -269,7 +269,7 @@ Perform the following steps:
     ```
     
    where:
-   - `""` = Indicates that we are migrating multiple keys. You would use `key` if you were only migrating a single key.
+   - `""` = Indicates that we are migrating multiple keys. You can use `key` name here if you are only migrating a single key.
    - `0` = The database number.
    - `10`= The maximum idle time, in milliseconds, allowed when communicating with the destination server.
    - `COPY` = Do not remove the key from the Redis database.
