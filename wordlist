@@ -623,6 +623,7 @@ prefetch
 prefetched
 prepend
 Prepend
+prepends
 preprocessing
 prerequesits
 Prev
@@ -832,6 +833,7 @@ struct-encoded
 struct's
 structs
 stunnel
+subarray
 subcommand
 subcommand.
 subcommand's
