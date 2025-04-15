@@ -7,6 +7,10 @@ cluster_slots_assigned:16384
 cluster_slots_ok:16384
 cluster_slots_pfail:0
 cluster_slots_fail:0
+cluster_nodes_pfail:0
+cluster_nodes_fail:0
+cluster_voting_nodes_pfail:0
+cluster_voting_nodes_fail:0
 cluster_known_nodes:6
 cluster_size:3
 cluster_current_epoch:6
@@ -21,6 +25,10 @@ total_cluster_links_buffer_limit_exceeded:0
 * `cluster_slots_ok`: Number of hash slots mapping to a node not in `FAIL` or `PFAIL` state.
 * `cluster_slots_pfail`: Number of hash slots mapping to a node in `PFAIL` state. Note that those hash slots still work correctly, as long as the `PFAIL` state is not promoted to `FAIL` by the failure detection algorithm. `PFAIL` only means that we are currently not able to talk with the node, but may be just a transient error.
 * `cluster_slots_fail`: Number of hash slots mapping to a node in `FAIL` state. If this number is not zero the node is not able to serve queries unless `cluster-require-full-coverage` is set to `no` in the configuration.
+* `cluster_nodes_pfail`: Number of nodes in `PFAIL` state. A non-zero value indicates one or more nodes have been detected as unreachable but have not yet been confirmed as failed by a quorum of voting nodes.
+* `cluster_nodes_fail`: Number of nodes in `FAIL` state. A non-zero value indicates one or more nodes are unreachable and have been marked as failed by a quorum of voting nodes.
+* `cluster_voting_nodes_pfail`: Number of voting nodes in `PFAIL` state. A non-zero value indicates one or more primary nodes serving at least one slot are unreachable but not yet confirmed as failed by a quorum of voting nodes.
+* `cluster_voting_nodes_fail`: Number of voting nodes in `FAIL` state. A non-zero value indicates one or more primary nodes serving at least one slot have been marked as failed by a quorum of voting nodes.
 * `cluster_known_nodes`: The total number of known nodes in the cluster, including nodes in `HANDSHAKE` state that may not currently be proper members of the cluster.
 * `cluster_size`: The number of primary nodes serving at least one hash slot in the cluster.
 * `cluster_current_epoch`: The local `Current Epoch` variable. This is used in order to create unique increasing version numbers during fail overs.
