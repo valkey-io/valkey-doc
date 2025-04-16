@@ -212,6 +212,7 @@ Dynomite
 earts
 eBPF
 EC2
+ECMA-404
 ele
 emented
 enable-protected-configs
@@ -311,6 +312,8 @@ Github
 github
 globals
 go-redis
+Goessner
+Goessner's
 Gottlieb
 gpg
 Gradle
@@ -404,6 +407,8 @@ jpeg
 js
 json
 JSON-encoded
+JSON-related
+JSONPath
 kB
 keepalive
 keylen
@@ -658,6 +663,7 @@ race:france
 race:italy
 race:usa
 radix
+RapidJSON
 rc[0-9]*
 RC[0-9]+
 rdb-preamble
@@ -734,6 +740,7 @@ returing
 Retwis
 Retwis-J
 Retwis-RB
+RFC7159
 roadmap
 robj
 Roshi
@@ -851,6 +858,7 @@ swapdb
 swappability
 SYNC_RDB_START
 syncd
+syntaxes
 syscall
 systemctl
 systemd
