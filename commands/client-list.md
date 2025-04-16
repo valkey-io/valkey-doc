@@ -21,6 +21,22 @@ You can use one or more optional arguments to filter the list:
 - **`MAXAGE milliseconds`**: Filters the list to include only clients whose connection age (time since the client was created) is greater than or equal to the specified number of milliseconds.
   > Note: This is actually a minimum age, not a maximum age. This filter was first added to CLIENT KILL, where the intention was to keep clients of a maximum age and kill the ones newer than the max age.
 
+- **`FLAGS flags`**: Filters the list by the client's flag string.
+
+- **`NAME name`**: Filters the list to include only clients with the specified name.
+
+- **`IDLE idle`**: Includes only clients that have been idle for at least the specified time.
+
+- **`LIB-NAME lib-name`**: Filters the list to include only clients using the specified library name.
+
+- **`LIB-VER lib-ver`**: Filters the list to include only clients with the specified library version.
+
+- **`DB db`**: Filters the list to include only clients with the specified database ID.
+
+- **`IP ip`**: Filters the list to include only clients with the specified IP address.
+
+- **`CAPA capa`**: Filters the list to include only clients with the specified capabilities.
+
 Filters can be combined to perform more precise searches. The command will handle multiple filters via logical AND.
 
 Here is the meaning of the fields:
@@ -101,6 +117,8 @@ w: the client socket is writable (event loop)
 
 ```bash
 CLIENT LIST TYPE normal USER admin MAXAGE 5000 ID 1234 5678
+id=1234 addr=127.0.0.1:64000 laddr=127.0.0.1:6379 fd=5 name= age=600 idle=300 flags= db=0 sub=0 psub=0 ssub=0 multi=-1 watch=0 qbuf=0 qbuf-free=32768 obl=0 oll=0 omem=0 tot-mem=1024 events=r cmd=client|list user=default redir=-1 resp=2 lib-name= lib-ver=
+id=5678 addr=127.0.0.1:64001 laddr=127.0.0.1:6379 fd=6 name= age=900 idle=450 flags= db=0 sub=0 psub=0 ssub=0 multi=-1 watch=0 qbuf=0 qbuf-free=32768 obl=0 oll=0 omem=0 tot-mem=2048 events=r cmd=client|list user=default redir=-1 resp=2 lib-name= lib-ver=
 ```
 
 ## Notes
