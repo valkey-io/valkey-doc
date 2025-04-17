@@ -31,6 +31,10 @@
     "display": "HyperLogLog",
     "description": "Operations on the HyperLogLog data type"
   },
+  "json": {
+    "display": "JSON",
+    "description": "Operations on the JSON data type"
+  },
   "list": {
     "display": "List",
     "description": "Operations on the List data type"
