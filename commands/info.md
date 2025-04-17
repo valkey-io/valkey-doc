@@ -673,6 +673,7 @@ The **sentinel** section is only available in Valkey Sentinel instances. It cons
 *   `sentinel_masters`: Number of Valkey primaries monitored by this Sentinel instance
 *   `sentinel_tilt`: A value of 1 means this sentinel is in TILT mode
 *   `sentinel_tilt_since_seconds`: Duration in seconds of current TILT, or -1 if not TILTed.
+*   `sentinel_total_tilt`: The number of times this sentinel has been in TILT mode since running. Added in 9.0.
 *   `sentinel_running_scripts`: The number of scripts this Sentinel is currently executing
 *   `sentinel_scripts_queue_length`: The length of the queue of user scripts that are pending execution
 *   `sentinel_simulate_failure_flags`: Flags for the `SENTINEL SIMULATE-FAILURE` command
