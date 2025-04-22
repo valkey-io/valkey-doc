@@ -232,11 +232,11 @@ OK
 
 | Path                                  | Description                        |
 |---------------------------------------|------------------------------------|
-| `.store.book[0].author`               | The author of the first book.      |
-| `.store.book[-1].author`              | The author of the last book.       |
-| `.address.city`                       | City name.                         |
-| `["store"]["book"][0]["title"]`       | The title of the first book.       |
-| `["store"]["book"][-1]["title"]`      | The title of the last book.        |
+| `'.store.book[0].author'`               | The author of the first book.      |
+| `'.store.book[-1].author'`              | The author of the last book.       |
+| `'.address.city'`                       | City name.                         |
+| `'["store"]["book"][0]["title"]'`       | The title of the first book.       |
+| `'["store"]["book"][-1]["title"]'`      | The title of the last book.        |
 
 ## Common error prefixes
 
