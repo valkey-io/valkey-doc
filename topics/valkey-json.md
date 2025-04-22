@@ -168,30 +168,27 @@ The following examples are built on [Goessner's](https://goessner.net/articles/J
 
 | Path                                                              | Description                                                                                   |
 |-------------------------------------------------------------------|-----------------------------------------------------------------------------------------------|
-| `$.store.book[*].author`                                          | The authors of all books in the store.|
-| `$..author`                                                       | All authors.                          |
-| `$.store.*`                                                       | All members of the store.             |
-| `$["store"].*`                                                    | All members of the store.             |
-| `$.store..price`                                                  | The price of everything in the store. |
-| `$..*`                                                            | All recursive members of the JSON structure. |
-| `$..book[*]`                                                      | All books.                            |
-| `$..book[0]`                                                      | The first book.                       |
-| `$..book[-1]`                                                     | The last book.                        |
-| `$..book[0:2]`                                                    | The first two books.                  |
-| `$..book[0,1]`                                                    | The first two books.                  |
-| `$..book[0:4]`                                                    | Books from index 0 to 3 (ending index is not inclusive). |
-| `$..book[0:4:2]`                                                  | Books at index 0 and 2.               |
-| `$..book[?(@.isbn)]`                                              | All books with an ISBN number.        |
-| `$..book[?(@.price<10)]`                                          | All books cheaper than $10.           |
-| `'${..book[?(@.price < 10)]}'`                                    | All books cheaper than $10. (The path must be quoted if it contains white spaces.) |
-| `'${..book[?(@["price"] < 10)]}'`                                 | All books cheaper than $10.           |
-| `'${..book[?(@.["price"] < 10)]}'`                                | All books cheaper than $10.           |
-| `$..book[?(@.price >= 10 && @.price <= 100)]`                     | All books in the price range of $10 to $100, inclusive. |
-| `'${..book[?(@.price >= 10 && @.price <= 100)]}'`                 | All books in the price range of $10 to $100, inclusive. (The path must be quoted if it contains white spaces.) |
-| `$..book[?(@.sold==true \|\| @.in-stock == false)]`               | All books sold or out of stock.       |
-| `'${..book[?(@.sold == true \|\| @.in-stock == false)]}'`         | All books sold or out of stock. (The path must be quoted if it contains white spaces.) |
-| `'${.store.book[?(@.["category"] == "fiction")]}'`                | All books in the fiction category.    |
-| `'${.store.book[?(@.["category"] != "fiction")]}'`                | All books in nonfiction categories.   |
+| `'$.store.book[*].author'`                                        | The authors of all books in the store.                                                        |
+| `'$..author'`                                                     | All authors.                                                                                  |
+| `'$.store.*'`                                                     | All members of the store.                                                                     |
+| `'$["store"].*'`                                                  | All members of the store.                                                                     |
+| `'$.store..price'`                                                | The price of everything in the store.                                                         |
+| `'$..*'`                                                          | All recursive members of the JSON structure.                                                  |
+| `'$..book[*]'`                                                    | All books.                                                                                     |
+| `'$..book[0]'`                                                    | The first book.                                                                               |
+| `'$..book[-1]'`                                                   | The last book.                                                                                |
+| `'$..book[0:2]'`                                                  | The first two books.                                                                          |
+| `'$..book[0,1]'`                                                  | The first two books.                                                                          |
+| `'$..book[0:4]'`                                                  | Books from index 0 to 3 (ending index is not inclusive).                                      |
+| `'$..book[0:4:2]'`                                                | Books at index 0 and 2.                                                                       |
+| `'$..book[?(@.isbn)]'`                                            | All books with an ISBN number.                                                                |
+| `'$..book[?(@.price < 10)]'`                                      | All books cheaper than $10.                                                                   |
+| `'$..book[?(@["price"] < 10)]'`                                   | All books cheaper than $10. (alternate syntax)                                                |
+| `'$..book[?(@.["price"] < 10)]'`                                  | All books cheaper than $10. (alternate syntax)                                                |
+| `'$..book[?(@.price >= 10 && @.price <= 100)]'`                   | All books in the price range of $10 to $100, inclusive.                                       |
+| `'$..book[?(@.sold == true || @.in-stock == false)]'`            | All books sold or out of stock.                                                               |
+| `'$.store.book[?(@.["category"] == "fiction")]'`                  | All books in the fiction category.                                                            |
+| `'$.store.book[?(@.["category"] != "fiction")]'`                  | All books in nonfiction categories.                                                           |
 
 Additional filter expression examples:
 
