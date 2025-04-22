@@ -186,7 +186,7 @@ The following examples are built on [Goessner's](https://goessner.net/articles/J
 | `'$..book[?(@["price"] < 10)]'`                                   | All books cheaper than $10. (alternate syntax)                                                |
 | `'$..book[?(@.["price"] < 10)]'`                                  | All books cheaper than $10. (alternate syntax)                                                |
 | `'$..book[?(@.price >= 10 && @.price <= 100)]'`                   | All books in the price range of $10 to $100, inclusive.                                       |
-| `'$..book[?(@.sold == true || @.in-stock == false)]'`            | All books sold or out of stock.                                                               |
+| `'$..book[?(@.sold == true \|\| @.in-stock == false)]'`            | All books sold or out of stock.                                                               |
 | `'$.store.book[?(@.["category"] == "fiction")]'`                  | All books in the fiction category.                                                            |
 | `'$.store.book[?(@.["category"] != "fiction")]'`                  | All books in nonfiction categories.                                                           |
 
