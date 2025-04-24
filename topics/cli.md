@@ -213,7 +213,12 @@ This topic covers the different aspects of `valkey-cli`, starting from the simpl
 
 **`--hotkeys`**
 : Sample keys looking for hot keys.
-  only works when maxmemory-policy is `*lfu`.
+  Only works when maxmemory-policy is `*lfu`.
+  This is equivalent to --hotkeys-count 16.
+
+**`--hotkeys-count`** _n_
+: Sample keys looking for the n most hot keys.
+  Only works when maxmemory-policy is `*lfu`.
 
 **`--scan`**
 : List all keys using the SCAN command.
