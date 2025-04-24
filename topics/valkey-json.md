@@ -6,38 +6,34 @@ description: >
 
 Valkey-JSON is a Valkey module written in C++ that provides native JSON (JavaScript Object Notation) support for Valkey. The implementation complies with [RFC7159](https://www.ietf.org/rfc/rfc7159.txt) and [ECMA-404](https://www.ietf.org/rfc/rfc7159.txt) JSON data interchange standards. Users can natively store, query, and modify JSON data structures using the JSONPath query language. The query expressions support advanced capabilities including wildcard selections, filter expressions, array slices, union operations, and recursive searches.
 
-Valkey-JSON leverages RapidJSON, a high-performance JSON parser and generator for C++, chosen for its small footprint and exceptional performance and memory efficiency. As a header-only library with no external dependencies, RapidJSON provides robust Unicode support while maintaining a compact memory profile of just 16 bytes per JSON value on most 32/64-bit machines.
-
 ## Example Valkey-JSON Commands
 
 * `JSON.ARRINSERT` inserts one or more values into the array values at path before the index.
-* `JSON.MGET` gets serialized JSON objects from multiple document keys at the specified path.
-* `JSON.MSET` sets JSON values for multiple keys.
 * `JSON.ARRLEN` gets the length of the array at the path.
+* `JSON.GET` gets the serialized JSON at one or multiple paths.
+* `JSON.SET` sets JSON values at the path.
 
 See the [complete list of Valkey-JSON commands](../commands/#json).
 
-## JSON Properties
+## Common use cases for Valkey-JSON
 
-* Document Structure - Valkey-JSON supports deeply nested structures including objects and arrays, allowing for complex data representation within a single key. 
+Valkey-JSON provides an efficient way to store and manipulate structured data. Its key benefits include fast search capabilities and the ability to perform in-place updates to JSON data without needing to overwrite entire documents. These features allow you to efficiently query, modify, and manage complex data structures, making it an ideal choice for applications that require dynamic and flexible data storage.
+
+## JSON Properties
  
-* Max Depth - The maximum nesting level for JSON objects and arrays. If a JSON object or array contains another object or array, it is considered nested. The maximum allowed nesting depth is 128. Any attempt to exceed this limit will result in an error.
+* Max Depth - The maximum nesting level for JSON objects and arrays. If a JSON object or array contains another object or array, it is considered nested. The default maximum allowed nesting depth is 128. Any attempt to exceed this limit will result in an error. You can adjust this limit using the following command: `CONFIG SET json.max-path-limit <value>` where value is the desired depth limit.
 
 * Path Syntax - Valkey JSON supports two types of path syntaxes:
-    * Enhanced syntax 
-    * Restricted syntax
+    * [Enhanced syntax](#enhanced-syntax)
+    * [Restricted syntax](#restricted-syntax)
 
-* Multi-Key Operations - Some commands like `JSON.MGET` allow operations on multiple JSON keys in a single command, improving performance for batch operations.
-
-* Atomicity - All operations on JSON values are atomic, ensuring data consistency even in multi-threaded environments.
+* Partial Updates - JSON commands allow efficient in-place updates to parts of a document without rewriting the entire value.
 
 ## Performance
 
+* Batch Operations - Group related operations together using bulk commands for better performance. Balance batch size with memory consumption.
+
 * Memory Usage - JSON values are stored in a memory-efficient binary format, optimizing storage while maintaining fast access.
-
-* Indexing - Valkey supports creating indexes on JSON fields, significantly improving query performance on large datasets.
-
-* Partial Updates - JSON commands allow efficient in-place updates to parts of a document without rewriting the entire value.
 
 ## Document Size Limit
 
@@ -79,22 +75,15 @@ See the [complete list of Valkey-JSON commands](../commands/#json).
 | JSON.TOGGLE        |       |   y    |   y   |       |        |
 | JSON.TYPE          |   y   |        |   y   |       |        |
 
-## Command Syntax
-
-Most commands require a key name as the first argument. Some commands also have a path argument. The path argument defaults to the root if it's optional and not provided.
-
-**Notation**
-* Required arguments are enclosed in angle brackets. For example: <key> 
-* Optional arguments are enclosed in square brackets. For example: [path]
-* Additional optional arguments are indicated by an ellipsis ("…"). For example: [json ...]
-
 ## Path Syntax
-Redis JSON supports two kinds of path syntaxes:
+Valkey JSON supports two kinds of path syntaxes:
 
 * **Enhanced syntax** – Follows the JSONPath syntax described by [Goessner](https://goessner.net/articles/JsonPath/), as shown in the following table. We've reordered and modified the descriptions in the table for clarity.
 * **Restricted syntax** – Has limited query capabilities.
 
-If a query path starts with `$`, it uses the enhanced syntax. Otherwise, the restricted syntax is used.
+If a query path starts with `$`, it uses the enhanced syntax. Otherwise, the restricted syntax is used. It is recommended that you use the enhanced syntax for new development.
+
+<div id="enhanced-syntax"></div>
 
 **Enhanced Syntax Symbols & Expressions**
 
@@ -221,6 +210,8 @@ OK
 127.0.0.1:6379> JSON.GET k3 '$.*.[?(@ > 1)]'
 "[2,3,4]"
 ```
+
+<div id="restricted-syntax"></div>
 
 **Restricted Syntax Symbols and Expressions**
 

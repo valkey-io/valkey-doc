@@ -1,4 +1,4 @@
-Clear the arrays or an objects at the path.
+Clear the arrays or objects at the path.
 
 ## Examples
 
