@@ -8,10 +8,10 @@ Valkey-JSON is a Valkey module written in C++ that provides native JSON (JavaScr
 
 ## Example Valkey-JSON Commands
 
+* `JSON.SET` sets JSON values at the path.
+* `JSON.GET` gets the serialized JSON at one or multiple paths.
 * `JSON.ARRINSERT` inserts one or more values into the array values at path before the index.
 * `JSON.ARRLEN` gets the length of the array at the path.
-* `JSON.GET` gets the serialized JSON at one or multiple paths.
-* `JSON.SET` sets JSON values at the path.
 
 See the [complete list of Valkey-JSON commands](../commands/#json).
 
