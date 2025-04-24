@@ -17,7 +17,7 @@ See the [complete list of Valkey-JSON commands](../commands/#json).
 
 ## Common use cases for Valkey-JSON
 
-Valkey-JSON provides an efficient way to store and manipulate structured data. Its key benefits include fast search capabilities and the ability to perform in-place updates to JSON data without needing to overwrite entire documents. These features allow you to efficiently query, modify, and manage complex data structures, making it an ideal choice for applications that require dynamic and flexible data storage.
+Valkey-JSON provides an efficient way to store and manipulate structured data. Its key benefits include fast search and filtering capabilities. It also provides the ability to perform in-place updates to JSON data without needing to overwrite entire documents. These features allow you to efficiently query, modify, and manage complex data structures, making it an ideal choice for applications that require dynamic and flexible data storage.
 
 ## JSON Properties
  
