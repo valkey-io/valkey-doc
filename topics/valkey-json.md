@@ -19,9 +19,13 @@ See the [complete list of Valkey-JSON commands](../commands/#json).
 
 Valkey-JSON provides an efficient way to store and manipulate structured data. Its key benefits include fast search and filtering capabilities. It also provides the ability to perform in-place updates to JSON data without needing to overwrite entire documents. These features allow you to efficiently query, modify, and manage complex data structures, making it an ideal choice for applications that require dynamic and flexible data storage.
 
+Prior to the Valkey-JSON module, storing JSON in Valkey typically involved serializing it into a string and using basic string commands to manage it. This approach made it difficult to work with nested data or perform partial updates. Valkey-JSON addresses these limitations by enabling native JSON support, allowing for direct manipulation and efficient querying of JSON values.
+
 ## JSON Properties
  
 * Max Depth - The maximum nesting level for JSON objects and arrays. If a JSON object or array contains another object or array, it is considered nested. The default maximum allowed nesting depth is 128. Any attempt to exceed this limit will result in an error. You can adjust this limit using the following command: `CONFIG SET json.max-path-limit <value>` where value is the desired depth limit.
+
+* Max Document Size - Valkey-JSON allows configuring a limit on the size of individual JSON keys to prevent potential out-of-memory issues from malicious or unbounded insertions (e.g., via JSON.ARRINSERT). You can set this limit using the `CONFIG SET json.max-document-size <value>` command. By default, this value is 0, meaning there is no limit. Use `JSON.DEBUG MEMORY <key>` or `MEMORY USAGE <key>` to inspect memory usage of JSON documents or subtrees.
 
 * Path Syntax - Valkey JSON supports two types of path syntaxes:
     * [Enhanced syntax](#enhanced-syntax)
