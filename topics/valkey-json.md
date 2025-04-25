@@ -78,8 +78,6 @@ Valkey JSON supports two kinds of path syntaxes:
 
 If a query path starts with `$`, it uses the enhanced syntax. Otherwise, the restricted syntax is used. It is recommended that you use the enhanced syntax for new development.
 
-<div id="enhanced-syntax"></div>
-
 **Enhanced Syntax Symbols & Expressions**
 
 | Symbol/Expression     | Description                                                       |
@@ -205,8 +203,6 @@ OK
 127.0.0.1:6379> JSON.GET k3 '$.*.[?(@ > 1)]'
 "[2,3,4]"
 ```
-
-<div id="restricted-syntax"></div>
 
 **Restricted Syntax Symbols and Expressions**
 
