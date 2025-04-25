@@ -1,85 +1,76 @@
 ---
-title: "Valkey-JSON"
+title: "Valkey JSON"
 description: >
-    Introduction to Valkey-JSON
+    Introduction to Valkey JSON
 ---
 
-Valkey-JSON is a Valkey module written in C++ that provides native JSON (JavaScript Object Notation) support for Valkey. The implementation complies with [RFC7159](https://www.ietf.org/rfc/rfc7159.txt) and [ECMA-404](https://www.ietf.org/rfc/rfc7159.txt) JSON data interchange standards. Users can natively store, query, and modify JSON data structures using the JSONPath query language. The query expressions support advanced capabilities including wildcard selections, filter expressions, array slices, union operations, and recursive searches.
+In Valkey, the JSON data type and commands are implemented in the [valkey-json](https://github.com/valkey-io/valkey-json) module which is an official valkey module compatible with versions 8.0 and above. Users will need to load this module onto their valkey server in order to use this feature.
 
-## Example Valkey-JSON Commands
+Valkey JSON is a Valkey module written in C++ that provides native JSON (JavaScript Object Notation) support for Valkey. The implementation complies with [RFC7159](https://www.ietf.org/rfc/rfc7159.txt) and [ECMA-404](https://www.ietf.org/rfc/rfc7159.txt) JSON data interchange standards. Users can natively store, query, and modify JSON data structures using the JSONPath query language. The query expressions support advanced capabilities including wildcard selections, filter expressions, array slices, union operations, and recursive searches.
+
+## Example Valkey JSON Commands
 
 * `JSON.SET` sets JSON values at the path.
 * `JSON.GET` gets the serialized JSON at one or multiple paths.
 * `JSON.ARRINSERT` inserts one or more values into the array values at path before the index.
 * `JSON.ARRLEN` gets the length of the array at the path.
 
-See the [complete list of Valkey-JSON commands](../commands/#json).
+See the [complete list of valkey-json commands](../commands/#json).
 
-## Common use cases for Valkey-JSON
+## Common use cases for Valkey JSON
 
-Valkey-JSON provides an efficient way to store and manipulate structured data. Its key benefits include fast search and filtering capabilities. It also provides the ability to perform in-place updates to JSON data without needing to overwrite entire documents. These features allow you to efficiently query, modify, and manage complex data structures, making it an ideal choice for applications that require dynamic and flexible data storage.
+Prior to the valkey-json module, storing JSON in Valkey typically involved serializing it into a string or use hash datatype. This approach made it difficult to work with nested data or perform partial updates. valkey-json addresses these limitations by enabling native JSON support.
 
-Prior to the Valkey-JSON module, storing JSON in Valkey typically involved serializing it into a string and using basic string commands to manage it. This approach made it difficult to work with nested data or perform partial updates. Valkey-JSON addresses these limitations by enabling native JSON support, allowing for direct manipulation and efficient querying of JSON values.
+Valkey JSON provides an efficient way to store and manipulate structured data. Its key benefits include fast search and filtering capabilities. It also provides the ability to perform in-place updates to JSON data without needing to overwrite entire documents. These features allow you to efficiently query, modify, and manage complex data structures, making it an ideal choice for applications that require dynamic and flexible data storage.
 
 ## JSON Properties
- 
+
+* Max Document Size - valkey-json allows configuring a limit on the size of individual JSON keys to prevent potential out-of-memory issues from malicious or unbounded insertions (e.g., via `JSON.ARRINSERT`). By default, this value is 0, meaning there is no limit. You can set this limit using the `CONFIG SET json.max-document-size <value>` command. Use `JSON.DEBUG MEMORY <key>` or `MEMORY USAGE <key>` to inspect memory usage.
+
 * Max Depth - The maximum nesting level for JSON objects and arrays. If a JSON object or array contains another object or array, it is considered nested. The default maximum allowed nesting depth is 128. Any attempt to exceed this limit will result in an error. You can adjust this limit using the following command: `CONFIG SET json.max-path-limit <value>` where value is the desired depth limit.
-
-* Max Document Size - Valkey-JSON allows configuring a limit on the size of individual JSON keys to prevent potential out-of-memory issues from malicious or unbounded insertions (e.g., via JSON.ARRINSERT). You can set this limit using the `CONFIG SET json.max-document-size <value>` command. By default, this value is 0, meaning there is no limit. Use `JSON.DEBUG MEMORY <key>` or `MEMORY USAGE <key>` to inspect memory usage of JSON documents or subtrees.
-
-* Path Syntax - Valkey JSON supports two types of path syntaxes:
-    * [Enhanced syntax](#enhanced-syntax)
-    * [Restricted syntax](#restricted-syntax)
-
-* Partial Updates - JSON commands allow efficient in-place updates to parts of a document without rewriting the entire value.
 
 ## Performance
 
-* Batch Operations - Group related operations together using bulk commands for better performance. Balance batch size with memory consumption.
+The performance of JSON operations in Valkey is primarily influenced by the complexity of the JSONPath evaluation and the size or depth of the JSON object. Most operations — including `JSON.GET`, `JSON.SET`, `JSON.DEL`, `JSON.NUMINCRBY`, `JSON.STRAPPEND` and `JSON.ARRAPPEND` — are typically O(1) when using direct paths but may increase to a complexity of O(N), where N is the number of paths matched. Simpler paths like `$.user.name` perform significantly faster than recursive or filtered queries such as `$..[?(@.active==true)]`.
 
-* Memory Usage - JSON values are stored in a memory-efficient binary format, optimizing storage while maintaining fast access.
+For optimal performance, it's recommended to minimize excessive nesting, avoid frequent mutations of deeply nested objects, and use path filters judiciously.
 
-## Document Size Limit
+## JSON ACL
 
-* JSON documents are stored internally in a format that's optimized for rapid access and modification. This format typically results in consuming somewhat more memory than the equivalent serialized representation of the same document.
+* Similar to the existing per-datatype categories (@string, @hash, etc.), a new category @json is added to simplify managing access to JSON commands and data. No other existing Valkey commands are members of the @json category. All JSON commands enforce any keyspace or command restrictions and permissions.
 
-* The consumption of memory by a single JSON document is limited to 64 MB, which is the size of the in-memory data structure, not the JSON string. You can check the amount of memory consumed by a JSON document by using the `JSON.DEBUG MEMORY` command.
+* There are 4 existing Valkey ACL categories which are updated to include new JSON commands: @read, @write, @fast, @slow. The following table indicates the mapping of JSON commands to the appropriate categories.
 
-## JSON ACLs
+For each of these categories and a row for each command, if the cell contains a “y” then that command is added into that category.
 
-* Similar to the existing per-datatype categories (@string, @hash, etc.), a new category @json is added to simplify managing access to JSON commands and data. No other existing Valkey or Redis OSS commands are members of the @json category. All JSON commands enforce any keyspace or command restrictions and permissions.
-
-* There are five existing Valkey and Redis OSS ACL categories that are updated to include the new JSON commands: @read, @write, @fast, @slow and @admin. The following table indicates the mapping of JSON commands to the appropriate categories.
-
-## JSON ACL Command Mapping
-
-| JSON Command       | @read | @write | @fast | @slow | @admin |
-|--------------------|:-----:|:------:|:-----:|:-----:|:------:|
-| JSON.ARRAPPEND     |       |   y    |   y   |       |        |
-| JSON.ARRINDEX      |   y   |        |   y   |       |        |
-| JSON.ARRINSERT     |       |   y    |   y   |       |        |
-| JSON.ARRLEN        |   y   |        |   y   |       |        |
-| JSON.ARRPOP        |       |   y    |   y   |       |        |
-| JSON.ARRTRIM       |       |   y    |   y   |       |        |
-| JSON.CLEAR         |       |   y    |   y   |       |        |
-| JSON.DEBUG         |   y   |        |       |   y   |   y    |
-| JSON.DEL           |       |   y    |   y   |       |        |
-| JSON.FORGET        |       |   y    |   y   |       |        |
-| JSON.GET           |   y   |        |   y   |       |        |
-| JSON.MGET          |   y   |        |   y   |       |        |
-| JSON.MSET          |       |   y    |       |   y   |        |
-| JSON.NUMINCRBY     |       |   y    |   y   |       |        |
-| JSON.NUMMULTBY     |       |   y    |   y   |       |        |
-| JSON.OBJKEYS       |   y   |        |   y   |       |        |
-| JSON.OBJLEN        |   y   |        |   y   |       |        |
-| JSON.RESP          |   y   |        |   y   |       |        |
-| JSON.SET           |       |   y    |       |   y   |        |
-| JSON.STRAPPEND     |       |   y    |   y   |       |        |
-| JSON.STRLEN        |   y   |        |   y   |       |        |
-| JSON.TOGGLE        |       |   y    |   y   |       |        |
-| JSON.TYPE          |   y   |        |   y   |       |        |
+| JSON Command   | @json | @read | @write | @fast | @slow |
+|:---------------|:------|:------|:-------|:------|:------|
+| JSON.ARRAPPEND | y     |       | y      | y     |       |
+| JSON.ARRINDEX  | y     | y     |        | y     |       |
+| JSON.ARRINSERT | y     |       | y      | y     |       |
+| JSON.ARRLEN    | y     | y     |        | y     |       |
+| JSON.ARRPOP    | y     |       | y      | y     |       |
+| JSON.ARRTRIM   | y     |       | y      | y     |       |
+| JSON.CLEAR     | y     |       | y      | y     |       |
+| JSON.DEBUG     | y     | y     |        |       | y     |
+| JSON.DEL       | y     |       | y      | y     |       |
+| JSON.FORGET    | y     |       | y      | y     |       |
+| JSON.GET       | y     | y     |        | y     |       |
+| JSON.MGET      | y     | y     |        | y     |       |
+| JSON.MSET      | y     |       | y      |       | y     |
+| JSON.NUMINCRBY | y     |       | y      | y     |       |
+| JSON.NUMMULTBY | y     |       | y      | y     |       |
+| JSON.OBJKEYS   | y     | y     |        | y     |       |
+| JSON.OBJLEN    | y     | y     |        | y     |       |
+| JSON.RESP      | y     | y     |        | y     |       |
+| JSON.SET       | y     |       | y      |       | y     |
+| JSON.STRAPPEND | y     |       | y      | y     |       |
+| JSON.STRLEN    | y     | y     |        | y     |       |
+| JSON.TOGGLE    | y     |       | y      | y     |       |
+| JSON.TYPE      | y     | y     |        | y     |       |
 
 ## Path Syntax
+
 Valkey JSON supports two kinds of path syntaxes:
 
 * **Enhanced syntax** – Follows the JSONPath syntax described by [Goessner](https://goessner.net/articles/JsonPath/), as shown in the following table. We've reordered and modified the descriptions in the table for clarity.
@@ -227,11 +218,11 @@ OK
 
 | Path                                  | Description                        |
 |---------------------------------------|------------------------------------|
-| `'.store.book[0].author'`               | The author of the first book.      |
-| `'.store.book[-1].author'`              | The author of the last book.       |
-| `'.address.city'`                       | City name.                         |
-| `'["store"]["book"][0]["title"]'`       | The title of the first book.       |
-| `'["store"]["book"][-1]["title"]'`      | The title of the last book.        |
+| `'.store.book[0].author'`             | The author of the first book.      |
+| `'.store.book[-1].author'`            | The author of the last book.       |
+| `'.address.city'`                     | City name.                         |
+| `'["store"]["book"][0]["title"]'`     | The title of the first book.       |
+| `'["store"]["book"][-1]["title"]'`    | The title of the last book.        |
 
 ## Common error prefixes
 
@@ -251,6 +242,6 @@ Each error message has a prefix. The following is a list of common error prefixe
 | Info                     | Description                                                   |
 |--------------------------|---------------------------------------------------------------|
 | `json_total_memory_bytes`| Total memory allocated to JSON objects.                       |
-| `json_num_documents`     | Total number of documents in Valkey or Redis OSS.             |
+| `json_num_documents`     | Total number of documents in Valkey                           |
 
 To query core metrics, run the following command: `info json_core_metrics`
