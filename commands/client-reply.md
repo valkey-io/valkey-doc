@@ -5,3 +5,7 @@ The `CLIENT REPLY` command controls whether the server will reply the client's c
 * `ON`. This is the default mode in which the server returns a reply to every command.
 * `OFF`. In this mode the server will not reply to client commands.
 * `SKIP`. This mode skips the reply of command immediately after it.
+
+**Note:**
+As of Valkey 9.0, `CLIENT REPLY` is not allowed inside a transaction `MULTI/EXEC`.
+`CLIENT REPLY` within a transaction will result in an error reply.
