@@ -7,5 +7,4 @@ The `CLIENT REPLY` command controls whether the server will reply the client's c
 * `SKIP`. This mode skips the reply of command immediately after it.
 
 **Note:**
-As of Valkey 9.0, `CLIENT REPLY` is not allowed inside a transaction `MULTI/EXEC`.
-`CLIENT REPLY` within a transaction will result in an error reply.
+Starting with Valkey 9.0, the `CLIENT REPLY` command is disallowed inside a transaction `(MULTI/EXEC)`. In earlier versions, using `CLIENT REPLY` within a transaction could corrupt the reply stream. Attempting to use it within a transaction now results in an error reply.
