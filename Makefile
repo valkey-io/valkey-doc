@@ -34,6 +34,7 @@ endif
 
 ifeq ("$(wildcard $(VALKEY_BLOOM_ROOT))","")
     $(info Valkey bloom variable pointed to nothing, skipping bloom filter commands)
+endif
 
 ifeq ("$(wildcard $(VALKEY_JSON_ROOT))","")
     $(error Please provide the VALKEY_JSON_ROOT variable pointing to the valkey-json source code)
