@@ -82,7 +82,7 @@ topics_pics = $(filter-out %.md,$(topics))
 # JSON files for the commands that have a .md file (excluding undocumented commands).
 json_for_documented_commands = \
     $(patsubst commands/%.md,$(VALKEY_ROOT)/src/commands/%.json,$(filter $(commands_json_files:$(VALKEY_ROOT)/src/commands/%.json=commands/%.md),$(commands))) \
-    $(patsubst commands/%.md,$(VALKEY_BLOOM_ROOT)/src/commands/%.json,$(filter $(bloom_commands_json_files:$(VALKEY_BLOOM_ROOT)/src/commands/%.json=commands/%.md),$(commands)))
+    $(patsubst commands/%.md,$(VALKEY_BLOOM_ROOT)/src/commands/%.json,$(filter $(bloom_commands_json_files:$(VALKEY_BLOOM_ROOT)/src/commands/%.json=commands/%.md),$(commands))) \
     $(patsubst commands/%.md,$(VALKEY_JSON_ROOT)/src/commands/%.json,$(filter $(valkey_json_commands_json_files:$(VALKEY_JSON_ROOT)/src/commands/%.json=commands/%.md),$(commands)))
 
 $(BUILD_DIR)/.commands-per-group.json: $(VALKEY_ROOT)/src/commands/. utils/build-command-groups.py | $(BUILD_DIR)
