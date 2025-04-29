@@ -3,5 +3,11 @@
         "name": "valkey-bloom",
         "repo": "https://github.com/valkey-io/valkey-bloom",
         "description": "Module that allows users to use the bloom filter data type"
+    },
+    
+    "valkey_json": {
+        "name": "valkey-json",
+        "repo": "https://github.com/valkey-io/valkey-json",
+        "description": "Module that allows users to use the JSON data type"
     }
 }
