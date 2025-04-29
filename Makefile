@@ -68,7 +68,7 @@ bloom_commands_json_files = $(wildcard $(VALKEY_BLOOM_ROOT)/src/commands/*.json)
 valkey_json_commands_json_files = $(wildcard $(VALKEY_JSON_ROOT)/src/commands/*.json)
 existing_commands = $(commands_json_files:$(VALKEY_ROOT)/src/commands/%.json=commands/%.md) \
                     $(bloom_commands_json_files:$(VALKEY_BLOOM_ROOT)/src/commands/%.json=commands/%.md) \
-                     $(valkey_json_commands_json_files:$(VALKEY_JSON_ROOT)/src/commands/%.json=commands/%.md)
+                    $(valkey_json_commands_json_files:$(VALKEY_JSON_ROOT)/src/commands/%.json=commands/%.md)
 
 topics   = $(wildcard topics/*)
 commands = $(filter $(existing_commands),$(documented_commands))
