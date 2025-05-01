@@ -2,12 +2,10 @@ name: Man Page Build and Install
 
 on:
   push:
-    # branches:
-    #   - main
   pull_request:
 
 jobs:
-  build-and-install:
+  man-pages-build-install:
     runs-on: ubuntu-latest
 
     steps:
