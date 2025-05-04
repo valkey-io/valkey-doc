@@ -39,7 +39,7 @@ This topic covers the different aspects of `valkey-cli`, starting from the simpl
 
 **`-a`** _password_
 : Password to use when connecting to the server.
-  You can also use the `REDISCLI_AUTH` environment
+  You can also use the `VALKEYCLI_AUTH` environment
   variable to pass this password more safely.
   (If both are used, this argument takes precedence.)
 
@@ -51,7 +51,7 @@ This topic covers the different aspects of `valkey-cli`, starting from the simpl
 
 **`--askpass`**
 : Force user to input password with mask from STDIN.
-  If this argument is used, `-a` and the `REDISCLI_AUTH`
+  If this argument is used, `-a` and the `VALKEYCLI_AUTH`
   environment variable will be ignored.
 
 **`-u`** _uri_
@@ -399,7 +399,7 @@ perform authentication saving the need of explicitly using the `AUTH` command:
     PONG
 
 **NOTE:** For security reasons, provide the password to `valkey-cli` automatically via the
-`REDISCLI_AUTH` environment variable.
+`VALKEYCLI_AUTH` environment variable.
 
 Finally, it's possible to send a command that operates on a database number
 other than the default number zero by using the `-n <dbnum>` option:
