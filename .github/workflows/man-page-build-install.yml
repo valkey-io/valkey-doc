@@ -4,6 +4,9 @@ on:
   push:
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   man-pages-build-install-without-modules:
     runs-on: ubuntu-latest
