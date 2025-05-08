@@ -7,6 +7,10 @@
     "display": "Bloom filter",
     "description": "Operations on the Bloom filter data type"
   },
+  "search": {
+    "display": "Search",
+    "description": "Vector Similarity Search engine optimized for AI-driven workloads"
+  },
   "cluster": {
     "display": "Cluster",
     "description": "Valkey Cluster management"

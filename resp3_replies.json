@@ -205,11 +205,11 @@
   "CLIENT ID": [
     "[Integer reply](../topics/protocol.md#integers): the ID of the client."
   ],
-  "CLIENT INFO": [
-    "[Bulk string reply](../topics/protocol.md#bulk-strings): a unique string for the current client, as described at the `CLIENT LIST` page."
-  ],
   "CLIENT IMPORT-SOURCE": [
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
+  ],
+  "CLIENT INFO": [
+    "[Bulk string reply](../topics/protocol.md#bulk-strings): a unique string for the current client, as described at the `CLIENT LIST` page."
   ],
   "CLIENT KILL": [
     "One of the following:",
@@ -335,11 +335,11 @@
   "CLUSTER SLAVES": [
     "[Array reply](../topics/protocol.md#arrays): a list of replica nodes replicating from the specified primary node provided in the same format used by `CLUSTER NODES`."
   ],
-  "CLUSTER SLOTS": [
-    "[Array reply](../topics/protocol.md#arrays): nested list of slot ranges with networking information."
-  ],
   "CLUSTER SLOT-STATS": [
     "[Array reply](../topics/protocol.md#arrays): nested list of slot usage statistics."
+  ],
+  "CLUSTER SLOTS": [
+    "[Array reply](../topics/protocol.md#arrays): nested list of slot ranges with networking information."
   ],
   "COMMAND": [
     "[Array reply](../topics/protocol.md#arrays): a nested list of command details. The order of the commands in the array is random."
@@ -460,6 +460,23 @@
   ],
   "FLUSHDB": [
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
+  ],
+  "FT.CREATE": [
+    "[Simple string reply](../topics/protocol.md#simple-strings): `OK`.",
+    "",
+    "If an error occurs during the index creation, an error is returned."
+  ],
+  "FT.DROPINDEX": [
+    "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
+  ],
+  "FT.INFO": [
+    "[Array reply](../topics/protocol.md#arrays):: a map of index fields in the form of key followed by value"
+  ],
+  "FT.SEARCH": [
+    "[Array reply](../topics/protocol.md#arrays): the first entry in the array represents the count of matching keys, followed by one array entry for each matching key. When `NOCONTENT` is specified, each entry in the response contains only the matching key name, otherwise, each entry includes the matching key name, followed by an array of the returned fields"
+  ],
+  "FT._LIST": [
+    "[Array reply](../topics/protocol.md#arrays): an array of strings which are the currently defined index names"
   ],
   "FUNCTION": [],
   "FUNCTION DELETE": [
@@ -695,7 +712,7 @@
     "  * [Array reply](../topics/protocol.md#arrays): Array of integers representing the array length at each path.",
     "  * [Null reply](../topics/protocol.md#nulls): For each path where the value is not an array.",
     "  * [Null reply](../topics/protocol.md#nulls): If the document key does not exist.",
-    "* If the path is restricted syntax:", 
+    "* If the path is restricted syntax:",
     "  * [Integer reply](../topics/protocol.md#integers): The array length.",
     "  * [Integer reply](../topics/protocol.md#integers): If multiple objects are selected, returns the first array's length.",
     "  * [Null reply](../topics/protocol.md#nulls): If the document key does not exist.",
@@ -741,7 +758,7 @@
     "  * If the path is enhanced syntax:",
     "    * [Array reply](../topics/protocol.md#arrays): Array of integers representing memory size (in bytes) of JSON value at each path.",
     "    * [Array reply](../topics/protocol.md#arrays): Empty array if the Valkey key does not exist.",
-    "  * If the path is restricted syntax:", 
+    "  * If the path is restricted syntax:",
     "    * [Integer reply](../topics/protocol.md#integers): Memory size of the JSON value in bytes.",
     "    * [Null reply](../topics/protocol.md#nulls): If the Valkey key does not exist.",
     "* For DEPTH:",
@@ -1306,12 +1323,6 @@
     "[Array reply](../topics/protocol.md#arrays): This is actually a map, the odd entries are a primary name, and the even entries are the last cached INFO output from that primary and all its replicas."
   ],
   "SENTINEL IS PRIMARY-DOWN-BY-ADDR": [],
-  "SENTINEL PRIMARY": [
-    "[Map reply](../topics/protocol.md#maps): The state and info of the specified primary."
-  ],
-  "SENTINEL PRIMARIES": [
-    "[Array reply](../topics/protocol.md#arrays): List of monitored Valkey primaries, and their state."
-  ],
   "SENTINEL MONITOR": [
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
   ],
@@ -1320,6 +1331,12 @@
   ],
   "SENTINEL PENDING SCRIPTS": [
     "[Array reply](../topics/protocol.md#arrays): List of pending scripts."
+  ],
+  "SENTINEL PRIMARIES": [
+    "[Array reply](../topics/protocol.md#arrays): List of monitored Valkey primaries, and their state."
+  ],
+  "SENTINEL PRIMARY": [
+    "[Map reply](../topics/protocol.md#maps): The state and info of the specified primary."
   ],
   "SENTINEL REMOVE": [
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."

@@ -10,6 +10,7 @@ DATE ?= 2025-03-31
 VALKEY_ROOT ?= ../valkey
 VALKEY_BLOOM_ROOT ?= ../valkey-bloom
 VALKEY_JSON_ROOT ?= ../valkey-json
+VALKEY_SEARCH_ROOT ?= ../valkey-search
 
 # Where to install man pages
 INSTALL_MAN_DIR ?= /usr/local/share/man
@@ -40,6 +41,10 @@ ifeq ("$(wildcard $(VALKEY_JSON_ROOT))","")
     $(info Valkey JSON variable pointed to nothing, skipping valkey-json commands)
 endif
 
+ifeq ("$(wildcard $(VALKEY_SEARCH_ROOT))","")
+    $(info Valkey Search variable pointed to nothing, skipping valkey-search commands)
+endif
+
 ifeq ("$(shell which pandoc)","")
     $(error Please install pandoc)
 endif
@@ -67,9 +72,11 @@ commands_json_files = $(wildcard $(VALKEY_ROOT)/src/commands/*.json)
 
 bloom_commands_json_files = $(wildcard $(VALKEY_BLOOM_ROOT)/src/commands/*.json)
 valkey_json_commands_json_files = $(wildcard $(VALKEY_JSON_ROOT)/src/commands/*.json)
+valkey_search_commands_json_files = $(wildcard $(VALKEY_SEARCH_ROOT)/src/commands/*.json)
 existing_commands = $(commands_json_files:$(VALKEY_ROOT)/src/commands/%.json=commands/%.md) \
                     $(bloom_commands_json_files:$(VALKEY_BLOOM_ROOT)/src/commands/%.json=commands/%.md) \
-                    $(valkey_json_commands_json_files:$(VALKEY_JSON_ROOT)/src/commands/%.json=commands/%.md)
+                    $(valkey_json_commands_json_files:$(VALKEY_JSON_ROOT)/src/commands/%.json=commands/%.md) \
+                    $(valkey_search_commands_json_files:$(VALKEY_SEARCH_ROOT)/src/commands/%.json=commands/%.md)
 
 topics   = $(wildcard topics/*)
 commands = $(filter $(existing_commands),$(documented_commands))
@@ -83,7 +90,8 @@ topics_pics = $(filter-out %.md,$(topics))
 json_for_documented_commands = \
     $(patsubst commands/%.md,$(VALKEY_ROOT)/src/commands/%.json,$(filter $(commands_json_files:$(VALKEY_ROOT)/src/commands/%.json=commands/%.md),$(commands))) \
     $(patsubst commands/%.md,$(VALKEY_BLOOM_ROOT)/src/commands/%.json,$(filter $(bloom_commands_json_files:$(VALKEY_BLOOM_ROOT)/src/commands/%.json=commands/%.md),$(commands))) \
-    $(patsubst commands/%.md,$(VALKEY_JSON_ROOT)/src/commands/%.json,$(filter $(valkey_json_commands_json_files:$(VALKEY_JSON_ROOT)/src/commands/%.json=commands/%.md),$(commands)))
+    $(patsubst commands/%.md,$(VALKEY_JSON_ROOT)/src/commands/%.json,$(filter $(valkey_json_commands_json_files:$(VALKEY_JSON_ROOT)/src/commands/%.json=commands/%.md),$(commands)))\
+    $(patsubst commands/%.md,$(VALKEY_SEARCH_ROOT)/src/commands/%.json,$(filter $(valkey_search_commands_json_files:$(VALKEY_SEARCH_ROOT)/src/commands/%.json=commands/%.md),$(commands)))
 
 $(BUILD_DIR)/.commands-per-group.json: $(VALKEY_ROOT)/src/commands/. utils/build-command-groups.py | $(BUILD_DIR)
 	utils/build-command-groups.py $(json_for_documented_commands) > $@~~
@@ -167,7 +175,7 @@ programs = $(progs:valkey-%=topics/%.md)
 configs = topics/valkey.conf.md
 
 # Define the base directories where valkey commands can come from
-VALKEY_ROOTS := $(VALKEY_ROOT) $(VALKEY_BLOOM_ROOT)
+VALKEY_ROOTS := $(VALKEY_ROOT) $(VALKEY_BLOOM_ROOT) $(VALKEY_SEARCH_ROOT)
 
 man1_src = $(filter $(programs),$(topics_md))
 man3_src = $(commands)
@@ -197,7 +205,7 @@ $(MAN_DIR)/man1/valkey-%.1.gz: topics/%.md $(man_scripts)
 	 --version $(VERSION) --date $(DATE) \$< \
 	 | utils/links-to-man.py - | $(to_man) > $@
 $(MAN_DIR)/man3/%.3valkey.gz: commands/%.md $(BUILD_DIR)/.commands-per-group.json $(man_scripts)
-	$(eval VALKEY_ROOTS := $(VALKEY_ROOT) $(VALKEY_JSON_ROOT)) 
+	$(eval VALKEY_ROOTS := $(VALKEY_ROOT) $(VALKEY_JSON_ROOT) $(VALKEY_BLOOM_ROOT) $(VALKEY_SEARCH_ROOT))
 	$(eval FINAL_ROOT := $(firstword $(foreach root,$(VALKEY_ROOTS),$(if $(wildcard $(root)/src/commands/$*.json),$(root)))))
 	$(if $(FINAL_ROOT),,$(eval FINAL_ROOT := $(lastword $(VALKEY_ROOTS))))
 		utils/preprocess-markdown.py --man --page-type command \
