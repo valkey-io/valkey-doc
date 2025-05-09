@@ -159,6 +159,9 @@ a default set of tests, or you can supply a custom set of tests.
   See the **ciphers**(1ssl) manpage for more information about the syntax of this string,
   and specifically for TLSv1.3 ciphersuites.
 
+**`--rdma`**
+: Establish a RDMA connection.
+
 **`--help`**
 : Output help and exit.
 
