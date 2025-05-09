@@ -160,7 +160,7 @@ a default set of tests, or you can supply a custom set of tests.
   and specifically for TLSv1.3 ciphersuites.
 
 **`--rdma`**
-: Establish a RDMA connection.
+: Establish an RDMA connection.
 
 **`--help`**
 : Output help and exit.
