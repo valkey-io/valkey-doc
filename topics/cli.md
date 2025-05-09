@@ -136,6 +136,9 @@ This topic covers the different aspects of `valkey-cli`, starting from the simpl
   See the **ciphers**(1ssl) manpage for more information about the syntax of this string,
   and specifically for TLSv1.3 ciphersuites.
 
+**`--rdma`**
+: Establish an RDMA connection.
+
 **`--raw`**
 : Use raw formatting for replies (default when STDOUT is
   not a tty).
