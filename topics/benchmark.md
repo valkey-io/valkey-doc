@@ -162,6 +162,9 @@ a default set of tests, or you can supply a custom set of tests.
 **`--rdma`**
 : Establish an RDMA connection.
 
+**`--mptcp`**
+: Establish an MPTCP connection.
+
 **`--help`**
 : Output help and exit.
 

@@ -139,6 +139,9 @@ This topic covers the different aspects of `valkey-cli`, starting from the simpl
 **`--rdma`**
 : Establish an RDMA connection.
 
+**`--mptcp`**
+: Establish an MPTCP connection.
+
 **`--raw`**
 : Use raw formatting for replies (default when STDOUT is
   not a tty).
