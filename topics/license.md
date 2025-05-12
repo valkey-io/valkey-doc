@@ -96,4 +96,4 @@ Valkey uses source code from third parties. All this code contains a BSD or BSD-
 
 * Inside Jemalloc the files `inttypes.h`, `stdbool.h`, `stdint.h`, `strings.h` under the `msvc_compat` directory are copyright Alexander Chemeris and released under the **three-clause BSD license**.
 
-* The libraries **hiredis** and **linenoise** also included inside the Valkey distribution are copyright Salvatore Sanfilippo and Pieter Noordhuis and released under the terms respectively of the **three-clause BSD license** and **two-clause BSD license**.
+* The libraries **libvalkey** and **linenoise** also included inside the Valkey distribution are released under the terms respectively of the **three-clause BSD license** and **two-clause BSD license**.

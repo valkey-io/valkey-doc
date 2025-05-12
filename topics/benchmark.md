@@ -6,13 +6,28 @@ description: >
 
 ## Usage
 
-**`valkey-benchmark`** [ _OPTIONS_ ] [ _COMMAND_ _ARGS_... ]
+**`valkey-benchmark`** [ _OPTIONS_ ] [**`--`**] [ _COMMAND_ _ARGS_... ]
 
 ## Description
 
-Valkey includes the `valkey-benchmark` utility that simulates running commands done
-by N clients while at the same time sending M total queries. The utility provides
-a default set of tests, or you can supply a custom set of tests.
+Simulates sending commands using multiple clients. The utility provides a
+default set of tests. You can run a subset of the tests using the `-t` option or
+supply one or more custom commands on the command line.
+
+To supply multiple commands on the command line, separate them with `;` as in
+`SET foo bar ';' GET foo`. (Quote `';'` to protect it from expansion by the shell.)
+You can prefix a command in the sequence with a number N to repeat the command N times.
+In command arguments, the following placeholders are substituted:
+
+`__rand_int__`
+: Replaced with a zero-padded random integer in the range selected using the -r option.
+
+`__data__`
+: Replaced with data of the size specified by the -d option.
+
+`{tag}`
+: Replaced with a tag that routes the command to the right cluster node.
+  Include this in key names when running in cluster mode.
 
 ## Options
 
@@ -203,8 +218,10 @@ Fill a list with 10000 random elements:
 
     $ valkey-benchmark -r 10000 -n 10000 lpush mylist __rand_int__
 
-On user specified command lines `__rand_int__` is replaced with a random integer
-with a range of values selected by the `-r` option.
+Benchmark a specific transaction:
+
+    $ valkey-benchmark -- multi ';' set key:__rand_int__ __data__ ';' \
+                          incr counter ';' exec\n\n");
 
 ### Running only a subset of the tests
 
@@ -274,6 +291,8 @@ pipelining of 16 commands:
 
 Using pipelining results in a significant increase in performance.
 
+## Notes
+
 ### Pitfalls and misconceptions
 
 The first point is obvious: the golden rule of a useful benchmark is to
@@ -291,7 +310,7 @@ in account.
 The `valkey-benchmark` program is a quick and useful way to get some figures and
 evaluate the performance of a Valkey instance on a given hardware. However,
 by default, it does not represent the maximum throughput a Valkey instance can
-sustain. Actually, by using pipelining and a fast client (hiredis), it is fairly
+sustain. Actually, by using pipelining and a fast client (libvalkey), it is fairly
 easy to write a program generating more throughput than valkey-benchmark. The
 default behavior of valkey-benchmark is to achieve throughput by exploiting
 concurrency only (i.e. it creates several connections to the server).
