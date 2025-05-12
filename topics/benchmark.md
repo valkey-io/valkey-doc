@@ -14,8 +14,8 @@ Simulates sending commands using multiple clients. The utility provides a
 default set of tests. You can run a subset of the tests using the `-t` option or
 supply one or more custom commands on the command line.
 
-To supply a multiple commands on the command line, separate them with `;`
-(quoted as `';'` to protect it from expansion by the shell).
+To supply multiple commands on the command line, separate them with `;` as in
+`SET foo bar ';' GET foo`. (Quote `';'` to protect it from expansion by the shell.)
 You can prefix a command in the sequence with a number N to repeat the command N times.
 In command arguments, the following placeholders are substituted:
 
