@@ -8,9 +8,9 @@ Renaming of fields is especially useful when the member name contains special ch
 For indexes on JSON keys, the path is a JSON path to the data of the declared type. Because the JSON path always contains special characters, the `AS` clause is required.
 
 
-```bash
+```
 FT.CREATE <index-name>
-    ON HASH
+    ON HASH | JSON
     [PREFIX <count> <prefix> [<prefix>...]]
     SCHEMA
         (
@@ -52,5 +52,37 @@ FT.CREATE <index-name>
   - **M \<number\>** (optional): Number of maximum allowed outgoing edges for each node in the graph in each layer. on layer zero the maximal number of outgoing edges will be 2\*M. Default is 16, the maximum is 512\.
   - **EF\_CONSTRUCTION \<number\>** (optional): controls the number of vectors examined during index construction. Higher values for this parameter will improve recall ratio at the expense of longer index creation times. The default value is 200\. Maximum value is 4096\.
   - **EF\_RUNTIME \<number\>** (optional):  controls  the number of vectors to be examined during a query operation. The default is 10, and the max is 4096\. You can set this parameter value for each query you run. Higher values increase query times, but improve query recall.
+
+
+### Examples
+
+**HNSW example:**
+
+```
+FT.CREATE my_index_name SCHEMA my_hash_field_key VECTOR HNSW 10 TYPE FLOAT32 DIM 20 DISTANCE_METRIC COSINE M 4 EF_CONSTRUCTION 100
+```
+
+**FLAT example:**
+
+```
+FT.CREATE my_index_name SCHEMA my_hash_field_key VECTOR Flat 8 TYPE FLOAT32 DIM 20 DISTANCE_METRIC COSINE INITIAL_CAP 15000
+```
+
+**HNSW example with a numeric field:**
+
+```
+FT.CREATE my_index_name SCHEMA my_vector_field_key VECTOR HNSW 10 TYPE FLOAT32 DIM 20 DISTANCE_METRIC COSINE M 4 EF_CONSTRUCTION 100 my_numeric_field_key NUMERIC
+```
+
+**HNSW example with multiple tag and numeric fields:**
+
+```
+FT.CREATE my_index_name SCHEMA my_vector_field_key VECTOR HNSW          \
+    10 TYPE FLOAT32 DIM 20 DISTANCE_METRIC COSINE M 4 EF_CONSTRUCTION   \
+    100 my_tag_field_key_1 TAG SEPARATOR '@' CASESENSITIVE              \
+    my_numeric_field_key_1 NUMERIC my_numeric_field_key_2 NUMERIC my_tag_field_key_2 TAG
+```
+
+### Response
 
 **RESPONSE** `OK` or error.
