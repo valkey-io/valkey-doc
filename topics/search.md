@@ -1,3 +1,9 @@
+---
+title: "Valkey Search"
+description: >
+    Introduction to Vector Similarity Search
+---
+
 # Valkey-Search
 
 **Valkey-Search** (BSD-3-Clause), provided as a Valkey module, is a high-performance Vector Similarity Search engine
@@ -6,7 +12,7 @@ of vectors with over 99% recall.
 
 Valkey-Search allows users to create indexes and perform similarity searches, incorporating complex filters.
 It supports Approximate Nearest Neighbor (ANN) search with HNSW and exact matching using K-Nearest Neighbors (KNN).
-Users can index data using either **Valkey Hash** or **[Valkey-JSON](https://github.com/valkey-io/valkey-json)** data types.
+Users can index data using either **Valkey Hash** or **[Valkey-JSON](/topics/valkey-json)** data types.
 
 While Valkey-Search currently focuses on Vector Search, its goal is to extend Valkey into a full-fledged search engine,
 supporting Full Text Search and additional indexing options.
@@ -21,7 +27,7 @@ FT._LIST
 FT.SEARCH
 ```
 
-For a detailed description of the supported commands, examples and configuration options, see the [Command Reference](valkey.io/commands/#search).
+For a detailed description of the supported commands, examples and configuration options, see the [Command Reference](/commands/#search).
 
 ## Configuration
 
