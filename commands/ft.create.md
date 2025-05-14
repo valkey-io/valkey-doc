@@ -83,6 +83,3 @@ FT.CREATE my_index_name SCHEMA my_vector_field_key VECTOR HNSW          \
     my_numeric_field_key_1 NUMERIC my_numeric_field_key_2 NUMERIC my_tag_field_key_2 TAG
 ```
 
-### Response
-
-**RESPONSE** `OK` or error.

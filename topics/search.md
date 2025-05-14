@@ -23,6 +23,14 @@ FT.SEARCH
 
 For a detailed description of the supported commands, examples and configuration options, see the [Command Reference](valkey.io/commands/#search).
 
+## Configuration
+
+Command line configuration options:
+
+1. **--reader-threads:** (Integer) Controls the amount of threads executing queries.
+2. **--writer-threads:** (Integer) Controls the amount of threads processing index mutations.
+3. **--use-coordinator:** (boolean) Cluster mode enabler.
+
 ## Scaling
 
 Valkey-Search supports both **Standalone** and **Cluster** modes. Query processing and ingestion scale linearly with CPU
@@ -112,3 +120,32 @@ Valkey-Search uses a **hybrid approach** with a query planner that selects the m
 
 - **Pre-filtering**
 - **Inline-filtering:** Filters results during the similarity search process.
+
+## Monitoring
+
+To check the server's overall search metrics, you can use the `INFO SEARCH` or `INFO MODULES` commands.
+
+The following metrics are added to the `INFO` command's output:
+
+- **search_used_memory_human** (Integer) A human-friendly readable version of the `search_used_memory_bytes` metric
+- **search_used_memory_bytes** (Integer) The total bytes of memory that all indexes occupy
+- **search_number_of_indexes** (Integer) Index schema total count
+- **search_number_of_attributes** (Integer) Total count of attributes for all indexes
+- **search_total_indexed_hash_keys** (Integer) Total count of HASH keys for all indexes
+- **search_background_indexing_status** (String) The status of the indexing process. `NO_ACTIVITY` indicates idle indexing.
+- **search_failure_requests_count** (Integer) A count of all failed requests, including syntax errors.
+- **search_successful_requests_count** (Integer) A count of all successful requests
+- **search_hnsw_create_exceptions_count** (Integer) Count of HNSW creation exceptions.
+- **search_hnsw_search_exceptions_count** (Integer) Count of HNSW search exceptions
+- **search_hnsw_remove_exceptions_count** (Integer) Count of HNSW removal exceptions.
+- **search_hnsw_add_exceptions_count** (Integer) Count of HNSW addition exceptions.
+- **search_hnsw_modify_exceptions_count** (Integer) Count of HNSW modification exceptions
+- **search_modify_subscription_skipped_count** (Integer) Count of skipped subscription modifications
+- **search_remove_subscription_successful_count** (Integer) Count of successful subscription removals
+- **search_remove_subscription_skipped_count** (Integer) Count of skipped subscription removals
+- **search_remove_subscription_failure_count** (Integer) Count of failed subscription removals
+- **search_add_subscription_successful_count** (Integer) Count of successfully added subscriptions
+- **search_add_subscription_failure_count** (Integer) Count of failures of adding subscriptions
+- **search_add_subscription_skipped_count** (Integer) Count of skipped subscription adding processes
+- **search_modify_subscription_failure_count** (Integer) Count of failed subscription modifications
+- **search_modify_subscription_successful_count** (Integer)	Count of successful subscription modifications
