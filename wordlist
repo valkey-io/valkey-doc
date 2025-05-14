@@ -1034,3 +1034,8 @@ Pre-filtering
 paren
 tokenized
 pre
+search_hnsw_create_exceptions_count
+search_hnsw_search_exceptions_count
+search_hnsw_remove_exceptions_count
+search_hnsw_add_exceptions_count
+search_hnsw_modify_exceptions_count
