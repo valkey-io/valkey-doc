@@ -47,7 +47,7 @@ jobs:
           echo "Error: Man pages directory '_build/man' not found!"
           exit 1
         fi
-        
+
         # Check if the directory contains any files
         if [ -z "$(ls -A _build/man)" ]; then
           echo "Error: No man pages were generated in '_build/man'!"
@@ -81,6 +81,12 @@ jobs:
         repository: valkey-io/valkey-bloom
         path: valkey-bloom
 
+    - name: Checkout valkey-search
+      uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
+      with:
+        repository: valkey-io/valkey-search
+        path: valkey-search
+
     - name: Checkout valkey-json
       uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
       with:
@@ -101,9 +107,10 @@ jobs:
     - name: Build and install man pages
       working-directory: valkey-doc
       run: |
-        make VALKEY_ROOT=$GITHUB_WORKSPACE/valkey \
-             VALKEY_BLOOM_ROOT=$GITHUB_WORKSPACE/valkey-bloom \
-             VALKEY_JSON_ROOT=$GITHUB_WORKSPACE/valkey-json \
+        make VALKEY_ROOT=$GITHUB_WORKSPACE/valkey               \
+             VALKEY_BLOOM_ROOT=$GITHUB_WORKSPACE/valkey-bloom   \
+             VALKEY_JSON_ROOT=$GITHUB_WORKSPACE/valkey-json     \
+             VALKEY_SEARCH_ROOT=$GITHUB_WORKSPACE/valkey-search \
               -j;
 
     - name: Verify man pages build
@@ -113,7 +120,7 @@ jobs:
           echo "Error: Man pages directory '_build/man' not found!"
           exit 1
         fi
-        
+
         # Check if the directory contains any files
         if [ -z "$(ls -A _build/man)" ]; then
           echo "Error: No man pages were generated in '_build/man'!"
