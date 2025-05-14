@@ -1,5 +1,3 @@
-## FT.CREATE
-
 The `FT.CREATE` command creates an empty index and initiates the backfill process. Each index consists of a number of field definitions. Each field definition specifies a field name, a field type and a path within each indexed key to locate a value of the declared type. Some field type definitions have additional sub-type specifiers.
 
 For indexes on HASH keys, the path is the same as the hash member name. The optional `AS` clause can be used to rename the field if desired.

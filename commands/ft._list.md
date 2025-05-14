@@ -1,5 +1,3 @@
-## FT._LIST
-
 ```
 FT._LIST
 ```

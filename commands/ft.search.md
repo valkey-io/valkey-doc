@@ -1,5 +1,3 @@
-## FT.SEARCH
-
 ```
 FT.SEARCH <index> <query>
   [NOCONTENT]

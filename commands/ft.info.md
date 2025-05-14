@@ -1,4 +1,3 @@
-## FT.INFO
 ```
 FT.INFO <index-name>
 ```

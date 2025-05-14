@@ -1,5 +1,3 @@
-## FT.DROPINDEX
-
 ```bash
 FT.DROPINDEX <index-name>
 ```
