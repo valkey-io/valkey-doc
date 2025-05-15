@@ -18,8 +18,12 @@ deletes the key using `DEL`.
 The timeout specifies the maximum idle time in any moment of the communication
 with the destination instance in milliseconds.
 This means that the operation does not need to be completed within the specified
-amount of milliseconds, but that the transfer should make progresses without
+amount of milliseconds, but that the transfer should make progress without
 blocking for more than the specified amount of milliseconds.
+
+`MIGRATE` operates on the database currently selected in the connection.
+Before calling `MIGRATE`, you can switch databases using `SELECT <dbid>`,
+and the command will migrate keys from that database.
 
 `MIGRATE` needs to perform I/O operations and to honor the specified timeout.
 When there is an I/O error during the transfer or if the timeout is reached the
