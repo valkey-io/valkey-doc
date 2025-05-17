@@ -31,11 +31,21 @@ For a detailed description of the supported commands, examples and configuration
 
 ## Configuration
 
-Command line configuration options:
+### Static configuration
+
+The following list of configurations can be passed to the `loadmodule` command:
 
 1. **--reader-threads:** (Integer) Controls the amount of threads executing queries.
 2. **--writer-threads:** (Integer) Controls the amount of threads processing index mutations.
 3. **--use-coordinator:** (boolean) Cluster mode enabler.
+4. **--hnsw-block-size:** (Integer) Controls the HNSW index resize increment steps.
+5. **--log-level:** (String) Controls the log verbosity level. Possible values are: `debug`, `verbose`, `notice` and `warning`
+
+### Runtime configuration
+
+The following list of configurations can be modified at runtime using the `CONFIG SET` command:
+
+1. **search.hnsw-block-size:** (Integer) Controls the HNSW index resize increment steps.
 
 ## Scaling
 
