@@ -53,7 +53,7 @@ Example: Bloom filters can answer the question is this content harmful or spam. 
 
 Bloom filters can answer the question: Has this username/email/domain name/slug already been used?
 
-In this username example, we can use use a Bloom filter to track every username that has signed up. When a new user attempts to sign up with their desired username, the app checks if the username exists in the Bloom filter.
+In this username example, we can use a Bloom filter to track every username that has signed up. When a new user attempts to sign up with their desired username, the app checks if the username exists in the Bloom filter.
 
 * If no, the user is created and the username is added to the Bloom filter.
 * If yes, the app can decide to either check the main database or reject the username.
