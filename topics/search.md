@@ -12,10 +12,10 @@ of vectors with over 99% recall.
 
 Valkey-Search allows users to create indexes and perform similarity searches, incorporating complex filters.
 It supports Approximate Nearest Neighbor (ANN) search with HNSW and exact matching using K-Nearest Neighbors (KNN).
-Users can index data using either **Valkey Hash** or **[Valkey-JSON](/topics/valkey-json)** data types.
+Users can index data using either **[Valkey Hash](/topics/hashes)** or **[Valkey-JSON](/topics/valkey-json)** data types.
 
 While Valkey-Search currently focuses on Vector Search, its goal is to extend Valkey into a full-fledged search engine,
-supporting Full Text Search and additional indexing options.
+supporting full-text search and additional indexing options.
 
 ## Supported Commands
 
@@ -35,17 +35,17 @@ For a detailed description of the supported commands, examples and configuration
 
 The following list of configurations can be passed to the `loadmodule` command:
 
-1. **--reader-threads:** (Integer) Controls the amount of threads executing queries.
-2. **--writer-threads:** (Integer) Controls the amount of threads processing index mutations.
-3. **--use-coordinator:** (boolean) Cluster mode enabler.
-4. **--hnsw-block-size:** (Integer) Controls the HNSW index resize increment steps.
-5. **--log-level:** (String) Controls the log verbosity level. Possible values are: `debug`, `verbose`, `notice` and `warning`
+1. `--reader-threads`: Controls the amount of threads executing queries.
+2. `--writer-threads`: Controls the amount of threads processing index mutations.
+3. `--use-coordinator`: Cluster mode enabler.
+4. `--hnsw-block-size`: Controls the HNSW index resize increment steps.
+5. `--log-level` Controls the log verbosity level. Possible values are: `debug`, `verbose`, `notice` and `warning`
 
 ### Runtime configuration
 
 The following list of configurations can be modified at runtime using the `CONFIG SET` command:
 
-1. **search.hnsw-block-size:** (Integer) Controls the HNSW index resize increment steps.
+1. `search.hnsw-block-size:`: Controls the HNSW index resize increment steps.
 
 ## Scaling
 
@@ -56,7 +56,8 @@ If replica lag is acceptable, users can achieve horizontal query scaling by dire
 
 ## Hybrid Queries
 
-Valkey-Search supports hybrid queries, combining Vector Similarity Search with filtering on indexed fields, such as **Numeric** and **Tag indexes**.
+Valkey-Search supports hybrid queries, combining vector similarity search with filtering on indexed fields, such as
+**Numeric** and **Tag indexes**.
 
 ### Tag index
 
@@ -72,12 +73,18 @@ Generally, tags are small sets of values with finite possible values like color,
 - Empty strings are neither indexed or queried.
 - During indexing and querying, any trailing whitespace is removed.
 
-**Syntax**
+#### Syntax
 
-Here `{` and `}` are part of syntax and `|` is used as a OR operator to support multiple tags:
+Below are some examples of building filter query on a field named: `color`.
+
+Here `{` and `}` are part of syntax and `|` is used as a OR operator to support multiple tags, general syntax is:
 
 ```
-@:{  |  | ...}
+@<field_name>:{<tag>}
+or
+@<field_name>:{<tag1> | <tag2>}
+or
+@<field_name>:{<tag1> | <tag2> | ...}
 ```
 
 For example, the following query will return documents with blue OR black OR green color.
@@ -127,15 +134,18 @@ The following query will return books published after 2015 (exclusive). The equi
 
 ### Query planner
 
-There are two primary approaches to hybrid queries:
+A query that utilizes a filter expression to filter results is called a hybrid query.
+Any combination of tag and numeric indexes can form a hybrid query.
 
-- **Pre-filtering:** Begin by filtering the dataset and then perform an exact similarity search. This works well when the filtered result set is small but can be costly with larger datasets.
-- **Post-filtering:** Perform the similarity search first, then filter the results. This is suitable when the filter-qualified result set is large but may lead to empty or lower than expected amount of results.
+- `Pre-filtering`: Pre-filtering relies on secondary indexes (e.g. tag, numeric) to first find the matches to the filter
+ expression regardless of vector similarity. Once the filtered results are calculated a brute-force search is
+ performed to sort by vector similarity.
+- `Inline-filtering`: Inline-filtering performs the vector search algorithm (e.g. HNSW), ignoring found vectors which
+ don't match the filter.
 
-Valkey-Search uses a **hybrid approach** with a query planner that selects the most efficient query execution path between:
-
-- **Pre-filtering**
-- **Inline-filtering:** Filters results during the similarity search process.
+`Pre-filtering` is faster when the filtered search space is much smaller than the original search space. When the
+filtered search space is large, `inline-filtering` becomes faster. The query planner for Valkey-Search automatically
+chooses between the two strategies based on the provided filter.
 
 ## Monitoring
 
@@ -143,25 +153,25 @@ To check the server's overall search metrics, you can use the `INFO SEARCH` or `
 
 The following metrics are added to the `INFO` command's output:
 
-- **search_used_memory_human** (Integer) A human-friendly readable version of the `search_used_memory_bytes` metric
-- **search_used_memory_bytes** (Integer) The total bytes of memory that all indexes occupy
-- **search_number_of_indexes** (Integer) Index schema total count
-- **search_number_of_attributes** (Integer) Total count of attributes for all indexes
-- **search_total_indexed_hash_keys** (Integer) Total count of HASH keys for all indexes
-- **search_background_indexing_status** (String) The status of the indexing process. `NO_ACTIVITY` indicates idle indexing.
-- **search_failure_requests_count** (Integer) A count of all failed requests, including syntax errors.
-- **search_successful_requests_count** (Integer) A count of all successful requests
-- **search_hnsw_create_exceptions_count** (Integer) Count of HNSW creation exceptions.
-- **search_hnsw_search_exceptions_count** (Integer) Count of HNSW search exceptions
-- **search_hnsw_remove_exceptions_count** (Integer) Count of HNSW removal exceptions.
-- **search_hnsw_add_exceptions_count** (Integer) Count of HNSW addition exceptions.
-- **search_hnsw_modify_exceptions_count** (Integer) Count of HNSW modification exceptions
-- **search_modify_subscription_skipped_count** (Integer) Count of skipped subscription modifications
-- **search_remove_subscription_successful_count** (Integer) Count of successful subscription removals
-- **search_remove_subscription_skipped_count** (Integer) Count of skipped subscription removals
-- **search_remove_subscription_failure_count** (Integer) Count of failed subscription removals
-- **search_add_subscription_successful_count** (Integer) Count of successfully added subscriptions
-- **search_add_subscription_failure_count** (Integer) Count of failures of adding subscriptions
-- **search_add_subscription_skipped_count** (Integer) Count of skipped subscription adding processes
-- **search_modify_subscription_failure_count** (Integer) Count of failed subscription modifications
-- **search_modify_subscription_successful_count** (Integer)	Count of successful subscription modifications
+- `search_used_memory_human`: A human-friendly readable version of the `search_used_memory_bytes` metric
+- `search_used_memory_bytes`: The total bytes of memory that all indexes occupy
+- `search_number_of_indexes`: Index schema total count
+- `search_number_of_attributes`: Total count of attributes for all indexes
+- `search_total_indexed_documents`: Total count of all keys for all indexes
+- `search_background_indexing_status` (String) The status of the indexing process. `NO_ACTIVITY` indicates idle indexing.
+- `search_failure_requests_count`: A count of all failed requests, including syntax errors.
+- `search_successful_requests_count`: A count of all successful requests
+- `search_hnsw_create_exceptions_count`: Count of HNSW creation exceptions.
+- `search_hnsw_search_exceptions_count`: Count of HNSW search exceptions
+- `search_hnsw_remove_exceptions_count`: Count of HNSW removal exceptions.
+- `search_hnsw_add_exceptions_count`: Count of HNSW addition exceptions.
+- `search_hnsw_modify_exceptions_count`: Count of HNSW modification exceptions
+- `search_modify_subscription_skipped_count`: Count of skipped subscription modifications
+- `search_remove_subscription_successful_count`: Count of successful subscription removals
+- `search_remove_subscription_skipped_count`: Count of skipped subscription removals
+- `search_remove_subscription_failure_count`: Count of failed subscription removals
+- `search_add_subscription_successful_count`: Count of successfully added subscriptions
+- `search_add_subscription_failure_count`: Count of failures of adding subscriptions
+- `search_add_subscription_skipped_count`: Count of skipped subscription adding processes
+- `search_modify_subscription_failure_count`: Count of failed subscription modifications
+- `search_modify_subscription_successful_count`: Count of successful subscription modifications

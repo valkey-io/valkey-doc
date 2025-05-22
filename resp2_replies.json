@@ -462,9 +462,10 @@
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
   ],
   "FT.CREATE": [
-    "[Simple string reply](../topics/protocol.md#simple-strings): `OK`.",
-    "",
-    "If an error occurs during the index creation, an error is returned."
+    "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
+  ],
+  "FT.DROPINDEX": [
+    "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
   ],
   "FT.INFO": [
     "[Array reply](../topics/protocol.md#arrays):: a map of index fields in the form of key followed by value"
@@ -474,9 +475,6 @@
   ],
   "FT._LIST": [
     "[Array reply](../topics/protocol.md#arrays): an array of strings which are the currently defined index names"
-  ],
-  "FT.DROPINDEX": [
-    "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
   ],
   "FUNCTION": [],
   "FUNCTION DELETE": [
