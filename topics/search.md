@@ -66,7 +66,6 @@ Generally, tags are small sets of values with finite possible values like color,
 
 - Only indexed fields can be used as a tag filter.
 - TAG fields are tokenized by a separator character, which is a comma "," by default but configurable during index creation.
-- No stemming is performed while indexing a tag field.
 - Only prefix, exact pre filters can be performed on a tag field. Suffix, infix queries are not supported.
 - By default, tags are case insensitive. For example, "Blue" and "BLUE" both will be indexed as "blue" and will yield the
     same result in a hybrid query.
