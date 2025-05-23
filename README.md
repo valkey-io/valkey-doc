@@ -7,13 +7,16 @@ for generating content for the website and man pages.
 
 This repo comes with a Makefile to build and install man pages.
 
-    make VALKEY_ROOT=path/to/valkey VALKEY_BLOOM_ROOT=path/to/valkey-bloom VALKEY_JSON_ROOT=path/to/valkey-json
-    sudo make install INSTALL_MAN_DIR=/usr/local/share/man
+```bash
+make VALKEY_ROOT=path/to/valkey VALKEY_BLOOM_ROOT=path/to/valkey-bloom              \
+     VALKEY_JSON_ROOT=path/to/valkey-json VALKEY_SEARCH_ROOT=path/to/valkey-search  \
+sudo make install INSTALL_MAN_DIR=/usr/local/share/man
+```
 
 Prerequisites: GNU Make, Python 3, Python 3 YAML (pyyaml), Pandoc.
 Additionally, the scripts need access to the valkey code repo,
-where metadata files about the commands are stored. Additionally
-access to the valkey-bloom and valkey-json repos are optional.
+where metadata files about the commands are stored. Additionally,
+access to `valkey-bloom`, `valkey-json` and `valkey-search` repos is optional.
 
 The pages are generated under `_build/man/` by default. The default install
 location is `/usr/local/share/man` (in the appropriate subdirectories).
@@ -66,7 +69,7 @@ The path follows the pattern: ``clients/{language}/{repository}.json``.
 The ``{language}`` component of the path is the path-safe representation
 of the full language name which is mapped in [languages.json](./languages.json).
 
-Each client's JSON object represents the details displayed on the [clients documentation page](https://valkey.io/clients/), which are also detailed in [clients/README.md](clients/README.md). 
+Each client's JSON object represents the details displayed on the [clients documentation page](https://valkey.io/clients/), which are also detailed in [clients/README.md](clients/README.md).
 
 For example [clients/go/valkey-go.json](./clients/go/valkey-go.json):
 
