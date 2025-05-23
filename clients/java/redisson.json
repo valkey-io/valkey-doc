@@ -1,7 +1,7 @@
 {
     "name": "redisson",
     "description": "Redisson is a Valkey & Redis Java client and Real-Time Data Platform. Implements over 50 Valkey based Java objects and services. Integrated with Spring, Hibernate, MyBatis, JCache, Quarkus, Micronaut, Helidon.",
-    "repo":"https://github.com/redisson/redisson",
+    "repo": "https://github.com/redisson/redisson",
     "installation": [
         {
             "type": "Maven",
@@ -10,12 +10,11 @@
         {
             "type": "Gradle",
             "command":"implementation 'org.redisson:redisson:+'"
-
         }
     ],
-    "version":"v3.47.0",
-    "version_released":"2025-05-21",
-    "language":"java",
+    "version": "v3.47.0",
+    "version_released": "2025-05-21",
+    "language": "java",
     "license": "Apache-2.0",
     "read_from_replica": true,
     "smart_backoff_to_prevent_connection_storm": false,
