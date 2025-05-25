@@ -17,6 +17,17 @@ Users can index data using either **[Valkey Hash](/topics/hashes)** or **[Valkey
 While Valkey-Search currently focuses on Vector Search, its goal is to extend Valkey into a full-fledged search engine,
 supporting full-text search and additional indexing options.
 
+## Use-Cases Where **Valkey-Search** Shines
+
+Valkey-Search's ability to search billions of vectors with millisecond latencies makes it ideal for real-time applications such as:
+
+- Personalized Recommendations – Deliver instant, highly relevant recommendations based on real-time user interactions.
+- Fraud Detection & Security – Identify anomalies and suspicious activity with ultra-fast similarity matching.
+- Conversational AI & Chatbots – Enhance response accuracy and relevance by leveraging rapid vector-based retrieval.
+- Image & Video Search – Enable multimedia search through real-time similarity detection.
+- GenAI & Semantic Search – Power advanced AI applications with efficient vector retrieval for natural language understanding.
+
+
 ## Supported Commands
 
 ```plaintext
@@ -28,24 +39,6 @@ FT.SEARCH
 ```
 
 For a detailed description of the supported commands, examples and configuration options, see the [Command Reference](/commands/#search).
-
-## Configuration
-
-### Static configuration
-
-The following list of configurations can be passed to the `loadmodule` command:
-
-1. `--reader-threads`: Controls the amount of threads executing queries.
-2. `--writer-threads`: Controls the amount of threads processing index mutations.
-3. `--use-coordinator`: Cluster mode enabler.
-4. `--hnsw-block-size`: Controls the HNSW index resize increment steps.
-5. `--log-level` Controls the log verbosity level. Possible values are: `debug`, `verbose`, `notice` and `warning`
-
-### Runtime configuration
-
-The following list of configurations can be modified at runtime using the `CONFIG SET` command:
-
-1. `search.hnsw-block-size:`: Controls the HNSW index resize increment steps.
 
 ## Scaling
 
@@ -157,14 +150,14 @@ The following metrics are added to the `INFO` command's output:
 - `search_number_of_indexes`: Index schema total count
 - `search_number_of_attributes`: Total count of attributes for all indexes
 - `search_total_indexed_documents`: Total count of all keys for all indexes
-- `search_background_indexing_status` (String) The status of the indexing process. `NO_ACTIVITY` indicates idle indexing.
-- `search_failure_requests_count`: A count of all failed requests, including syntax errors.
+- `search_background_indexing_status` (String) The status of the indexing process. `NO_ACTIVITY` indicates idle indexing
+- `search_failure_requests_count`: A count of all failed requests, including syntax errors
 - `search_successful_requests_count`: A count of all successful requests
-- `search_hnsw_create_exceptions_count`: Count of HNSW creation exceptions.
-- `search_hnsw_search_exceptions_count`: Count of HNSW search exceptions
-- `search_hnsw_remove_exceptions_count`: Count of HNSW removal exceptions.
-- `search_hnsw_add_exceptions_count`: Count of HNSW addition exceptions.
-- `search_hnsw_modify_exceptions_count`: Count of HNSW modification exceptions
+- `search_hnsw_create_exceptions_count`: Count of HNSW creation unexpected errors
+- `search_hnsw_search_exceptions_count`: Count of HNSW search unexpected errors
+- `search_hnsw_remove_exceptions_count`: Count of HNSW removal unexpected errors
+- `search_hnsw_add_exceptions_count`: Count of HNSW addition unexpected errors
+- `search_hnsw_modify_exceptions_count`: Count of HNSW modification unexpected errors
 - `search_modify_subscription_skipped_count`: Count of skipped subscription modifications
 - `search_remove_subscription_successful_count`: Count of successful subscription removals
 - `search_remove_subscription_skipped_count`: Count of skipped subscription removals
@@ -174,3 +167,27 @@ The following metrics are added to the `INFO` command's output:
 - `search_add_subscription_skipped_count`: Count of skipped subscription adding processes
 - `search_modify_subscription_failure_count`: Count of failed subscription modifications
 - `search_modify_subscription_successful_count`: Count of successful subscription modifications
+
+## Configuration
+
+### Static configuration
+
+The following list of configurations can be passed to the `loadmodule` command:
+
+1. `--reader-threads`: (Optional) Controls the amount of threads executing queries. (Default: number of physical CPU cores on the host machine)
+2. `--writer-threads`: (Optional) Controls the amount of threads processing index mutations. (Default: number of physical CPU cores on the host machine)
+3. `--use-coordinator`: (Optional) Cluster mode enabler. Default: `false`.
+4. `--hnsw-block-size`:  (Optional) Specifies the allocation block size used by the HNSW graph for storing new vectors. Larger block
+   sizes may improve performance by enhancing CPU cache efficiency, but come at the cost of increased memory usage due
+   to pre-allocation for potential future growth. (Default: 10K)
+5. `--log-level` Controls the log verbosity level. Possible values are: `debug`, `verbose`, `notice` and `warning`. (Default: Valkey's log level)
+
+### Runtime configuration
+
+The following list of configurations can be modified at runtime using the `CONFIG SET` command:
+
+1. `search.hnsw-block-size:`: Specifies the allocation block size used by the HNSW graph for storing new vectors. Larger block
+   sizes may improve performance by enhancing CPU cache efficiency, but come at the cost of increased memory usage due
+   to pre-allocation for potential future growth. (Default: 10K)
+
+

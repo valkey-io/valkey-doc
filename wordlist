@@ -1039,3 +1039,7 @@ search_hnsw_search_exceptions_count
 search_hnsw_remove_exceptions_count
 search_hnsw_add_exceptions_count
 search_hnsw_modify_exceptions_count
+pre-allocation
+Valkey-Search's
+Chatbots
+GenAI
