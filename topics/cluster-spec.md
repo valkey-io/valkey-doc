@@ -31,7 +31,7 @@ to force certain keys to be stored in the same hash slot. However, during
 manual resharding, multi-key operations may become unavailable for some time
 while single-key operations are always available.
 
-Valkey Cluster supports multiple databases, similar to standalone mode but with some extra restrictions. 
+Starting with version 9.0, Valkey cluster supports multiple databases, similar to standalone mode but with some additional restrictions.
 
 ## Client and Server roles in the Valkey cluster protocol
 
