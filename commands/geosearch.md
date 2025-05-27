@@ -1,16 +1,20 @@
-Return the members of a sorted set populated with geospatial information using `GEOADD`, which are within the borders of the area specified by a given shape. This command extends the `GEORADIUS` command, so in addition to searching within circular areas, it supports searching within rectangular areas.
+Return the members of a sorted set populated with geospatial information using `GEOADD`, which are within the borders of the area specified by a given shape. This command extends the `GEORADIUS` command, so in addition to searching within circular areas, it supports searching within rectangular areas and it supports searching within a "polygon" which is a user defined area enclosed by polygon vertices.
 
 This command should be used in place of the deprecated `GEORADIUS` and `GEORADIUSBYMEMBER` commands.
-
-The query's center point is provided by one of these mandatory options:
-
-* `FROMMEMBER`: Use the position of the given existing `<member>` in the sorted set.
-* `FROMLONLAT`: Use the given `<longitude>` and `<latitude>` position.
 
 The query's shape is provided by one of these mandatory options:
 
 * `BYRADIUS`: Similar to `GEORADIUS`, search inside circular area according to given `<radius>`.
 * `BYBOX`: Search inside an axis-aligned rectangle, determined by `<height>` and `<width>`.
+* `BYPOLYGON`: Search within an area enclosed by the polygon vertices, determined by `<num-vertices> <lon> <lat> [<lon> <lat>  ...]`.
+
+For `BYBOX` and `BYRADIUS` based queries, the center point is provided by one of these mandatory options:
+
+* `FROMMEMBER`: Use the position of the given existing `<member>` in the sorted set.
+* `FROMLONLAT`: Use the given `<longitude>` and `<latitude>` position.
+
+Note: In case of `BYPOLYGON` based queries, the center point and the bounding box are computed based on the polygon vertices of the command.
+With this option, providing `FROMMEMBER` or `FROMLONLAT` is invalid.
 
 The command optionally returns additional information using the following options:
 
@@ -54,5 +58,17 @@ so to query very large areas with a very small `COUNT` option may be slow even i
 4) 1) "edge1"
    2) "279.7405"
    3) 1) "12.7584877610206604"
+      2) "38.78813451624225195"
+127.0.0.1:6379> GEOSEARCH Sicily BYPOLYGON 5 12.41098696654226 38.05033923003755 15.107936245794182 38.00616649901906 18.148439288534455 38.63804787603499 17.80831874257693 39.50316813110968 12.458468633214036 38.57719533463012
+1) "Palermo"
+2) "edge2"
+127.0.0.1:6379> GEOSEARCH Sicily BYPOLYGON 5 12.41098696654226 38.05033923003755 15.107936245794182 38.00616649901906 18.148439288534455 38.63804787603499 17.80831874257693 39.50316813110968 12.458468633214036 38.57719533463012 ASC WITHCOORD WITHDIST
+1) 1) "Palermo"
+   2) "166482.0159"
+   3) 1) "13.36138933897018433"
+      2) "38.11555639549629859"
+2) 1) "edge2"
+   2) "180861.7725"
+   3) 1) "17.24151045083999634"
       2) "38.78813451624225195"
 ```
