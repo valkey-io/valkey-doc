@@ -5,12 +5,12 @@ description: >
 ---
 
 Geospatial indexes let you store coordinates and search for them.
-This data structure is useful for finding nearby points within a given radius or bounding box.
+This data structure is useful for finding nearby points within a given radius, bounding box, or "polygon" shaped area.
 
 ## Basic commands
 
 * `GEOADD` adds a location to a given geospatial index (note that longitude comes before latitude with this command).
-* `GEOSEARCH` returns locations with a given radius or a bounding box.
+* `GEOSEARCH` returns locations with a given radius, bounding box, or "polygon" shaped area enclosed by polygon vertices.
 
 See the [complete list of geospatial index commands](../commands/#geo).
 
