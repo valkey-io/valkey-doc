@@ -174,20 +174,22 @@ The following metrics are added to the `INFO` command's output:
 
 The following list of configurations can be passed to the `loadmodule` command:
 
-1. `--reader-threads`: (Optional) Controls the amount of threads executing queries. (Default: number of physical CPU cores on the host machine)
-2. `--writer-threads`: (Optional) Controls the amount of threads processing index mutations. (Default: number of physical CPU cores on the host machine)
-3. `--use-coordinator`: (Optional) Cluster mode enabler. Default: `false`.
-4. `--hnsw-block-size`:  (Optional) Specifies the allocation block size used by the HNSW graph for storing new vectors. Larger block
-   sizes may improve performance by enhancing CPU cache efficiency, but come at the cost of increased memory usage due
-   to pre-allocation for potential future growth. (Default: 10K)
-5. `--log-level` Controls the log verbosity level. Possible values are: `debug`, `verbose`, `notice` and `warning`. (Default: Valkey's log level)
+1. `--use-coordinator`: (Optional) Cluster mode enabler. Default: `false`.
 
 ### Runtime configuration
 
 The following list of configurations can be modified at runtime using the `CONFIG SET` command:
 
-1. `search.hnsw-block-size:`: Specifies the allocation block size used by the HNSW graph for storing new vectors. Larger block
+1. `search.hnsw-block-size`: Specifies the allocation block size used by the HNSW graph for storing new vectors. Larger block
    sizes may improve performance by enhancing CPU cache efficiency, but come at the cost of increased memory usage due
    to pre-allocation for potential future growth. (Default: 10K)
+2. `search.reader-threads`: Controls the amount of threads executing queries. (Default: number of physical CPU cores on the host machine)
+3. `search.writer-threads`: Controls the amount of threads processing index mutations. (Default: number of physical CPU cores on the host machine)
+4. `search.log-level` Controls the log verbosity level. Possible values are: `debug`, `verbose`, `notice` and `warning`. (Default: Valkey's log level)
 
+**NOTE**
+---
 
+All runtime configuration settings listed above can also be applied when starting the module. To do this, simply replace
+the `search.` prefix with `--` in the parameter name. For instance, if you want to set the `search.hnsw-block-size` parameter
+at startup, use `--hnsw-block-size <VALUE>` in the `loadmodule` configuration line.
