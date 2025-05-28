@@ -12,12 +12,12 @@
             "command":"implementation 'org.redisson:redisson:+'"
         }
     ],
-    "version": "v3.47.0",
-    "version_released": "2025-05-21",
+    "version": "v3.48.0",
+    "version_released": "2025-05-27",
     "language": "java",
     "license": "Apache-2.0",
     "read_from_replica": true,
-    "smart_backoff_to_prevent_connection_storm": false,
+    "smart_backoff_to_prevent_connection_storm": true,
     "pubsub_state_restoration": true,
     "cluster_scan": true,
     "latency_based_read_from_replica": false,
