@@ -15,5 +15,11 @@
         "name": "valkey-json",
         "repo": "https://github.com/valkey-io/valkey-json",
         "description": "Module that allows users to use the JSON data type"
+    },
+
+    "valkey_ldap": {
+        "name": "valkey-ldap",
+        "repo": "https://github.com/valkey-io/valkey-ldap",
+        "description": "Module that adds support for LDAP authentication"
     }
 }
