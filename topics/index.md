@@ -77,6 +77,7 @@ Tutorials & FAQ
 
 * [Quick start](quickstart.md): Get started with Valkey.
 * [Mass insertion of data](mass-insertion.md): How to add a big amount of data to a Valkey instance in a short time.
+* [Bloom filters](bloomfilter_getting_started.md): How to utilize the bloom filter data type.
 * [Distributed locks](distlock.md): Implementing a distributed lock manager.
 * [Secondary indexes](indexing.md): How to simulate secondary indexes, composed indexes and traverse graphs using various data structures.
 * [ARM and Raspberry Pi](ARM.md): ARM and the Raspberry Pi are supported platforms. This page contains general information and benchmarks.
