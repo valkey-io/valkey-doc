@@ -170,6 +170,12 @@ To connect to your Valkey instance using valkey-cli:
 $ docker run -it --network some-network --rm valkey/valkey-extensions valkey-cli -h my-valkey-extensions
 ```
 
+If you need to create the network you can do this by:
+
+```bash
+$ docker network create some-network
+```
+
 Make sure your container is on the same network you are trying to connect to it from, this connection can be done by:
 
 ```bash

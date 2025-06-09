@@ -617,6 +617,7 @@ pmessage
 Pool2
 POP3
 ppa:redislabs
+pre-built
 pre-conditions
 pre-configured
 pre-existing
@@ -713,6 +714,7 @@ REPL
 repl-diskless-load
 repo
 representable
+reproducibility
 reprovisioned
 repy
 requirepass
