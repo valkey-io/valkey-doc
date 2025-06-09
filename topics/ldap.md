@@ -75,11 +75,11 @@ While `bind` mode is simpler and faster, as it directly constructs the DN from t
 
 On the other hand, `search+bind` mode provides greater flexibility, allowing authentication in complex directory structures where usernames may not directly map to DN components. 
 
-However, this flexibility comes at the cost of additional LDAP requests, making it slightly less performant than `bind` mode.
+However, this flexibility comes at the cost of additional LDAP requests, making it slightly slower than `bind` mode.
 
 ## Setting Up Valkey Users
 
-The LDAP server is used solely for authenticating users. Authorization rules for each user must be configured in Valkey using the `ACL SETUSER` command. This means that user accounts must exist in Valkey in order for LDAP authentication to succeed.
+The LDAP server is used solely for authenticating users. Authorization rules for each user must be configured in Valkey using either the `ACL SETUSER` command, through entries in `valkey.conf`, or using an [ACL file](../acl). This means that user accounts must exist in Valkey in order for LDAP authentication to succeed.
 
 For example, to allow the user `bob` to authenticate via LDAP, a corresponding user named `bob` must be present in the Valkey ACL database.
 
@@ -95,9 +95,11 @@ After creating the user `bob` in Valkey, authentication will only be possible th
 
 ## Setting Up LDAP module
 
+All module configuration options are prefixed with `ldap.` and can be set using the `CONFIG SET` command. To view the current values of all module-related options, use the command `CONFIG GET ldap.*`.
+
 After the module is loaded in Valkey, the first thing that is required for the LDAP authentication to work is to configure the list of LDAP servers that should be used for the authentication.
 
-The configuration option `ldap.server` accepts a space separated list of LDAP URLs of the form `ldap[s]://<domain>:<port>`.
+The configuration option `ldap.servers` accepts a space separated list of LDAP URLs of the form `ldap[s]://<domain>:<port>`.
 
 After setting this option, the module will initialize the connection pools to the configured LDAP servers.
 
@@ -119,6 +121,48 @@ To verify LDAP server certificates, use the `ldap.tls_ca_cert_path` option to sp
 
 If you need to use client certificates for authentication, configure the `ldap.tls_cert_path` and `ldap.tls_key_path` options with the paths to your client certificate and private key.
 
+## Monitoring
+
+The module extends the output of the `INFO` command by adding a new section called `ldap_status`, which provides status information for each LDAP server configured via the `ldap.servers` option.
+
+The `ldap_status` section includes a dictionary entry for each server, with the following possible fields:
+
+- `url`: The server URL as specified in the `ldap.servers` configuration.
+- `status`: Indicates the server's health. Possible values are `healthy` (the server is reachable and responds to LDAP operations) or `unhealthy` (the server cannot process LDAP operations).
+- `ping_time`: The round-trip time (RTT) for a simple LDAP operation, in milliseconds. This field is shown only for `healthy` servers.
+- `error`: A description of the error that caused the server to be marked as `unhealthy`. This field is shown only for `unhealthy` servers.
+
+Example output from the `INFO` command:
+
+```
+# ldap_status
+ldap_server_0:url=ldap://<hostname>,status=unhealthy,error=<some error message>
+ldap_server_1:url=ldaps://<hostname>,status=healthy,ping_time(ms)=1.645
+```
+
+## Advanced Configuration
+
+The LDAP module provides several configuration options to help adapt authentication behavior to your network environment and LDAP server load.
+
+### LDAP Server Connection Management
+
+Because LDAP servers are often shared by multiple applications, it's important to limit the number of connections each application opens to avoid exhausting the server's resources.
+
+The `ldap.connection_pool_size` option specifies the maximum number of connections the module will open to each configured LDAP server. Set this value based on the expected number of concurrent authentication requests in Valkey and the maximum number of connections your LDAP server can support.
+
+If the number of parallel authentication requests exceeds the configured pool size, authentication latency may increase as requests wait for available connections.
+
+### LDAP Server Failure Detection
+
+The module includes a background process that periodically checks the status of each configured LDAP server.
+
+The frequency of these checks is controlled by the `ldap.failure_detector_interval` option, which accepts a value in seconds.
+
+If the failure detector determines that an LDAP server is unreachable or unable to process LDAP operations, it marks the server as "unhealthy" and automatically fails over authentication requests to another available LDAP server.
+
+If network latency between Valkey and the LDAP server is variable, or if the LDAP server is under heavy load, you can adjust the connection and operation timeouts using the `ldap.timeout_connection` and `ldap.timeout_ldap_operation` options.
+
+
 ## Configuration Options
 
 ### General Options
@@ -133,7 +177,7 @@ If you need to use client certificates for authentication, configure the `ldap.t
 
 | Config Name             | Type    | Default | Description                                                                                      |
 |-------------------------|---------|---------|--------------------------------------------------------------------------------------------------|
-| `ldap.use_starttls`     | boolean | `no`    | Whether to upgrade to a TLS-encrypted connection using the StartTLS operation (RFC 4513).         |
+| `ldap.use_starttls`     | boolean | `no`    | Whether to upgrade to a TLS-encrypted connection using the STARTTLS operation (RFC 4513).         |
 | `ldap.tls_ca_cert_path` | string  | `""`    | Filesystem path to the CA certificate for validating the LDAP server certificate.                 |
 | `ldap.tls_cert_path`    | string  | `""`    | Filesystem path to the client certificate for TLS connections to the LDAP server.                 |
 | `ldap.tls_key_path`     | string  | `""`    | Filesystem path to the client certificate key for TLS connections to the LDAP server.             |
@@ -166,21 +210,3 @@ If you need to use client certificates for authentication, configure the `ldap.t
 | `ldap.timeout_connection`    | number | `10`    | Number of seconds to wait when connecting to an LDAP server before timing out.                    |
 | `ldap.timeout_ldap_operation`| number | `10`    | Number of seconds to wait for an LDAP operation before timing out.                                |
 
-## Monitoring
-
-The module extends the output of the `INFO` command by adding a new section called `ldap_status`, which provides status information for each LDAP server configured via the `ldap.servers` option.
-
-The `ldap_status` section includes a dictionary entry for each server, with the following possible fields:
-
-- `url`: The server URL as specified in the `ldap.servers` configuration.
-- `status`: Indicates the server's health. Possible values are `healthy` (the server is reachable and responds to LDAP operations) or `unhealthy` (the server cannot process LDAP operations).
-- `ping_time`: The round-trip time (RTT) for a simple LDAP operation, in milliseconds. This field is shown only for `healthy` servers.
-- `error`: A description of the error that caused the server to be marked as `unhealthy`. This field is shown only for `unhealthy` servers.
-
-Example output from the `INFO` command:
-
-```
-# ldap_status
-ldap_server_0:url=ldap://<hostname>,status=unhealthy,error=<some error message>
-ldap_server_1:url=ldaps://<hostname>,status=healthy,ping_time(ms)=1.645
-```

@@ -271,6 +271,7 @@ faq
 favorited
 fdatasync
 filesystem
+Filesystem
 firewalled
 firewalling
 first-arg
@@ -438,6 +439,7 @@ latencies
 latencystats
 launchd
 lazyfree-lazy-user-flush
+LDAP-based
 ldb
 leaderboard
 Leaderboards
@@ -851,6 +853,7 @@ subevents
 suboptimal
 subsequence
 substring
+subtree
 sudo
 SVGs
 superset
@@ -871,6 +874,7 @@ tcp
 Tencent
 the-redis-keyspace
 TLS-enabled
+TLS-encrypted
 tls-port
 tmp
 tmux
