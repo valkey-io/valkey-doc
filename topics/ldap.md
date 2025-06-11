@@ -33,7 +33,7 @@ uid: ben
 
 In this case, the DN is `uid=ben,ou=engineering,dc=valkey,dc=io`, and the username is `ben`. To use `bind` mode, set the prefix to `uid=` and the suffix to `,ou=engineering,dc=valkey,dc=io`.
 
-You can configure these values using the `ldap.bind_prefix` and `ldap.bind_suffix` options.
+You can configure these values using the `ldap.bind_dn_prefix` and `ldap.bind_dn_suffix` options.
 
 ## Search+Bind Authentication
 
@@ -127,17 +127,17 @@ The module extends the output of the `INFO` command by adding a new section call
 
 The `ldap_status` section includes a dictionary entry for each server, with the following possible fields:
 
-- `url`: The server URL as specified in the `ldap.servers` configuration.
+- `host`: The server hostname extracted from the URL specified in the `ldap.servers` configuration.
 - `status`: Indicates the server's health. Possible values are `healthy` (the server is reachable and responds to LDAP operations) or `unhealthy` (the server cannot process LDAP operations).
-- `ping_time`: The round-trip time (RTT) for a simple LDAP operation, in milliseconds. This field is shown only for `healthy` servers.
+- `ping_time_ms`: The round-trip time (RTT) for a simple LDAP operation, in milliseconds. This field is shown only for `healthy` servers.
 - `error`: A description of the error that caused the server to be marked as `unhealthy`. This field is shown only for `unhealthy` servers.
 
 Example output from the `INFO` command:
 
 ```
 # ldap_status
-ldap_server_0:url=ldap://<hostname>,status=unhealthy,error=<some error message>
-ldap_server_1:url=ldaps://<hostname>,status=healthy,ping_time(ms)=1.645
+ldap_server_0:host=<hostname>,status=unhealthy,error=<some error message>
+ldap_server_1:host=<hostname>,status=healthy,ping_time_ms=1.645
 ```
 
 ## Advanced Configuration
@@ -169,7 +169,6 @@ If network latency between Valkey and the LDAP server is variable, or if the LDA
 
 | Config Name            | Type                         | Default | Description                                                                                                   |
 |------------------------|------------------------------|---------|---------------------------------------------------------------------------------------------------------------|
-| `ldap.auth_enabled`    | boolean                      | `yes`   | Enables or disables LDAP authentication processing by the module.                                              |
 | `ldap.auth_mode`       | Enum(`bind`, `search+bind`)  | `bind`  | The authentication method.    |
 | `ldap.servers`         | string                       | `""`    | Space-separated list of LDAP URLs in the form `ldap[s]://<domain>:<port>`.                                    |
 
