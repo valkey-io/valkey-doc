@@ -84,7 +84,13 @@ To acquire the lock, the way to go is the following:
 The command will set the key only if it does not already exist (`NX` option), with an expire of 30000 milliseconds (`PX` option).
 The key is set to a value “my\_random\_value”. This value must be unique across all clients and all lock requests.
 
-Basically the random value is used in order to release the lock in a safe way, with a script that tells Valkey: remove the key only if it exists and the value stored at the key is exactly the one I expect to be. This is accomplished by the following Lua script:
+Basically the random value is used in order to release the lock in a safe way, with a script that tells Valkey: remove the key only if it exists and the value stored at the key is exactly the one I expect to be.
+
+In Valkey 9.0.0 and later, this can be done atomically using the built-in DELIFEQ command:
+
+    DELIFEQ resource_name my_random_value
+
+In earlier versions of Valkey, the same behavior can be achieved using a Lua script:
 
     if server.call("get",KEYS[1]) == ARGV[1] then
         return server.call("del",KEYS[1])

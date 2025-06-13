@@ -73,3 +73,7 @@ An example of unlock script would be similar to the following:
     end
 
 The script should be called with `EVAL ...script... 1 resource-name token-value`
+
+## See also
+
+* [`DELIFEQ`](delifeq.md) - Deletes the key if its value matches the given string.
