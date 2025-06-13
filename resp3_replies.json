@@ -399,6 +399,11 @@
   "DEL": [
     "[Integer reply](../topics/protocol.md#integers): the number of keys that were removed."
   ],
+  "DELIFEQ": [
+    "One of the following:",
+    "* [Integer reply](../topics/protocol.md#integers): `1` if the key was deleted.",
+    "* [Integer reply](../topics/protocol.md#integers): `0` if the key was not deleted because it did not exist or the value was not equal to the provided value."
+  ],
   "DISCARD": [
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
   ],
