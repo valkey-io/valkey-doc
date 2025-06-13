@@ -5,7 +5,7 @@ description: >
 ---
 
 Geospatial indexes let you store coordinates and search for them.
-This data structure is useful for finding nearby points within a given radius, bounding box, or "polygon" shaped area.
+This data structure is useful for finding nearby points within a given radius, bounding box, or polygon shaped area.
 
 ## Basic commands
 
