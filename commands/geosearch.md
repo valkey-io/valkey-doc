@@ -1,4 +1,4 @@
-Return the members of a sorted set populated with geospatial information using `GEOADD`, which are within the borders of the area specified by a given shape. This command extends the `GEORADIUS` command, so in addition to searching within circular areas, it supports searching within rectangular areas and it supports searching within a "polygon" which is a user defined area enclosed by polygon vertices.
+Return the members of a sorted set populated with geospatial information using `GEOADD`, which are within the borders of the area specified by a given shape. This command extends the `GEORADIUS` command, so in addition to searching within circular areas, it supports searching within rectangular areas and polygon shaped areas.
 
 This command should be used in place of the deprecated `GEORADIUS` and `GEORADIUSBYMEMBER` commands.
 
@@ -13,7 +13,7 @@ For `BYBOX` and `BYRADIUS` based queries, the center point is provided by one of
 * `FROMMEMBER`: Use the position of the given existing `<member>` in the sorted set.
 * `FROMLONLAT`: Use the given `<longitude>` and `<latitude>` position.
 
-Note: In case of `BYPOLYGON` based queries, the center point and the bounding box are computed based on the polygon vertices of the command.
+In case of `BYPOLYGON` based queries, the center point and the bounding box are computed based on the polygon vertices of the command.
 With this option, providing `FROMMEMBER` or `FROMLONLAT` is invalid.
 
 The command optionally returns additional information using the following options:

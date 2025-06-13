@@ -10,7 +10,7 @@ This data structure is useful for finding nearby points within a given radius, b
 ## Basic commands
 
 * `GEOADD` adds a location to a given geospatial index (note that longitude comes before latitude with this command).
-* `GEOSEARCH` returns locations with a given radius, bounding box, or "polygon" shaped area enclosed by polygon vertices.
+* `GEOSEARCH` returns locations with a given radius, bounding box, or polygon shaped area.
 
 See the [complete list of geospatial index commands](../commands/#geo).
 
