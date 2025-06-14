@@ -5,12 +5,12 @@ description: >
 ---
 
 Geospatial indexes let you store coordinates and search for them.
-This data structure is useful for finding nearby points within a given radius or bounding box.
+This data structure is useful for finding nearby points within a given radius, bounding box, or polygon shaped area.
 
 ## Basic commands
 
 * `GEOADD` adds a location to a given geospatial index (note that longitude comes before latitude with this command).
-* `GEOSEARCH` returns locations with a given radius or a bounding box.
+* `GEOSEARCH` returns locations with a given radius, bounding box, or polygon shaped area.
 
 See the [complete list of geospatial index commands](../commands/#geo).
 
@@ -38,4 +38,13 @@ Find all locations within a 5 kilometer radius of a given location, and return t
    2) "1.4979"
 3) 1) "station:3"
    2) "2.2441"
+```
+
+Searching for all stations in a custom defined area or an irregularly shaped area by using the `BYPOLYGON` search option.
+In this example, we are searching within the Downtown Oakland area using polygon vertices that enclose this area.
+
+```
+127.0.0.1:6379> GEOSEARCH bikes:rentable BYPOLYGON  5 -122.27490648273738 37.80962123634505 -122.26098358494566 37.80439605986292 -122.26584066888834 37.79562786995921 -122.27929133687068 37.80124920239011 -122.2783398259964 37.80451967488848
+1) "station:1"
+2) "station:2"
 ```
