@@ -22,7 +22,9 @@ Programming with Valkey
 * [Transactions](transactions.md): Valkey's approach to atomic transactions.
 * [Client side caching](client-side-caching.md): How a client can be notified by the server when a key has changed.
 * [Keyspace notifications](notifications.md): Get notifications of keyspace events via Pub/Sub.
+* [Keyspace management](keyspace.md): How to alter, query, and navigate the keyspace.
 * [Protocol specification](protocol.md): The client-server protocol, for client authors.
+* [Sentinel client spec](sentinel-clients.md): How to build clients for Valkey Sentinel.
 
 Server-side scripting in Valkey
 ---
@@ -36,6 +38,7 @@ Server-side scripting in Valkey
 Administration
 ---
 * [Installation](installation.md): How to install and configure Valkey. This targets people without prior experience with Valkey.
+* [Release Download](https://valkey.io/download/releases/): Lists links to download all current and previous releases.
 * [valkey-cli](cli.md): The Valkey command line interface, used for administration, troubleshooting and experimenting with Valkey.
 * [valkey-server](server.md): How to run the Valkey server.
 * [Configuration](valkey.conf.md): How to configure Valkey.
@@ -50,7 +53,8 @@ Administration
 * [Signals Handling](signals.md): How Valkey handles signals.
 * [Connections Handling](clients.md): How Valkey handles clients connections.
 * [Sentinel](sentinel.md): Valkey Sentinel is one of the official high availability deployment modes.
-* [Releases](releases.md): Valkey's development cycle and version numbering.
+* [Releases and Versioning](releases.md): Valkey's development cycle and version numbering.
+* [License](license.md): License information for Valkey.
 
 Valkey Cluster
 ---
@@ -71,6 +75,13 @@ Performance
 * [Latency monitoring](latency-monitor.md): Integrated latency monitoring and reporting help tuning for low latency.
 * [valkey-benchmark](benchmark.md): The benchmarking tool shipped with Valkey.
 * [On-CPU profiling and tracing](performance-on-cpu.md): How to find on-CPU resource bottlenecks.
+
+  
+Troubleshooting
+---
+* [Debugging](debugging.md): How to debug Valkey server processes.
+* [Diagnosing latency issues](latency.md): How to diagnose latency problems with Valkey.
+
 
 Tutorials & FAQ
 ---
