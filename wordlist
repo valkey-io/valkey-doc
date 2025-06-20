@@ -138,6 +138,7 @@ codenamed
 Collina's
 commandstats
 commnad
+conf
 Config
 config
 config-file
@@ -534,6 +535,7 @@ mylist
 mymaster
 mystream
 myuser
+myvalkey
 myzset
 namespace
 namespacing
