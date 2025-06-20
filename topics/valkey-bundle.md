@@ -20,7 +20,7 @@ The fastest way to start using Valkey Bundle is by downloading the official imag
     docker pull valkey/valkey-bundle
     ```
 
-    This command downloads the most recent stable image of the Valkey Bundle, which includes the Valkey server along with the preloaded modules.
+    This command downloads the most recent stable image of Valkey Bundle, which includes the Valkey server along with the preloaded modules.
 
     The Valkey Bundle image also supports multiple tags, allowing you to control the specific version and operating system base. This allows for more control over the environment, whether you’re aiming for a reproducible build (using a version like 8.1-bookworm) or a minimal footprint (alpine variant).
 
@@ -84,34 +84,36 @@ Valkey Bundle supports more advanced setup options too including:
     
     Persistent storage allows you to save data snapshots locally. The command below is an example of how you can save a snapshot every 60 seconds if at least one write occurred. 
     
-    ```
-    bash docker run --name my-valkey-bundle -d valkey/valkey-bundle valkey-server --save 60 1 --loglevel warning
+    ```bash
+    docker run --name my-valkey-bundle -d valkey/valkey-bundle valkey-server --save 60 1 --loglevel warning
     ```
     
 2. **Custom Flags with Environment Variable**
     
     This allows you to pass additional Valkey flags at runtime using the VALKEY_EXTRA_FLAGS environment variable. This is a flexible way for customizing behavior without needing to modify the existing image or use a custom configuration file. 
     
-    ```
-    bash docker run --env VALKEY_EXTRA_FLAGS='--save 60 1 --loglevel warning' valkey/valkey-bundle
+    ```bash
+    docker run --env VALKEY_EXTRA_FLAGS='--save 60 1 --loglevel warning' valkey/valkey-bundle
     ```
     
 3. **Use a Custom Configuration File**
     
-    If you need full control over your Valkey settings, you can create a custom configuration file and use it inside the container. This allows you to override the default settings using your own valkey.conf file.
+    If you need full control over your Valkey settings, you can create a custom configuration file and use it inside the container. 
+    This allows you to override the default settings using your own valkey.conf file.
 
-    First, ensure you have a valkey.conf file located in a local directory, such as /myvalkey/conf/valkey.conf. The valkey.conf file can include any standard Valkey configuration directives such as memory limits, save intervals, logging levels, and more. The file has a very simple format:
+    First, ensure you have a valkey.conf file located in a local directory, such as /myvalkey/conf/valkey.conf. 
+    The valkey.conf file can include any standard Valkey configuration directives such as memory limits, save intervals, logging levels, and more. The file has a very simple format:
 
-    ```
-    bash keyword arg1 arg2 ... argN
+    ```bash
+    keyword arg1 arg2 ... argN
     ``` 
 
     Check out the [Configuration Documentation](https://valkey.io/topics/valkey.conf/) to learn more.
 
     After setting up the configuration file, run the container with a volume mount that maps your local directory into the container:
     
-    ```
-    bash docker run -v /myvalkey/conf:/usr/local/etc/valkey --name my-valkey-bundle valkey/valkey-bundle valkey-server /usr/local/etc/valkey/valkey.conf
+    ```bash
+    docker run -v /myvalkey/conf:/usr/local/etc/valkey --name my-valkey-bundle valkey/valkey-bundle valkey-server /usr/local/etc/valkey/valkey.conf
     ```
 
     This command mounts your local configuration folder into the container and tells Valkey to start using your custom configuration file.
