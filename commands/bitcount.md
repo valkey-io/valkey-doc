@@ -4,7 +4,7 @@ By default all the bytes contained in the string are examined.
 It is possible to specify the counting operation only in an interval passing the
 additional arguments _start_ and _end_.
 
-Like for the `GETRANGE` command start and end can contain negative values in
+Like for the [GETRANGE](getrange.md) command, start and end can contain negative values in
 order to index bytes starting from the end of the string, where -1 is the last
 byte, -2 is the penultimate, and so forth.
 
@@ -40,7 +40,7 @@ One example is a Web application that needs the history of user visits, so that
 for instance it is possible to determine what users are good targets of beta
 features.
 
-Using the `SETBIT` command this is trivial to accomplish, identifying every day
+Using the [SETBIT](setbit.md) command this is trivial to accomplish, identifying every day
 with a small progressive integer.
 For instance day 0 is the first day the application was put online, day 1 the
 next day, and so forth.
