@@ -90,11 +90,13 @@ Valkey Bundle supports more advanced setup options too including:
     
 2. **Custom Flags with Environment Variable**
     
-    This allows you to pass additional Valkey flags at runtime using the VALKEY_EXTRA_FLAGS environment variable. This is a flexible way for customizing behavior without needing to modify the existing image or use a custom configuration file. 
+    This allows you to pass additional Valkey flags at runtime using the VALKEY_EXTRA_FLAGS environment variable. It is a flexible way to customize behavior without needing to modify the existing image or use a custom configuration file. 
     
     ```bash
     docker run --env VALKEY_EXTRA_FLAGS='--save 60 1 --loglevel warning' valkey/valkey-bundle
     ```
+
+    In this example, the save flag enables data persistence while the loglevel warning flag limits log output to warnings and errors. You can include any [supported Valkey flags](https://github.com/valkey-io/valkey/blob/unstable/valkey.conf) in this variable to further tailor runtime behavior.
     
 3. **Use a Custom Configuration File**
     
