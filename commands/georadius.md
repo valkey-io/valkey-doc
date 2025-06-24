@@ -30,8 +30,8 @@ so to query very large areas with a very small `COUNT` option may be slow even i
 
 By default the command returns the items to the client. It is possible to store the results with one of these options:
 
-* `!STORE`: Store the items in a sorted set populated with their geospatial information.
-* `!STOREDIST`: Store the items in a sorted set populated with their distance from the center as a floating point number, in the same unit specified in the radius.
+* `STORE`: Store the items in a sorted set populated with their geospatial information.
+* `STOREDIST`: Store the items in a sorted set populated with their distance from the center as a floating point number, in the same unit specified in the radius.
 
 ## Read-only variants
 
