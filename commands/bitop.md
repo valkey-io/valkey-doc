@@ -39,7 +39,7 @@ OK
 
 ## Pattern: real time metrics using bitmaps
 
-`BITOP` is a good complement to the pattern documented in the `BITCOUNT` command
+`BITOP` is a good complement to the pattern documented in the [BITCOUNT](bitcount.md) command
 documentation.
 Different bitmaps can be combined in order to obtain a target bitmap where
 the population counting operation is performed.
