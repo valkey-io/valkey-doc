@@ -5,7 +5,7 @@ The standard way to `AUTH` is the two-argument form:
     AUTH <username> <password>
 
 This authenticates the current connection with one of the users
-defined in the ACL list (see `ACL SETUSER` and the official [ACL guide](../topics/acl.md) for more information).
+defined in the ACL list (see [ACL SETUSER](acl-setuser.md) and the official [ACL guide](../topics/acl.md) for more information).
 
 When the single argument form of the command is used, where only the password is specified,
 it is assumed that the implicit username is "default".

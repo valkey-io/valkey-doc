@@ -17,4 +17,4 @@ Example use cases for this command:
 (integer) 2515
 ```
 
-Note that the command implements the full hashing algorithm, including support for **hash tags**, that is the special property of Valkey Cluster key hashing algorithm, of hashing just what is between `{` and `}` if such a pattern is found inside the key name, in order to force multiple keys to be handled by the same node.
+Note that the command implements the full hashing algorithm, including support for [hash tags](../topics/cluster-spec.md#hash-tags), that is the special property of Valkey Cluster key hashing algorithm, of hashing just what is between `{` and `}` if such a pattern is found inside the key name, in order to force multiple keys to be handled by the same node.
