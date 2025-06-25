@@ -60,27 +60,14 @@ In this username example, we can use a Bloom filter to track every username that
 
 ## Tutorial
 
-To use bloom filters with Valkey, you need to:
+**There are two ways to run valkey-bloom:**
+   - **Docker**: Follow the steps here for using the [valkey bundle](valkey-bundle.md)
+   - **Build from source**: Follow the [build instructions](https://github.com/valkey-io/valkey-bloom/blob/unstable/README.md#build-instructions)
 
-1. **Install Valkey**: Follow the [installation guides](installation.md) to install Valkey on your system.
 
-2. **Get the valkey-bloom module**: You have three options:
-   - Use the Docker image: [valkey-extensions](https://hub.docker.com/r/valkey/valkey-bundle)
-   - Download a pre-built binary from the [releases page](https://github.com/valkey-io/valkey-bloom/releases)
-   - Build from source by following the [build instructions](https://github.com/valkey-io/valkey-bloom/blob/unstable/README.md#build-instructions)
+### Usage example with CLI
 
-Once valkey-bloom is built, you can run the Valkey server with the module loaded in two different ways, on server start up:
-```bash
-./valkey-server --loadmodule ./target/release/libvalkey_bloom.so
-```
-You can also load the valkey bloom module on an already running server by running the following command in [valkey-cli](cli.md):
-```bash
-127.0.0.1:6379> MODULE LOAD /path/to/libvalkey_bloom.so
-```
-
-### Usage example
-
-* Create a bloom filter of taken usernames with a 1 in 1000 chance of false positives and 10000 initial capacity.
+* Create a bloom filter to track the usernames which are taken with a 1 in 1000 chance of a false positive and 10000 as the initial capacity.
 ```bash
 127.0.0.1:6379> BF.RESERVE usernames 0.001 10000
 OK
@@ -113,12 +100,12 @@ OK
 3) (integer) 1
 ```
 
-* Get how many users have been created
+* Check how many users have been added to the filter
 ```bash
 127.0.0.1:6379> BF.CARD usernames
 (integer) 4
 ```
-* Get the information surrounding your bloom filter of users
+* View your bloom filter object's usage:
 ```bash
 127.0.0.1:6379> BF.INFO usernames
  1) Capacity
@@ -138,12 +125,12 @@ OK
 15) Max scaled capacity
 16) (integer) 26214300
 ```
-* If you want to limit the number of people who can sign up you can create a non scaling filter. This will create a filter than can only have 1000 items added with a 1 in 10,000 chance of a false positive.
+* If you know the exact number of users who will sign up, or if want to limit the number of items regardless, you can create a non scaling bloom filter. This will create a filter that has capacity for only 1000 items with a 1 in 100,000 chance of a false positive.
 ```bash
 127.0.0.1:6379> BF.RESERVE limited_users 0.00001 1000 NONSCALING
 OK
 ```
-* If you anticipate once initial users have signed up after a while you will get a large increase in users you can set a custom expansion rate.
+* If you anticipate that, once initial users have signed up, you will get a large increase in users after a while, you can set a custom expansion rate.
 ```bash
 127.0.0.1:6379> BF.RESERVE expanding_users 0.001 10000 EXPANSION 4
 OK
@@ -227,27 +214,27 @@ Example of default bloom filter information:
 
 ### When to adjust default configurations
 
-Adjusting the default configurations can be beneficial in several scenarios:
+Adjusting the default configurations below can be used to update the behavior of the default bloom object created and are beneficial in different scenarios:
 
-- **Higher capacity (bf.bloom-capacity)**: Increase this value when you expect to store many items in most of your bloom filters. This reduces the need for scaling operations which can improve performance.
+- **Higher capacity (bf.bloom-capacity)**: Increase this value when you expect to store a larger number of items in all your new bloom filter objects. It increases the overall capacity for non scaling filters. For scaling filters, it increases the starting/initial capacity which potentially reduces the need for additional scaling operations which can improve performance.
 
-- **Lower false positive rate (bf.bloom-fp-rate)**: Decrease this value when accuracy is critical for your application. For example, in fraud detection or security applications where false positives are costly.
+- **Lower false positive rate (bf.bloom-fp-rate)**: Decrease this value when correctness is critical for your application and you want to reduce the number of false positives in all your new bloom filter objects. For example, in fraud detection or security applications where false positives are costly.
 
-- **Higher expansion rate (bf.bloom-expansion)**: Increase this value when you want faster growth of bloom filters that need to scale. This reduces the number of scaling operations but uses more memory quicker.
+- **Higher expansion rate (bf.bloom-expansion)**: Increase this value when you want faster growth of bloom filters that will scale across all your new scaling bloom filter objects. This reduces the number of scaling operations but uses more memory quicker.
 
-- **Lower tightening ratio (bf.bloom-tightening-ratio)**: Adjust this when you want to maintain a more consistent false positive rate across multiple scaling operations. (Not advisable to change this default)
+- **Lower tightening ratio (bf.bloom-tightening-ratio)**: Lower this when you want to maintain a more consistent false positive rate across multiple scaling operations for all your new bloom filter objects. (Not advisable to change this default, as it is already set to a strict value of 0.5)
 
-- **Random seed (bf.bloom-use-random-seed)**: Set to false only when you need deterministic behavior for testing or reproducibility.
+- **Fixed seed (bf.bloom-use-random-seed)**: Set to false only when you want the new bloom filter object creations to use a fixed seed for deterministic occurrence of false positives during item add/exists operations. It can be used for testing or reproducibility.
 
-You can modify these default values using the CONFIG SET command:
+You can modify these default values using the CONFIG SET command. However, note that the effect of the configuration change is only applicable to the bloom objects created after the configuration change where the property is not specified through the command already.  
 
 Example usage of changing all the different properties:
 ```bash
-CONFIG SET bf.bloom-fp-rate 0.001
-CONFIG SET bf.bloom-capacity 1000
-CONFIG SET bf.bloom-expansion 4
-CONFIG SET bf.bloom-tightening-ratio 0.6
-CONFIG SET bf.bloom-use-random-seed false
+127.0.0.1:6379> CONFIG SET bf.bloom-fp-rate 0.001
+127.0.0.1:6379> CONFIG SET bf.bloom-capacity 1000
+127.0.0.1:6379> CONFIG SET bf.bloom-expansion 4
+127.0.0.1:6379> CONFIG SET bf.bloom-tightening-ratio 0.6
+127.0.0.1:6379> CONFIG SET bf.bloom-use-random-seed false
 ```
 
 ### Memory usage limit
@@ -256,18 +243,20 @@ The `bf.bloom-memory-usage-limit` configuration (default 128MB) controls the max
 
 Example usage of increasing the limit:
 ```bash
-CONFIG SET bf.bloom-memory-usage-limit 256mb
+127.0.0.1:6379> CONFIG SET bf.bloom-memory-usage-limit 268435456
 ```
 
-This setting is particularly important for production environments for several reasons:
+Having a limit on the max memory per bloom object prevents them from growing unbounded, thus maintaining server performance during serialization.
 
-- **Resource protection**: Prevents a single bloom filter from consuming excessive memory
-- **Denial of service prevention**: Protects against attacks that might try to create enormous filters
-- **Predictable scaling**: Ensures bloom filters have a known upper bound on resource usage
-
-If your use case requires exceptionally large bloom filters, you can increase this limit. However, be aware that very large bloom filters might impact overall system performance and memory availability for other operations.
+If your use case requires bloom filters with capacity beyond what this limit supports, you can increase this configuration value. However, be aware it can impact overall system performance and memory availability for other operations.
 
 When a bloom filter reaches this memory limit, any operation that would cause it to exceed the limit will fail with an error message indicating that the memory limit would be exceeded.
+
+Example of error returned:
+```bash
+127.0.0.1:6379> bf.add full_filter ne_item
+1) (error) ERR operation exceeds bloom object memory limit
+```
 
 ## Performance
 
@@ -336,6 +325,13 @@ There are two notable validations bloom filters faces.
 
     The memory usage limit per bloom filter by default is defined by the `BF.BLOOM-MEMORY-USAGE-LIMIT` module configuration which has a default value of 128 MB. If a command results in a creation / scale out causing the overall memory usage to exceed this limit, the command is rejected. This config is modifiable and can be increased as needed.
 
+The `BF.INFO` command's `SIZE` field can be used to find out the current size of a bloom filter.
+
+```bash
+127.0.0.1:6379> BF.INFO validate_scale_valid SIZE
+(integer) 384
+```
+
 2. Number of sub filters (in case of scalable bloom filters):
 
     When a bloom filter scales out, a new sub filter is added. The limit on the number of sub filters depends on the false positive rate and tightening ratio. Each sub filter has a stricter false positive, and this is controlled by the tightening ratio. If a command attempting a scale out results in the sub filter reaching a false positive of 0, the command is rejected. 
@@ -359,11 +355,4 @@ The `BF.INFO` command's `MAXSCALEDCAPACITY` field can be used to find out the ma
 ```bash
 127.0.0.1:6379> BF.INFO validate_scale_valid MAXSCALEDCAPACITY
 (integer) 26214300
-```
-
-The `BF.INFO` command's `SIZE` field can be used to find out the current size of a bloom filter.
-
-```bash
-172.31.45.25:6379> BF.INFO validate_scale_valid SIZE
-(integer) 384
 ```
