@@ -1,4 +1,4 @@
-Forces a node to save the `nodes.conf` configuration on disk. Before to return
+Forces a node to save the `nodes.conf` configuration on disk. Before returning,
 the command calls `fsync(2)` in order to make sure the configuration is
 flushed on the computer disk.
 
