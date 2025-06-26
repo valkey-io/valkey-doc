@@ -1,13 +1,13 @@
-The `SCAN` command and the closely related commands `SSCAN`, `HSCAN` and `ZSCAN` are used in order to incrementally iterate over a collection of elements.
+The `SCAN` command and the closely related commands `SSCAN`, `HSCAN` and ZSCAN` are used in order to incrementally iterate over a collection of elements.
 
 * `SCAN` iterates the set of keys in the currently selected Valkey database.
 * `SSCAN` iterates elements of Sets types.
 * `HSCAN` iterates fields of Hash types and their associated values.
 * `ZSCAN` iterates elements of Sorted Set types and their associated scores.
 
-Since these commands allow for incremental iteration, returning only a small number of elements per call, they can be used in production without the downside of commands like `KEYS` or `SMEMBERS` that may block the server for a long time (even several seconds) when called against big collections of keys or elements.
+Since these commands allow for incremental iteration, returning only a small number of elements per call, they can be used in production without the downside of commands like [KEYS](keys.md) or [SMEMBERS](smembers.md) that may block the server for a long time (even several seconds) when called against big collections of keys or elements.
 
-However while blocking commands like `SMEMBERS` are able to provide all the elements that are part of a Set in a given moment, The SCAN family of commands only offer limited guarantees about the returned elements since the collection that we incrementally iterate can change during the iteration process.
+However while blocking commands like `SMEMBERS` are able to provide all the elements that are part of a Set in a given moment, the SCAN family of commands only offer limited guarantees about the returned elements since the collection that we incrementally iterate can change during the iteration process.
 
 Note that `SCAN`, `SSCAN`, `HSCAN` and `ZSCAN` all work very similarly, so this documentation covers all four commands. However an obvious difference is that in the case of `SSCAN`, `HSCAN` and `ZSCAN` the first argument is the name of the key holding the Set, Hash or Sorted Set value. The `SCAN` command does not need any key name argument as it iterates keys in the current database, so the iterated object is the database itself.
 
@@ -157,7 +157,7 @@ To use pattern with hash tag, see [Hash tags](../topics/cluster-spec.md#hash-tag
 
 ## The TYPE option
 
-You can use the `!TYPE` option to ask `SCAN` to only return objects that match a given `type`, allowing you to iterate through the database looking for keys of a specific type. The **TYPE** option is only available on the whole-database `SCAN`, not `HSCAN` or `ZSCAN` etc.
+You can use the `TYPE` option to ask `SCAN` to only return objects that match a given `type`, allowing you to iterate through the database looking for keys of a specific type. The **TYPE** option is only available on the whole-database `SCAN`, not `HSCAN` or `ZSCAN` etc.
 
 The `type` argument is the same string name that the `TYPE` command returns. Note a quirk where some Valkey types, such as GeoHashes, HyperLogLogs, Bitmaps, and Bitfields, may internally be implemented using other Valkey types, such as a string or zset, so can't be distinguished from other keys of that same type by `SCAN`. For example, a ZSET and GEOHASH:
 
