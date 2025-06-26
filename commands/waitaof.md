@@ -26,7 +26,7 @@ These features are incompatible with the `WAITAOF` command as it is currently im
 Consistency and WAITAOF
 ---
 
-Note that, similarly to `WAIT`, `WAITAOF` does not make Valkey a strongly-consistent store.
+Note that, similarly to [WAIT](wait.md), `WAITAOF` does not make Valkey a strongly-consistent store.
 Unless waiting for all members of a cluster to fsync writes to disk, data can still be lost during a failover or a Valkey restart.
 However, `WAITAOF` does improve real-world data safety.
 

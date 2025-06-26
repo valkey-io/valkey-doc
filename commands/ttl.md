@@ -7,7 +7,7 @@ The command returns the following values in case of errors:
 * The command returns `-2` if the key does not exist.
 * The command returns `-1` if the key exists but has no associated expire.
 
-See also the `PTTL` command that returns the same information with milliseconds resolution.
+See also the [PTTL](pttl.md) command that returns the same information with milliseconds resolution.
 
 ## Examples
 
