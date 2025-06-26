@@ -4,18 +4,18 @@ A key with an associated timeout is often said to be _volatile_ in Valkey
 terminology.
 
 The timeout will only be cleared by commands that delete or overwrite the
-contents of the key, including `DEL`, `SET`, `GETSET` and all the `*STORE`
+contents of the key, including [DEL](del.md), [SET](set.md), [GETSET](getset.md) and all the `*STORE`
 commands.
 This means that all the operations that conceptually _alter_ the value stored at
 the key without replacing it with a new one will leave the timeout untouched.
-For instance, incrementing the value of a key with `INCR`, pushing a new value
-into a list with `LPUSH`, or altering the field value of a hash with `HSET` are
+For instance, incrementing the value of a key with [INCR](incr.md), pushing a new value
+into a list with [LPUSH](lpush.md), or altering the field value of a hash with [HSET](hset.md) are
 all operations that will leave the timeout untouched.
 
 The timeout can also be cleared, turning the key back into a persistent key,
-using the `PERSIST` command.
+using the [PERSIST](persist.md) command.
 
-If a key is renamed with `RENAME`, the associated time to live is transferred to
+If a key is renamed with [RENAME](rename.md), the associated time to live is transferred to
 the new key name.
 
 If a key is overwritten by `RENAME`, like in the case of an existing key `Key_A`
@@ -23,8 +23,8 @@ that is overwritten by a call like `RENAME Key_B Key_A`, it does not matter if
 the original `Key_A` had a timeout associated or not, the new key `Key_A` will
 inherit all the characteristics of `Key_B`.
 
-Note that calling `EXPIRE`/`PEXPIRE` with a non-positive timeout or
-`EXPIREAT`/`PEXPIREAT` with a time in the past will result in the key being
+Note that calling `EXPIRE`/[PEXPIRE](pexpire.md) with a non-positive timeout or
+[EXPIREAT](expireat.md)/[PEXPIREAT](pexpireat.md) with a time in the past will result in the key being
 [deleted][del] rather than expired (accordingly, the emitted [key event][ntf]
 will be `del`, not `expired`).
 
@@ -117,7 +117,7 @@ When a key has an expire set, Valkey will make sure to remove the key when the
 specified amount of time elapsed.
 
 The key time to live can be updated or entirely removed using the `EXPIRE` and
-`PERSIST` command (or other strictly related commands).
+[PERSIST](persist.md) command (or other strictly related commands).
 
 ## Expire accuracy
 
