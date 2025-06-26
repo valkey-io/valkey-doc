@@ -1,4 +1,4 @@
-The `SCAN` command and the closely related commands `SSCAN`, `HSCAN` and ZSCAN` are used in order to incrementally iterate over a collection of elements.
+The `SCAN` command and the closely related commands `SSCAN`, `HSCAN` and `ZSCAN` are used in order to incrementally iterate over a collection of elements.
 
 * `SCAN` iterates the set of keys in the currently selected Valkey database.
 * `SSCAN` iterates elements of Sets types.
