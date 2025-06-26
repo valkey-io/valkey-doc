@@ -1,4 +1,4 @@
-`PEXPIRETIME` has the same semantic as `EXPIRETIME`, but returns the absolute Unix expiration timestamp in milliseconds instead of seconds.
+`PEXPIRETIME` has the same semantic as [EXPIRETIME](expiretime.md), but returns the absolute Unix expiration timestamp in milliseconds instead of seconds.
 
 ## Examples
 
