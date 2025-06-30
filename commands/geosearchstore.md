@@ -1,6 +1,6 @@
-This command is like `GEOSEARCH`, but stores the result in destination key.
+This command is like [GEOSEARCH](geosearch.md), but stores the result in destination key.
 
-This command replaces the now deprecated `GEORADIUS` and `GEORADIUSBYMEMBER`.
+This command replaces the now deprecated [GEORADIUS](georadius.md) and [GEORADIUSBYMEMBER](georadiusbymember.md).
 
 By default, it stores the results in the `destination` sorted set with their geospatial information.
 
