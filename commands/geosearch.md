@@ -1,6 +1,6 @@
-Return the members of a sorted set populated with geospatial information using `GEOADD`, which are within the borders of the area specified by a given shape. This command extends the `GEORADIUS` command, so in addition to searching within circular areas, it supports searching within rectangular areas and polygon shaped areas.
+Return the members of a sorted set populated with geospatial information using [GEOADD](geoadd.md), which are within the borders of the area specified by a given shape. This command extends the [GEORADIUS](georadius.md) command, so in addition to searching within circular areas, it supports searching within rectangular areas and polygon shaped areas.
 
-This command should be used in place of the deprecated `GEORADIUS` and `GEORADIUSBYMEMBER` commands.
+This command should be used in place of the deprecated `GEORADIUS` and [GEORADIUSBYMEMBER](georadiusbymember.md) commands.
 
 The query's shape is provided by one of these mandatory options:
 
