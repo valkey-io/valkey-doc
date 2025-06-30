@@ -1,11 +1,11 @@
 Pops one or more elements from the first non-empty list key from the list of provided key names.
 
-`LMPOP` and `BLMPOP` are similar to the following, more limited, commands:
+`LMPOP` and [BLMPOP](blmpop.md) are similar to the following, more limited, commands:
 
-- `LPOP` or `RPOP` which take only one key, and can return multiple elements.
-- `BLPOP` or `BRPOP` which take multiple keys, but return only one element from just one key.
+- [LPOP](lpop.md) or [RPOP](rpop.md) which take only one key, and can return multiple elements.
+- [BLPOP](blpop.md) or [BRPOP](brpop.md) which take multiple keys, but return only one element from just one key.
 
-See `BLMPOP` for the blocking variant of this command.
+See [BLMPOP](blmpop.md) for the blocking variant of this command.
 
 Elements are popped from either the left or right of the first non-empty list based on the passed argument.
 The number of returned elements is limited to the lower between the non-empty list's length, and the count argument (which defaults to 1).
