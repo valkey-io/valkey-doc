@@ -1,4 +1,4 @@
-`BLMOVE` is the blocking variant of `LMOVE`.
+`BLMOVE` is the blocking variant of [LMOVE](lmove.md).
 When `source` contains elements, this command behaves exactly like `LMOVE`.
 When used inside a `MULTI`/`EXEC` block, this command behaves exactly like `LMOVE`.
 When `source` is empty, Valkey will block the connection until another client
@@ -8,7 +8,7 @@ A `timeout` of zero can be used to block indefinitely.
 This command comes in place of the now deprecated `BRPOPLPUSH`. Doing
 `BLMOVE RIGHT LEFT` is equivalent.
 
-See `LMOVE` for more information.
+See [LMOVE](lmove.md) for more information.
 
 ## Pattern: Reliable queue
 
