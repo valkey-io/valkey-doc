@@ -6,6 +6,6 @@ Setting the **lazyfree-lazy-user-flush** configuration directive to "yes" change
 It is possible to use one of the following modifiers to dictate the flushing mode explicitly:
 
 * `ASYNC`: flushes the cache asynchronously
-* `!SYNC`: flushes the cache synchronously
+* `SYNC`: flushes the cache synchronously
 
 For more information about `EVAL` scripts please refer to [Introduction to Eval Scripts](../topics/eval-intro.md).
