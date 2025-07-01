@@ -1,4 +1,4 @@
-This is a read-only variant of the `EVALSHA` command that cannot execute commands that modify data.
+This is a read-only variant of the [EVALSHA](evalsha.md) command that cannot execute commands that modify data.
 
 For more information about when to use this command vs `EVALSHA`, please refer to [Read-only scripts](../topics/programmability.md#read-only-scripts).
 
