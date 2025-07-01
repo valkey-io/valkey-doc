@@ -1,4 +1,4 @@
-Return valid [Geohash](https://en.wikipedia.org/wiki/Geohash) strings representing the position of one or more elements in a sorted set value representing a geospatial index (where elements were added using `GEOADD`).
+Return valid [Geohash](https://en.wikipedia.org/wiki/Geohash) strings representing the position of one or more elements in a sorted set value representing a geospatial index (where elements were added using [GEOADD](geoadd.md)).
 
 Normally Valkey represents positions of elements using a variation of the Geohash
 technique where positions are encoded using 52 bit integers. The encoding is

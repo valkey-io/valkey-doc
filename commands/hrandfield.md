@@ -1,7 +1,7 @@
 When called with just the `key` argument, return a random field from the hash value stored at `key`.
 
 If the provided `count` argument is positive, return an array of **distinct fields**.
-The array's length is either `count` or the hash's number of fields (`HLEN`), whichever is lower.
+The array's length is either `count` or the hash's number of fields ([HLEN](hlen.md)), whichever is lower.
 
 If called with a negative `count`, the behavior changes and the command is allowed to return the **same field multiple times**.
 In this case, the number of returned fields is the absolute value of the specified `count`.
