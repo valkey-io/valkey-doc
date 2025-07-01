@@ -29,6 +29,8 @@ Specifically:
 * **NOW** skips waiting for lagging replicas, i.e. it bypasses the first step in the shutdown sequence.
 * **FORCE** ignores any errors that would normally prevent the server from exiting.
   For details, see the following section.
+* **SAFE** will return an error if it is unsafe to shut down.
+  For details, see the following section.
 * **ABORT** cancels an ongoing shutdown and cannot be combined with other flags.
 
 ## Conditions where a SHUTDOWN fails
@@ -48,6 +50,12 @@ This happens in the following situations:
 
 * The user just turned on AOF, and the server triggered the first AOF rewrite in order to create the initial AOF file. In this context, stopping will result in losing the dataset at all: once restarted, the server will potentially have AOF enabled without having any AOF file at all.
 * A replica with AOF enabled, reconnected with its primary, performed a full resynchronization, and restarted the AOF file, triggering the initial AOF creation process. In this case not completing the AOF rewrite is dangerous because the latest dataset received from the primary would be lost. The new primary can actually be even a different instance (if the **REPLICAOF** or **SLAVEOF** command was used in order to reconfigure the replica), so it is important to finish the AOF rewrite and start with the correct data set representing the data set in memory when the server was terminated.
+
+When the **SAFE** modifier is specified, the shutdown may fail if the Valkey instance is in an unsafe situation.
+Unless the **FORCE** modifier is specified, the **SHUTDOWN** command will be refused with an error instead.
+This happens in the following situations:
+
+* In cluster mode, if the instance is a primary node and is responsible for at least one slot, shutting down such a node will cause the cluster to fail, so **SAFE** will refuse to shut down.
 
 There are situations when we want just to terminate a Valkey instance ASAP, regardless of what its content is.
 In such a case, the command **SHUTDOWN NOW NOSAVE FORCE** can be used.
