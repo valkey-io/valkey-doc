@@ -134,6 +134,7 @@ For further diagnostics, see the [official troubleshooting guide](https://valkey
 
 Now that you have Valkey running and understand the basics, you can explore more advanced topics and use cases:
 
+* **Try Valkey**: Use [Try Valkey](https://valkey.io/try-valkey/) allows you to try Valkey, the high-performance in-memory data store, directly from your browser — no installation needed
 * **Core Data Types**: Valkey offers powerful [data types](https://valkey.io/topics/data-types/) beyond simple strings. Understanding these types is key to designing efficient applications:
     * [Strings](https://valkey.io/topics/strings/): The simplest type, used for caching, counters, and more.
     * [Lists](https://valkey.io/topics/lists/): Ordered sequences ideal for queues and logs.
@@ -143,6 +144,8 @@ Now that you have Valkey running and understand the basics, you can explore more
 * **Explore Valkey Modules:** Valkey supports pluggable modules that extend its core functionality with custom commands and data types. Take a look at few of our released modules to get started.
     * **Valkey Json:** https://valkey.io/topics/valkey-json/
     * **Valkey Bloom:** https://valkey.io/topics/bloomfilters/
+    * **Valkey LDAP:** https://valkey.io/topics/ldap/
+    * **Valkey Search:** https://valkey.io/topics/search/
 * **Publish/Subscribe Messaging:** Dive into Valkey’s Pub/Sub feature to build real-time apps (such as chat systems o live notifications). See the [**Pub/Sub** section](https://valkey.io/topics/pubsub/) of the docs for patterns and best practices (Valkey’s Pub/Sub supports pattern subscriptions and sharded channels for scalability).
 * **Clustering and High Availability:** When you need to scale out or ensure uptime, Valkey Cluster mode allows sharding data across multiple nodes with automatic failover. Check out the **[Valkey Cluster tutorial](https://valkey.io/topics/cluster-tutorial/)** for a step-by-step guide to setting up a cluster and using replication.
 * **Further Documentation:** Explore the **[Valkey Documentation by Topic](https://valkey.io/topics/)** for in-depth guides on persistence, security, Lua scripting, modules, and more. Key references include the [Commands Reference](https://valkey.io/commands) for details on every command, and the [FAQ](https://valkey.io/topics/faq) for answers to common questions.
