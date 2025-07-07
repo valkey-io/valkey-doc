@@ -1,4 +1,4 @@
-`PEXPIREAT` has the same effect and semantic as [EXPIREAT](expireat.md), but the Unix time at
+`PEXPIREAT` has the same effect and semantic as [`EXPIREAT`](expireat.md), but the Unix time at
 which the key will expire is specified in milliseconds instead of seconds.
 
 ## Options
