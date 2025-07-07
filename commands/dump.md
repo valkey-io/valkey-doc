@@ -1,6 +1,6 @@
 Serialize the value stored at key in a Valkey-specific format and return it to
 the user.
-The returned value can be synthesized back into a Valkey key using the [RESTORE](restore.md)
+The returned value can be synthesized back into a Valkey key using the [`RESTORE`](restore.md)
 command.
 
 The serialization format is opaque and non-standard, however it has a few
@@ -16,7 +16,7 @@ semantic characteristics:
   value.
 
 The serialized value does NOT contain expire information.
-In order to capture the time to live of the current value the [PTTL](pttl.md) command
+In order to capture the time to live of the current value the [`PTTL`](pttl.md) command
 should be used.
 
 If `key` does not exist a nil bulk reply is returned.
