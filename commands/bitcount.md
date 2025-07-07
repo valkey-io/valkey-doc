@@ -4,7 +4,7 @@ By default all the bytes contained in the string are examined.
 It is possible to specify the counting operation only in an interval passing the
 additional arguments _start_ and _end_.
 
-Like for the [GETRANGE](getrange.md) command, start and end can contain negative values in
+Similar to the [GETRANGE](getrange.md) command, `start` and `end` can contain negative values in
 order to index bytes starting from the end of the string, where -1 is the last
 byte, -2 is the penultimate, and so forth.
 
