@@ -9,7 +9,7 @@ order to store on disk the cluster state (however the on disk cluster state
 has a few additional info appended at the end).
 
 Note that normally clients willing to fetch the map between Cluster
-hash slots and node addresses should use [CLUSTER SLOTS](cluster-slots.md) instead.
+hash slots and node addresses should use [`CLUSTER SLOTS`](cluster-slots.md) instead.
 `CLUSTER NODES`, that provides more information, should be used for
 administrative tasks, debugging, and configuration inspections.
 It is also used by `valkey-cli` in order to manage a cluster.
@@ -37,7 +37,7 @@ Each line is composed of the following fields:
 
 The meaning of each field is the following:
 
-1. `id`: The node ID, a 40-character globally unique string generated when a node is created and never changed again (unless [CLUSTER RESET HARD](cluster-reset.md) is used).
+1. `id`: The node ID, a 40-character globally unique string generated when a node is created and never changed again (unless [`CLUSTER RESET HARD`](cluster-reset.md) is used).
 2. `ip:port@cport`: The node address that clients should contact to run queries, along with the used cluster bus port.
    `:0@0` can be expected when the address is no longer known for this node ID, hence flagged with `noaddr`.
 3. `hostname`: A human readable string that can be configured via the `cluster-annouce-hostname` setting. The max length of the string is 256 characters, excluding the null terminator. The name can contain ASCII alphanumeric characters, '-', and '.' only.
