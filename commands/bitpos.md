@@ -13,7 +13,7 @@ By default, the range is interpreted as a range of bytes and not a range of bits
 You can use the optional `BIT` modifier to specify that the range should be interpreted as a range of bits.
 So `start=0` and `end=2` means to look at the first three bits.
 
-Note that bit positions are returned always as absolute values starting from bit zero even when _start_ and _end_ are used to specify a range.
+Note that bit positions are returned always as absolute values starting from bit zero even when `start` and `end` are used to specify a range.
 
 Similar to the [`GETRANGE`](getrange.md) command, `start` and `end` can contain negative values in
 order to index bytes starting from the end of the string, where -1 is the last
