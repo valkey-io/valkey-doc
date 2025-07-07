@@ -37,7 +37,9 @@ Server-side scripting in Valkey
 
 Administration
 ---
+* [License](license.md): License information for Valkey.
 * [Installation](installation.md): How to install and configure Valkey. This targets people without prior experience with Valkey.
+* [Releases and Versioning](releases.md): Valkey's development cycle and version numbering.
 * [Release Downloads](https://valkey.io/download/releases/): Lists links to download all current and previous releases.
 * [valkey-cli](cli.md): The Valkey command line interface, used for administration, troubleshooting and experimenting with Valkey.
 * [valkey-server](server.md): How to run the Valkey server.
@@ -53,14 +55,9 @@ Administration
 * [Signals Handling](signals.md): How Valkey handles signals.
 * [Connections Handling](clients.md): How Valkey handles clients connections.
 * [Sentinel](sentinel.md): Valkey Sentinel is one of the official high availability deployment modes.
-* [Releases and Versioning](releases.md): Valkey's development cycle and version numbering.
-* [License](license.md): License information for Valkey.
-
-Valkey Cluster
----
-
-* [Cluster tutorial](cluster-tutorial.md): A gentle introduction to Valkey Cluster, a deployment mode for horizontal scaling and high availability.
-* [Cluster specification](cluster-spec.md): The more formal description of the behavior and algorithms used in Valkey Cluster.
+* Valkey cluster
+     * [Cluster tutorial](cluster-tutorial.md): A gentle introduction to Valkey Cluster, a deployment mode for horizontal scaling and high availability.
+     * [Cluster specification](cluster-spec.md): The more formal description of the behavior and algorithms used in Valkey Cluster.
 
 Valkey modules API
 ---
@@ -70,18 +67,13 @@ Valkey modules API
 * [Blocking operations](modules-blocking-ops.md): Write commands that can block the client (without blocking Valkey) and can execute tasks in other threads.
 * [Modules API reference](modules-api-ref.md): Documentation of all module API functions. Low level details about API usage.
 
-Performance
+Performance and Troubleshooting
 ---
 * [Latency monitoring](latency-monitor.md): Integrated latency monitoring and reporting help tuning for low latency.
 * [valkey-benchmark](benchmark.md): The benchmarking tool shipped with Valkey.
 * [On-CPU profiling and tracing](performance-on-cpu.md): How to find on-CPU resource bottlenecks.
-
-  
-Troubleshooting
----
 * [Debugging](debugging.md): How to debug Valkey server processes.
 * [Diagnosing latency issues](latency.md): How to diagnose latency problems with Valkey.
-
 
 Tutorials & FAQ
 ---
