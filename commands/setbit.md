@@ -36,14 +36,14 @@ the same _key_ will not have the allocation overhead.
 There are cases when you need to set all the bits of single bitmap at once, for
 example when initializing it to a default non-zero value. It is possible to do
 this with multiple calls to the `SETBIT` command, one for each bit that needs to
-be set. However, so as an optimization you can use a single [SET](set.md) command to set
+be set. However, so as an optimization you can use a single [`SET`](set.md) command to set
 the entire bitmap.
 
 Bitmaps are not an actual data type, but a set of bit-oriented operations
 defined on the String type (for more information refer to the
 [Bitmaps section of the Data Types Introduction page][ti]). This means that
-bitmaps can be used with string commands, and most importantly with `SET` and
-[GET](get.md).
+bitmaps can be used with string commands, and most importantly with [`SET`](set.md) and
+[`GET`](get.md).
 
 Because Valkey' strings are binary-safe, a bitmap is trivially encoded as a bytes
 stream. The first byte of the string corresponds to offsets 0..7 of
@@ -75,7 +75,7 @@ with the resultant string.
 
 `SETBIT` excels at setting single bits, and can be called several times when
 multiple bits need to be set. To optimize this operation you can replace
-multiple `SETBIT` calls with a single call to the variadic [BITFIELD](bitfield.md) command
+multiple `SETBIT` calls with a single call to the variadic [`BITFIELD`](bitfield.md) command
 and the use of fields of type `u1`.
 
 For example, the example above could be replaced by:
@@ -86,9 +86,9 @@ For example, the example above could be replaced by:
 
 ## Advanced Pattern: accessing bitmap ranges
 
-It is also possible to use the [GETRANGE](getrange.md) and [SETRANGE](setrange.md) string commands to
+It is also possible to use the [`GETRANGE`](getrange.md) and [`SETRANGE`](setrange.md) string commands to
 efficiently access a range of bit offsets in a bitmap. Below is a sample
-implementation in idiomatic Valkey Lua scripting that can be run with the `EVAL`
+implementation in idiomatic Valkey Lua scripting that can be run with the [`EVAL`](eval.md)
 command:
 
 ```
