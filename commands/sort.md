@@ -1,7 +1,7 @@
 Returns or stores the elements contained in the [list][tdtl], [set][tdts] or
 [sorted set][tdtss] at `key`.
 
-There is also the [SORT_RO](sort_ro.md) read-only variant of this command.
+There is also the [`SORT_RO`](sort_ro.md) read-only variant of this command.
 
 By default, sorting is numeric and elements are compared by their value
 interpreted as double precision floating point number.
@@ -113,7 +113,7 @@ To use pattern with hash tag, see [Hash tags](../topics/cluster-spec.md#hash-tag
 
 Any use of `GET` or `BY` which reference external key pattern will only be allowed in case the current user running the command has full key read permissions.
 Full key read permissions can be set for the user by, for example, specifying `'%R~*'` or `'~*` with the relevant command access rules.
-You can check the [ACL SETUSER](acl_setuser.md) command manual for more information on setting ACL access rules.
+You can check the [`ACL SETUSER`](acl_setuser.md) command manual for more information on setting ACL access rules.
 If full key read permissions aren't set, the command will fail with an error.
 
 ## Storing the result of a SORT operation
@@ -136,7 +136,7 @@ calling `SORT ... STORE` again.
 
 Note that for correctly implementing this pattern it is important to avoid
 multiple clients rebuilding the cache at the same time.
-Some kind of locking is needed here (for instance using [SETNX](setnx.md)).
+Some kind of locking is needed here (for instance using [`SETNX`](setnx.md)).
 
 ## Using hashes in `BY` and `GET`
 
