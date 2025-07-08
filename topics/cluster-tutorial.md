@@ -457,7 +457,7 @@ MSET commands:
 The program includes comprehensive error handling to display errors instead of
 crashing, so all cluster operations are wrapped in try-catch blocks.
 
-The client creation on **line 398** is the first key part of the program. It creates the
+The **client creation section** is the first key part of the program. It creates the
 Valkey cluster client using a list of cluster *addresses* and configuration options
 including a request timeout and client name.
 
@@ -468,11 +468,11 @@ discovers the complete cluster topology once it connects to any node.
 Now that we have the cluster client instance, we can use it like any other
 Valkey client to perform operations across the cluster.
 
-The code reads a counter from **line 407 to 408** so that when we restart the example
+The **counter initialization section** reads a counter so that when we restart the example
 we don't start again with `foo0`, but continue from where we left off.
 The counter is stored in Valkey itself using the key `__last__`.
 
-The main loop from **line 413 onwards** sets keys in batches using MSET operations 
+The **main processing loop** sets keys in batches using MSET operations 
 for better performance, processing 100 keys at a time and displaying progress or 
 any errors that occur.
 you'll get the usually 10k ops/second in the best of the conditions).
