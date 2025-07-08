@@ -390,7 +390,7 @@ async function runExample() {
     try {
         // Create cluster client
         client = await GlideClusterClient.createClient({
-            addresses: addresses,
+            addresses,
             requestTimeout: 500, // 500ms timeout
             clientName: "valkey_cluster_example"
         });
