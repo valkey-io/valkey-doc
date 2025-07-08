@@ -376,10 +376,10 @@ npm install @valkey/valkey-glide
 Here's the example code:
 
 ```javascript
-import { GlideClusterClient, ConnectionError } from "@valkey/valkey-glide";
+import { GlideClusterClient } from "@valkey/valkey-glide";
 
 async function runExample() {
-    // Define startup nodes - you only need one reachable node
+    // Define cluster addresses - you only need one reachable node
     const addresses = [
         { host: "127.0.0.1", port: 7000 },
         { host: "127.0.0.1", port: 7001 }
@@ -388,11 +388,13 @@ async function runExample() {
     let client;
     
     try {
-        // Create cluster client
+        // Create cluster client with configuration
         client = await GlideClusterClient.createClient({
-            addresses,
-            requestTimeout: 500, // 500ms timeout
-            clientName: "valkey_cluster_example"
+            addresses: addresses,
+            clientConfiguration: {
+                requestTimeout: 500, // 500ms timeout
+                clientName: "valkey_cluster_example"
+            }
         });
 
         console.log("Connected to Valkey cluster");
@@ -407,16 +409,16 @@ async function runExample() {
         const batchSize = 100;
         for (let start = last + 1; start <= 1000000000; start += batchSize) {
             try {
-                const batch = {};
+                const keyValuePairs = [];
                 const end = Math.min(start + batchSize - 1, 1000000000);
                 
-                // Prepare batch of key-value pairs
+                // Prepare batch of key-value pairs as array
                 for (let x = start; x <= end; x++) {
-                    batch[`foo${x}`] = x.toString();
+                    keyValuePairs.push(`foo${x}`, x.toString());
                 }
                 
-                // Execute batch mset
-                await client.mset(batch);
+                // Execute batch mset with array format
+                await client.mset(keyValuePairs);
                 
                 // Update counter and display progress
                 await client.set("__last__", end.toString());
@@ -432,11 +434,7 @@ async function runExample() {
             }
         }
     } catch (error) {
-        if (error instanceof ConnectionError) {
-            console.log(`Connection error: ${error.message}`);
-        } else {
-            console.log(`Unexpected error: ${error.message}`);
-        }
+        console.log(`Connection error: ${error.message}`);
     } finally {
         if (client) {
             client.close();
@@ -447,11 +445,10 @@ async function runExample() {
 runExample().catch(console.error);
 ```
 
-The application does a very simple thing, it sets keys in the form `foo<number>` to `number`, using batched MSET operations for better performance. So if you run the program the result is batches of
-MSET commands:
+The application does a very simple thing, it sets keys in the form `foo<number>` to `number`, using batched MSET operations for better performance. The MSET command accepts an array of alternating keys and values. So if you run the program the result is batches of MSET commands:
 
-* MSET foo1 1 foo2 2 foo3 3 ... (batch of 100 keys)
-* MSET foo101 101 foo102 102 ... (next batch)
+* MSET foo1 1 foo2 2 foo3 3 ... foo100 100 (batch of 100 keys)
+* MSET foo101 101 foo102 102 ... foo200 200 (next batch)
 * And so forth...
 
 The program includes comprehensive error handling to display errors instead of
