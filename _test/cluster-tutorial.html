@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="description" content="Horizontal scaling with Valkey Cluster" />
+  <title>Cluster tutorial</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Cluster tutorial</h1>
+</header>
+<p>Valkey scales horizontally with a deployment topology called Valkey
+Cluster. This topic will teach you how to set up, test, and operate
+Valkey Cluster in production. You will learn about the availability and
+consistency characteristics of Valkey Cluster from the end user’s point
+of view.</p>
+<p>If you plan to run a production Valkey Cluster deployment or want to
+understand better how Valkey Cluster works internally, consult the <a
+href="cluster-spec.md">Valkey Cluster specification</a>.</p>
+<h2 id="valkey-cluster-101">Valkey Cluster 101</h2>
+<p>Valkey Cluster provides a way to run a Valkey installation where data
+is automatically sharded across multiple Valkey nodes. Valkey Cluster
+also provides some degree of availability during partitions—in practical
+terms, the ability to continue operations when some nodes fail or are
+unable to communicate. However, the cluster will become unavailable in
+the event of larger failures (for example, when the majority of
+primaries are unavailable).</p>
+<p>So, with Valkey Cluster, you get the ability to:</p>
+<ul>
+<li>Automatically split your dataset among multiple nodes.</li>
+<li>Continue operations when a subset of the nodes are experiencing
+failures or are unable to communicate with the rest of the cluster.</li>
+</ul>
+<h4 id="valkey-cluster-tcp-ports">Valkey Cluster TCP ports</h4>
+<p>Every Valkey Cluster node requires two open TCP connections: a Valkey
+TCP port used to serve clients, e.g., 6379, and second port known as the
+<em>cluster bus port</em>. By default, the cluster bus port is set by
+adding 10000 to the data port (e.g., 16379); however, you can override
+this in the <code>cluster-port</code> configuration.</p>
+<p>Cluster bus is a node-to-node communication channel that uses a
+binary protocol, which is more suited to exchanging information between
+nodes due to little bandwidth and processing time. Nodes use the cluster
+bus for failure detection, configuration updates, failover
+authorization, and so forth. Clients should never try to communicate
+with the cluster bus port, but rather use the Valkey command port.
+However, make sure you open both ports in your firewall, otherwise
+Valkey cluster nodes won’t be able to communicate.</p>
+<p>For a Valkey Cluster to work properly you need, for each node:</p>
+<ol type="1">
+<li>The client communication port (usually 6379) used to communicate
+with clients and be open to all the clients that need to reach the
+cluster, plus all the other cluster nodes that use the client port for
+key migrations.</li>
+<li>The cluster bus port must be reachable from all the other cluster
+nodes.</li>
+</ol>
+<p>If you don’t open both TCP ports, your cluster will not work as
+expected.</p>
+<h4 id="valkey-cluster-and-docker">Valkey Cluster and Docker</h4>
+<p>Currently, Valkey Cluster does not support NATted environments and in
+general environments where IP addresses or TCP ports are remapped.</p>
+<p>Docker uses a technique called <em>port mapping</em>: programs
+running inside Docker containers may be exposed with a different port
+compared to the one the program believes to be using. This is useful for
+running multiple containers using the same ports, at the same time, in
+the same server.</p>
+<p>To make Docker compatible with Valkey Cluster, you need to use
+Docker’s <em>host networking mode</em>. Please see the
+<code>--net=host</code> option in the <a
+href="https://docs.docker.com/engine/userguide/networking/dockernetworks/">Docker
+documentation</a> for more information.</p>
+<h4 id="valkey-cluster-data-sharding">Valkey Cluster data sharding</h4>
+<p>Valkey Cluster does not use consistent hashing, but a different form
+of sharding where every key is conceptually part of what we call a
+<strong>hash slot</strong>.</p>
+<p>There are 16384 hash slots in Valkey Cluster, and to compute the hash
+slot for a given key, we simply take the CRC16 of the key modulo
+16384.</p>
+<p>Every node in a Valkey Cluster is responsible for a subset of the
+hash slots, so, for example, you may have a cluster with 3 nodes,
+where:</p>
+<ul>
+<li>Node A contains hash slots from 0 to 5500.</li>
+<li>Node B contains hash slots from 5501 to 11000.</li>
+<li>Node C contains hash slots from 11001 to 16383.</li>
+</ul>
+<p>This makes it easy to add and remove cluster nodes. For example, if I
+want to add a new node D, I need to move some hash slots from nodes A,
+B, C to D. Similarly, if I want to remove node A from the cluster, I can
+just move the hash slots served by A to B and C. Once node A is empty, I
+can remove it from the cluster completely.</p>
+<p>Moving hash slots from a node to another does not require stopping
+any operations; therefore, adding and removing nodes, or changing the
+percentage of hash slots held by a node, requires no downtime.</p>
+<p>Valkey Cluster supports multiple key operations as long as all of the
+keys involved in a single command execution (or whole transaction, or
+Lua script execution) belong to the same hash slot. The user can force
+multiple keys to be part of the same hash slot by using a feature called
+<em>hash tags</em>.</p>
+<p>Hash tags are documented in the Valkey Cluster specification, but the
+gist is that if there is a substring between {} brackets in a key, only
+what is inside the string is hashed. For example, the keys
+<code>user:{123}:profile</code> and <code>user:{123}:account</code> are
+guaranteed to be in the same hash slot because they share the same hash
+tag. As a result, you can operate on these two keys in the same
+multi-key operation.</p>
+<h4 id="valkey-cluster-primary-replica-model">Valkey Cluster
+primary-replica model</h4>
+<p>To remain available when a subset of primary nodes are failing or are
+not able to communicate with the majority of nodes, Valkey Cluster uses
+a primary-replica model where every hash slot has from 1 (the primary
+itself) to N replicas (N-1 additional replica nodes).</p>
+<p>In our example cluster with nodes A, B, C, if node B fails the
+cluster is not able to continue, since we no longer have a way to serve
+hash slots in the range 5501-11000.</p>
+<p>However, when the cluster is created (or at a later time), we add a
+replica node to every primary, so that the final cluster is composed of
+A, B, C that are primary nodes, and A1, B1, C1 that are replica nodes.
+This way, the system can continue if node B fails.</p>
+<p>Node B1 replicates B, and B fails, the cluster will promote node B1
+as the new primary and will continue to operate correctly.</p>
+<p>However, note that if nodes B and B1 fail at the same time, Valkey
+Cluster will not be able to continue to operate.</p>
+<h4 id="valkey-cluster-consistency-guarantees">Valkey Cluster
+consistency guarantees</h4>
+<p>Valkey Cluster does not guarantee <strong>strong
+consistency</strong>. In practical terms this means that under certain
+conditions it is possible that Valkey Cluster will lose writes that were
+acknowledged by the system to the client.</p>
+<p>The first reason why Valkey Cluster can lose writes is because it
+uses asynchronous replication. This means that during writes the
+following happens:</p>
+<ul>
+<li>Your client writes to the primary B.</li>
+<li>The primary B replies OK to your client.</li>
+<li>The primary B propagates the write to its replicas B1, B2 and
+B3.</li>
+</ul>
+<p>As you can see, B does not wait for an acknowledgement from B1, B2,
+B3 before replying to the client, since this would be a prohibitive
+latency penalty for Valkey, so if your client writes something, B
+acknowledges the write, but crashes before being able to send the write
+to its replicas, one of the replicas (that did not receive the write)
+can be promoted to primary, losing the write forever.</p>
+<p>This is very similar to what happens with most databases that are
+configured to flush data to disk every second, so it is a scenario you
+are already able to reason about because of past experiences with
+traditional database systems not involving distributed systems.
+Similarly you can improve consistency by forcing the database to flush
+data to disk before replying to the client, but this usually results in
+prohibitively low performance. That would be the equivalent of
+synchronous replication in the case of Valkey Cluster.</p>
+<p>Basically, there is a trade-off to be made between performance and
+consistency.</p>
+<p>Valkey Cluster has support for synchronous writes when absolutely
+needed, implemented via the <code>WAIT</code> command. This makes losing
+writes a lot less likely. However, note that Valkey Cluster does not
+implement strong consistency even when synchronous replication is used:
+it is always possible, under more complex failure scenarios, that a
+replica that was not able to receive the write will be elected as
+primary.</p>
+<p>There is another notable scenario where Valkey Cluster will lose
+writes, that happens during a network partition where a client is
+isolated with a minority of instances including at least a primary.</p>
+<p>Take as an example our 6 nodes cluster composed of A, B, C, A1, B1,
+C1, with 3 primaries and 3 replicas. There is also a client, that we
+will call Z1.</p>
+<p>After a partition occurs, it is possible that in one side of the
+partition we have A, C, A1, B1, C1, and in the other side we have B and
+Z1.</p>
+<p>Z1 is still able to write to B, which will accept its writes. If the
+partition heals in a very short time, the cluster will continue
+normally. However, if the partition lasts enough time for B1 to be
+promoted to primary on the majority side of the partition, the writes
+that Z1 has sent to B in the meantime will be lost.</p>
+<p><strong>Note:</strong> There is a <strong>maximum window</strong> to
+the amount of writes Z1 will be able to send to B: if enough time has
+elapsed for the majority side of the partition to elect a replica as
+primary, every primary node in the minority side will have stopped
+accepting writes.</p>
+<p>This amount of time is a very important configuration directive of
+Valkey Cluster, and is called the <strong>node timeout</strong>.</p>
+<p>After node timeout has elapsed, a primary node is considered to be
+failing, and can be replaced by one of its replicas. Similarly, after
+node timeout has elapsed without a primary node to be able to sense the
+majority of the other primary nodes, it enters an error state and stops
+accepting writes.</p>
+<h2 id="valkey-cluster-configuration-parameters">Valkey Cluster
+configuration parameters</h2>
+<p>We are about to create an example cluster deployment. Before we
+continue, let’s introduce the configuration parameters that Valkey
+Cluster introduces in the <code>valkey.conf</code> file.</p>
+<ul>
+<li><strong>cluster-enabled <code>&lt;yes/no&gt;</code></strong>: If
+yes, enables Valkey Cluster support in a specific Valkey instance.
+Otherwise the instance starts as a standalone instance as usual.</li>
+<li><strong>cluster-config-file <code>&lt;filename&gt;</code></strong>:
+Note that despite the name of this option, this is not a user editable
+configuration file, but the file where a Valkey Cluster node
+automatically persists the cluster configuration (the state, basically)
+every time there is a change, in order to be able to re-read it at
+startup. The file lists things like the other nodes in the cluster,
+their state, persistent variables, and so forth. Often this file is
+rewritten and flushed on disk as a result of some message
+reception.</li>
+<li><strong>cluster-node-timeout
+<code>&lt;milliseconds&gt;</code></strong>: The maximum amount of time a
+Valkey Cluster node can be unavailable, without it being considered as
+failing. If a primary node is not reachable for more than the specified
+amount of time, it will be failed over by its replicas. This parameter
+controls other important things in Valkey Cluster. Notably, every node
+that can’t reach the majority of primary nodes for the specified amount
+of time, will stop accepting queries.</li>
+<li><strong>cluster-replica-validity-factor
+<code>&lt;factor&gt;</code></strong>: If set to zero, a replica will
+always consider itself valid, and will therefore always try to failover
+a primary, regardless of the amount of time the link between the primary
+and the replica remained disconnected. If the value is positive, a
+maximum disconnection time is calculated as the <em>node timeout</em>
+value multiplied by the factor provided with this option, and if the
+node is a replica, it will not try to start a failover if the primary
+link was disconnected for more than the specified amount of time. For
+example, if the node timeout is set to 5 seconds and the validity factor
+is set to 10, a replica disconnected from the primary for more than 50
+seconds will not try to failover its primary. Note that any value
+different than zero may result in Valkey Cluster being unavailable after
+a primary failure if there is no replica that is able to failover it. In
+that case the cluster will return to being available only when the
+original primary rejoins the cluster.</li>
+<li><strong>cluster-migration-barrier
+<code>&lt;count&gt;</code></strong>: Minimum number of replicas a
+primary will remain connected with, for another replica to migrate to a
+primary which is no longer covered by any replica. See the appropriate
+section about replica migration in this tutorial for more
+information.</li>
+<li><strong>cluster-require-full-coverage
+<code>&lt;yes/no&gt;</code></strong>: If this is set to yes, as it is by
+default, the cluster stops accepting writes if some percentage of the
+key space is not covered by any node. If the option is set to no, the
+cluster will still serve queries even if only requests about a subset of
+keys can be processed.</li>
+<li><strong>cluster-allow-reads-when-down
+<code>&lt;yes/no&gt;</code></strong>: If this is set to no, as it is by
+default, a node in a Valkey Cluster will stop serving all traffic when
+the cluster is marked as failed, either when a node can’t reach a quorum
+of primaries or when full coverage is not met. This prevents reading
+potentially inconsistent data from a node that is unaware of changes in
+the cluster. This option can be set to yes to allow reads from a node
+during the fail state, which is useful for applications that want to
+prioritize read availability but still want to prevent inconsistent
+writes. It can also be used for when using Valkey Cluster with only one
+or two shards, as it allows the nodes to continue serving writes when a
+primary fails but automatic failover is impossible.</li>
+</ul>
+<h2 id="create-and-use-a-valkey-cluster">Create and use a Valkey
+Cluster</h2>
+<p>To create and use a Valkey Cluster, follow these steps:</p>
+<ul>
+<li><a href="#create-a-valkey-cluster">Create a Valkey Cluster</a></li>
+<li><a href="#interact-with-the-cluster">Interact with the
+cluster</a></li>
+<li><a href="#write-an-example-app-with-valkey-glide">Write an example
+app with Valkey GLIDE</a></li>
+<li><a href="#reshard-the-cluster">Reshard the cluster</a></li>
+<li><a href="#a-more-interesting-example-application">A more interesting
+example application</a></li>
+<li><a href="#test-the-failover">Test the failover</a></li>
+<li><a href="#manual-failover">Manual failover</a></li>
+<li><a href="#add-a-new-node">Add a new node</a></li>
+<li><a href="#remove-a-node">Remove a node</a></li>
+<li><a href="#replica-migration">Replica migration</a></li>
+<li><a href="#upgrade-nodes-in-a-valkey-cluster">Upgrade nodes in a
+Valkey Cluster</a></li>
+<li><a href="#migrate-to-valkey-cluster">Migrate to Valkey
+Cluster</a></li>
+</ul>
+<p>But, first, familiarize yourself with the requirements for creating a
+cluster.</p>
+<h4 id="requirements-to-create-a-valkey-cluster">Requirements to create
+a Valkey Cluster</h4>
+<p>To create a cluster, the first thing you need is to have a few empty
+Valkey instances running in <em>cluster mode</em>.</p>
+<p>At minimum, set the following directives in the
+<code>valkey.conf</code> file:</p>
+<pre><code>port 7000
+cluster-enabled yes
+cluster-config-file nodes.conf
+cluster-node-timeout 5000
+appendonly yes</code></pre>
+<p>To enable cluster mode, set the <code>cluster-enabled</code>
+directive to <code>yes</code>. Every instance also contains the path of
+a file where the configuration for this node is stored, which by default
+is <code>nodes.conf</code>. This file is never touched by humans; it is
+simply generated at startup by the Valkey Cluster instances, and updated
+every time it is needed.</p>
+<p>Note that the <strong>minimal cluster</strong> that works as expected
+must contain at least three primary nodes. For deployment, we strongly
+recommend a six-node cluster, with three primaries and three
+replicas.</p>
+<p>You can test this locally by creating the following directories named
+after the port number of the instance you’ll run inside any given
+directory.</p>
+<p>For example:</p>
+<pre><code>mkdir cluster-test
+cd cluster-test
+mkdir 7000 7001 7002 7003 7004 7005</code></pre>
+<p>Create a <code>valkey.conf</code> file inside each of the
+directories, from 7000 to 7005. As a template for your configuration
+file just use the small example above, but make sure to replace the port
+number <code>7000</code> with the right port number according to the
+directory name.</p>
+<p>You can start each instance as follows, each running in a separate
+terminal tab:</p>
+<pre><code>cd 7000
+valkey-server ./valkey.conf</code></pre>
+<p>You’ll see from the logs that every node assigns itself a new ID:</p>
+<pre><code>[82462] 26 Nov 11:56:55.329 * No cluster configuration found, I&#39;m 97a3a64667477371c4479320d683e4c8db5858b1</code></pre>
+<p>This ID will be used forever by this specific instance in order for
+the instance to have a unique name in the context of the cluster. Every
+node remembers every other node using this IDs, and not by IP or port.
+IP addresses and ports may change, but the unique node identifier will
+never change for all the life of the node. We call this identifier
+simply <strong>Node ID</strong>.</p>
+<h4 id="create-a-valkey-cluster">Create a Valkey Cluster</h4>
+<p>Now that we have a number of instances running, you need to create
+your cluster by writing some meaningful configuration to the nodes.</p>
+<p>You can configure and execute individual instances manually or use
+the create-cluster script. Let’s go over how you do it manually.</p>
+<p>To create the cluster, run:</p>
+<pre><code>valkey-cli --cluster create 127.0.0.1:7000 127.0.0.1:7001 \
+127.0.0.1:7002 127.0.0.1:7003 127.0.0.1:7004 127.0.0.1:7005 \
+--cluster-replicas 1</code></pre>
+<p>The command used here is <strong>create</strong>, since we want to
+create a new cluster. The option <code>--cluster-replicas 1</code> means
+that we want a replica for every primary created.</p>
+<p>The other arguments are the list of addresses of the instances I want
+to use to create the new cluster.</p>
+<p><code>valkey-cli</code> will propose a configuration. Accept the
+proposed configuration by typing <strong>yes</strong>. The cluster will
+be configured and <em>joined</em>, which means that instances will be
+bootstrapped into talking with each other. Finally, if everything has
+gone well, you’ll see a message like this:</p>
+<pre><code>[OK] All 16384 slots covered</code></pre>
+<p>This means that there is at least one primary instance serving each
+of the 16384 available slots.</p>
+<p>If you don’t want to create a Valkey Cluster by configuring and
+executing individual instances manually as explained above, there is a
+much simpler system (but you’ll not learn the same amount of operational
+details).</p>
+<p>Find the <code>utils/create-cluster</code> directory in the Valkey
+distribution. There is a script called <code>create-cluster</code>
+inside (same name as the directory it is contained into), it’s a simple
+bash script. In order to start a 6 nodes cluster with 3 primaries and 3
+replicas just type the following commands:</p>
+<ol type="1">
+<li><code>create-cluster start</code></li>
+<li><code>create-cluster create</code></li>
+</ol>
+<p>Reply to <code>yes</code> in step 2 when the <code>valkey-cli</code>
+utility wants you to accept the cluster layout.</p>
+<p>You can now interact with the cluster, the first node will start at
+port 30001 by default. When you are done, stop the cluster with:</p>
+<ol start="3" type="1">
+<li><code>create-cluster stop</code></li>
+</ol>
+<p>Please read the <code>README</code> inside this directory for more
+information on how to run the script.</p>
+<h4 id="interact-with-the-cluster">Interact with the cluster</h4>
+<p>To connect to Valkey Cluster, you’ll need a cluster-aware Valkey
+client. See the documentation for your <a href="../clients/">client of
+choice</a> to determine its cluster support.</p>
+<p>You can also test your Valkey Cluster using the
+<code>valkey-cli</code> command line utility:</p>
+<pre><code>$ valkey-cli -c -p 7000
+127.0.0.1:7000&gt; set foo bar
+-&gt; Redirected to slot [12182] located at 127.0.0.1:7002
+OK
+127.0.0.1:7002&gt; set hello world
+-&gt; Redirected to slot [866] located at 127.0.0.1:7000
+OK
+127.0.0.1:7000&gt; get foo
+-&gt; Redirected to slot [12182] located at 127.0.0.1:7002
+&quot;bar&quot;
+127.0.0.1:7002&gt; get hello
+-&gt; Redirected to slot [866] located at 127.0.0.1:7000
+&quot;world&quot;</code></pre>
+<p><strong>Note:</strong> If you created the cluster using the script,
+your nodes may listen on different ports, starting from 30001 by
+default.</p>
+<p>The <code>valkey-cli</code> cluster support is very basic, so it
+always uses the fact that Valkey Cluster nodes are able to redirect a
+client to the right node. A serious client is able to do better than
+that, and cache the map between hash slots and nodes addresses, to
+directly use the right connection to the right node. The map is
+refreshed only when something changed in the cluster configuration, for
+example after a failover or after the system administrator changed the
+cluster layout by adding or removing nodes.</p>
+<h4 id="write-an-example-app-with-valkey-glide">Write an example app
+with Valkey GLIDE</h4>
+<p>Before going forward showing how to operate the Valkey Cluster, doing
+things like a failover, or a resharding, we need to create some example
+application or at least to be able to understand the semantics of a
+simple Valkey Cluster client interaction.</p>
+<p>In this way we can run an example and at the same time try to make
+nodes failing, or start a resharding, to see how Valkey Cluster behaves
+under real world conditions. It is not very helpful to see what happens
+while nobody is writing to the cluster.</p>
+<p>This section explains some basic usage of <a
+href="https://github.com/valkey-io/valkey-glide/tree/main/node">Valkey
+GLIDE for Node.js</a>, the official Valkey client library, showing a
+simple example application.</p>
+<p>The following example demonstrates how to connect to a Valkey cluster
+and perform basic operations. First, install the Valkey GLIDE
+client:</p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> install @valkey/valkey-glide</span></code></pre></div>
+<p>Here’s the example code:</p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { GlideClusterClient } <span class="im">from</span> <span class="st">&quot;@valkey/valkey-glide&quot;</span><span class="op">;</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="kw">async</span> <span class="kw">function</span> <span class="fu">runExample</span>() {</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> addresses <span class="op">=</span> [</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>        {</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>            <span class="dt">host</span><span class="op">:</span> <span class="st">&quot;localhost&quot;</span><span class="op">,</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>            <span class="dt">port</span><span class="op">:</span> <span class="dv">6379</span><span class="op">,</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>        }<span class="op">,</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    ]<span class="op">;</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Check `GlideClientConfiguration/GlideClusterClientConfiguration` for additional options.</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> client <span class="op">=</span> <span class="cf">await</span> GlideClusterClient<span class="op">.</span><span class="fu">createClient</span>({</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>        <span class="dt">addresses</span><span class="op">:</span> addresses<span class="op">,</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>        <span class="co">// if the cluster nodes use TLS, you&#39;ll need to enable it. Otherwise the connection attempt will time out silently.</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>        <span class="co">// useTLS: true,</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>        <span class="co">// It is recommended to set a timeout for your specific use case</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>        <span class="dt">requestTimeout</span><span class="op">:</span> <span class="dv">500</span><span class="op">,</span> <span class="co">// 500ms timeout</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>        <span class="dt">clientName</span><span class="op">:</span> <span class="st">&quot;test_cluster_client&quot;</span><span class="op">,</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    })<span class="op">;</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span> {</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>        <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="st">&quot;Connected to Valkey cluster&quot;</span>)<span class="op">;</span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Get the last counter value, or start from 0</span></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>        <span class="kw">let</span> last <span class="op">=</span> <span class="cf">await</span> client<span class="op">.</span><span class="fu">get</span>(<span class="st">&quot;__last__&quot;</span>)<span class="op">;</span></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>        last <span class="op">=</span> last <span class="op">?</span> <span class="pp">parseInt</span>(last) <span class="op">:</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>        <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="vs">`Starting from counter: </span><span class="sc">${</span>last<span class="sc">}</span><span class="vs">`</span>)<span class="op">;</span></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Write keys in batches using mset for better performance</span></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>        <span class="kw">const</span> batchSize <span class="op">=</span> <span class="dv">100</span><span class="op">;</span></span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> (<span class="kw">let</span> start <span class="op">=</span> last <span class="op">+</span> <span class="dv">1</span><span class="op">;</span> start <span class="op">&lt;=</span> <span class="dv">1000000000</span><span class="op">;</span> start <span class="op">+=</span> batchSize) {</span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>            <span class="cf">try</span> {</span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>                <span class="kw">const</span> keyValuePairs <span class="op">=</span> []<span class="op">;</span></span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>                <span class="kw">const</span> end <span class="op">=</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">min</span>(start <span class="op">+</span> batchSize <span class="op">-</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">1000000000</span>)<span class="op">;</span></span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>                <span class="co">// Prepare batch of key-value pairs as array</span></span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>                <span class="cf">for</span> (<span class="kw">let</span> x <span class="op">=</span> start<span class="op">;</span> x <span class="op">&lt;=</span> end<span class="op">;</span> x<span class="op">++</span>) {</span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>                    keyValuePairs<span class="op">.</span><span class="fu">push</span>(<span class="vs">`foo</span><span class="sc">${</span>x<span class="sc">}</span><span class="vs">`</span><span class="op">,</span> x<span class="op">.</span><span class="fu">toString</span>())<span class="op">;</span></span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>                }</span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>                <span class="co">// Execute batch mset with array format</span></span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a>                <span class="cf">await</span> client<span class="op">.</span><span class="fu">mset</span>(keyValuePairs)<span class="op">;</span></span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>                <span class="co">// Update counter and display progress</span></span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a>                <span class="cf">await</span> client<span class="op">.</span><span class="fu">set</span>(<span class="st">&quot;__last__&quot;</span><span class="op">,</span> end<span class="op">.</span><span class="fu">toString</span>())<span class="op">;</span></span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a>                <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="vs">`Batch completed: </span><span class="sc">${</span>start<span class="sc">}</span><span class="vs"> to </span><span class="sc">${</span>end<span class="sc">}</span><span class="vs">`</span>)<span class="op">;</span></span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a>                <span class="co">// Verify a sample key from the batch</span></span>
+<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a>                <span class="kw">const</span> sampleKey <span class="op">=</span> <span class="vs">`foo</span><span class="sc">${</span>start<span class="sc">}</span><span class="vs">`</span><span class="op">;</span></span>
+<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a>                <span class="kw">const</span> value <span class="op">=</span> <span class="cf">await</span> client<span class="op">.</span><span class="fu">get</span>(sampleKey)<span class="op">;</span></span>
+<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a>                <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="vs">`Sample verification - </span><span class="sc">${</span>sampleKey<span class="sc">}</span><span class="vs">: </span><span class="sc">${</span>value<span class="sc">}</span><span class="vs">`</span>)<span class="op">;</span></span>
+<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a>            } <span class="cf">catch</span> (error) {</span>
+<span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a>                <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="vs">`Error in batch starting at </span><span class="sc">${</span>start<span class="sc">}</span><span class="vs">: </span><span class="sc">${</span>error<span class="op">.</span><span class="at">message</span><span class="sc">}</span><span class="vs">`</span>)<span class="op">;</span></span>
+<span id="cb9-56"><a href="#cb9-56" aria-hidden="true" tabindex="-1"></a>            }</span>
+<span id="cb9-57"><a href="#cb9-57" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb9-58"><a href="#cb9-58" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">catch</span> (error) {</span>
+<span id="cb9-59"><a href="#cb9-59" aria-hidden="true" tabindex="-1"></a>        <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="vs">`Connection error: </span><span class="sc">${</span>error<span class="op">.</span><span class="at">message</span><span class="sc">}</span><span class="vs">`</span>)<span class="op">;</span></span>
+<span id="cb9-60"><a href="#cb9-60" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">finally</span> {</span>
+<span id="cb9-61"><a href="#cb9-61" aria-hidden="true" tabindex="-1"></a>        client<span class="op">.</span><span class="fu">close</span>()<span class="op">;</span></span>
+<span id="cb9-62"><a href="#cb9-62" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb9-63"><a href="#cb9-63" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-64"><a href="#cb9-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-65"><a href="#cb9-65" aria-hidden="true" tabindex="-1"></a><span class="fu">runExample</span>()<span class="op">.</span><span class="fu">catch</span>(<span class="bu">console</span><span class="op">.</span><span class="fu">error</span>)<span class="op">;</span></span></code></pre></div>
+<p>The application does a very simple thing, it sets keys in the form
+<code>foo&lt;number&gt;</code> to <code>number</code>, using batched
+MSET operations for better performance. The MSET command accepts an
+array of alternating keys and values. So if you run the program the
+result is batches of MSET commands:</p>
+<ul>
+<li>MSET foo1 1 foo2 2 foo3 3 … foo100 100 (batch of 100 keys)</li>
+<li>MSET foo101 101 foo102 102 … foo200 200 (next batch)</li>
+<li>And so forth…</li>
+</ul>
+<p>The program includes comprehensive error handling to display errors
+instead of crashing, so all cluster operations are wrapped in try-catch
+blocks.</p>
+<p>The <strong>client creation section</strong> is the first key part of
+the program. It creates the Valkey cluster client using a list of
+cluster <em>addresses</em> and configuration options including a request
+timeout and client name.</p>
+<p>The addresses don’t need to be all the nodes of the cluster. The
+important thing is that at least one node is reachable. Valkey GLIDE
+automatically discovers the complete cluster topology once it connects
+to any node.</p>
+<p>Now that we have the cluster client instance, we can use it like any
+other Valkey client to perform operations across the cluster.</p>
+<p>The <strong>counter initialization section</strong> reads a counter
+so that when we restart the example we don’t start again with
+<code>foo0</code>, but continue from where we left off. The counter is
+stored in Valkey itself using the key <code>__last__</code>.</p>
+<p>The <strong>main processing loop</strong> sets keys in batches using
+MSET operations for better performance, processing 100 keys at a time
+and displaying progress or any errors that occur. you’ll get the usually
+10k ops/second in the best of the conditions).</p>
+<p>you’ll get optimal performance).</p>
+<p>Starting the application produces the following output:</p>
+<pre><code>node example.js
+Connected to Valkey cluster
+Starting from counter: 0
+Batch completed: 1 to 100
+Sample verification - foo1: 1
+Batch completed: 101 to 200
+Sample verification - foo101: 101
+Batch completed: 201 to 300
+Sample verification - foo201: 201
+^C (I stopped the program here)</code></pre>
+<p>This is not a very interesting program and we’ll use a better one in
+a moment but we can already see what happens during a resharding when
+the program is running.</p>
+<h4 id="reshard-the-cluster">Reshard the cluster</h4>
+<p>Now we are ready to try a cluster resharding. To do this, please keep
+the example.js program running, so that you can see if there is some
+impact on the program running.</p>
+<p>Resharding basically means to move hash slots from a set of nodes to
+another set of nodes. Like cluster creation, it is accomplished using
+the valkey-cli utility.</p>
+<p>To start a resharding, just type:</p>
+<pre><code>valkey-cli --cluster reshard 127.0.0.1:7000</code></pre>
+<p>You only need to specify a single node, valkey-cli will find the
+other nodes automatically.</p>
+<p>Currently valkey-cli is only able to reshard with the administrator
+support, you can’t just say move 5% of slots from this node to the other
+one (but this is pretty trivial to implement). So it starts with
+questions. The first is how much of a resharding do you want to do:</p>
+<pre><code>How many slots do you want to move (from 1 to 16384)?</code></pre>
+<p>We can try to reshard 1000 hash slots, that should already contain a
+non trivial amount of keys if the example is still running without the
+sleep call.</p>
+<p>Then valkey-cli needs to know what is the target of the resharding,
+that is, the node that will receive the hash slots. I’ll use the first
+primary node, that is, 127.0.0.1:7000, but I need to specify the Node ID
+of the instance. This was already printed in a list by valkey-cli, but I
+can always find the ID of a node with the following command if I
+need:</p>
+<pre><code>$ valkey-cli -p 7000 cluster nodes | grep myself
+97a3a64667477371c4479320d683e4c8db5858b1 :0 myself,master - 0 0 0 connected 0-5460</code></pre>
+<p>Ok so my target node is 97a3a64667477371c4479320d683e4c8db5858b1.</p>
+<p>Now you’ll get asked from what nodes you want to take those keys.
+I’ll just type <code>all</code> in order to take a bit of hash slots
+from all the other primary nodes.</p>
+<p>After the final confirmation you’ll see a message for every slot that
+valkey-cli is going to move from a node to another, and a dot will be
+printed for every actual key moved from one side to the other.</p>
+<p>While the resharding is in progress you should be able to see your
+example program running unaffected. You can stop and restart it multiple
+times during the resharding if you want.</p>
+<p>At the end of the resharding, you can test the health of the cluster
+with the following command:</p>
+<pre><code>valkey-cli --cluster check 127.0.0.1:7000</code></pre>
+<p>All the slots will be covered as usual, but this time the primary at
+127.0.0.1:7000 will have more hash slots, something around 6461.</p>
+<p>Resharding can be performed automatically without the need to
+manually enter the parameters in an interactive way. This is possible
+using a command line like the following:</p>
+<pre><code>valkey-cli --cluster reshard &lt;host&gt;:&lt;port&gt; --cluster-from &lt;node-id&gt; --cluster-to &lt;node-id&gt; --cluster-slots &lt;number of slots&gt; --cluster-yes</code></pre>
+<p>This allows to build some automatism if you are likely to reshard
+often, however currently there is no way for <code>valkey-cli</code> to
+automatically rebalance the cluster checking the distribution of keys
+across the cluster nodes and intelligently moving slots as needed. This
+feature will be added in the future.</p>
+<p>The <code>--cluster-yes</code> option instructs the cluster manager
+to automatically answer “yes” to the command’s prompts, allowing it to
+run in a non-interactive mode. Note that this option can also be
+activated by setting the <code>REDISCLI_CLUSTER_YES</code> environment
+variable.</p>
+<h4 id="a-more-interesting-example-application">A more interesting
+example application</h4>
+<p>The example application we wrote early is not very good. It writes to
+the cluster in a simple way without even checking if what was written is
+the right thing.</p>
+<p>From our point of view the cluster receiving the writes could just
+always write the key <code>foo</code> to <code>42</code> to every
+operation, and we would not notice at all.</p>
+<p>Now we can write a more interesting application for testing cluster
+behavior. A simple consistency checking application that uses a set of
+counters, by default 1000, and sends <code>INCR</code> commands to
+increment the counters.</p>
+<p>However instead of just writing, the application does two additional
+things:</p>
+<ul>
+<li>When a counter is updated using <code>INCR</code>, the application
+remembers the write.</li>
+<li>It also reads a random counter before every write, and check if the
+value is what we expected it to be, comparing it with the value it has
+in memory.</li>
+</ul>
+<p>What this means is that this application is a simple
+<strong>consistency checker</strong>, and is able to tell you if the
+cluster lost some write, or if it accepted a write that we did not
+receive acknowledgment for. In the first case we’ll see a counter having
+a value that is smaller than the one we remember, while in the second
+case the value will be greater.</p>
+<p>Running a consistency testing application produces a line of output
+every second:</p>
+<pre><code>node consistency-test.js
+925 R (0 err) | 925 W (0 err) |
+5030 R (0 err) | 5030 W (0 err) |
+9261 R (0 err) | 9261 W (0 err) |
+13517 R (0 err) | 13517 W (0 err) |
+17780 R (0 err) | 17780 W (0 err) |
+22025 R (0 err) | 22025 W (0 err) |
+25818 R (0 err) | 25818 W (0 err) |</code></pre>
+<p>The line shows the number of <strong>R</strong>eads and
+<strong>W</strong>rites performed, and the number of errors (query not
+accepted because of errors since the system was not available).</p>
+<p>If some inconsistency is found, new lines are added to the output.
+This is what happens, for example, if I reset a counter manually while
+the program is running:</p>
+<pre><code>$ valkey-cli -h 127.0.0.1 -p 7000 set key_217 0
+OK
+
+(in the other tab I see...)
+
+94774 R (0 err) | 94774 W (0 err) |
+98821 R (0 err) | 98821 W (0 err) |
+102886 R (0 err) | 102886 W (0 err) | 114 lost |
+107046 R (0 err) | 107046 W (0 err) | 114 lost |</code></pre>
+<p>When I set the counter to 0 the real value was 114, so the program
+reports 114 lost writes (<code>INCR</code> commands that are not
+remembered by the cluster).</p>
+<p>This program is much more interesting as a test case, so we’ll use it
+to test the Valkey Cluster failover.</p>
+<h4 id="test-the-failover">Test the failover</h4>
+<p>To trigger the failover, the simplest thing we can do (that is also
+the semantically simplest failure that can occur in a distributed
+system) is to crash a single process, in our case a single primary.</p>
+<p><strong>Note:</strong> During this test, you should take a tab open
+with the consistency test application running.</p>
+<p>We can identify a primary and crash it with the following
+command:</p>
+<pre><code>$ valkey-cli -p 7000 cluster nodes | grep master
+3e3a6cb0d9a9a87168e266b0a0b24026c0aae3f0 127.0.0.1:7001 master - 0 1385482984082 0 connected 5960-10921
+2938205e12de373867bf38f1ca29d31d0ddb3e46 127.0.0.1:7002 master - 0 1385482983582 0 connected 11423-16383
+97a3a64667477371c4479320d683e4c8db5858b1 :0 myself,master - 0 0 0 connected 0-5959 10922-11422</code></pre>
+<p>Ok, so 7000, 7001, and 7002 are primaries. Let’s crash node 7002 with
+the <strong>DEBUG SEGFAULT</strong> command:</p>
+<pre><code>$ valkey-cli -p 7002 debug segfault
+Error: Server closed the connection</code></pre>
+<p>Now we can look at the output of the consistency test to see what it
+reported.</p>
+<pre><code>18849 R (0 err) | 18849 W (0 err) |
+23151 R (0 err) | 23151 W (0 err) |
+27302 R (0 err) | 27302 W (0 err) |
+
+... many error warnings here ...
+
+29659 R (578 err) | 29660 W (577 err) |
+33749 R (578 err) | 33750 W (577 err) |
+37918 R (578 err) | 37919 W (577 err) |
+42077 R (578 err) | 42078 W (577 err) |</code></pre>
+<p>As you can see during the failover the system was not able to accept
+578 reads and 577 writes, however no inconsistency was created in the
+database. This may sound unexpected as in the first part of this
+tutorial we stated that Valkey Cluster can lose writes during the
+failover because it uses asynchronous replication. What we did not say
+is that this is not very likely to happen because Valkey sends the reply
+to the client, and the commands to replicate to the replicas, about at
+the same time, so there is a very small window to lose data. However the
+fact that it is hard to trigger does not mean that it is impossible, so
+this does not change the consistency guarantees provided by Valkey
+cluster.</p>
+<p>We can now check what is the cluster setup after the failover (note
+that in the meantime I restarted the crashed instance so that it rejoins
+the cluster as a replica):</p>
+<pre><code>$ valkey-cli -p 7000 cluster nodes
+3fc783611028b1707fd65345e763befb36454d73 127.0.0.1:7004 slave 3e3a6cb0d9a9a87168e266b0a0b24026c0aae3f0 0 1385503418521 0 connected
+a211e242fc6b22a9427fed61285e85892fa04e08 127.0.0.1:7003 slave 97a3a64667477371c4479320d683e4c8db5858b1 0 1385503419023 0 connected
+97a3a64667477371c4479320d683e4c8db5858b1 :0 myself,master - 0 0 0 connected 0-5959 10922-11422
+3c3a0c74aae0b56170ccb03a76b60cfe7dc1912e 127.0.0.1:7005 master - 0 1385503419023 3 connected 11423-16383
+3e3a6cb0d9a9a87168e266b0a0b24026c0aae3f0 127.0.0.1:7001 master - 0 1385503417005 0 connected 5960-10921
+2938205e12de373867bf38f1ca29d31d0ddb3e46 127.0.0.1:7002 slave 3c3a0c74aae0b56170ccb03a76b60cfe7dc1912e 0 1385503418016 3 connected</code></pre>
+<p>Now the primaries are running on ports 7000, 7001 and 7005. What was
+previously a primary, that is the Valkey instance running on port 7002,
+is now a replica of 7005.</p>
+<p>The output of the <code>CLUSTER NODES</code> command may look
+intimidating, but it is actually pretty simple, and is composed of the
+following tokens:</p>
+<ul>
+<li>Node ID</li>
+<li>ip:port</li>
+<li>flags: master, replica, myself, fail, …</li>
+<li>if it is a replica, the Node ID of the master</li>
+<li>Time of the last pending PING still waiting for a reply.</li>
+<li>Time of the last PONG received.</li>
+<li>Configuration epoch for this node (see the Cluster
+specification).</li>
+<li>Status of the link to this node.</li>
+<li>Slots served…</li>
+</ul>
+<h4 id="manual-failover">Manual failover</h4>
+<p>Sometimes it is useful to force a failover without actually causing
+any problem on a primary. For example, to upgrade the Valkey process of
+one of the primary nodes it is a good idea to failover it to turn it
+into a replica with minimal impact on availability.</p>
+<p>Manual failovers are supported by Valkey Cluster using the
+<code>CLUSTER FAILOVER</code> command, that must be executed in one of
+the replicas of the primary you want to failover.</p>
+<p>Manual failovers are special and are safer compared to failovers
+resulting from actual primary failures. They occur in a way that avoids
+data loss in the process, by switching clients from the original primary
+to the new primary only when the system is sure that the new primary
+processed all the replication stream from the old one.</p>
+<p>This is what you see in the replica log when you perform a manual
+failover:</p>
+<pre><code># Manual failover user request accepted.
+# Received replication offset for paused primary manual failover: 347540
+# All primary replication stream processed, manual failover can start.
+# Start of election delayed for 0 milliseconds (rank #0, offset 347540).
+# Starting a failover election for epoch 7545.
+# Failover election won: I&#39;m the new primary.</code></pre>
+<p>Clients sending write commands to the primary are blocked during the
+failover. When the primary sends its replication offset to the replica,
+the replica waits to reach the offset on its side. When the replication
+offset is reached, the failover starts, and the old primary is informed
+about the configuration switch. When the switch is complete, the clients
+are unblocked on the old primary and they are redirected to the new
+primary.</p>
+<p><strong>Note:</strong> To promote a replica to primary, it must first
+be known as a replica by a majority of the primaries in the cluster.
+Otherwise, it cannot win the failover election. If the replica has just
+been added to the cluster (see <a
+href="#add-a-new-node-as-a-replica">Add a new node as a replica</a>),
+you may need to wait a while before sending the
+<code>CLUSTER FAILOVER</code> command, to make sure the primaries in
+cluster are aware of the new replica.</p>
+<h4 id="add-a-new-node">Add a new node</h4>
+<p>Adding a new node is basically the process of adding an empty node
+and then moving some data into it, in case it is a new primary, or
+telling it to setup as a replica of a known node, in case it is a
+replica.</p>
+<p>We’ll show both, starting with the addition of a new primary
+instance.</p>
+<p>In both cases the first step to perform is <strong>adding an empty
+node</strong>.</p>
+<p>This is as simple as to start a new node in port 7006 (we already
+used from 7000 to 7005 for our existing 6 nodes) with the same
+configuration used for the other nodes, except for the port number, so
+what you should do in order to conform with the setup we used for the
+previous nodes:</p>
+<ul>
+<li>Create a new tab in your terminal application.</li>
+<li>Enter the <code>cluster-test</code> directory.</li>
+<li>Create a directory named <code>7006</code>.</li>
+<li>Create a valkey.conf file inside, similar to the one used for the
+other nodes but using 7006 as port number.</li>
+<li>Finally start the server with
+<code>../valkey-server ./valkey.conf</code></li>
+</ul>
+<p>At this point the server should be running.</p>
+<p>Now we can use <strong>valkey-cli</strong> as usual in order to add
+the node to the existing cluster.</p>
+<pre><code>valkey-cli --cluster add-node 127.0.0.1:7006 127.0.0.1:7000</code></pre>
+<p>As you can see I used the <strong>add-node</strong> command
+specifying the address of the new node as first argument, and the
+address of a random existing node in the cluster as second argument.</p>
+<p>In practical terms valkey-cli here did very little to help us, it
+just sent a <code>CLUSTER MEET</code> message to the node, something
+that is also possible to accomplish manually. However valkey-cli also
+checks the state of the cluster before to operate, so it is a good idea
+to perform cluster operations always via valkey-cli even when you know
+how the internals work.</p>
+<p>Now we can connect to the new node to see if it really joined the
+cluster:</p>
+<pre><code>valkey 127.0.0.1:7006&gt; cluster nodes
+3e3a6cb0d9a9a87168e266b0a0b24026c0aae3f0 127.0.0.1:7001 master - 0 1385543178575 0 connected 5960-10921
+3fc783611028b1707fd65345e763befb36454d73 127.0.0.1:7004 slave 3e3a6cb0d9a9a87168e266b0a0b24026c0aae3f0 0 1385543179583 0 connected
+f093c80dde814da99c5cf72a7dd01590792b783b :0 myself,master - 0 0 0 connected
+2938205e12de373867bf38f1ca29d31d0ddb3e46 127.0.0.1:7002 slave 3c3a0c74aae0b56170ccb03a76b60cfe7dc1912e 0 1385543178072 3 connected
+a211e242fc6b22a9427fed61285e85892fa04e08 127.0.0.1:7003 slave 97a3a64667477371c4479320d683e4c8db5858b1 0 1385543178575 0 connected
+97a3a64667477371c4479320d683e4c8db5858b1 127.0.0.1:7000 master - 0 1385543179080 0 connected 0-5959 10922-11422
+3c3a0c74aae0b56170ccb03a76b60cfe7dc1912e 127.0.0.1:7005 master - 0 1385543177568 3 connected 11423-16383</code></pre>
+<p>Note that since this node is already connected to the cluster it is
+already able to redirect client queries correctly and is generally
+speaking part of the cluster. However it has two peculiarities compared
+to the other primaries:</p>
+<ul>
+<li>It holds no data as it has no assigned hash slots.</li>
+<li>Because it is a primary without assigned slots, it does not
+participate in the election process when a replica wants to become a
+primary.</li>
+</ul>
+<p>Now it is possible to assign hash slots to this node using the
+resharding feature of <code>valkey-cli</code>. It is basically useless
+to show this as we already did in a previous section, there is no
+difference, it is just a resharding having as a target the empty
+node.</p>
+<h5 id="add-a-new-node-as-a-replica">Add a new node as a replica</h5>
+<p>Adding a new replica can be performed in two ways. The obvious one is
+to use valkey-cli again, but with the –cluster-replica option, like
+this:</p>
+<pre><code>valkey-cli --cluster add-node 127.0.0.1:7006 127.0.0.1:7000 --cluster-replica</code></pre>
+<p>Note that the command line here is exactly like the one we used to
+add a new primary, so we are not specifying to which primary we want to
+add the replica. In this case, what happens is that valkey-cli will add
+the new node as replica of a random primary among the primaries with
+fewer replicas.</p>
+<p>However you can specify exactly what primary you want to target with
+your new replica with the following command line:</p>
+<pre><code>valkey-cli --cluster add-node 127.0.0.1:7006 127.0.0.1:7000 --cluster-replica --cluster-master-id 3c3a0c74aae0b56170ccb03a76b60cfe7dc1912e</code></pre>
+<p>This way we assign the new replica to a specific primary.</p>
+<p>A more manual way to add a replica to a specific primary is to add
+the new node as an empty primary, and then turn it into a replica using
+the <code>CLUSTER REPLICATE</code> command. This also works if the node
+was added as a replica but you want to move it as a replica of a
+different primary.</p>
+<p>For example in order to add a replica for the node 127.0.0.1:7005
+that is currently serving hash slots in the range 11423-16383, that has
+a Node ID 3c3a0c74aae0b56170ccb03a76b60cfe7dc1912e, all I need to do is
+to connect with the new node (already added as empty primary) and send
+the command:</p>
+<pre><code>valkey 127.0.0.1:7006&gt; cluster replicate 3c3a0c74aae0b56170ccb03a76b60cfe7dc1912e</code></pre>
+<p>That’s it. Now we have a new replica for this set of hash slots, and
+all the other nodes in the cluster already know (after a few seconds
+needed to update their config). We can verify with the following
+command:</p>
+<pre><code>$ valkey-cli -p 7000 cluster nodes | grep slave | grep 3c3a0c74aae0b56170ccb03a76b60cfe7dc1912e
+f093c80dde814da99c5cf72a7dd01590792b783b 127.0.0.1:7006 replica 3c3a0c74aae0b56170ccb03a76b60cfe7dc1912e 0 1385543617702 3 connected
+2938205e12de373867bf38f1ca29d31d0ddb3e46 127.0.0.1:7002 replica 3c3a0c74aae0b56170ccb03a76b60cfe7dc1912e 0 1385543617198 3 connected</code></pre>
+<p>The node 3c3a0c… now has two replicas, running on ports 7002 (the
+existing one) and 7006 (the new one).</p>
+<h4 id="remove-a-node">Remove a node</h4>
+<p>To remove a replica node just use the <code>del-node</code> command
+of valkey-cli:</p>
+<pre><code>valkey-cli --cluster del-node 127.0.0.1:7000 `&lt;node-id&gt;`</code></pre>
+<p>The first argument is just a random node in the cluster, the second
+argument is the ID of the node you want to remove.</p>
+<p>You can remove a primary node in the same way as well,
+<strong>however in order to remove a primary node it must be
+empty</strong>. If the primary is not empty you need to reshard data
+away from it to all the other primary nodes before.</p>
+<p>An alternative to remove a primary node is to perform a manual
+failover of it over one of its replicas and remove the node after it
+turned into a replica of the new primary. Obviously this does not help
+when you want to reduce the actual number of primaries in your cluster,
+in that case, a resharding is needed.</p>
+<p>There is a special scenario where you want to remove a failed node.
+You should not use the <code>del-node</code> command because it tries to
+connect to all nodes and you will encounter a “connection refused”
+error. Instead, you can use the <code>call</code> command:</p>
+<pre><code>valkey-cli --cluster call 127.0.0.1:7000 cluster forget `&lt;node-id&gt;`</code></pre>
+<p>This command will execute <code>CLUSTER FORGET</code> command on
+every node.</p>
+<h4 id="replica-migration">Replica migration</h4>
+<p>In Valkey Cluster, you can reconfigure a replica to replicate with a
+different primary at any time just using this command:</p>
+<pre><code>CLUSTER REPLICATE &lt;master-node-id&gt;</code></pre>
+<p>However there is a special scenario where you want replicas to move
+from one primary to another one automatically, without the help of the
+system administrator. The automatic reconfiguration of replicas is
+called <em>replicas migration</em> and is able to improve the
+reliability of a Valkey Cluster.</p>
+<p><strong>Note:</strong> You can read the details of replicas migration
+in the <a href="cluster-spec.md">Valkey Cluster Specification</a>, here
+we’ll only provide some information about the general idea and what you
+should do in order to benefit from it.</p>
+<p>The reason why you may want to let your cluster replicas to move from
+one primary to another under certain condition, is that usually the
+Valkey Cluster is as resistant to failures as the number of replicas
+attached to a given primary.</p>
+<p>For example a cluster where every primary has a single replica can’t
+continue operations if the primary and its replica fail at the same
+time, simply because there is no other instance to have a copy of the
+hash slots the primary was serving. However while net-splits are likely
+to isolate a number of nodes at the same time, many other kind of
+failures, like hardware or software failures local to a single node, are
+a very notable class of failures that are unlikely to happen at the same
+time, so it is possible that in your cluster where every primary has a
+replica, the replica is killed at 4am, and the primary is killed at 6am.
+This still will result in a cluster that can no longer operate.</p>
+<p>To improve reliability of the system we have the option to add
+additional replicas to every primary, but this is expensive. Replica
+migration allows to add more replicas to just a few primaries. So you
+have 10 primaries with 1 replica each, for a total of 20 instances.
+However you add, for example, 3 instances more as replicas of some of
+your primaries, so certain primaries will have more than a single
+replica.</p>
+<p>With replicas migration what happens is that if a primary is left
+without replicas, a replica from a primary that has multiple replicas
+will migrate to the <em>orphaned</em> primary. So after your replica
+goes down at 4am as in the example we made above, another replica will
+take its place, and when the primary will fail as well at 5am, there is
+still a replica that can be elected so that the cluster can continue to
+operate.</p>
+<p>So what you should know about replicas migration in short?</p>
+<ul>
+<li>The cluster will try to migrate a replica from the primary that has
+the greatest number of replicas in a given moment.</li>
+<li>To benefit from replica migration you have just to add a few more
+replicas to a single primary in your cluster, it does not matter what
+primary.</li>
+<li>There is a configuration parameter that controls the replica
+migration feature that is called <code>cluster-migration-barrier</code>:
+you can read more about it in the example <code>valkey.conf</code> file
+provided with Valkey Cluster.</li>
+</ul>
+<h4 id="upgrade-nodes-in-a-valkey-cluster">Upgrade nodes in a Valkey
+Cluster</h4>
+<p>Upgrading replica nodes is easy since you just need to stop the node
+and restart it with an updated version of Valkey. If there are clients
+scaling reads using replica nodes, they should be able to reconnect to a
+different replica if a given one is not available.</p>
+<p>Upgrading primaries is a bit more complex. The suggested procedure is
+to trigger a manual failover to turn the old primary into a replica and
+then upgrading it.</p>
+<p>A complete rolling upgrade of all nodes in a cluster can be performed
+by repeating the following procedure for each shard (a primary and its
+replicas):</p>
+<ol type="1">
+<li><p>Add one or more upgraded nodes as new replicas to the primary.
+This step is optional but it ensures that the number of replicas is not
+compromised during the rolling upgrade. To add a new node, use <a
+href="../commands/cluster-meet.md"><code>CLUSTER    MEET</code></a> and
+<a
+href="../commands/cluster-replicate.md"><code>CLUSTER    REPLICATE</code></a>
+or use <code>valkey-cli</code> as described under <a
+href="#add-a-new-node-as-a-replica">Add a new node as a replica</a>.</p>
+<p>An alternative is to upgrade one replica at a time and have fewer
+replicas online during the upgrade.</p></li>
+<li><p>Upgrade the old replicas you want to keep by restarting them with
+the updated version of Valkey. If you’re replacing all the old nodes
+with new nodes, you can skip this step.</p></li>
+<li><p>Select one of the upgraded replicas to be the new primary. Wait
+until this replica has caught up the replication offset with the
+primary. You can use <a
+href="../commands/info.md"><code>INFO REPLICATION</code></a> and check
+for the line <code>master_link_status:up</code> to be present. This
+indicates that the initial sync with the primary is complete.</p>
+<p>After the initial full sync, the replica might still lag behind in
+replication. Send <code>INFO REPLICATION</code> to the primary and the
+replica and compare the field <code>master_repl_offset</code> returned
+by both nodes. If the offsets match, it means that all writes have been
+replicated. However, if the primary receives a constant stream of
+writes, it’s possible that the offsets will never be equal. In this
+step, you can accept a small difference. It’s usually enough to wait for
+some seconds to minimize the difference.</p></li>
+<li><p>Check that the new replica is known by all nodes in the cluster,
+or at least by the primaries in the cluster. You can send <a
+href="../commands/cluster-nodes.md"><code>CLUSTER    NODES</code></a> to
+each of the nodes in the cluster and check that they all are aware of
+the new node. Wait for some time and repeat the check if
+necessary.</p></li>
+<li><p>Trigger a manual failover by sending <a
+href="../commands/cluster-failover.md"><code>CLUSTER    FAILOVER</code></a>
+to the replica node selected to become the new primary. See the <a
+href="#manual-failover">Manual failover</a> section in this document for
+more information.</p></li>
+<li><p>Wait for the failover to complete. To check, you can use <a
+href="../commands/role.md"><code>ROLE</code></a>, <a
+href="../commands/info.md"><code>INFO REPLICATION</code></a> (which
+indicates <code>role:master</code> after successful failover) or <a
+href="../commands/cluster-nodes.md"><code>CLUSTER    NODES</code></a> to
+verify that the state of the cluster has changed shortly after the
+command was sent.</p></li>
+<li><p>Take the old primary (now a replica) out of service, or upgrade
+it and add it again as a replica. Remove additional replicas kept for
+redundancy during the upgrade, if any.</p></li>
+</ol>
+<p>Repeat this sequence for each shard (each primary and its replicas)
+until all nodes in the cluster have been upgraded.</p>
+<h4 id="migrate-to-valkey-cluster">Migrate to Valkey Cluster</h4>
+<p>Users willing to migrate to Valkey Cluster may have just a single
+primary, or may already using a preexisting sharding setup, where keys
+are split among N nodes, using some in-house algorithm or a sharding
+algorithm implemented by their client library or Valkey proxy.</p>
+<p>In both cases it is possible to migrate to Valkey Cluster easily,
+however what is the most important detail is if multiple-keys operations
+are used by the application, and how. There are three different
+cases:</p>
+<ol type="1">
+<li>Multiple keys operations, or transactions, or Lua scripts involving
+multiple keys, are not used. Keys are accessed independently (even if
+accessed via transactions or Lua scripts grouping multiple commands,
+about the same key, together).</li>
+<li>Multiple keys operations, or transactions, or Lua scripts involving
+multiple keys are used but only with keys having the same <strong>hash
+tag</strong>, which means that the keys used together all have a
+<code>{...}</code> sub-string that happens to be identical. For example
+the following multiple keys operation is defined in the context of the
+same hash tag: <code>SUNION {user:1000}.foo {user:1000}.bar</code>.</li>
+<li>Multiple keys operations, or transactions, or Lua scripts involving
+multiple keys are used with key names not having an explicit, or the
+same, hash tag.</li>
+</ol>
+<p>The third case is not handled by Valkey Cluster: the application
+requires to be modified in order to not use multi keys operations or
+only use them in the context of the same hash tag.</p>
+<p>Case 1 and 2 are covered, so we’ll focus on those two cases, that are
+handled in the same way, so no distinction will be made in the
+documentation.</p>
+<p>Assuming you have your preexisting data set split into N primaries,
+where N=1 if you have no preexisting sharding, the following steps are
+needed in order to migrate your data set to Valkey Cluster:</p>
+<ol type="1">
+<li>Stop your clients. No automatic live-migration to Valkey Cluster is
+currently possible. You may be able to do it orchestrating a live
+migration in the context of your application / environment.</li>
+<li>Generate an append only file for all of your N primaries using the
+<code>BGREWRITEAOF</code> command, and waiting for the AOF file to be
+completely generated.</li>
+<li>Save your AOF files from aof-1 to aof-N somewhere. At this point you
+can stop your old instances if you wish (this is useful since in
+non-virtualized deployments you often need to reuse the same
+computers).</li>
+<li>Create a Valkey Cluster composed of N primaries and zero replicas.
+You’ll add replicas later. Make sure all your nodes are using the append
+only file for persistence.</li>
+<li>Stop all the cluster nodes, substitute their append only file with
+your pre-existing append only files, aof-1 for the first node, aof-2 for
+the second node, up to aof-N.</li>
+<li>Restart your Valkey Cluster nodes with the new AOF files. They’ll
+complain that there are keys that should not be there according to their
+configuration.</li>
+<li>Use <code>valkey-cli --cluster fix</code> command in order to fix
+the cluster so that keys will be migrated according to the hash slots
+each node is authoritative or not.</li>
+<li>Use <code>valkey-cli --cluster check</code> at the end to make sure
+your cluster is ok.</li>
+<li>Restart your clients modified to use a Valkey Cluster aware client
+library.</li>
+</ol>
+<p>There is an alternative way to import data from external instances to
+a Valkey Cluster, which is to use the
+<code>valkey-cli --cluster import</code> command.</p>
+<p>The command moves all the keys of a running instance (deleting the
+keys from the source instance) to the specified pre-existing Valkey
+Cluster.</p>
+<p><strong>Note:</strong> If not for backward compatibility, the Valkey
+project no longer uses the words “master” and “slave”. Unfortunately in
+this command these words are part of the protocol, so we’ll be able to
+remove such occurrences only when this API will be naturally
+deprecated.</p>
+<h2 id="learn-more">Learn more</h2>
+<ul>
+<li><a href="cluster-spec.md">Valkey Cluster specification</a></li>
+<li><a
+href="https://docs.docker.com/engine/userguide/networking/dockernetworks/">Docker
+documentation</a></li>
+</ul>
+</body>
+</html>

@@ -379,24 +379,23 @@ Here's the example code:
 import { GlideClusterClient } from "@valkey/valkey-glide";
 
 async function runExample() {
-    // Define cluster addresses - you only need one reachable node
     const addresses = [
-        { host: "127.0.0.1", port: 7000 },
-        { host: "127.0.0.1", port: 7001 }
+        {
+            host: "localhost",
+            port: 6379,
+        },
     ];
+    // Check `GlideClientConfiguration/GlideClusterClientConfiguration` for additional options.
+    const client = await GlideClusterClient.createClient({
+        addresses: addresses,
+        // if the cluster nodes use TLS, you'll need to enable it. Otherwise the connection attempt will time out silently.
+        // useTLS: true,
+        // It is recommended to set a timeout for your specific use case
+        requestTimeout: 500, // 500ms timeout
+        clientName: "test_cluster_client",
+    });
 
-    let client;
-    
     try {
-        // Create cluster client with configuration
-        client = await GlideClusterClient.createClient({
-            addresses: addresses,
-            clientConfiguration: {
-                requestTimeout: 500, // 500ms timeout
-                clientName: "valkey_cluster_example"
-            }
-        });
-
         console.log("Connected to Valkey cluster");
 
         // Get the last counter value, or start from 0
@@ -436,9 +435,7 @@ async function runExample() {
     } catch (error) {
         console.log(`Connection error: ${error.message}`);
     } finally {
-        if (client) {
-            client.close();
-        }
+        client.close();
     }
 }
 
