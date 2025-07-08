@@ -193,7 +193,7 @@ To create and use a Valkey Cluster, follow these steps:
 
 * [Create a Valkey Cluster](#create-a-valkey-cluster)
 * [Interact with the cluster](#interact-with-the-cluster)
-* [Write an example app with redis-rb-cluster](#write-an-example-app-with-redis-rb-cluster)
+* [Write an example app with Valkey GLIDE](#write-an-example-app-with-valkey-glide)
 * [Reshard the cluster](#reshard-the-cluster)
 * [A more interesting example application](#a-more-interesting-example-application)
 * [Test the failover](#test-the-failover)
@@ -350,7 +350,7 @@ right node. The map is refreshed only when something changed in the cluster
 configuration, for example after a failover or after the system administrator
 changed the cluster layout by adding or removing nodes.
 
-#### Write an example app with redis-rb-cluster
+#### Write an example app with Valkey GLIDE
 
 Before going forward showing how to operate the Valkey Cluster, doing things
 like a failover, or a resharding, we need to create some example application
@@ -363,91 +363,114 @@ world conditions. It is not very helpful to see what happens while nobody
 is writing to the cluster.
 
 This section explains some basic usage of
-[redis-rb-cluster](https://github.com/antirez/redis-rb-cluster) showing two
-examples. 
-The first is the following, and is the
-[`example.rb`](https://github.com/antirez/redis-rb-cluster/blob/master/example.rb)
-file inside the redis-rb-cluster distribution:
+[Valkey GLIDE for Node.js](https://github.com/valkey-io/valkey-glide/tree/main/node), the official
+Valkey client library, showing a simple example application.
 
-```ruby
-require './cluster'
+The following example demonstrates how to connect to a Valkey cluster and perform
+basic operations. First, install the Valkey GLIDE client:
 
-if ARGV.length != 2
-    startup_nodes = [
-        {:host => "127.0.0.1", :port => 7000},
-        {:host => "127.0.0.1", :port => 7001}
-    ]
-else
-    startup_nodes = [
-        {:host => ARGV[0], :port => ARGV[1].to_i}
-    ]
-end
+```bash
+npm install @valkey/valkey-glide
+```
 
-rc = RedisCluster.new(startup_nodes,32,:timeout => 0.1)
+Here's the example code:
 
-last = false
+```javascript
+import { GlideClusterClient, ConnectionError } from "@valkey/valkey-glide";
 
-while not last
-    begin
-        last = rc.get("__last__")
-        last = 0 if !last
-    rescue => e
-        puts "error #{e.to_s}"
-        sleep 1
-    end
-end
+async function runExample() {
+    // Define startup nodes - you only need one reachable node
+    let startupNodes = [
+        { host: "127.0.0.1", port: 7000 },
+        { host: "127.0.0.1", port: 7001 }
+    ];
 
-((last.to_i+1)..1000000000).each{|x|
-    begin
-        rc.set("foo#{x}",x)
-        puts rc.get("foo#{x}")
-        rc.set("__last__",x)
-    rescue => e
-        puts "error #{e.to_s}"
-    end
-    sleep 0.1
+    // Handle command line arguments
+    if (process.argv.length === 4) {
+        const [,, host, port] = process.argv;
+        startupNodes = [{ host, port: parseInt(port) }];
+    }
+
+    let client;
+    
+    try {
+        // Create cluster client
+        client = await GlideClusterClient.createClient({
+            addresses: startupNodes,
+            clientConfiguration: {
+                requestTimeout: 100
+            }
+        });
+
+        console.log("Connected to Valkey cluster");
+
+        // Get the last counter value, or start from 0
+        let last = await client.get("__last__");
+        last = last ? parseInt(last) : 0;
+
+        console.log(`Starting from counter: ${last}`);
+
+        // Write keys in sequence
+        for (let x = last + 1; x <= 1000000000; x++) {
+            try {
+                await client.set(`foo${x}`, x.toString());
+                const value = await client.get(`foo${x}`);
+                console.log(value);
+                await client.set("__last__", x.toString());
+            } catch (error) {
+                console.log(`Error: ${error.message}`);
+            }
+            
+            // Sleep for 100ms to make output readable
+            await new Promise(resolve => setTimeout(resolve, 100));
+        }
+    } catch (error) {
+        if (error instanceof ConnectionError) {
+            console.log(`Connection error: ${error.message}`);
+        } else {
+            console.log(`Unexpected error: ${error.message}`);
+        }
+    } finally {
+        if (client) {
+            client.close();
+        }
+    }
 }
+
+runExample().catch(console.error);
 ```
 
 The application does a very simple thing, it sets keys in the form `foo<number>` to `number`, one after the other. So if you run the program the result is the
 following stream of commands:
 
 * SET foo0 0
-* SET foo1 1
+* SET foo1 1  
 * SET foo2 2
 * And so forth...
 
-The program looks more complex than it should usually as it is designed to
-show errors on the screen instead of exiting with an exception, so every
-operation performed with the cluster is wrapped by `begin` `rescue` blocks.
+The program includes comprehensive error handling to display errors instead of
+crashing, so all cluster operations are wrapped in try-catch blocks.
 
-The **line 14** is the first interesting line in the program. It creates the
-Valkey Cluster object, using as argument a list of *startup nodes*, the maximum
-number of connections this object is allowed to take against different nodes,
-and finally the timeout after a given operation is considered to be failed.
+The client creation on **line 18** is the first key part of the program. It creates the
+Valkey cluster client using a list of *startup nodes* and configuration options
+including a request timeout.
 
 The startup nodes don't need to be all the nodes of the cluster. The important
-thing is that at least one node is reachable. Also note that redis-rb-cluster
-updates this list of startup nodes as soon as it is able to connect with the
-first node. You should expect such a behavior with any other serious client.
+thing is that at least one node is reachable. Valkey GLIDE automatically
+discovers the complete cluster topology once it connects to any node.
 
-Now that we have the Valkey Cluster object instance stored in the **rc** variable,
-we are ready to use the object like if it was a normal Valkey object instance.
+Now that we have the cluster client instance, we can use it like any other
+Valkey client to perform operations across the cluster.
 
-This is exactly what happens in **line 18 to 26**: when we restart the example
-we don't want to start again with `foo0`, so we store the counter inside
-Valkey itself. The code above is designed to read this counter, or if the
-counter does not exist, to assign it the value of zero.
+The code reads a counter from **line 27 to 29** so that when we restart the example
+we don't start again with `foo0`, but continue from where we left off.
+The counter is stored in Valkey itself using the key `__last__`.
 
-However note how it is a while loop, as we want to try again and again even
-if the cluster is down and is returning errors. Normal applications don't need
-to be so careful.
+The main loop from **line 33 to 42** sets the keys sequentially and
+displays either the value or any error that occurs.
 
-**Lines between 28 and 37** start the main loop where the keys are set or
-an error is displayed.
-
-Note the `sleep` call at the end of the loop. In your tests you can remove
-the sleep if you want to write to the cluster as fast as possible (relatively
+Note the `setTimeout` call at the end of the loop. In your tests you can remove
+the sleep if you want to write to the cluster as fast as possible (though
 to the fact that this is a busy loop without real parallelism of course, so
 you'll get the usually 10k ops/second in the best of the conditions).
 
@@ -457,7 +480,9 @@ easier to follow by humans.
 Starting the application produces the following output:
 
 ```
-ruby ./example.rb
+node example.js
+Connected to Valkey cluster
+Starting from counter: 0
 1
 2
 3
@@ -477,8 +502,8 @@ is running.
 #### Reshard the cluster
 
 Now we are ready to try a cluster resharding. To do this, please
-keep the example.rb program running, so that you can see if there is some
-impact on the program running. Also, you may want to comment the `sleep`
+keep the example.js program running, so that you can see if there is some
+impact on the program running. Also, you may want to comment the `setTimeout`
 call to have some more serious write load during resharding.
 
 Resharding basically means to move hash slots from a set of nodes to another
@@ -564,8 +589,8 @@ From our point of view the cluster receiving the writes could just always
 write the key `foo` to `42` to every operation, and we would not notice at
 all.
 
-So in the `redis-rb-cluster` repository, there is a more interesting application
-that is called `consistency-test.rb`. It uses a set of counters, by default 1000, and sends `INCR` commands in order to increment the counters.
+Now we can write a more interesting application for testing cluster behavior.
+A simple consistency checking application that uses a set of counters, by default 1000, and sends `INCR` commands to increment the counters.
 
 However instead of just writing, the application does two additional things:
 
@@ -578,11 +603,11 @@ a write that we did not receive acknowledgment for. In the first case we'll
 see a counter having a value that is smaller than the one we remember, while
 in the second case the value will be greater.
 
-Running the consistency-test application produces a line of output every
+Running a consistency testing application produces a line of output every
 second:
 
 ```
-$ ruby consistency-test.rb
+node consistency-test.js
 925 R (0 err) | 925 W (0 err) |
 5030 R (0 err) | 5030 W (0 err) |
 9261 R (0 err) | 9261 W (0 err) |
