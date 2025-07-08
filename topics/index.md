@@ -66,7 +66,7 @@ Programming with Valkey
 * [Releases and Versioning](releases.md): Valkey's development cycle and version numbering.
 * [Administration](admin.md): Various administration topics.
 
-### Deployment Topologies
+### Deployment Topology
 * [Replication](replication.md): What you need to know to set up primary-replica replication.
 * [Sentinel](sentinel.md): Valkey Sentinel is one of the official high availability deployment modes.
 * [Sentinel client spec](sentinel-clients.md): How to build clients for Valkey Sentinel.
