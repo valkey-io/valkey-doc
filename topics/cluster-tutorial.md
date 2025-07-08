@@ -397,9 +397,8 @@ async function runExample() {
         // Create cluster client
         client = await GlideClusterClient.createClient({
             addresses: startupNodes,
-            clientConfiguration: {
-                requestTimeout: 100
-            }
+            requestTimeout: 500, // 500ms timeout
+            clientName: "valkey_cluster_example"
         });
 
         console.log("Connected to Valkey cluster");
@@ -451,9 +450,9 @@ following stream of commands:
 The program includes comprehensive error handling to display errors instead of
 crashing, so all cluster operations are wrapped in try-catch blocks.
 
-The client creation on **line 18** is the first key part of the program. It creates the
+The client creation on **line 398** is the first key part of the program. It creates the
 Valkey cluster client using a list of *startup nodes* and configuration options
-including a request timeout.
+including a request timeout and client name.
 
 The startup nodes don't need to be all the nodes of the cluster. The important
 thing is that at least one node is reachable. Valkey GLIDE automatically
@@ -462,11 +461,11 @@ discovers the complete cluster topology once it connects to any node.
 Now that we have the cluster client instance, we can use it like any other
 Valkey client to perform operations across the cluster.
 
-The code reads a counter from **line 27 to 29** so that when we restart the example
+The code reads a counter from **line 407 to 408** so that when we restart the example
 we don't start again with `foo0`, but continue from where we left off.
 The counter is stored in Valkey itself using the key `__last__`.
 
-The main loop from **line 33 to 42** sets the keys sequentially and
+The main loop from **line 413 to 425** sets the keys sequentially and
 displays either the value or any error that occurs.
 
 Note the `setTimeout` call at the end of the loop. In your tests you can remove
