@@ -380,23 +380,17 @@ import { GlideClusterClient, ConnectionError } from "@valkey/valkey-glide";
 
 async function runExample() {
     // Define startup nodes - you only need one reachable node
-    let startupNodes = [
+    const addresses = [
         { host: "127.0.0.1", port: 7000 },
         { host: "127.0.0.1", port: 7001 }
     ];
-
-    // Handle command line arguments
-    if (process.argv.length === 4) {
-        const [,, host, port] = process.argv;
-        startupNodes = [{ host, port: parseInt(port) }];
-    }
 
     let client;
     
     try {
         // Create cluster client
         client = await GlideClusterClient.createClient({
-            addresses: startupNodes,
+            addresses: addresses,
             requestTimeout: 500, // 500ms timeout
             clientName: "valkey_cluster_example"
         });
@@ -409,19 +403,33 @@ async function runExample() {
 
         console.log(`Starting from counter: ${last}`);
 
-        // Write keys in sequence
-        for (let x = last + 1; x <= 1000000000; x++) {
+        // Write keys in batches using mset for better performance
+        const batchSize = 100;
+        for (let start = last + 1; start <= 1000000000; start += batchSize) {
             try {
-                await client.set(`foo${x}`, x.toString());
-                const value = await client.get(`foo${x}`);
-                console.log(value);
-                await client.set("__last__", x.toString());
+                const batch = {};
+                const end = Math.min(start + batchSize - 1, 1000000000);
+                
+                // Prepare batch of key-value pairs
+                for (let x = start; x <= end; x++) {
+                    batch[`foo${x}`] = x.toString();
+                }
+                
+                // Execute batch mset
+                await client.mset(batch);
+                
+                // Update counter and display progress
+                await client.set("__last__", end.toString());
+                console.log(`Batch completed: ${start} to ${end}`);
+                
+                // Verify a sample key from the batch
+                const sampleKey = `foo${start}`;
+                const value = await client.get(sampleKey);
+                console.log(`Sample verification - ${sampleKey}: ${value}`);
+                
             } catch (error) {
-                console.log(`Error: ${error.message}`);
+                console.log(`Error in batch starting at ${start}: ${error.message}`);
             }
-            
-            // Sleep for 100ms to make output readable
-            await new Promise(resolve => setTimeout(resolve, 100));
         }
     } catch (error) {
         if (error instanceof ConnectionError) {
@@ -439,22 +447,21 @@ async function runExample() {
 runExample().catch(console.error);
 ```
 
-The application does a very simple thing, it sets keys in the form `foo<number>` to `number`, one after the other. So if you run the program the result is the
-following stream of commands:
+The application does a very simple thing, it sets keys in the form `foo<number>` to `number`, using batched MSET operations for better performance. So if you run the program the result is batches of
+MSET commands:
 
-* SET foo0 0
-* SET foo1 1  
-* SET foo2 2
+* MSET foo1 1 foo2 2 foo3 3 ... (batch of 100 keys)
+* MSET foo101 101 foo102 102 ... (next batch)
 * And so forth...
 
 The program includes comprehensive error handling to display errors instead of
 crashing, so all cluster operations are wrapped in try-catch blocks.
 
 The client creation on **line 398** is the first key part of the program. It creates the
-Valkey cluster client using a list of *startup nodes* and configuration options
+Valkey cluster client using a list of cluster *addresses* and configuration options
 including a request timeout and client name.
 
-The startup nodes don't need to be all the nodes of the cluster. The important
+The addresses don't need to be all the nodes of the cluster. The important
 thing is that at least one node is reachable. Valkey GLIDE automatically
 discovers the complete cluster topology once it connects to any node.
 
@@ -465,16 +472,12 @@ The code reads a counter from **line 407 to 408** so that when we restart the ex
 we don't start again with `foo0`, but continue from where we left off.
 The counter is stored in Valkey itself using the key `__last__`.
 
-The main loop from **line 413 to 425** sets the keys sequentially and
-displays either the value or any error that occurs.
-
-Note the `setTimeout` call at the end of the loop. In your tests you can remove
-the sleep if you want to write to the cluster as fast as possible (though
-to the fact that this is a busy loop without real parallelism of course, so
+The main loop from **line 413 onwards** sets keys in batches using MSET operations 
+for better performance, processing 100 keys at a time and displaying progress or 
+any errors that occur.
 you'll get the usually 10k ops/second in the best of the conditions).
 
-Normally writes are slowed down in order for the example application to be
-easier to follow by humans.
+you'll get optimal performance).
 
 Starting the application produces the following output:
 
@@ -482,15 +485,12 @@ Starting the application produces the following output:
 node example.js
 Connected to Valkey cluster
 Starting from counter: 0
-1
-2
-3
-4
-5
-6
-7
-8
-9
+Batch completed: 1 to 100
+Sample verification - foo1: 1
+Batch completed: 101 to 200
+Sample verification - foo101: 101
+Batch completed: 201 to 300
+Sample verification - foo201: 201
 ^C (I stopped the program here)
 ```
 
@@ -502,8 +502,7 @@ is running.
 
 Now we are ready to try a cluster resharding. To do this, please
 keep the example.js program running, so that you can see if there is some
-impact on the program running. Also, you may want to comment the `setTimeout`
-call to have some more serious write load during resharding.
+impact on the program running.
 
 Resharding basically means to move hash slots from a set of nodes to another
 set of nodes. 
