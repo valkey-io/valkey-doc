@@ -35,7 +35,7 @@ The fastest way to start using Valkey Bundle is by downloading the official imag
     This command starts a container named my-valkey-bundle and maps Valkey’s default port 6379 to your local machine for external access. By default, it uses the latest available image. To run a specific version or variant, append the desired tag to the image name. For example:
 
     ```bash
-    docker run --name my-valkey-bundle -d -p 6379:6379 valkey/valkey-bundle:8.1-bookworm
+    docker run --name my-valkey-bundle -d -p 6379:6379 valkey/valkey-bundle:8.1.0-alpine
     ```
  
 3. **Connect to the server using valkey-cli**
@@ -43,32 +43,69 @@ The fastest way to start using Valkey Bundle is by downloading the official imag
     To interact with the server, use the Valkey command-line interface (valkey-cli). You can run the CLI directly inside the running container using the following command:
 
     ```bash
-    docker exec -it my-valkey-bundle valkey-cli
+    docker exec -it my-valkey-bundle valkey-cli -h localhost -p 6379 -3
     ```
 
     This launches an interactive valkey-cli session within the container and connects to the server via localhost.
 
 4. **Try some commands**
 
+    Check the available modules using the info command.
+    ```bash
+    my-valkey-bundle:6379> INFO modules
+    # Modules
+    module:name=bf,ver=10000,api=1,filters=0,usedby=[],using=[],options=[]
+    module:name=search,ver=10000,api=1,filters=0,usedby=[],using=[],options=[handle-io-errors|handle-repl-async-load|no-implicit-signal-modified]
+    module:name=json,ver=10010,api=1,filters=0,usedby=[],using=[],options=[handle-io-errors]
+    module:name=ldap,ver=16777471,api=1,filters=0,usedby=[],using=[],options=[]
     ```
-    # Check Loaded Modules
-    MODULE LIST
 
-    # Use the Valkey JSON Module
-    JSON.SET test $ '{"hello": "world"}'
-    JSON.GET test
+    Use the Valkey JSON Module
+    ```bash
+    > JSON.SET test $ '{"hello": "world"}'
+    ```
+    ```bash
+    > JSON.GET test
+    ```
 
-    # Use the Valkey Bloom Module
-    BF.RESERVE test_bloom 0.01 1000
-    BF.ADD test_bloom "item1"
-    BF.EXISTS test_bloom "item1"
+    Use the Valkey Bloom Module
+    ```bash
+    > BF.RESERVE test_bloom 0.01 1000
+    ```
+    ```bash
+    > BF.ADD test_bloom "item1"
+    ```
+    ```bash
+    > BF.EXISTS test_bloom "item1"
+    ```
 
-    # Use the Valkey Search Module
-    FT.CREATE idx SCHEMA description VECTOR HNSW 6 TYPE FLOAT32 DIM 3 DISTANCE_METRIC L2
-    HSET p1 description "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x80?"
-    HSET p2 description "\x00\x00\x00\x00\x00\x00\x80?\x00\x00\x00\x00"
-    HSET p3 description "\x00\x00\x80?\x00\x00\x00\x00\x00\x00\x00\x00"
-    FT.SEARCH idx "*=>[KNN 3 @description $vec]" PARAMS 2 vec "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x80?" DIALECT 2
+    Use the Valkey Search Module
+    ```bash
+    > FT.CREATE idx SCHEMA description VECTOR HNSW 6 TYPE FLOAT32 DIM 3 DISTANCE_METRIC L2
+    ```
+    ```bash
+    > HSET p1 description "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x80?"
+    > HSET p2 description "\x00\x00\x00\x00\x00\x00\x80?\x00\x00\x00\x00"
+    > HSET p3 description "\x00\x00\x80?\x00\x00\x00\x00\x00\x00\x00\x00"
+    ```
+    ```bash
+    > FT.SEARCH idx "*=>[KNN 3 @description $vec]" PARAMS 2 vec "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x80?" DIALECT 2
+    ```
+
+    Use the Valkey LDAP Module
+    ```bash
+    > CONFIG SET ldap.servers "ldap://ldap.valkey.io:389"
+    OK
+
+    > CONFIG SET ldap.bind_dn_prefix "cn="
+    OK
+
+    > CONFIG SET ldap.bind_dn_suffix ",ou=users,dc=valkey,dc=io"
+    OK
+    ```
+    ```bash
+    > AUTH valkey "ldap_password"
+    OK
     ```
 
     Make sure to check out the full list of commands for all the bundle components:
@@ -87,6 +124,8 @@ Valkey Bundle supports more advanced setup options too including:
     ```bash
     docker run --name my-valkey-bundle -d valkey/valkey-bundle valkey-server --save 60 1 --loglevel warning
     ```
+
+    By default, Valkey logs are written to standard output and can be viewed using `docker logs`. Logs from all modules are included in the same stream since Valkey doesn't generate separate log files per module. If you prefer to log to a file, you can use the `--logfile` flag to specify a file path.
     
 2. **Custom Flags with Environment Variable**
     
@@ -109,6 +148,88 @@ Valkey Bundle supports more advanced setup options too including:
     ```bash
     keyword arg1 arg2 ... argN
     ``` 
+
+    Here is a sample configuration file that includes optimized settings for Valkey as well as the modules:
+
+    ```bash
+    # Valkey settings
+    port 6379
+    bind 127.0.0.1
+    protected-mode yes
+    requirepass "strong_password"
+
+    ######################## JSON Module ########################
+    # Maximum document size (in bytes, 0 = unlimited)
+    json.max-document-size 1048576
+
+    # Maximum nesting depth for JSON documents
+    json.max-path-limit 32
+
+    ######################## Bloom Module ########################
+    # Default initial capacity for new bloom filters
+    bf.bloom-capacity 100000
+
+    # Default false positive rate
+    bf.bloom-fp-rate 0.01
+
+    # Memory usage limit per bloom filter (in bytes)
+    bf.bloom-memory-usage-limit 134217728  # 128MB
+
+    # Default expansion rate for scaling filters
+    bf.bloom-expansion 2
+
+    ######################## Search Module ########################
+    # Thread configuration for search operations
+    search.reader-threads 8
+    search.writer-threads 4
+
+    # HNSW graph configuration
+    search.hnsw-block-size 10000
+
+    # Enable cluster mode
+    search.use-coordinator no
+
+    # Log level (debug, verbose, notice, warning)
+    search.log-level notice
+
+    ######################## LDAP Module ########################
+    # LDAP server configuration
+    ldap.servers "ldap://primary:389,ldap://backup:389"
+    ldap.auth_mode "search+bind"
+
+    # TLS configuration
+    ldap.use_starttls yes
+    ldap.tls_ca_cert_path "/path/to/ca.crt"
+    ldap.tls_cert_path "/path/to/client.crt"
+    ldap.tls_key_path "/path/to/client.key"
+
+    # Search+bind mode settings
+    ldap.search_base "ou=users,dc=valkey,dc=io"
+    ldap.search_filter "objectClass=person"
+    ldap.search_attribute "uid"
+    ldap.search_bind_dn "cn=readonly,dc=valkey,dc=io"
+    ldap.search_bind_passwd "readonly_password"
+
+    # Performance tuning
+    ldap.connection_pool_size 5
+    ldap.timeout_connection 5
+    ldap.timeout_ldap_operation 3
+    ldap.failure_detector_interval 1
+
+    ######################## Common Settings ########################
+    # Memory and performance
+    maxmemory 4gb
+    maxmemory-policy allkeys-lru
+
+    # Persistence
+    save 900 1
+    save 300 10
+    save 60 10000
+
+    # Logging
+    loglevel notice
+    logfile "/var/log/valkey/valkey.log"
+    ```
 
     Check out the [Configuration Documentation](https://valkey.io/topics/valkey.conf/) to learn more.
 
