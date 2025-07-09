@@ -1,5 +1,5 @@
 `BLPOP` is a blocking list pop primitive.
-It is the blocking version of [LPOP](lpop.md) because it blocks the connection when there
+It is the blocking version of [`LPOP`](lpop.md) because it blocks the connection when there
 are no elements to pop from any of the given lists.
 An element is popped from the head of the first list that is non-empty, with the
 given keys being checked in the order that they are given.
@@ -26,7 +26,7 @@ that order).
 ## Blocking behavior
 
 If none of the specified keys exist, `BLPOP` blocks the connection until another
-client performs an [LPUSH](lpush.md) or [RPUSH](rpush.md) operation against one of the keys.
+client performs an [`LPUSH`](lpush.md) or [`RPUSH`](rpush.md) operation against one of the keys.
 
 Once new data is present on one of the lists, the client returns with the name
 of the key unblocking it and the popped value.
@@ -49,7 +49,7 @@ specified keys.
 There are times when a list can receive multiple elements in the context of the same conceptual command:
 
 * Variadic push operations such as `LPUSH mylist a b c`.
-* After an [EXEC](exec.md) of a [MULTI](multi.md) block with multiple push operations against the same list.
+* After an [`EXEC`](exec.md) of a [`MULTI`](multi.md) block with multiple push operations against the same list.
 * Executing a Lua Script.
 
 What happens is that the command performing multiple pushes is executed, and *only after* the execution of the command the blocked clients are served. Consider this sequence of commands.
@@ -67,7 +67,7 @@ Note that for the same reason a Lua script or a `MULTI/EXEC` block may push elem
 reading the replies in batch), however this setup makes sense almost solely
 when it is the last command of the pipeline.
 
-Using `BLPOP` inside a [MULTI](multi.md) / [EXEC](exec.md) block does not make a lot of sense
+Using `BLPOP` inside a [`MULTI`](multi.md) / [`EXEC`](exec.md) block does not make a lot of sense
 as it would require blocking the entire server in order to execute the block
 atomically, which in turn does not allow other clients to perform a push
 operation. For this reason the behavior of `BLPOP` inside `MULTI` / `EXEC` when the list is empty is to return a `nil` multi-bulk reply, which is the same
@@ -92,7 +92,7 @@ If you like science fiction, think of time flowing at infinite speed inside a
 
 When `BLPOP` returns an element to the client, it also removes the element from the list. This means that the element only exists in the context of the client: if the client crashes while processing the returned element, it is lost forever.
 
-This can be a problem with some application where we want a more reliable messaging system. When this is the case, please check the [BRPOPLPUSH](brpoplpush.md) command, that is a variant of `BLPOP` that adds the returned element to a target list before returning it to the client.
+This can be a problem with some application where we want a more reliable messaging system. When this is the case, please check the [`BRPOPLPUSH`](brpoplpush.md) command, that is a variant of `BLPOP` that adds the returned element to a target list before returning it to the client.
 
 ## Pattern: Event notification
 
@@ -101,7 +101,7 @@ primitives.
 For instance for some application you may need to block waiting for elements
 into a Set, so that as far as a new element is added to the Set, it is
 possible to retrieve it without resort to polling.
-This would require a blocking version of [SPOP](spop.md) that is not available, but using
+This would require a blocking version of [`SPOP`](spop.md) that is not available, but using
 blocking list operations we can easily accomplish this task.
 
 The consumer will do:
