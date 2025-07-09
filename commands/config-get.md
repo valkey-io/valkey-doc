@@ -1,8 +1,8 @@
 The `CONFIG GET` command is used to read the configuration parameters of a
 running Valkey server.
 
-The symmetric command used to alter the configuration at run time is [CONFIG
-SET](config-set.md).
+The symmetric command used to alter the configuration at run time is [`CONFIG
+SET`](config-set.md).
 
 `CONFIG GET` takes multiple arguments, which are glob-style patterns.
 Any configuration parameter matching any of the patterns are reported as a list
