@@ -313,16 +313,16 @@ Here is the meaning of all fields in the **clients** section:
     `cluster_connections`.
 *   `client_recent_max_input_buffer`: Biggest input buffer among current client connections
 *   `client_recent_max_output_buffer`: Biggest output buffer among current client connections
-*   `blocked_clients`: Number of clients pending on a blocking call (`BLPOP`,
-     `BRPOP`, `BRPOPLPUSH`, `BLMOVE`, `BZPOPMIN`, `BZPOPMAX`)
-*   `tracking_clients`: Number of clients being tracked (`CLIENT TRACKING`)
-*   `pubsub_clients`: Number of clients in pubsub mode (`SUBSCRIBE`, `PSUBSCRIBE`, `SSUBSCRIBE`). Added in Valkey 8.0
-*   `watching_clients`: Number of clients in watching mode (`WATCH`). Added in Valkey 8.0
+*   `blocked_clients`: Number of clients pending on a blocking call ([`BLPOP`](blpop.md)),
+     [`BRPOP`](brpop.md), [`BRPOPLPUSH`](brpoplpush.md), [`BLMOVE`](blmove.md), [`BZPOPMIN`](bzpopmin.md), [`BZPOPMAX`](bzpopmax.md))
+*   `tracking_clients`: Number of clients being tracked ([`CLIENT TRACKING`](client-tracking.md))
+*   `pubsub_clients`: Number of clients in pubsub mode ([`SUBSCRIBE`](subscribe.md), [`PSUBSCRIBE`](psubscribe.md), [`SSUBSCRIBE`](ssubscribe.md)). Added in Valkey 8.0
+*   `watching_clients`: Number of clients in watching mode ([`WATCH`](watch.md)). Added in Valkey 8.0
 *   `clients_in_timeout_table`: Number of clients in the clients timeout table
 *   `total_watched_keys`: Number of watched keys. Added in Valkey 8.0.
 *   `total_blocking_keys`: Number of blocking keys.
 *   `total_blocking_keys_on_nokey`: Number of blocking keys that one or more clients that would like to be unblocked when the key is deleted.
-*   `paused_reason`: The current paused reason of the instance: "client_pause" means trigger by `CLIENT PAUSE`,
+*   `paused_reason`: The current paused reason of the instance: "client_pause" means trigger by [`CLIENT PAUSE`](client-pause.md),
     "shutdown_in_progress", "failover_in_progress" and "none" means no clients are paused. Added in Valkey 8.1.
 *   `paused_actions`: The current paused actions of the instance: "all" means all clients are paused,
     "write" means clients executing write commands are paused,
@@ -382,7 +382,7 @@ Here is the meaning of all fields in the **memory** section:
 *   `rss_overhead_bytes`: Delta between `used_memory_rss` (the process RSS) and `allocator_resident`
 *   `allocator_allocated`: Total bytes allocated form the allocator, including internal-fragmentation. Normally the same as `used_memory`.
 *   `allocator_active`: Total bytes in the allocator active pages, this includes external-fragmentation.
-*   `allocator_resident`: Total bytes resident (RSS) in the allocator, this includes pages that can be released to the OS (by `MEMORY PURGE`, or just waiting).
+*   `allocator_resident`: Total bytes resident (RSS) in the allocator, this includes pages that can be released to the OS (by [`MEMORY PURGE`](memory-purge.md), or just waiting).
 *   `allocator_muzzy`: Total bytes of 'muzzy' memory (RSS) in the allocator. Muzzy memory is memory that has been freed, but not yet fully returned to the operating system. It can be reused immediately when needed or reclaimed by the OS when system pressure increases.
 *   `mem_not_counted_for_evict`: Used memory that's not counted for key eviction. This is basically transient replica and AOF buffers.
 *   `mem_clients_slaves`: Memory used by replica clients - Replica buffers share memory with the replication backlog, so this field can show 0 when replicas don't trigger an increase of memory usage.
@@ -395,7 +395,7 @@ Here is the meaning of all fields in the **memory** section:
 *   `mem_overhead_db_hashtable_rehashing`: Temporary memory overhead of database dictionaries currently being rehashed - Added in 8.0.
 *   `active_defrag_running`: When `activedefrag` is enabled, this indicates whether defragmentation is currently active, and the CPU percentage it intends to utilize.
 *   `lazyfree_pending_objects`: The number of objects waiting to be freed (as a
-     result of calling `UNLINK`, or `FLUSHDB` and `FLUSHALL` with the **ASYNC**
+     result of calling [`UNLINK`](unlink.md), or [`FLUSHDB`](flushdb.md) and [`FLUSHALL`](flushall.md) with the **ASYNC**
      option)
 *   `lazyfreed_objects`: The number of objects that have been lazy freed.
 
@@ -418,7 +418,7 @@ used and released by Valkey, but not given back to the system. The
 `used_memory_peak` value is generally useful to check this point.
 
 Additional introspective information about the server's memory can be obtained
-by referring to the `MEMORY STATS` command and the `MEMORY DOCTOR`.
+by referring to the [`MEMORY STATS`](memory-stats.md) command and the [`MEMORY DOCTOR`](memory-doctor.md).
 
 Here is the meaning of all fields in the **persistence** section:
 
@@ -462,8 +462,8 @@ Here is the meaning of all fields in the **persistence** section:
 *   `rdb_saves`: Number of RDB snapshots performed since startup
 
 `rdb_changes_since_last_save` refers to the number of operations that produced
-some kind of changes in the dataset since the last time either `SAVE` or
-`BGSAVE` was called.
+some kind of changes in the dataset since the last time either [`SAVE`](save.md) or
+[`BGSAVE`](bgsave.md) was called.
 
 If AOF is activated, these additional fields will be added:
 
@@ -512,7 +512,7 @@ Here is the meaning of all fields in the **stats** section:
 *   `expire_cycle_cpu_milliseconds`: The cumulative amount of time spent on active expiry cycles
 *   `evicted_keys`: Number of evicted keys due to `maxmemory` limit
 *   `evicted_clients`: Number of evicted clients due to `maxmemory-clients` limit.
-*   `evicted_scripts`: Number of evicted EVAL scripts due to LRU policy, see `EVAL` for more details. Added in Valkey 8.0.
+*   `evicted_scripts`: Number of evicted EVAL scripts due to LRU policy, see [`EVAL`](eval.md) for more details. Added in Valkey 8.0.
 *   `total_eviction_exceeded_time`:  Total time `used_memory` was greater than `maxmemory` since server startup, in milliseconds
 *   `current_eviction_exceeded_time`: The time passed since `used_memory` last rose above `maxmemory`, in milliseconds
 *   `keyspace_hits`: Number of successful lookup of keys in the main dictionary
@@ -655,7 +655,7 @@ The **latencystats** section provides latency percentile distribution statistics
  If you need to change the exported percentiles, use `CONFIG SET latency-tracking-info-percentiles "50.0 99.0 99.9"`.
 
  This section requires the extended latency monitoring feature to be enabled (by default it's enabled).
- If you need to enable it, use `CONFIG SET latency-tracking yes`.
+ If you need to enable it, use [`CONFIG SET latency-tracking yes`](config-set.md).
 
 For each command type, the following line is added:
 
