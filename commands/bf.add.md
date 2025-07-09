@@ -2,7 +2,7 @@ Adds a single item to a bloom filter. If the specified bloom filter does not exi
 
 To add multiple items to a bloom filter, you can use the [`BF.MADD`](bf.madd.md) or [`BF.INSERT`](bf.insert.md) commands.
 
-To create a bloom filter with non-default properties, use the `BF.INSERT` or [BF.RESERVE](bf.reserve.md) command.
+To create a bloom filter with non-default properties, use the `BF.INSERT` or [`BF.RESERVE`](bf.reserve.md) command.
 
 ## Examples
 
