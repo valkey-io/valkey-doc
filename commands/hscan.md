@@ -1,1 +1,1 @@
-See [SCAN](scan.md) for `HSCAN` documentation.
+See [`SCAN`](scan.md) for `HSCAN` documentation.
