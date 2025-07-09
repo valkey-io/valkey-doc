@@ -1,4 +1,4 @@
-Set the debug mode for subsequent scripts executed with [EVAL](eval.md). Valkey includes a
+Set the debug mode for subsequent scripts executed with [`EVAL`](eval.md). Valkey includes a
 complete Lua debugger, codename LDB, that can be used to make the task of
 writing complex scripts much simpler. In debug mode Valkey acts as a remote
 debugging server and a client, such as [valkey-cli](../topics/cli.md), can execute scripts step by
