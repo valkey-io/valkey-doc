@@ -1,6 +1,6 @@
 The command shows a list of recent ACL security events:
 
-1. Failures to authenticate their connections with [AUTH](auth.md) or [HELLO](hello.md).
+1. Failures to authenticate their connections with [`AUTH`](auth.md) or [`HELLO`](hello.md).
 2. Commands denied because against the current ACL rules.
 3. Commands denied because accessing keys not allowed in the current ACL rules.
 
