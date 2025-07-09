@@ -1,6 +1,6 @@
 Produces an ASCII-art style graph for the specified event.
 
-`LATENCY GRAPH` lets you intuitively understand the latency trend of an `event` via state-of-the-art visualization. It can be used for quickly grasping the situation before resorting to means such parsing the raw data from `LATENCY HISTORY` or external tooling.
+`LATENCY GRAPH` lets you intuitively understand the latency trend of an `event` via state-of-the-art visualization. It can be used for quickly grasping the situation before resorting to means such parsing the raw data from [`LATENCY HISTORY`](latency-history.md) or external tooling.
 
 Valid values for `event` are:
 * `active-defrag-cycle`
