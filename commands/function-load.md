@@ -5,7 +5,7 @@ The library payload must start with Shebang statement that provides a metadata a
 Shebang format: `#!<engine name> name=<library name>`. Currently engine name must be `lua`.
 
 For the Lua engine, the implementation should declare one or more entry points to the library with the [`server.register_function()` API](../topics/lua-api.md#server.register_function).
-Once loaded, you can call the functions in the library with the [FCALL](fcall.md) (or [FCALL_RO](fcall_ro.md) when applicable) command.
+Once loaded, you can call the functions in the library with the [`FCALL`](fcall.md) (or [`FCALL_RO`](fcall_ro.md) when applicable) command.
 
 When attempting to load a library with a name that already exists, the Valkey server returns an error.
 The `REPLACE` modifier changes this behavior and overwrites the existing library with the new contents.
