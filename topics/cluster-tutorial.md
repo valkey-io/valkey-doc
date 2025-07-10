@@ -191,18 +191,29 @@ in the `valkey.conf` file.
 
 To create and use a Valkey Cluster, follow these steps:
 
-* [Create a Valkey Cluster](#create-a-valkey-cluster)
-* [Interact with the cluster](#interact-with-the-cluster)
-* [Write an example app with Valkey GLIDE](#write-an-example-app-with-valkey-glide)
-* [Reshard the cluster](#reshard-the-cluster)
-* [A more interesting example application](#a-more-interesting-example-application)
-* [Test the failover](#test-the-failover)
-* [Manual failover](#manual-failover)
-* [Add a new node](#add-a-new-node)
-* [Remove a node](#remove-a-node)
-* [Replica migration](#replica-migration)
-* [Upgrade nodes in a Valkey Cluster](#upgrade-nodes-in-a-valkey-cluster)
-* [Migrate to Valkey Cluster](#migrate-to-valkey-cluster)
+- [Valkey Cluster 101](#valkey-cluster-101)
+    - [Valkey Cluster TCP ports](#valkey-cluster-tcp-ports)
+    - [Valkey Cluster and Docker](#valkey-cluster-and-docker)
+    - [Valkey Cluster data sharding](#valkey-cluster-data-sharding)
+    - [Valkey Cluster primary-replica model](#valkey-cluster-primary-replica-model)
+    - [Valkey Cluster consistency guarantees](#valkey-cluster-consistency-guarantees)
+- [Valkey Cluster configuration parameters](#valkey-cluster-configuration-parameters)
+- [Create and use a Valkey Cluster](#create-and-use-a-valkey-cluster)
+    - [Requirements to create a Valkey Cluster](#requirements-to-create-a-valkey-cluster)
+    - [Create a Valkey Cluster](#create-a-valkey-cluster)
+    - [Interact with the cluster](#interact-with-the-cluster)
+    - [Write an example app with Valkey GLIDE](#write-an-example-app-with-valkey-glide)
+    - [Reshard the cluster](#reshard-the-cluster)
+    - [A more interesting example application](#a-more-interesting-example-application)
+    - [Test the failover](#test-the-failover)
+    - [Manual failover](#manual-failover)
+    - [Add a new node](#add-a-new-node)
+      - [Add a new node as a replica](#add-a-new-node-as-a-replica)
+    - [Remove a node](#remove-a-node)
+    - [Replica migration](#replica-migration)
+    - [Upgrade nodes in a Valkey Cluster](#upgrade-nodes-in-a-valkey-cluster)
+    - [Migrate to Valkey Cluster](#migrate-to-valkey-cluster)
+- [Learn more](#learn-more)
 
 But, first, familiarize yourself with the requirements for creating a cluster.
 
@@ -271,11 +282,11 @@ You can configure and execute individual instances manually or use the create-cl
 Let's go over how you do it manually.
 
 To create the cluster, run:
-
-    valkey-cli --cluster create 127.0.0.1:7000 127.0.0.1:7001 \
-    127.0.0.1:7002 127.0.0.1:7003 127.0.0.1:7004 127.0.0.1:7005 \
-    --cluster-replicas 1
-
+```bash
+valkey-cli --cluster create 127.0.0.1:7000 127.0.0.1:7001 \
+127.0.0.1:7002 127.0.0.1:7003 127.0.0.1:7004 127.0.0.1:7005 \
+--cluster-replicas 1
+```
 The command used here is **create**, since we want to create a new cluster.
 The option `--cluster-replicas 1` means that we want a replica for every primary created.
 
@@ -297,7 +308,7 @@ system (but you'll not learn the same amount of operational details).
 
 Find the `utils/create-cluster` directory in the Valkey distribution.
 There is a script called `create-cluster` inside (same name as the directory
-it is contained into), it's a simple bash script. In order to start
+it is contained into), it's a bash script. In order to start
 a 6 nodes cluster with 3 primaries and 3 replicas just type the following
 commands:
 
@@ -322,7 +333,7 @@ See the documentation for your [client of choice](../clients/) to determine its 
 
 You can also test your Valkey Cluster using the `valkey-cli` command line utility:
 
-```
+```bash
 $ valkey-cli -c -p 7000
 127.0.0.1:7000> set foo bar
 -> Redirected to slot [12182] located at 127.0.0.1:7002
@@ -354,7 +365,7 @@ changed the cluster layout by adding or removing nodes.
 
 Before going forward showing how to operate the Valkey Cluster, doing things
 like a failover, or a resharding, we need to create some example application
-or at least to be able to understand the semantics of a simple Valkey Cluster
+or at least to be able to understand the semantics of a Valkey Cluster
 client interaction.
 
 In this way we can run an example and at the same time try to make nodes
@@ -363,8 +374,8 @@ world conditions. It is not very helpful to see what happens while nobody
 is writing to the cluster.
 
 This section explains some basic usage of
-[Valkey GLIDE for Node.js](https://github.com/valkey-io/valkey-glide/tree/main/node), the official
-Valkey client library, showing a simple example application.
+[Valkey GLIDE for Node.js](https://github.com/valkey-io/valkey-glide/tree/main/node), an official
+Valkey client library, available in numerous languages, showing a practical example application in Node.js.
 
 The following example demonstrates how to connect to a Valkey cluster and perform
 basic operations. First, install the Valkey GLIDE client:
@@ -442,10 +453,10 @@ async function runExample() {
 runExample().catch(console.error);
 ```
 
-The application does a very simple thing, it sets keys in the form `foo<number>` to `number`, using batched MSET operations for better performance. The MSET command accepts an array of alternating keys and values. So if you run the program the result is batches of MSET commands:
+The application writes keys in the format `foo<number>` with their corresponding numeric values, using batched `MSET` operations for better performance. The `MSET` command accepts an array of alternating keys and values. So if you run the program the result is batches of `MSET` commands:
 
-* MSET foo1 1 foo2 2 foo3 3 ... foo100 100 (batch of 100 keys)
-* MSET foo101 101 foo102 102 ... foo200 200 (next batch)
+* `MSET foo1 1 foo2 2 foo3 3 ... foo100 100` (batch of 100 keys)
+* `MSET foo101 101 foo102 102 ... foo200 200` (next batch)
 * And so forth...
 
 The program includes comprehensive error handling to display errors instead of
@@ -456,7 +467,7 @@ Valkey cluster client using a list of cluster *addresses* and configuration opti
 including a request timeout and client name.
 
 The addresses don't need to be all the nodes of the cluster. The important
-thing is that at least one node is reachable. Valkey GLIDE automatically
+thing is that at least one node is reachable. A cluster-aware client, such as Valkey GLIDE automatically
 discovers the complete cluster topology once it connects to any node.
 
 Now that we have the cluster client instance, we can use it like any other
@@ -466,7 +477,7 @@ The **counter initialization section** reads a counter so that when we restart t
 we don't start again with `foo0`, but continue from where we left off.
 The counter is stored in Valkey itself using the key `__last__`.
 
-The **main processing loop** sets keys in batches using MSET operations 
+The **main processing loop** sets keys in batches using `MSET` operations 
 for better performance, processing 100 keys at a time and displaying progress or 
 any errors that occur.
 you'll get the usually 10k ops/second in the best of the conditions).
@@ -504,7 +515,7 @@ Like cluster creation, it is accomplished using the valkey-cli utility.
 
 To start a resharding, just type:
 
-    valkey-cli --cluster reshard 127.0.0.1:7000
+    `valkey-cli --cluster reshard 127.0.0.1:7000`
 
 You only need to specify a single node, valkey-cli will find the other nodes
 automatically.
@@ -549,7 +560,7 @@ during the resharding if you want.
 At the end of the resharding, you can test the health of the cluster with
 the following command:
 
-    valkey-cli --cluster check 127.0.0.1:7000
+    `valkey-cli --cluster check 127.0.0.1:7000`
 
 All the slots will be covered as usual, but this time the primary at
 127.0.0.1:7000 will have more hash slots, something around 6461.
@@ -558,7 +569,7 @@ Resharding can be performed automatically without the need to manually
 enter the parameters in an interactive way. This is possible using a command
 line like the following:
 
-    valkey-cli --cluster reshard <host>:<port> --cluster-from <node-id> --cluster-to <node-id> --cluster-slots <number of slots> --cluster-yes
+    `valkey-cli --cluster reshard <host>:<port> --cluster-from <node-id> --cluster-to <node-id> --cluster-slots <number of slots> --cluster-yes`
 
 This allows to build some automatism if you are likely to reshard often,
 however currently there is no way for `valkey-cli` to automatically
@@ -574,7 +585,7 @@ Note that this option can also be activated by setting the
 #### A more interesting example application
 
 The example application we wrote early is not very good.
-It writes to the cluster in a simple way without even checking if what was
+It writes to the cluster in a straightforward way without even checking if what was
 written is the right thing.
 
 From our point of view the cluster receiving the writes could just always
@@ -582,14 +593,14 @@ write the key `foo` to `42` to every operation, and we would not notice at
 all.
 
 Now we can write a more interesting application for testing cluster behavior.
-A simple consistency checking application that uses a set of counters, by default 1000, and sends `INCR` commands to increment the counters.
+A comprehensive consistency checking application that uses a set of counters, by default 1000, and sends `INCR` commands to increment the counters.
 
 However instead of just writing, the application does two additional things:
 
 * When a counter is updated using `INCR`, the application remembers the write.
 * It also reads a random counter before every write, and check if the value is what we expected it to be, comparing it with the value it has in memory.
 
-What this means is that this application is a simple **consistency checker**,
+What this means is that this application is a **consistency checker**,
 and is able to tell you if the cluster lost some write, or if it accepted
 a write that we did not receive acknowledgment for. In the first case we'll
 see a counter having a value that is smaller than the one we remember, while
@@ -765,7 +776,7 @@ We'll show both, starting with the addition of a new primary instance.
 
 In both cases the first step to perform is **adding an empty node**.
 
-This is as simple as to start a new node in port 7006 (we already used
+This is as straightforward as starting a new node in port 7006 (we already used
 from 7000 to 7005 for our existing 6 nodes) with the same configuration
 used for the other nodes, except for the port number, so what you should
 do in order to conform with the setup we used for the previous nodes:
@@ -824,8 +835,8 @@ having as a target the empty node.
 Adding a new replica can be performed in two ways. The obvious one is to
 use valkey-cli again, but with the --cluster-replica option, like this:
 
-    valkey-cli --cluster add-node 127.0.0.1:7006 127.0.0.1:7000 --cluster-replica
-
+    `valkey-cli --cluster add-node 127.0.0.1:7006 127.0.0.1:7000 --cluster-replica
+`
 Note that the command line here is exactly like the one we used to add
 a new primary, so we are not specifying to which primary we want to add
 the replica. In this case, what happens is that valkey-cli will add the new
@@ -834,8 +845,8 @@ node as replica of a random primary among the primaries with fewer replicas.
 However you can specify exactly what primary you want to target with your
 new replica with the following command line:
 
-    valkey-cli --cluster add-node 127.0.0.1:7006 127.0.0.1:7000 --cluster-replica --cluster-master-id 3c3a0c74aae0b56170ccb03a76b60cfe7dc1912e
-
+    `valkey-cli --cluster add-node 127.0.0.1:7006 127.0.0.1:7000 --cluster-replica --cluster-master-id 3c3a0c74aae0b56170ccb03a76b60cfe7dc1912e
+`
 This way we assign the new replica to a specific primary.
 
 A more manual way to add a replica to a specific primary is to add the new
@@ -866,7 +877,7 @@ The node 3c3a0c... now has two replicas, running on ports 7002 (the existing one
 
 To remove a replica node just use the `del-node` command of valkey-cli:
 
-    valkey-cli --cluster del-node 127.0.0.1:7000 `<node-id>`
+    `valkey-cli --cluster del-node 127.0.0.1:7000 `<node-id>``
 
 The first argument is just a random node in the cluster, the second argument
 is the ID of the node you want to remove.
@@ -884,7 +895,7 @@ There is a special scenario where you want to remove a failed node.
 You should not use the `del-node` command because it tries to connect to all nodes and you will encounter a "connection refused" error.
 Instead, you can use the `call` command:
 
-    valkey-cli --cluster call 127.0.0.1:7000 cluster forget `<node-id>`
+    `valkey-cli --cluster call 127.0.0.1:7000 cluster forget `<node-id>``
 
 This command will execute `CLUSTER FORGET` command on every node. 
 
