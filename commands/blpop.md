@@ -67,7 +67,7 @@ Note that for the same reason a Lua script or a `MULTI/EXEC` block may push elem
 reading the replies in batch), however this setup makes sense almost solely
 when it is the last command of the pipeline.
 
-Using `BLPOP` inside a [`MULTI`](multi.md) / [`EXEC`](exec.md) block does not make a lot of sense
+Using `BLPOP` inside a `MULTI`/`EXEC` block does not make a lot of sense
 as it would require blocking the entire server in order to execute the block
 atomically, which in turn does not allow other clients to perform a push
 operation. For this reason the behavior of `BLPOP` inside `MULTI` / `EXEC` when the list is empty is to return a `nil` multi-bulk reply, which is the same
