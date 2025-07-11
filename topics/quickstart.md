@@ -3,16 +3,16 @@ title: "Quick start guide"
 description: Understand how to use basic Valkey data types
 ---
 
-# Getting Started with Valkey
+## Getting Started with Valkey
 
-## What is Valkey?
+### What is Valkey?
 
 Valkey is an open-source, high-performance in-memory key/value data store designed for speed and reliability. It supports a variety of workloads – from caching frequently accessed data to acting as a message broker – and can even function as a primary NoSQL database. Backed by the Linux Foundation, Valkey is guaranteed to remain fully open source.
 
 Valkey supports a rich collection of data structures (beyond plain strings) including hashes, lists, sets, sorted sets, hyperloglogs, bitmaps, and more. It provides an extensive set of commands to manipulate data in place, and even supports server-side scripting (Lua) and modules for extending its functionality. Most Valkey operations are **O(1)** (constant time), meaning it can handle thousands of operations per second with microsecond response times on typical hardware.
 
 
-## Installation and Setup
+### Installation and Setup
 
 Getting Valkey up and running is straightforward. Follow these steps to install the server, start it, and connect:
 
@@ -27,7 +27,7 @@ Getting Valkey up and running is straightforward. Follow these steps to install 
 This launches Valkey in a Docker container, listening on the default port 6379 (mapped to your host).
 
 * **Package Managers:** On Linux, Valkey may be available via your distro’s package manager (e.g. `apt install valkey` on Debian/Ubuntu, `yum install valkey` on Fedora/RHEL). macOS users can install via Homebrew (`brew install valkey`).
-* **From Source:** Download the latest release from the Valkey [GitHub releases](https://github.com/valkey-io/valkey/releases) or the official website and compile it (Valkey’s build system is similar to Redis’s makefile build). See the [Installation Guide](https://valkey.io/topics/installation) for detailed instructions.
+* **From Source:** Download the latest release from the Valkey [GitHub releases](https://github.com/valkey-io/valkey/releases) or the official website and compile it (Valkey’s build system is similar to Redis’s makefile build). See the [Installation Guide](/topics/installation.md) for detailed instructions.
 
 2. **Start the Valkey server:** Once installed, start the Valkey server (as a daemon process). If you installed via a package or source, you can simply run the `valkey-server` command in a terminal to launch the server in the foreground. For example:
 
@@ -51,7 +51,7 @@ A response of **PONG** confirms the server is running and reachable. You can als
 
 * **Using a programming language client:** Valkey has client libraries for many languages. Feel free to checkout some of the valkey supported clients [here](https://github.com/valkey-io/?q=clients&type=all&language=&sort=).
 
-## Basic Data Operations
+### Data Operations
 
 Once connected, you interact with Valkey by issuing commands to store and retrieve data. Valkey behaves like a **remote dictionary** – you can think of it as a giant hash map on a server. Each piece of data is stored under a unique **key**, and you use commands to read or modify values associated with those keys.
 
@@ -86,9 +86,9 @@ Here we used the `SET` command to save the value `"Alice"` under the key `user:1
 
 We added three fields to the hash stored at `user:1000`. `HGET` retrieves a single field, and `HGETALL` returns all fields and values. Hashes are memory-efficient for storing structured data.
 
-* **Other Data Types:** Valkey supports many other native data structures. For example, **lists** (ordered collections of elements) support queue/stack operations, **sets** store unique items (useful for tags or unique lists), **sorted sets** maintain ordered rankings, and more. Each data type comes with specialized commands (e.g. `LPUSH`/`LRANGE` for lists, `SADD`/`SMEMBERS` for sets). You can find a full overview in the [Valkey data types documentation](https://valkey.io/topics/data-types/) and the command reference.
+* **Other Data Types:** Valkey supports many other native data structures. For example, **lists** (ordered collections of elements) support queue/stack operations, **sets** store unique items (useful for tags or unique lists), **sorted sets** maintain ordered rankings, and more. Each data type comes with specialized commands (e.g. `LPUSH`/`LRANGE` for lists, `SADD`/`SMEMBERS` for sets). You can find a full overview in the [Valkey data types documentation](/topics/data-types.md) and the command reference.
 
-## Example Use Case: Caching with Valkey
+### Example Use Case: Caching with Valkey
 
 One of the most popular ways to use Valkey is as a caching layer in front of a traditional database or expensive API. By caching results in Valkey, applications can serve repeated requests much faster and reduce load on back-end systems.
 
@@ -111,7 +111,7 @@ The `EX 300` option tells Valkey to automatically expire (remove) the key after 
 
 Valkey can **cache nearly anything** – from database query results and API responses to session tokens, rendered HTML, or even generated reports. Database caching is a classic use case, but it's only the beginning. E-commerce platforms use Valkey to serve personalized recommendations instantly. Gaming companies rely on it for real-time leaderboards and matchmaking. Fintech systems trust Valkey to cache fraud detection signals and scoring results under heavy load. In AI and ML pipelines, Valkey accelerates inference by caching model outputs, storing precomputed embeddings, and managing access tokens across distributed systems. With sub-millisecond latency and the capacity to process hundreds of thousands of operations per second, Valkey is built to keep up — no matter how demanding the workload.
 
-## Best Practices and Troubleshooting
+### Best Practices and Troubleshooting
 
 **Best Practices:**
 
@@ -128,26 +128,26 @@ Valkey can **cache nearly anything** – from database query results and API res
 * **Performance issues:** If you encounter high latency, monitor Valkey’s built-in metrics. You can use the `INFO` command to get stats on memory, CPU, and command usage. For deeper analysis of latency spikes, Valkey provides a latency monitoring feature and a benchmarking tool (`valkey-benchmark`). Common causes of slowdowns include very large payloads or expensive commands blocking the server. If needed, consider distributing load via clustering or splitting data across multiple instances.
 * **Valkey server crashes or is unstable:** Though rare, if Valkey crashes, check the server logs for errors. Ensure your system’s memory is healthy (faulty RAM can cause issues in in-memory databases). Run `valkey-server --test-memory` to perform a memory test of your system.
 
-For further diagnostics, see the [official troubleshooting guide](https://valkey.io/topics/problems/). We want to ensure that Valkey runs smoothly in your environment.
+For further diagnostics, see the [official troubleshooting guide](/topics/problems.md). We want to ensure that Valkey runs smoothly in your environment.
 
-## Next Steps
+### Next Steps
 
 Now that you have Valkey running and understand the basics, you can explore more advanced topics and use cases:
 
 * **Try Valkey**: Use [Try Valkey](https://valkey.io/try-valkey/) allows you to try Valkey, the high-performance in-memory data store, directly from your browser — no installation needed
-* **Core Data Types**: Valkey offers powerful [data types](https://valkey.io/topics/data-types/) beyond simple strings. Understanding these types is key to designing efficient applications:
-    * [Strings](https://valkey.io/topics/strings/): The simplest type, used for caching, counters, and more.
-    * [Lists](https://valkey.io/topics/lists/): Ordered sequences ideal for queues and logs.
-    * [Sets](https://valkey.io/topics/sets): Unordered collections of unique elements, great for tags or membership checks.
-    * [Hashes](https://valkey.io/topics/hashes): Field-value pairs, often used for storing objects or records.
-    * [Sorted Sets](https://valkey.io/topics/sorted-sets): Unique elements with scores, useful for leaderboards or time-series data.
+* **Core Data Types**: Valkey offers powerful [data types](/topics/data-types.md) beyond simple strings. Understanding these types is key to designing efficient applications:
+    * [Strings](/topics/strings.md): The simplest type, used for caching, counters, and more.
+    * [Lists](/topics/lists.md): Ordered sequences ideal for queues and logs.
+    * [Sets](/topics/sets.md): Unordered collections of unique elements, great for tags or membership checks.
+    * [Hashes](/topics/hashes.md): Field-value pairs, often used for storing objects or records.
+    * [Sorted Sets](/topics/sorted-sets.md): Unique elements with scores, useful for leaderboards or time-series data.
 * **Explore Valkey Modules:** Valkey supports pluggable modules that extend its core functionality with custom commands and data types. Take a look at few of our released modules to get started.
-    * **Valkey Json:** https://valkey.io/topics/valkey-json/
-    * **Valkey Bloom:** https://valkey.io/topics/bloomfilters/
-    * **Valkey LDAP:** https://valkey.io/topics/ldap/
-    * **Valkey Search:** https://valkey.io/topics/search/
-* **Publish/Subscribe Messaging:** Dive into Valkey’s Pub/Sub feature to build real-time apps (such as chat systems o live notifications). See the [**Pub/Sub** section](https://valkey.io/topics/pubsub/) of the docs for patterns and best practices (Valkey’s Pub/Sub supports pattern subscriptions and sharded channels for scalability).
-* **Clustering and High Availability:** When you need to scale out or ensure uptime, Valkey Cluster mode allows sharding data across multiple nodes with automatic failover. Check out the **[Valkey Cluster tutorial](https://valkey.io/topics/cluster-tutorial/)** for a step-by-step guide to setting up a cluster and using replication.
-* **Further Documentation:** Explore the **[Valkey Documentation by Topic](https://valkey.io/topics/)** for in-depth guides on persistence, security, Lua scripting, modules, and more. Key references include the [Commands Reference](https://valkey.io/commands) for details on every command, and the [FAQ](https://valkey.io/topics/faq) for answers to common questions.
+    * **[Valkey Json](/topics/valkey-json.md)**
+    * **[Valkey Bloom](/topics/bloomfilters.md)**
+    * **[Valkey LDAP](/topics/ldap.md)**
+    * **[Valkey Search](/topics/search.md)**
+* **Publish/Subscribe Messaging:** Dive into Valkey’s Pub/Sub feature to build real-time apps (such as chat systems o live notifications). See the [**Pub/Sub** section](/topics/pubsub.md) of the docs for patterns and best practices (Valkey’s Pub/Sub supports pattern subscriptions and sharded channels for scalability).
+* **Clustering and High Availability:** When you need to scale out or ensure uptime, Valkey Cluster mode allows sharding data across multiple nodes with automatic failover. Check out the **[Valkey Cluster tutorial](/topics/cluster-tutorial.md)** for a step-by-step guide to setting up a cluster and using replication.
+* **Further Documentation:** Explore the **[Valkey Documentation by Topic](/topics)** for in-depth guides on persistence, security, Lua scripting, modules, and more. Key references include the [Commands Reference](/commands) for details on every command, and the [FAQ](/topics/faq.md) for answers to common questions.
 
 Happy caching with Valkey! With its speed and flexibility, you now have a powerful tool to build fast, scalable applications. **Next steps** above will guide you as you deepen your Valkey knowledge and tackle more complex scenarios. Good luck on your Valkey journey!
