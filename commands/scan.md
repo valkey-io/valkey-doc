@@ -157,7 +157,7 @@ To use pattern with hash tag, see [Hash tags](../topics/cluster-spec.md#hash-tag
 
 ## The TYPE option
 
-You can use the `TYPE` option to ask `SCAN` to only return objects that match a given `type`, allowing you to iterate through the database looking for keys of a specific type. The **TYPE** option is only available on the whole-database `SCAN`, not `HSCAN` or `ZSCAN` etc.
+You can use the `TYPE` option to ask `SCAN` to only return objects that match a given `type`, allowing you to iterate through the database looking for keys of a specific type. The **`TYPE`** option is only available on the whole-database `SCAN`, not `HSCAN` or `ZSCAN` etc.
 
 The `type` argument is the same string name that the `TYPE` command returns. Note a quirk where some Valkey types, such as GeoHashes, HyperLogLogs, Bitmaps, and Bitfields, may internally be implemented using other Valkey types, such as a string or zset, so can't be distinguished from other keys of that same type by `SCAN`. For example, a ZSET and GEOHASH:
 
