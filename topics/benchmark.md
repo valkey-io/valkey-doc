@@ -140,6 +140,9 @@ In command arguments, the following placeholders are substituted:
 **`--seed`** _num_
 : Set the seed for random number generator. Default seed is based on time.
 
+**`--rps`** _requests_
+: Limit the total number of requests per second. Default 0 (no limit).
+
 **`--tls`**
 : Establish a secure TLS connection.
 
