@@ -12,6 +12,7 @@ It's released under the
    
 * What is Valkey? See [Introduction](introduction.md).
 * [Quick start](quickstart.md): Get started with Valkey.
+* [Valkey Bundle](valkey-bundle.md): Get started with Valkey Bundle.
 Programming with Valkey
 * [FAQ](faq.md): Frequently asked questions.
 

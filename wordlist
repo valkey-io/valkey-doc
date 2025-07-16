@@ -138,6 +138,7 @@ codenamed
 Collina's
 commandstats
 commnad
+conf
 Config
 config
 config-file
@@ -529,10 +530,12 @@ Mrkris
 mset
 multisets
 mutex
+my-valkey-bundle
 mylist
 mymaster
 mystream
 myuser
+myvalkey
 myzset
 namespace
 namespacing
@@ -625,11 +628,13 @@ pre-configured
 pre-existing
 pre-imported
 pre-loaded
+pre-packaged
 pre-populated
 pre-sharding
 Predis
 prefetch
 prefetched
+preloaded
 prepend
 Prepend
 prepends
@@ -649,6 +654,7 @@ Programmability
 programmability
 programmatically
 programmatically-generated
+ps
 pseudorandom
 PSR-4
 Pubsub
