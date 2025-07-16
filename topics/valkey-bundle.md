@@ -1,3 +1,8 @@
+---
+title: "Valkey Bundle Getting Started Guide"
+description: How to get started with Valkey Bundle
+---
+
 ## What is Valkey Bundle
 
 Valkey Bundle is a pre-packaged, containerized version of Valkey that comes preloaded with a collection of supported modules. 
