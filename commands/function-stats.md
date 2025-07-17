@@ -12,6 +12,6 @@ The reply is map with two keys:
    Engine map contains statistics about the engine like number of functions and number of libraries.
 
 
-You can use this command to inspect the invocation of a long-running function and decide whether kill it with the `FUNCTION KILL` command.
+You can use this command to inspect the invocation of a long-running function and decide whether kill it with the [`FUNCTION KILL`](function-kill.md) command.
 
 For more information please refer to [Introduction to Valkey Functions](../topics/functions-intro.md).

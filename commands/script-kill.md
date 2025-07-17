@@ -1,4 +1,4 @@
-Kills the currently executing `EVAL` script, assuming no write operation was yet
+Kills the currently executing [`EVAL`](eval.md) script, assuming no write operation was yet
 performed by the script.
 
 This command is mainly useful to kill a script that is running for too much
@@ -8,7 +8,7 @@ the command returning with an error.
 
 If the script has already performed write operations, it can not be killed in this
 way because it would violate Lua's script atomicity contract.
-In such a case, only `SHUTDOWN NOSAVE` can kill the script, killing
+In such a case, only [`SHUTDOWN NOSAVE`](shutdown.md) can kill the script, killing
 the Valkey process in a hard way and preventing it from persisting with half-written
 information.
 
