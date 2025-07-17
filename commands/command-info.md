@@ -1,6 +1,6 @@
 Returns @array-reply of details about multiple Valkey commands.
 
-Same result format as `COMMAND` except you can specify which commands
+Same result format as [`COMMAND`](command.md) except you can specify which commands
 get returned.
 
 If you request details about non-existing commands, their return

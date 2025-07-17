@@ -10,7 +10,7 @@ Each reported event has the following fields:
 * The number of latency spikes recorded in the time series for this event, added in 8.1.
 
 "All-time" means the maximum latency since the Valkey instance was
-started, or the time that events were reset `LATENCY RESET`.
+started, or the time that events were reset [`LATENCY RESET`](latency-reset.md).
 
 ## Examples
 

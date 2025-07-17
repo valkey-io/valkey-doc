@@ -7,7 +7,7 @@ values. The following metrics are reported:
 *   `peak.allocated`: Peak memory consumed by Valkey in bytes (see `INFO`'s
      `used_memory_peak`)
 *   `total.allocated`: Total number of bytes allocated by Valkey using its
-     allocator (see `INFO`'s `used_memory`)
+     allocator (see [`INFO`](info.md)'s `used_memory`)
 *   `startup.allocated`: Initial amount of memory consumed by Valkey at startup
      in bytes (see `INFO`'s `used_memory_startup`)
 *   `replication.backlog`: Size in bytes of the replication backlog (see

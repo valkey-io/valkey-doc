@@ -38,13 +38,13 @@ QUIT
 Connection closed by foreign host.
 ```
 
-Manually issue the `QUIT` or `RESET` commands to stop a `MONITOR` stream running
+Manually issue the [`QUIT`](quit.md) or [`RESET`](reset.md) commands to stop a `MONITOR` stream running
 via `telnet`.
 
 ## Commands not logged by MONITOR
 
 Because of security concerns, no administrative commands are logged
-by `MONITOR`'s output and sensitive data is redacted in the command `AUTH`.
+by `MONITOR`'s output and sensitive data is redacted in the command [`AUTH`](auth.md).
 
 Furthermore, the command `QUIT` is also not logged.
 
@@ -81,6 +81,6 @@ throughput by more than 50%.
 Running more `MONITOR` clients will reduce throughput even more.
 
 Note that, 
-*  `AUTH` is excluded from the command's output.
-*  `RESET` can be called to exit monitor mode.
-*  `AUTH`, `HELLO`, `EVAL`, `EVAL_RO`, `EVALSHA` and `EVALSHA_RO` are included in the command's output.
+*  [`AUTH`](auth.md) is excluded from the command's output.
+*  [`RESET`](reset.md) can be called to exit monitor mode.
+*  `AUTH`, [`HELLO`](hello.md), [`EVAL`](eval.md), [`EVAL_RO`](eval_ro.md), [`EVALSHA`](evalsha.md) and [`EVALSHA_RO`](evalsha_ro.md) are included in the command's output.
