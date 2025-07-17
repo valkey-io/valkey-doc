@@ -45,7 +45,7 @@ Here is the meaning of the fields:
 * `addr`: address/port of the client
 * `laddr`: address/port of local address client connected to (bind address)
 * `fd`: file descriptor corresponding to the socket
-* `name`: the name set by the client with `CLIENT SETNAME`
+* `name`: the name set by the client with [`CLIENT SETNAME`](client-setname.md)
 * `age`: total duration of the connection in seconds
 * `idle`: idle time of the connection in seconds
 * `flags`: client flags (see below)
@@ -69,7 +69,7 @@ Here is the meaning of the fields:
 * `user`: the authenticated username of the client
 * `redir`: client id of current client tracking redirection
 * `resp`: client RESP protocol version.
-* `lib-name`: The client library name as set by `CLIENT SETINFO`
+* `lib-name`: The client library name as set by [`CLIENT SETINFO`](client-setinfo.md)
 * `lib-version`: The client library version as set by `CLIENT SETINFO`
 * `tot-net-in`: Total network input bytes read from this client. Added in Valkey 8.0
 * `tot-net-out`: Total network output bytes sent to this client. Added in Valkey 8.0

@@ -3,7 +3,7 @@ A shard is defined as a collection of nodes that serve the same set of slots and
 A shard may only have a single primary at a given time, but may have multiple or no replicas.
 It is possible for a shard to not be serving any slots while still having replicas.
 
-This command replaces the `CLUSTER SLOTS` command, by providing a more efficient and extensible representation of the cluster. 
+This command replaces the [`CLUSTER SLOTS`](cluster-slots.md) command, by providing a more efficient and extensible representation of the cluster. 
 
 The command is suitable to be used by Valkey Cluster client libraries in order to understand the topology of the cluster.
 A client should issue this command on startup in order to retrieve the map associating cluster *hash slots* with actual node information.

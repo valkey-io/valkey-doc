@@ -1,6 +1,6 @@
 The `CLIENT SETNAME` command assigns a name to the current connection.
 
-The assigned name is displayed in the output of `CLIENT LIST` so that it is possible to identify the client that performed a given connection.
+The assigned name is displayed in the output of [`CLIENT LIST`](client-list.md) so that it is possible to identify the client that performed a given connection.
 
 For instance when Valkey is used in order to implement a queue, producers and consumers of messages may want to set the name of the connection according to their role.
 
@@ -8,7 +8,7 @@ There is no limit to the length of the name that can be assigned if not the usua
 
 It is possible to entirely remove the connection name setting it to the empty string, that is not a valid connection name since it serves to this specific purpose.
 
-The connection name can be inspected using `CLIENT GETNAME`.
+The connection name can be inspected using [`CLIENT GETNAME`](client-getname.md).
 
 Every new connection starts without an assigned name.
 

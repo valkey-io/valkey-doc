@@ -4,12 +4,12 @@ nodes, their flags, properties and assigned slots, and so forth.
 
 `CLUSTER NODES` provides all this information, that is, the current cluster
 configuration of the node we are contacting, in a serialization format which
-happens to be exactly the same as the one used by Valkey Cluster itself in
+happens to be exactly the same as the one used by the Valkey Cluster itself in
 order to store on disk the cluster state (however the on disk cluster state
 has a few additional info appended at the end).
 
 Note that normally clients willing to fetch the map between Cluster
-hash slots and node addresses should use `CLUSTER SLOTS` instead.
+hash slots and node addresses should use [`CLUSTER SLOTS`](cluster-slots.md) instead.
 `CLUSTER NODES`, that provides more information, should be used for
 administrative tasks, debugging, and configuration inspections.
 It is also used by `valkey-cli` in order to manage a cluster.
@@ -37,7 +37,7 @@ Each line is composed of the following fields:
 
 The meaning of each field is the following:
 
-1. `id`: The node ID, a 40-character globally unique string generated when a node is created and never changed again (unless `CLUSTER RESET HARD` is used).
+1. `id`: The node ID, a 40-character globally unique string generated when a node is created and never changed again (unless [`CLUSTER RESET HARD`](cluster-reset.md) is used).
 2. `ip:port@cport`: The node address that clients should contact to run queries, along with the used cluster bus port.
    `:0@0` can be expected when the address is no longer known for this node ID, hence flagged with `noaddr`.
 3. `hostname`: A human readable string that can be configured via the `cluster-annouce-hostname` setting. The max length of the string is 256 characters, excluding the null terminator. The name can contain ASCII alphanumeric characters, '-', and '.' only.
@@ -81,7 +81,7 @@ as already explained above:
 
 However node hash slots can be in a special state, used in order to communicate errors after a node restart (mismatch between the keys in the AOF/RDB file, and the node hash slots configuration), or when there is a resharding operation in progress. This two states are **importing** and **migrating**.
 
-The meaning of the two states is explained in the Valkey Specification, however the gist of the two states is the following:
+The meaning of the two states is explained in the [Valkey Specification](../topics/cluster-spec.md), however the gist of the two states is the following:
 
 * **Importing** slots are yet not part of the nodes hash slot, there is a migration in progress. The node will accept queries about these slots only if the `ASK` command is used.
 * **Migrating** slots are assigned to the node, but are being migrated to some other node. The node will accept queries if all the keys in the command exist already, otherwise it will emit what is called an **ASK redirection**, to force new keys creation directly in the importing node.
@@ -98,11 +98,11 @@ The following are a few examples of importing and migrating slots:
 * `[77->-e7d1eecce10fd6bb5eb35b9f99a514335d9ba9ca]`
 * `[16311->-292f8b365bb7edb5e285caf0b7e6ddc7265d2f4f]`
 
-Note that the format does not have any space, so `CLUSTER NODES` output format is plain CSV with space as separator even when this special slots are emitted. However a complete parser for the format should be able to handle them.
+Note that the format does not have any space, so `CLUSTER NODES` output format is plain CSV with space as separator even when these special slots are emitted. However a complete parser for the format should be able to handle them.
 
 Note that:
 
 1. Migration and importing slots are only added to the node flagged as `myself`. This information is local to a node, for its own slots.
-2. Importing and migrating slots are provided as **additional info**. If the node has a given hash slot assigned, it will be also a plain number in the list of hash slots, so clients that don't have a clue about hash slots migrations can just skip this special fields.
+2. Importing and migrating slots are provided as **additional info**. If the node has a given hash slot assigned, it will be also a plain number in the list of hash slots, so clients that don't have a clue about hash slots migrations can just skip these special fields.
 
-> NOTE: If not for backward compatibility, the Valkey project no longer uses the words "master" and "slave". Unfortunately in the given commands these words are part of the protocol, so we'll be able to remove such occurrences only when this API will be naturally deprecated.
+> NOTE: If not for backward compatibility, the Valkey project no longer uses the words "master" and "slave". Unfortunately, in the given commands these words are part of the protocol, so we'll be able to remove such occurrences only when this API is naturally deprecated.

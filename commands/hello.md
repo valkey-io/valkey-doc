@@ -3,7 +3,7 @@ connection's name, or provide a contextual client report.
 
 Valkey supports two protocols: RESP2 and RESP3. RESP3 has certain advantages since
 when the connection is in this mode, Valkey is able to reply with more semantical
-replies: for instance, `HGETALL` will return a *map type*, so a client library
+replies: for instance, [`HGETALL`](hgetall.md) will return a *map type*, so a client library
 implementation no longer requires to know in advance to translate the array into
 a hash before returning it to the caller. For a full coverage of RESP3, please
 check the [RESP3 specification](https://github.com/redis/redis-specifications/blob/master/protocol/RESP3.md).
@@ -58,5 +58,5 @@ command instead of the canonical `PING` when setting up the connection.
 When called with the optional `protover` argument, this command switches the
 protocol to the specified version and also accepts the following options:
 
-* `AUTH <username> <password>`: directly authenticate the connection in addition to switching to the specified protocol version. This makes calling `AUTH` before `HELLO` unnecessary when setting up a new connection. Note that the `username` can be set to "default" to authenticate against a server that does not use ACLs, but rather the simpler `requirepass` mechanism.
-* `SETNAME <clientname>`: this is the equivalent of calling `CLIENT SETNAME`.
+* `AUTH <username> <password>`: directly authenticate the connection in addition to switching to the specified protocol version. This makes calling [`AUTH`](auth.md) before `HELLO` unnecessary when setting up a new connection. Note that the `username` can be set to "default" to authenticate against a server that does not use ACLs, but rather the simpler `requirepass` mechanism.
+* `SETNAME <clientname>`: this is the equivalent of calling [`CLIENT SETNAME`](client-setname.md).

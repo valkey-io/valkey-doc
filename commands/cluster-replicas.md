@@ -1,5 +1,5 @@
 The command provides a list of replica nodes replicating from the specified
-primary node. The list is provided in the same format used by `CLUSTER NODES` (please refer to its documentation for the specification of the format).
+primary node. The list is provided in the same format used by [`CLUSTER NODES`](cluster-nodes.md) (please refer to its documentation for the specification of the format).
 
 The command will fail if the specified node is not known or if it is not
 a primary according to the node table of the node receiving the command.

@@ -19,4 +19,4 @@ primary node. This may happen because:
 
 In standalone mode, by default, clients accessing a replica node can execute read queries, (which might read stale data) without entering readonly mode.
 
-Since Valkey 8.0, if a client in standalone mode uses the `CLIENT CAPA redirect` command to declare its capability to handle redirections, then the replica node will send redirection messages to the client when executing both read and write commands. The client must issue the `READONLY` command to enter readonly mode before it can execute read commands.
+Since Valkey 8.0, if a client in standalone mode uses the [`CLIENT CAPA redirect`](client-capa.md) command to declare its capability to handle redirections, then the replica node will send redirection messages to the client when executing both read and write commands. The client must issue the `READONLY` command to enter readonly mode before it can execute read commands.

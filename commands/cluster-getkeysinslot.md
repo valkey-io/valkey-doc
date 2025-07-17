@@ -6,9 +6,9 @@ Note that this works only when deleting keys, as the same `count` keys are
 returned on each call unless removed.
 
 The main usage of this command is during rehashing of cluster slots from one
-node to another. The way the rehashing is performed is exposed in the Valkey
-Cluster specification, or in a more simple to digest form, as an appendix
-of the `CLUSTER SETSLOT` command documentation.
+node to another. The way the rehashing is performed is exposed in the [Valkey
+Cluster specification](../topics/cluster-spec.md), or in a more simple to digest form, as an appendix
+of the [`CLUSTER SETSLOT`](cluster-setslot.md) command documentation.
 
 ```
 > CLUSTER GETKEYSINSLOT 7000 3
