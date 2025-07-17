@@ -7,60 +7,17 @@ description: Understand how to use basic Valkey data types
 
 ### What is Valkey?
 
-Valkey is an open-source, high-performance in-memory key/value data store designed for speed and reliability. It supports a variety of workloads – from caching frequently accessed data to acting as a message broker – and can even function as a primary NoSQL database. Backed by the Linux Foundation, Valkey is guaranteed to remain fully open source.
-
-Valkey supports a rich collection of data structures (beyond plain strings) including hashes, lists, sets, sorted sets, hyperloglogs, bitmaps, and more. It provides an extensive set of commands to manipulate data in place, and even supports server-side scripting (Lua) and modules for extending its functionality. Most Valkey operations are **O(1)** (constant time), meaning it can handle thousands of operations per second with microsecond response times on typical hardware.
-
+Valkey is a fully open-source, in-memory data store backed by the Linux Foundation, offering microsecond-latency operations on rich data structures. See the [Introduction](introduction.md) for more.
 
 ### Installation and Setup
 
-Getting Valkey up and running is straightforward. Follow these steps to install the server, start it, and connect:
+Getting Valkey up and running is straightforward. See the [Installation Guide](installation.md) for detailed instructions.
 
-1. **Install Valkey:** Choose an installation method based on your environment:
-
-    * **Docker:** The quickest way to try Valkey is using its official Docker image. For example, run `docker pull valkey/valkey:8.1-alpine`, then start a container:
-
-```
-   docker run -d -p 6379:6379 --name my-valkey valkey/valkey:8.1-alpine
-```
-
-This launches Valkey in a Docker container, listening on the default port 6379 (mapped to your host).
-
-* **Package Managers:** On Linux, Valkey may be available via your distro’s package manager (e.g. `apt install valkey` on Debian/Ubuntu, `yum install valkey` on Fedora/RHEL). macOS users can install via Homebrew (`brew install valkey`).
-* **From Source:** Download the latest release from the Valkey [GitHub releases](https://github.com/valkey-io/valkey/releases) or the official website and compile it (Valkey’s build system is similar to Redis’s makefile build). See the [Installation Guide](installation.md) for detailed instructions.
-
-2. **Start the Valkey server:** Once installed, start the Valkey server (as a daemon process). If you installed via a package or source, you can simply run the `valkey-server` command in a terminal to launch the server in the foreground. For example:
-
-```
-$ valkey-server
-```
-
-This starts Valkey listening on port **6379** by default. Keep this terminal open to view logs, or run Valkey as a background service (e.g. using `systemctl` for package installs or as a Docker container which is already running). To stop a foreground server, press **Ctrl+C**. *(Note: On Windows, Valkey is not natively supported; you can run it using WSL or inside Docker.)*
-
-
-1. **Connect to Valkey:** With the server running, you can connect a client to it. Valkey uses a text-based protocol, so you can interact using the built-in CLI tool or any Redis-compatible client library:
-
-    * **Using valkey-cli:** Run the interactive CLI by executing `valkey-cli`. By default it connects to `127.0.0.1:6379`. You should see a prompt like `127.0.0.1:6379>`. Now test the connection by pinging the server:
-
-```
-$ valkey-cli ping
-PONG
-```
-
-We can also execute the following command to connect to valkey server running on docker.
-```
-$ docker exec -it my-valkey valkey-cli -h localhost -p 6379 PING                                                                                                                                                  ─╯
-PONG
-```
-
-
-A response of **PONG** confirms the server is running and reachable. You can also specify a host or port if needed (e.g., `valkey-cli -h <host> -p <port>`).
-
-* **Using a programming language client:** Valkey has client libraries for many languages. Feel free to checkout some of the valkey supported clients [here](https://github.com/valkey-io/?q=clients&type=all&language=&sort=).
+If you just want to try Valkey quickly, head over to [Try-Valkey](https://valkey.io/try-valkey/) — an interactive playground where you can run any Valkey command right in your browser.
 
 ### Data Operations
 
-Once connected, you interact with Valkey by issuing commands to store and retrieve data. Valkey behaves like a **remote dictionary** – you can think of it as a giant hash map on a server. Each piece of data is stored under a unique **key**, and you use commands to read or modify values associated with those keys.
+Once connected with Valkey, you can interact by issuing commands to store and retrieve data. Valkey behaves like a **remote dictionary** – you can think of it as a giant hash map on a server. Each piece of data is stored under a unique **key**, and you use commands to read or modify values associated with those keys.
 
 Let’s walk through some fundamental operations **** with two of the most commonly used data types in Valkey: **strings** and **hashes**.
 
