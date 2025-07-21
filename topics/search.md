@@ -181,6 +181,21 @@ The following list of configurations can be passed to the `loadmodule` command:
    sizes may improve performance by enhancing CPU cache efficiency, but come at the cost of increased memory usage due
    to pre-allocation for potential future growth. (Default: 10K)
 5. `--log-level` Controls the log verbosity level. Possible values are: `debug`, `verbose`, `notice` and `warning`. (Default: Valkey's log level)
+6. `--query-string-bytes`: (Optional) Controls the maximum length in bytes of the query string for FT.SEARCH commands. (Default: 10240)
+7. `--query-string-depth`: (Optional) Controls the maximum depth of query string parsing for FT.SEARCH commands. (Default: 1000)
+8. `--query-string-terms-count`: (Optional) Controls the maximum number of terms allowed in a query string. (Default: 16)
+9. `--max-indexes`: (Optional) Controls the maximum number of search indexes that can be created. (Default: 10)
+10. `--max-prefixes`: (Optional) Controls the maximum number of key prefixes per index during FT.CREATE. (Default: 8)
+11. `--max-tag-field-length`: (Optional) Controls the maximum length of tag field identifiers during index creation. (Default: 256)
+12. `--max-numeric-field-length`: (Optional) Controls the maximum length of numeric field identifiers during index creation. (Default: 128)
+13. `--max-vector-attributes`: (Optional) Controls the maximum number of attributes per index. (Default: 50)
+14. `--max-vector-dimensions`: (Optional) Controls the maximum number of dimensions for vector indexes. (Default: 32768)
+15. `--max-vector-m`: (Optional) Controls the maximum M parameter for HNSW algorithm. (Default: 2000000)
+16. `--max-vector-ef-construction`: (Optional) Controls the maximum EF_CONSTRUCTION parameter for HNSW algorithm. (Default: 4096)
+17. `--max-vector-ef-runtime`: (Optional) Controls the maximum EF_RUNTIME parameter for HNSW algorithm. (Default: 4096)
+18. `--max-vector-knn`: (Optional) Controls the maximum K value for K-nearest neighbor searches. (Default: 128)
+19. `--max-search-result-record-size`: (Optional) Controls the maximum size in bytes for search result records. (Default: 5242880)
+20. `--max-search-result-fields-count`: (Optional) Controls the maximum number of fields in search result records. (Default: 500)
 
 ### Runtime configuration
 
@@ -190,4 +205,46 @@ The following list of configurations can be modified at runtime using the `CONFI
    sizes may improve performance by enhancing CPU cache efficiency, but come at the cost of increased memory usage due
    to pre-allocation for potential future growth. (Default: 10K)
 
+2. `search.query-string-bytes`: Controls the maximum length in bytes of the query string for FT.SEARCH commands. 
 
+3. `search.query-string-depth`: Controls the maximum depth of query string parsing for FT.SEARCH commands, preventing 
+   overly complex nested queries. (Default: 1000, Min: 1, Max: UINT_MAX)
+
+4. `search.query-string-terms-count`: Controls the maximum number of terms (nodes in the predicate tree) allowed in a 
+   query string for FT.SEARCH commands. (Default: 16, Min: 1, Max: 32)
+
+5. `search.max-indexes`: Controls the maximum number of search indexes that can be created. 
+   (Default: 10, Min: 1, Max: 10)
+
+6. `search.max-prefixes`: Controls the maximum number of key prefixes that can be specified per index during FT.CREATE. 
+   (Default: 8, Min: 1, Max: 16)
+
+7. `search.max-tag-field-length`: Controls the maximum length of tag field identifiers during index creation. 
+    (Default: 256, Min: 1, Max: 10000)
+
+8. `search.max-numeric-field-length`: Controls the maximum length of numeric field identifiers during index creation. 
+    (Default: 128, Min: 1, Max: 256)
+
+9. `search.max-vector-attributes`: Controls the maximum number of attributes that can be defined per index. 
+    (Default: 50, Min: 1, Max: 100)
+
+10. `search.max-vector-dimensions`: Controls the maximum number of dimensions allowed for vector indexes. 
+    (Default: 32768, Min: 1, Max: 64000)
+
+11. `search.max-vector-m`: Controls the maximum M parameter for HNSW algorithm, which affects the connectivity of the graph. 
+    Higher values improve recall but increase memory usage. (Default: 2000000, Min: 1, Max: 2000000)
+
+12. `search.max-vector-ef-construction`: Controls the maximum EF_CONSTRUCTION parameter for HNSW algorithm during index 
+    building. Higher values improve index quality but slow down construction. (Default: 4096, Min: 1, Max: 4096)
+
+13. `search.max-vector-ef-runtime`: Controls the maximum EF_RUNTIME parameter for HNSW algorithm during search. Higher 
+    values improve recall but slow down search. (Default: 4096, Min: 1, Max: 4096)
+
+14. `search.max-vector-knn`: Controls the maximum K value for K-nearest neighbor searches. 
+    (Default: 128, Min: 1, Max: 1000)
+
+15. `search.max-search-result-record-size`: Controls the maximum size in bytes for individual search result records. 
+    Records exceeding this limit will be dropped from results. (Default: 5MB, Min: 100, Max: 10MB)
+
+16. `search.max-search-result-fields-count`: Controls the maximum number of fields allowed in individual search result records. 
+    Records exceeding this limit will be dropped from results. (Default: 500, Min: 1, Max: 1000)
