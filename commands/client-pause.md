@@ -16,7 +16,7 @@ For the `WRITE` mode, some commands have special behavior:
 * `EVAL`/`EVALSHA`: Will block client for all scripts.
 * `PUBLISH`: Will block client.
 * `PFCOUNT`: Will block client.
-* `WAIT`: Acknowledgments will be delayed, so this command will appear blocked.
+* `WAIT`/`WAITAOF`: Acknowledgments will be delayed, so these commands will appear blocked.
 
 This command is useful as it makes able to switch clients from a Valkey instance to another one in a controlled way. For example during an instance upgrade the system administrator could do the following:
 
