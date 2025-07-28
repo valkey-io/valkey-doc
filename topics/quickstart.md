@@ -30,7 +30,7 @@ OK
 "Alice"
 ```
 
-Here we used the `SET` command to save the value `"Alice"` under the key `user:1000`, and `GET` to fetch it back. Valkey keys are often namespaced with prefixes (like `user:`) to group related items. You can store any data serialized as a string – numbers, JSON, binary blobs, etc. (Up to 512 MB per value, though very large values are not recommended for performance).
+Here we use the `SET` command to save the value `"Alice"` under the key `user:1000`, and `GET` to fetch it back. Valkey keys are often namespaced with prefixes (like `user:`) to group related items. You can store any data serialized as a string – numbers, JSON, binary blobs, etc. (Up to 512 MB per value, though very large values are not recommended for performance).
 
 * **Hashes:** Hashes allow you to store multiple fields and values under one key, similar to a JSON object or dictionary. This is useful for representing objects without using separate keys for each field. For example:
 
@@ -48,7 +48,7 @@ Here we used the `SET` command to save the value `"Alice"` under the key `user:1
 6) "30"
 ```
 
-We added three fields to the hash stored at `user:1000`. `HGET` retrieves a single field, and `HGETALL` returns all fields and values. Hashes are memory-efficient for storing structured data.
+We add three fields to the hash stored at `user:1000`. `HGET` retrieves a single field, and `HGETALL` returns all fields and values. Hashes are memory-efficient for storing structured data.
 
 * **Other Data Types:** Valkey supports many other native data structures. For example, **lists** (ordered collections of elements) support queue/stack operations, **sets** store unique items (useful for tags or unique lists), **sorted sets** maintain ordered rankings, and more. Each data type comes with specialized commands (e.g. `LPUSH`/`LRANGE` for lists, `SADD`/`SMEMBERS` for sets). You can find a full overview in the [Valkey data types documentation](data-types.md) and the command reference.
 
@@ -105,7 +105,7 @@ Now that you have Valkey running and understand the basics, you can explore more
     * [Sets](sets.md): Unordered collections of unique elements, great for tags or membership checks.
     * [Hashes](hashes.md): Field-value pairs, often used for storing objects or records.
     * [Sorted Sets](sorted-sets.md): Unique elements with scores, useful for leaderboards or time-series data.
-* **Explore Valkey Modules:** Valkey supports pluggable modules that extend its core functionality with custom commands and data types. Take a look at few of our released modules to get started.
+* **Explore Valkey Modules:** Valkey supports pluggable modules that extend its core functionality with custom commands and data types. Take a look at few of our official modules to get started.
     * **[Valkey Json](valkey-json.md)**
     * **[Valkey Bloom](bloomfilters.md)**
     * **[Valkey LDAP](ldap.md)**
