@@ -1,6 +1,10 @@
 Select the Valkey logical database having the specified zero-based numeric index.
 New connections always use the database 0.
 
+ !!! note
+
+    Valkey supports a maximum of **16 logical databases**, indexed from `0` to `15`. This is a hard limit and should be considered when designing applications.
+
 Selectable Valkey databases are a form of namespacing: all databases are still persisted in the same RDB / AOF file. However different databases can have keys with the same name, and commands like `FLUSHDB`, `SWAPDB` or `RANDOMKEY` work on specific databases.
 
 In practical terms, Valkey databases should be used to separate different keys belonging to the same application (if needed), and not to use a single Valkey instance for multiple unrelated applications.
