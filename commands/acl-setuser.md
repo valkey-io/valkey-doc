@@ -14,7 +14,7 @@ Then, you can use another `ACL SETUSER` call to modify the user rules:
 
     ACL SETUSER virginia +get
 
-The above rule applies the new rule to the user `virginia`, so other than `SET`, the user `virginia` can now also use the `GET` command.
+The above rule applies the new rule to the user `virginia`, so other than [`SET`](set.md), the user `virginia` can now also use the [`GET`](get.md) command.
 
 ACL rules can also be grouped into multiple distinct sets of rules, called _selectors_.
 Selectors are added by wrapping the rules in parentheses and providing them just like any other rule.
@@ -25,7 +25,7 @@ For example:
 
 This sets a user with two sets of permissions, one defined on the user and one defined with a selector.
 The root user permissions only allow executing the get command, but can be executed on any keys.
-The selector then grants a secondary set of permissions: access to the `SET` command to be executed on any key that starts with `app1`.
+The selector then grants a secondary set of permissions: access to the [`SET`](set.md) command to be executed on any key that starts with `app1`.
 Using multiple selectors allows you to grant permissions that are different depending on what keys are being accessed.
 
 When we want to be sure to define a user from scratch, without caring if
@@ -56,7 +56,7 @@ This is a list of all the supported Valkey ACL rules:
 
 ### Command rules
 
-* `~<pattern>`: Adds the specified key pattern (glob style pattern, like in the `KEYS` command), to the list of key patterns accessible by the user. This grants both read and write permissions to keys that match the pattern. You can add multiple key patterns to the same user. Example: `~objects:*`
+* `~<pattern>`: Adds the specified key pattern (glob style pattern, like in the [`KEYS`](keys.md) command), to the list of key patterns accessible by the user. This grants both read and write permissions to keys that match the pattern. You can add multiple key patterns to the same user. Example: `~objects:*`
 * `%R~<pattern>`: Adds the specified read key pattern. This behaves similar to the regular key pattern but only grants permission to read from keys that match the given pattern. See [key permissions](../topics/acl.md#key-permissions) for more information.
 * `%W~<pattern>`: Adds the specified write key pattern. This behaves similar to the regular key pattern but only grants permission to write to keys that match the given pattern. See [key permissions](../topics/acl.md#key-permissions) for more information.
 * `%RW~<pattern>`: Alias for `~<pattern>`.
@@ -66,7 +66,7 @@ This is a list of all the supported Valkey ACL rules:
 * `allchannels`: Alias for `&*`, it allows the user to access all Pub/Sub channels.
 * `resetchannels`: Removes all channel patterns from the list of Pub/Sub channel patterns the user can access.
 * `+<command>`: Adds the command to the list of commands the user can call. Can be used with `|` for allowing subcommands (e.g "+config|get").
-* `+@<category>`: Adds all the commands in the specified category to the list of commands the user is able to execute. Example: `+@string` (adds all the string commands). For a list of categories, check the `ACL CAT` command.
+* `+@<category>`: Adds all the commands in the specified category to the list of commands the user is able to execute. Example: `+@string` (adds all the string commands). For a list of categories, check the [`ACL CAT`](acl-cat.md) command.
 * `+<command>|first-arg`: Allows a specific first argument of an otherwise disabled command. It is only supported on commands with no sub-commands, and is not allowed as negative form like -SELECT|1, only additive starting with "+". This feature is deprecated and may be removed in the future.
 * `allcommands`: Alias of `+@all`. Adds all the commands there are in the server, including *future commands* loaded via module, to be executed by this user.
 * `-<command>`: Remove the command to the list of commands the user can call. It can be used with `|` for blocking subcommands (e.g., "-config|set").
@@ -75,8 +75,8 @@ This is a list of all the supported Valkey ACL rules:
 
 ### User management rules
 
-* `on`: Set the user as active, it will be possible to authenticate as this user using `AUTH <username> <password>`.
-* `off`: Set user as not active, it will be impossible to log as this user. Please note that if a user gets disabled (set to off) after there are connections already authenticated with such a user, the connections will continue to work as expected. To also kill the old connections you can use `CLIENT KILL` with the user option. An alternative is to delete the user with `ACL DELUSER`, that will result in all the connections authenticated as the deleted user to be disconnected.
+* `on`: Set the user as active, it will be possible to authenticate as this user using [`AUTH`](auth.md) `<username> <password>`.
+* `off`: Set user as not active, it will be impossible to log as this user. Please note that if a user gets disabled (set to off) after there are connections already authenticated with such a user, the connections will continue to work as expected. To also kill the old connections you can use [`CLIENT KILL`](client-kill.md) with the user option. An alternative is to delete the user with [`ACL DELUSER`](acl-deluser.md), that will result in all the connections authenticated as the deleted user to be disconnected.
 * `nopass`: The user is set as a _no password_ user. It means that it will be possible to authenticate as such user with any password. By default, the `default` special user is set as "nopass". The `nopass` rule will also reset all the configured passwords for the user.
 * `>password`: Adds the specified clear text password as a hashed password in the list of the users passwords. Every user can have many active passwords, so that password rotation will be simpler. The specified password is not stored as clear text inside the server. Example: `>mypassword`.
 * `#<hashedpassword>`: Adds the specified hashed password to the list of user passwords. A hashed password is hashed with SHA256 and translated into a hexadecimal string. Example: `#c3ab8ff13720e8ad9047dd39466b3c8974e592c2fa383d4a3960714caef0c4f2`.
