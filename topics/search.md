@@ -167,6 +167,21 @@ The following metrics are added to the `INFO` command's output:
 - `search_add_subscription_skipped_count`: Count of skipped subscription adding processes
 - `search_modify_subscription_failure_count`: Count of failed subscription modifications
 - `search_modify_subscription_successful_count`: Count of successful subscription modifications
+- `search_ingest_hash_keys`: Count of hash keys processed for ingestion across all indexes
+- `search_ingest_hash_blocked`: Count of currently blocked clients waiting for hash key ingestion operations
+- `search_ingest_json_keys`: Count of JSON keys processed for ingestion across all indexes
+- `search_ingest_json_blocked`: Count of currently blocked clients waiting for JSON key ingestion operations
+- `search_ingest_field_vector`: Count of vector fields processed during ingestion
+- `search_ingest_field_numeric`: Count of numeric fields processed during ingestion
+- `search_ingest_field_tag`: Count of tag fields processed during ingestion
+- `search_ingest_last_batch_size`: Size of the most recent ingestion batch processed
+- `search_ingest_total_batches`: Count of total ingestion batches processed
+- `search_ingest_total_failures`: Count of ingestion failures across all operations
+- `search_coordinator_bytes_out`: Total bytes sent by the coordinator to other nodes
+- `search_coordinator_bytes_in`: Total bytes received by the coordinator from other nodes
+- `search_coordinator_server_listening_port`: Port number on which the coordinator server is listening
+- `search_used_read_cpu`: Average CPU percentage used by the reader thread pool
+- `search_used_write_cpu`: Average CPU percentage used by the writer thread pool
 
 ## Configuration
 
