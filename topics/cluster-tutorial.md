@@ -877,7 +877,7 @@ To remove a replica node just use the `del-node` command of valkey-cli:
 
     `valkey-cli --cluster del-node 127.0.0.1:7000 <node-id>`
 
-The first argument is just a random node in the cluster, the second argument
+    `valkey-cli --cluster del-node 127.0.0.1:7000 <node-id>`
 is the ID of the node you want to remove.
 
 You can remove a primary node in the same way as well, **however in order to
