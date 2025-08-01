@@ -373,9 +373,8 @@ failing, or start a resharding, to see how Valkey Cluster behaves under real
 world conditions. It is not very helpful to see what happens while nobody
 is writing to the cluster.
 
-This section explains some basic usage of
-[Valkey GLIDE for Node.js](https://github.com/valkey-io/valkey-glide/tree/main/node), an official
-Valkey client library, available in numerous languages, showing a practical example application in Node.js.
+This section showcases the core functionality of Valkey through a practical Node.js application.  
+For our example, we will use the [Node.js version of GLIDE,](https://github.com/valkey-io/valkey-glide/tree/main/node) an official Valkey client library that supports multiple languages.
 
 The following example demonstrates how to connect to a Valkey cluster and perform
 basic operations. First, install the Valkey GLIDE client:
