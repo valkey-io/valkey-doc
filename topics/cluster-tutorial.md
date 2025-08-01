@@ -609,7 +609,7 @@ in the second case the value will be greater.
 Running a consistency testing application produces a line of output every
 second:
 
-```
+```bash
 node consistency-test.js
 925 R (0 err) | 925 W (0 err) |
 5030 R (0 err) | 5030 W (0 err) |
@@ -835,7 +835,7 @@ having as a target the empty node.
 Adding a new replica can be performed in two ways. The obvious one is to
 use valkey-cli again, but with the --cluster-replica option, like this:
 
-    `valkey-cli --cluster add-node 127.0.0.1:7006 127.0.0.1:7000 --cluster-replica`
+`valkey-cli --cluster add-node 127.0.0.1:7006 127.0.0.1:7000 --cluster-replica`
 Note that the command line here is exactly like the one we used to add
 a new primary, so we are not specifying to which primary we want to add
 the replica. In this case, what happens is that valkey-cli will add the new
@@ -844,7 +844,7 @@ node as replica of a random primary among the primaries with fewer replicas.
 However you can specify exactly what primary you want to target with your
 new replica with the following command line:
 
-    `valkey-cli --cluster add-node 127.0.0.1:7006 127.0.0.1:7000 --cluster-replica --cluster-master-id 3c3a0c74aae0b56170ccb03a76b60cfe7dc1912e`
+`valkey-cli --cluster add-node 127.0.0.1:7006 127.0.0.1:7000 --cluster-replica --cluster-master-id 3c3a0c74aae0b56170ccb03a76b60cfe7dc1912e`
 This way we assign the new replica to a specific primary.
 
 A more manual way to add a replica to a specific primary is to add the new
@@ -875,7 +875,7 @@ The node 3c3a0c... now has two replicas, running on ports 7002 (the existing one
 
 To remove a replica node just use the `del-node` command of valkey-cli:
 
-    `valkey-cli --cluster del-node 127.0.0.1:7000 `<node-id>``
+    `valkey-cli --cluster del-node 127.0.0.1:7000 <node-id>`
 
 The first argument is just a random node in the cluster, the second argument
 is the ID of the node you want to remove.
@@ -893,7 +893,7 @@ There is a special scenario where you want to remove a failed node.
 You should not use the `del-node` command because it tries to connect to all nodes and you will encounter a "connection refused" error.
 Instead, you can use the `call` command:
 
-    `valkey-cli --cluster call 127.0.0.1:7000 cluster forget `<node-id>``
+    `valkey-cli --cluster call 127.0.0.1:7000 cluster forget <node-id>`
 
 This command will execute `CLUSTER FORGET` command on every node. 
 
