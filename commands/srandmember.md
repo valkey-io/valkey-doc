@@ -37,3 +37,7 @@ When the `count` is a negative value, the behavior changes as follows:
 * Repeating elements are possible.
 * Exactly `count` elements, or an empty array if the set is empty (non-existing key), are always returned.
 * The order of elements in the reply is truly random.
+
+## Count limits
+
+The `count` argument is limited by the `max-rand-count` configuration parameter. If the absolute value of `count` exceeds this limit, the command will return an error. The default limit is `LONG_MAX/2` to prevent potential memory issues.
