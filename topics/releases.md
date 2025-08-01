@@ -1,5 +1,5 @@
 ---
-title: "Releases and versioning"
+title: "Releases and versioning schema"
 description: How new versions of Valkey are released and supported
 ---
 
