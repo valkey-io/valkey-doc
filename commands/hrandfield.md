@@ -43,3 +43,7 @@ When the `count` is a negative value, the behavior changes as follows:
 * Repeating fields are possible.
 * Exactly `count` fields, or an empty array if the hash is empty (non-existing key), are always returned.
 * The order of fields in the reply is truly random.
+
+## Count limits
+
+The `count` argument is limited by the `max-rand-count` configuration parameter. If the absolute value of `count` exceeds this limit, the command will return an error. The default limit is `LONG_MAX/2` to prevent integer overflow when using the `WITHVALUES` option.
