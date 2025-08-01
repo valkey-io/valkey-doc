@@ -835,8 +835,7 @@ having as a target the empty node.
 Adding a new replica can be performed in two ways. The obvious one is to
 use valkey-cli again, but with the --cluster-replica option, like this:
 
-    `valkey-cli --cluster add-node 127.0.0.1:7006 127.0.0.1:7000 --cluster-replica
-`
+    `valkey-cli --cluster add-node 127.0.0.1:7006 127.0.0.1:7000 --cluster-replica`
 Note that the command line here is exactly like the one we used to add
 a new primary, so we are not specifying to which primary we want to add
 the replica. In this case, what happens is that valkey-cli will add the new
