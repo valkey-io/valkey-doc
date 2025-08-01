@@ -26,6 +26,18 @@ instead of killing just by address. The following filters are available:
 * `CLIENT KILL DB db`. Kill clients operating on the specified database id.
 * `CLIENT KILL IP ip`. Kill clients with the specified originating IP address.
 * `CLIENT KILL CAPA capa`. Kill clients that have the specified capabilities.
+* `CLIENT KILL NOT-ID client-id [client-id ...]`. Kill clients are not in the IDs set.
+* `CLIENT KILL NOT-TYPE type`. Kill clients are not in the specified type.
+* `CLIENT KILL NOT-ADDR ip:port`. Kill clients except the specified ip and port.
+* `CLIENT KILL NOT-LADDR ip:port`. Kill all clients not connected to specified local (bind) address.
+* `CLIENT KILL NOT-USER username`. Closes all the connections that are not authenticated with the specified [ACL](../topics/acl.md) username.
+* `CLIENT KILL NOT-FLAGS flags`. Kill clients not with the specified flag string.
+* `CLIENT KILL NOT-NAME name`. Kill clients not with the specified name.
+* `CLIENT KILL NOT-LIB-NAME lib-name`. Kill clients not using the specified library name.
+* `CLIENT KILL NOT-LIB-VER lib-version`. Kill clients not with the specified library version.
+* `CLIENT KILL NOT-DB db`. Kill clients not with the specified database ID.
+* `CLIENT KILL NOT-CAPA capa`. Kill clients not with the specified capabilities.
+* `CLIENT KILL NOT-IP ip`. Kill clients not with the specified IP address.
 
 It is possible to provide multiple filters at the same time. The command will handle multiple filters via logical AND. For example:
 
