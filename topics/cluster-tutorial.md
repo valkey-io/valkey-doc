@@ -845,8 +845,7 @@ node as replica of a random primary among the primaries with fewer replicas.
 However you can specify exactly what primary you want to target with your
 new replica with the following command line:
 
-    `valkey-cli --cluster add-node 127.0.0.1:7006 127.0.0.1:7000 --cluster-replica --cluster-master-id 3c3a0c74aae0b56170ccb03a76b60cfe7dc1912e
-`
+    `valkey-cli --cluster add-node 127.0.0.1:7006 127.0.0.1:7000 --cluster-replica --cluster-master-id 3c3a0c74aae0b56170ccb03a76b60cfe7dc1912e`
 This way we assign the new replica to a specific primary.
 
 A more manual way to add a replica to a specific primary is to add the new
