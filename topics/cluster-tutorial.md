@@ -414,32 +414,19 @@ async function runExample() {
 
         console.log(`Starting from counter: ${last}`);
 
-        // Write keys in batches using mset for better performance
-        const batchSize = 100;
-        for (let start = last + 1; start <= 1000000000; start += batchSize) {
+        // Write keys sequentially with individual SET operations
+        for (let x = last + 1; x <= 1000000000; x++) {
             try {
-                const keyValuePairs = [];
-                const end = Math.min(start + batchSize - 1, 1000000000);
+                await client.set(`foo${x}`, x.toString());
                 
-                // Prepare batch of key-value pairs as array
-                for (let x = start; x <= end; x++) {
-                    keyValuePairs.push(`foo${x}`, x.toString());
+                // Update counter every 1000 operations and display progress
+                if (x % 1000 === 0) {
+                    await client.set("__last__", x.toString());
+                    console.log(`Progress: ${x} keys written`);
                 }
                 
-                // Execute batch mset with array format
-                await client.mset(keyValuePairs);
-                
-                // Update counter and display progress
-                await client.set("__last__", end.toString());
-                console.log(`Batch completed: ${start} to ${end}`);
-                
-                // Verify a sample key from the batch
-                const sampleKey = `foo${start}`;
-                const value = await client.get(sampleKey);
-                console.log(`Sample verification - ${sampleKey}: ${value}`);
-                
             } catch (error) {
-                console.log(`Error in batch starting at ${start}: ${error.message}`);
+                console.log(`Error writing key foo${x}: ${error.message}`);
             }
         }
     } catch (error) {
@@ -452,11 +439,7 @@ async function runExample() {
 runExample().catch(console.error);
 ```
 
-The application writes keys in the format `foo<number>` with their corresponding numeric values, using batched `MSET` operations for better performance. The `MSET` command accepts an array of alternating keys and values. So if you run the program the result is batches of `MSET` commands:
-
-* `MSET foo1 1 foo2 2 foo3 3 ... foo100 100` (batch of 100 keys)
-* `MSET foo101 101 foo102 102 ... foo200 200` (next batch)
-* And so forth...
+The application writes keys in the format `foo<number>` with their corresponding numeric values using individual `SET` operations. This approach ensures compatibility with cluster deployments where keys may be distributed across different nodes based on their hash slots.
 
 The program includes comprehensive error handling to display errors instead of
 crashing, so all cluster operations are wrapped in try-catch blocks.
@@ -476,12 +459,7 @@ The **counter initialization section** reads a counter so that when we restart t
 we don't start again with `foo0`, but continue from where we left off.
 The counter is stored in Valkey itself using the key `__last__`.
 
-The **main processing loop** sets keys in batches using `MSET` operations 
-for better performance, processing 100 keys at a time and displaying progress or 
-any errors that occur.
-you'll get the usually 10k ops/second in the best of the conditions).
-
-you'll get optimal performance).
+The **main processing loop** sets keys sequentially using individual `SET` operations, updating progress every 1000 keys and displaying any errors that occur.
 
 Starting the application produces the following output:
 
