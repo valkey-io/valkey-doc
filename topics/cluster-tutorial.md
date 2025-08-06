@@ -467,12 +467,9 @@ Starting the application produces the following output:
 node example.js
 Connected to Valkey cluster
 Starting from counter: 0
-Batch completed: 1 to 100
-Sample verification - foo1: 1
-Batch completed: 101 to 200
-Sample verification - foo101: 101
-Batch completed: 201 to 300
-Sample verification - foo201: 201
+Progress: 1000 keys written
+Progress: 2000 keys written
+Progress: 3000 keys written
 ^C (I stopped the program here)
 ```
 
