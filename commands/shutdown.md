@@ -31,6 +31,7 @@ Specifically:
   For details, see the following section.
 * **SAFE** will return an error if it is unsafe to shut down.
   For details, see the following section.
+* **FAILOVER** will trigger a failover before shutting down a primary node in a cluster.
 * **ABORT** cancels an ongoing shutdown and cannot be combined with other flags.
 
 ## Conditions where a SHUTDOWN fails
