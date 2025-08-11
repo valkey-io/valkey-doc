@@ -20,7 +20,7 @@ The `HEXPIREAT` command supports a set of options that modify its behavior:
 * `hexpire` keyspace event will be issued once in case all the specified fields have been set with an expiration time which is in the future.
 * `hexpired` keyspace event will be issued once in case all the specified fields have been set with an expiration time which is zero or in the past.
 * `del` keyspace event will be issued once in case all the specified fields have been set with an expiration time which is zero or in the past, 
-and there are no more fields in the hash object.
+  and there are no more fields in the hash object.
 
 ## Examples
 

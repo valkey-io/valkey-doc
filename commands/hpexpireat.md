@@ -1,9 +1,7 @@
 `HEXPIREAT` has the same effect and semantic as [`HPEXPIRE`](hpexpire.md), but instead of
 specifying the number of milliseconds representing the TTL (time to live), it takes
-an absolute [Unix timestamp][hewowu] (milliseconds since January 1, 1970). A
+an absolute Unix timestamp (milliseconds since January 1, 1970). A
 timestamp in the past will delete the key immediately.
-
-[hewowu]: http://en.wikipedia.org/wiki/Unix_time
 
 For the specific semantics of the command refer to the documentation of
 [`HPEXPIRE`](hpexpire.md).
