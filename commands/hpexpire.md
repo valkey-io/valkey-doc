@@ -2,13 +2,6 @@ This command works exactly like [`HEXPIRE`](hexpire.md) but the time to live of 
 specified in milliseconds instead of seconds.
 Note, that providing a millisecond time of '0' will cause immediate expiration and reclamation of the field/s.
 
-## Synopsis 
-
-```
-HPEXPIRE key milliseconds [NX | XX | GT | LT] FIELDS numfields
-  field [field ...]
-```
-
 ## Options
 
 The `HPXPIRE` command supports a set of options that modify its behavior:
@@ -20,9 +13,9 @@ The `HPXPIRE` command supports a set of options that modify its behavior:
 
 ## Notifications
 
-`hexpire` keyspace event will be issued once in case all the specified fields have been set with an expiration time which is in the future.
-`hexpired` keyspace event will be issued once in case all the specified fields have been set with an expiration time which is zero or in the past.
-`del` keyspace event will be issued once in case all the specified fields have been set with an expiration time which is zero or in the past, 
+* `hexpire` keyspace event will be issued once in case all the specified fields have been set with an expiration time which is in the future.
+* `hexpired` keyspace event will be issued once in case all the specified fields have been set with an expiration time which is zero or in the past.
+* `del` keyspace event will be issued once in case all the specified fields have been set with an expiration time which is zero or in the past, 
 and there are no more fields in the hash object.
 
 ## Examples

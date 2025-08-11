@@ -108,11 +108,11 @@ Different commands generate different kind of events according to the following 
 * `LTRIM` generates an `ltrim` event, and additionally a `del` event if the resulting list is empty and the key is removed.
 * `RPOPLPUSH` and `BRPOPLPUSH` generate an `rpop` event and an `lpush` event. In both cases the order is guaranteed (the `lpush` event will always be delivered after the `rpop` event). Additionally a `del` event will be generated if the resulting list is zero length and the key is removed.
 * `LMOVE` and `BLMOVE` generate an `lpop`/`rpop` event (depending on the wherefrom argument) and an `lpush`/`rpush` event (depending on the whereto argument). In both cases the order is guaranteed (the `lpush`/`rpush` event will always be delivered after the `lpop`/`rpop` event). Additionally a `del` event will be generated if the resulting list is zero length and the key is removed.
-* `HSET`, `HSETNX`,`HMSET` and `HSETEX` all generate a single `hset` event.
+* `HSET`, `HSETNX`, `HMSET` and `HSETEX` all generate a single `hset` event.
 * `HINCRBY` generates an `hincrby` event.
 * `HINCRBYFLOAT` generates an `hincrbyfloat` event.
-* `HSETEX`, `HGETEX`, `HEXPIRE` , `HPEXPIRE`, `HEXPIREAT` and `HPEXPIREAT`, when provided an expiration time argument which is in the future will generate a single `hexpire` event.
-* `HSETEX`, `HGETEX`, `HEXPIRE` , `HPEXPIRE`, `HEXPIREAT` and `HPEXPIREAT`, when provided an expiration time argument which indicate zero or past time will generate a single `hexpired` event.
+* `HSETEX`, `HGETEX`, `HEXPIRE`, `HPEXPIRE`, `HEXPIREAT` and `HPEXPIREAT`, when provided an expiration time argument which is in the future will generate a single `hexpire` event.
+* `HSETEX`, `HGETEX`, `HEXPIRE`, `HPEXPIRE`, `HEXPIREAT` and `HPEXPIREAT`, when provided an expiration time argument which indicate zero or past time will generate a single `hexpired` event.
 * `HPERSIST` and `HGETEX`, will generate `hpersist` event in case at least 1 hash field expiration time was removed. 
 * `HDEL` generates a single `hdel` event, and an additional `del` event if the resulting hash is empty and the key is removed.
 * `SADD` generates a single `sadd` event, even in the variadic case.

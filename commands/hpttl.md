@@ -2,17 +2,6 @@ Like [`HTTL`](httl.md) this command returns the remaining time to live of hash f
 with the sole difference that `HTTL` returns the amount of remaining
 time in seconds while `HPTTL` returns it in milliseconds.
 
-## Synopsis
-
-```
-HTTL key FIELDS numfields field [field ...]
-```
-
-The command can also return the following values:
-
-* The command returns `-2` if the key does not exist.
-* The command returns `-1` if the key exists but has no associated expire.
-
 See also the [`HTTL`](httl.md) command that returns the same information with seconds resolution.
 
 ## Examples

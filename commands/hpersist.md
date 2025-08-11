@@ -1,12 +1,6 @@
 The `HPERSIST` remove the existing expiration on a hash key's field(s), turning the field(s) from volatile (a field with expiration set) 
 to persistent (a field that will never expire as no TTL (time to live) is associated).
 
-## Synopsis 
-
-```
-HPERSIST key FIELDS numfields field [field ...]
-```
-
 ## Notifications
 
 `hpersist` keyspace event will be issued once in case at least 1 field's expiration time was removed.

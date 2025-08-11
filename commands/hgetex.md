@@ -2,14 +2,6 @@ The `HGETEX` command get the value of one or more fields of a given hash key, an
 The command will return an array in the size of the number of requested fields.
 Without providing any optional flags, this command behaves exactly like a normal [`HMGET`](hmget.md) command.
 
-## Synopsis 
-
-```
-HGETEX key [EX seconds | PX milliseconds | EXAT unix-time-seconds |
-  PXAT unix-time-milliseconds | PERSIST] FIELDS numfields field
-  [field ...]
-```
-
 ## Options
 
 The `HGETEX` command supports a set of options that modify its behavior:

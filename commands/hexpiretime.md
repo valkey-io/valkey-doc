@@ -1,13 +1,5 @@
 The `HEXPIRETIME` command returns the absolute Unix timestamp (since January 1, 1970) in seconds at which the given hash field/s will expire.
 
-See also the [`HPEXPIRETIME`](hpexpiretime.md) command which returns the same information with milliseconds resolution.
-
-## Synopsis
-
-```
-HEXPIRETIME key FIELDS numfields field [field ...]
-```
-
 The command can also return the following values:
 
 * The command returns `-2` if the specified field does not exist in the hash.

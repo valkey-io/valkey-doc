@@ -1,17 +1,6 @@
-The `HTTL` command returns the remaining time to live of a hash field that has an associated expiration time.
+The `HTTL` command returns the remaining time to live of hash field/s that has an associated expiration time.
 This introspection capability allows a Valkey client to check how many seconds a
 given hash field will continue to be part of the hash object.
-
-## Synopsis
-
-```
-HTTL key FIELDS numfields field [field ...]
-```
-
-The command can also return the following values:
-
-* The command returns `-2` if the specified field does not exist in the hash.
-* The command returns `-1` if the specified field exists in the hash but has no associated expiration time.
 
 See also the [`HPTTL`](hpttl.md) command that returns the same information with milliseconds resolution.
 

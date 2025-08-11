@@ -1,19 +1,10 @@
 `HEXPIREAT` has the same effect and semantic as [`HEXPIRE`](hexpire.md), but instead of
 specifying the number of seconds representing the TTL (time to live), it takes
-an absolute [Unix timestamp][hewowu] (seconds since January 1, 1970). A
+an absolute Unix timestamp (seconds since January 1, 1970). A
 timestamp in the past will delete the key immediately.
-
-[hewowu]: http://en.wikipedia.org/wiki/Unix_time
 
 For the specific semantics of the command refer to the documentation of
 [`HEXPIRE`](hexpire.md).
-
-## Synopsis 
-
-```
-HEXPIREAT key unix-time-seconds [NX | XX | GT | LT] FIELDS numfields
-  field [field ...]
-```
 
 ## Options
 
@@ -26,9 +17,9 @@ The `HEXPIREAT` command supports a set of options that modify its behavior:
 
 ## Notifications
 
-`hexpire` keyspace event will be issued once in case all the specified fields have been set with an expiration time which is in the future.
-`hexpired` keyspace event will be issued once in case all the specified fields have been set with an expiration time which is zero or in the past.
-`del` keyspace event will be issued once in case all the specified fields have been set with an expiration time which is zero or in the past, 
+* `hexpire` keyspace event will be issued once in case all the specified fields have been set with an expiration time which is in the future.
+* `hexpired` keyspace event will be issued once in case all the specified fields have been set with an expiration time which is zero or in the past.
+* `del` keyspace event will be issued once in case all the specified fields have been set with an expiration time which is zero or in the past, 
 and there are no more fields in the hash object.
 
 ## Examples

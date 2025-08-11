@@ -8,13 +8,6 @@ timestamp in the past will delete the key immediately.
 For the specific semantics of the command refer to the documentation of
 [`HPEXPIRE`](hpexpire.md).
 
-## Synopsis 
-
-```
-HPEXPIREAT key unix-time-milliseconds [NX | XX | GT | LT] FIELDS numfields
-  field [field ...]
-```
-
 ## Options
 
 The `HPEXPIREAT` command supports a set of options that modify its behavior:
@@ -26,10 +19,10 @@ The `HPEXPIREAT` command supports a set of options that modify its behavior:
 
 ## Notifications
 
-`hexpire` keyspace event will be issued once in case all the specified fields have been set with an expiration time which is in the future.
-`hexpired` keyspace event will be issued once in case all the specified fields have been set with an expiration time which is zero or in the past.
-`del` keyspace event will be issued once in case all the specified fields have been set with an expiration time which is zero or in the past, 
-and there are no more fields in the hash object.
+* `hexpire` keyspace event will be issued once in case all the specified fields have been set with an expiration time which is in the future.
+* `hexpired` keyspace event will be issued once in case all the specified fields have been set with an expiration time which is zero or in the past.
+* `del` keyspace event will be issued once in case all the specified fields have been set with an expiration time which is zero or in the past, 
+        and there are no more fields in the hash object.
 
 ## Examples
 

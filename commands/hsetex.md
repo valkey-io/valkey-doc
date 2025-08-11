@@ -2,14 +2,6 @@ The `HSETEX` command allow setting the value of one or more fields of a given ha
 The command will return 1 in case all provided fields have been set or 0 in case `FNX` or `FXX` were provided and non of the specified fields were set.
 Without providing any optional flags, this command behaves exactly like a normal [`HSET`](hset.md) command.
 
-## Synopsis 
-
-```
-HSETEX key [FNX | FXX] [EX seconds | PX milliseconds |
-            EXAT unix-time-seconds | PXAT unix-time-milliseconds | KEEPTTL]
-            FIELDS numfields field value [field value ...]
-```
-
 ## Options
 
 The `HSETEX` command supports a set of options that modify its behavior:
@@ -31,11 +23,11 @@ Note for the following:
 
 ## Notifications
 
-`hset` keyspace event will be issued in case all the specified fields have been set.
-`hexpired` keyspace event will be issued in case all the specified fields have been set with an expiration time which is in the future.
-`hexpire` keyspace event will be issued in case all the specified fields have been set with an expiration time which is zero or in the past.
-`del` keyspace event will be issued in case all the specified fields have been set with an expiration time which is zero or in the past, 
-and there are no more fields in the hash object.
+* `hset` keyspace event will be issued in case all the specified fields have been set.
+* `hexpired` keyspace event will be issued in case all the specified fields have been set with an expiration time which is in the future.
+* `hexpire` keyspace event will be issued in case all the specified fields have been set with an expiration time which is zero or in the past.
+* `del` keyspace event will be issued in case all the specified fields have been set with an expiration time which is zero or in the past, 
+        and there are no more fields in the hash object.
 
 ## Examples
 
