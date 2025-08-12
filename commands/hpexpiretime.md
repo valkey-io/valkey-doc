@@ -1,4 +1,4 @@
-The `HPEXPIRETIME` command returns the absolute Unix timestamp (since January 1, 1970) in milliseconds at which the given hash field/s will expire.
+The `HPEXPIRETIME` command returns the absolute Unix timestamp (since January 1, 1970) in milliseconds at which the given hash field(s) will expire.
 
 See also the [`HEXPIRETIME`](hexpiretime.md) command which returns the same information with seconds resolution.
 

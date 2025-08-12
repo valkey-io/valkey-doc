@@ -15,15 +15,15 @@ The `HGETEX` command supports a set of options that modify its behavior:
 Note for the following:
 
 1. The EX, PX, EXAT, PXAT, and PERSIST options are mutually exclusive.
-2. Providing '0' expiration TTL via `EX` or `PX` optional arguments will result in the specified fields to immediately expire and removed from the hash.
-3. Providing past expiration time via `EXAT` or `PXAT` optional arguments will result in the specified fields to immediately expire and removed from the hash.
+2. Providing '0' expiration TTL via `EX` or `PX` optional arguments will cause the specified fields to expire immediately and be removed from the hash.
+3. Providing past expiration time via `EXAT` or `PXAT` optional arguments will cause the specified fields to expire immediately and be removed from the hash.
 
 ## Notifications
 
-`hexpire` keyspace event will be issued once in case in case at least 1 field has been set with an expiration time which is in the future.
-`hexpired` keyspace event will be issued once in case at least 1 field has been set with an expiration time which is zero or in the past.
-`hpersist` keyspace event will be issued once in case the `PERSIST` option was specified and at least 1 field's expiration time was removed.
-`del` keyspace event will be issued once in case all the specified fields have been set with an expiration time which is zero or in the past, 
+* `hexpire` keyspace event will be issued once if at least one field has been set with an expiration time which is in the future.
+* `hexpired` keyspace event will be issued once if at least one field has been set with an expiration time which is zero or in the past.
+* `hpersist` keyspace event will be issued once if the `PERSIST` option was specified and at least one field's expiration time was removed.
+* `del` keyspace event will be issued once if all the specified fields have been set with an expiration time which is zero or in the past, 
   and there are no more fields in the hash object.
 
 ## Examples

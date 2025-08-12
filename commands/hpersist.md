@@ -3,7 +3,7 @@ to persistent (a field that will never expire as no TTL (time to live) is associ
 
 ## Notifications
 
-`hpersist` keyspace event will be issued once in case at least 1 field's expiration time was removed.
+`hpersist` keyspace event will be issued once in case at least one field's expiration time was removed.
 
 ## Examples
 
