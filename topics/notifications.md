@@ -108,7 +108,7 @@ Different commands generate different kind of events according to the following 
 * `LTRIM` generates an `ltrim` event, and additionally a `del` event if the resulting list is empty and the key is removed.
 * `RPOPLPUSH` and `BRPOPLPUSH` generate an `rpop` event and an `lpush` event. In both cases the order is guaranteed (the `lpush` event will always be delivered after the `rpop` event). Additionally a `del` event will be generated if the resulting list is zero length and the key is removed.
 * `LMOVE` and `BLMOVE` generate an `lpop`/`rpop` event (depending on the wherefrom argument) and an `lpush`/`rpush` event (depending on the whereto argument). In both cases the order is guaranteed (the `lpush`/`rpush` event will always be delivered after the `lpop`/`rpop` event). Additionally a `del` event will be generated if the resulting list is zero length and the key is removed.
-* `HSET`, `HSETNX`, `HMSET` and `HSETEX` generate a single `hset` event.
+* `HSET`, `HSETNX`, `HMSET` and `HSETEX` generate a single `hset` event in case the specified fields were added or modified.
 * `HINCRBY` generates an `hincrby` event.
 * `HINCRBYFLOAT` generates an `hincrbyfloat` event.
 * `HEXPIRE` and all its variants (`HPEXPIRE`, `HPEXPIRE`, `HEXPIREAT` and `HPEXPIREAT`) generate a single `hexpire` event when called with a positive timeout (or a future timestamp). Note that when these commands are called with a negative timeout value or timestamp in the past, only a single `hexpired` event is generated and in case the hash object has no more items left it will be deleted and a 'del' event is generated as well.

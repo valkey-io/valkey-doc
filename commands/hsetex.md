@@ -23,7 +23,8 @@ Note for the following:
 
 ## Notifications
 
-* `hset` keyspace event will be issued in case all the specified fields have been set.
+* `hset` keyspace event will be issued in case all the specified fields have been added or modified. 
+         Note that `hset` event will not be generated in case a '0' or expired time was provided.  
 * `hexpired` keyspace event will be issued in case all the specified fields have been set with an expiration time which is in the future.
 * `hexpire` keyspace event will be issued in case all the specified fields have been set with an expiration time which is zero or in the past.
 * `del` keyspace event will be issued in case all the specified fields have been set with an expiration time which is zero or in the past, 
