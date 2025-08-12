@@ -111,8 +111,8 @@ Different commands generate different kind of events according to the following 
 * `HSET`, `HSETNX`, `HMSET` and `HSETEX` all generate a single `hset` event.
 * `HINCRBY` generates an `hincrby` event.
 * `HINCRBYFLOAT` generates an `hincrbyfloat` event.
-* `HSETEX`, `HGETEX`, `HEXPIRE`, `HPEXPIRE`, `HEXPIREAT` and `HPEXPIREAT`, when provided an expiration time argument which is in the future will generate a single `hexpire` event.
-* `HSETEX`, `HGETEX`, `HEXPIRE`, `HPEXPIRE`, `HEXPIREAT` and `HPEXPIREAT`, when provided an expiration time argument which indicate zero or past time will generate a single `hexpired` event.
+* `HEXPIRE` and all its variants (`HPEXPIRE`, `HPEXPIRE`, `HEXPIREAT` and `HPEXPIREAT`) generate a single `hexpire` event when called with a positive timeout (or a future timestamp). Note that when these commands are called with a negative timeout value or timestamp in the past, only a single `hexpired` event is generated and in case the hash object has no more items left it will be deleted and a 'del' event is generated as well.
+* `HSETEX` and `HGETEX` generate a single `hexpire` event when called with a positive timeout (or a future timestamp). Note that when these commands are called with a negative timeout value or timestamp in the past, only a single `hexpired` event is generated and in case the hash object has no more items left it will be deleted and a 'del' event is generated as well.
 * `HPERSIST` and `HGETEX`, will generate `hpersist` event in case at least 1 hash field expiration time was removed. 
 * `HDEL` generates a single `hdel` event, and an additional `del` event if the resulting hash is empty and the key is removed.
 * `SADD` generates a single `sadd` event, even in the variadic case.
@@ -166,10 +166,10 @@ Keys with a time to live associated are expired by Valkey in two ways:
 
 The `expired` events are generated when a key is accessed and is found to be expired by one of the above systems, as a result there are no guarantees that the Valkey server will be able to generate the `expired` event at the time the key time to live reaches the value of zero.
 
-Since Valkey 9.0, hash fields can also have a time to live associated. Hash fields are only reclaimed when explicitly provided an expiration time which is in the past or via the same background subsystem which is also responsible to expire keys. For that reason the there are no guarantees that the Valkey server will be able to generate the `hexpired` event at the time the hash field time to live reaches the value of zero 
-Same as for generic keys, there can be a significant delay between the time the key time to live drops to zero, and the time the `hexpired` event is generated.
+Since Valkey 9.0, hash fields can also have a time to live associated. Hash fields are only reclaimed when explicitly provided an expiration time which is in the past or via the same background subsystem which is also responsible to expire keys. For that reason the there are no guarantees that the Valkey server will be able to generate the `hexpired` event at the time the hash field time to live reaches the value of zero.
 
 Basically `expired` and `hexpired` events **are generated when the Valkey server deletes the key** and not when the time to live theoretically reaches the value of zero.
+For that reason there can be a significant delay between the time the key time to live drops to zero, and the time the corresponding event is generated.
 
 
 ### Events in a cluster
