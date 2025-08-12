@@ -1,4 +1,4 @@
-The `HSETEX` command allow setting the value of one or more fields of a given hash key, and optionally manipulate their expiration time.
+The `HSETEX` command allows setting the value of one or more fields of a given hash key, and optionally manipulating their expiration time.
 The command will return 1 in case all provided fields have been set or 0 in case `FNX` or `FXX` were provided and non of the specified fields were set.
 Without providing any optional flags, this command behaves exactly like a normal [`HSET`](hset.md) command.
 
@@ -10,7 +10,7 @@ The `HSETEX` command supports a set of options that modify its behavior:
 * FXX — Only set the fields if all of them already exist.
 * EX seconds — Set the specified expiration time in seconds.
 * PX milliseconds — Set the specified expiration time in milliseconds.
-* EXAT `unix-time-seconds` — Set the specified Unix time in seconds at which the fields will expire.
+* EXAT `unix-time-seconds` — Set the specified Unix time in seconds for when the fields will expire.
 * PXAT `unix-time-milliseconds` — Set the specified Unix time in milliseconds at which the fields will expire.
 * KEEPTTL — Retain the TTL associated with the fields.
 

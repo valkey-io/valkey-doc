@@ -1,6 +1,6 @@
 This command works exactly like [`HEXPIRE`](hexpire.md) but the time to live of the key is
 specified in milliseconds instead of seconds.
-Note, that providing a millisecond time of '0' will cause immediate expiration and reclamation of the field/s.
+Note, that providing a millisecond time of '0' will cause immediate expiration and reclamation of the field(s).
 
 ## Options
 

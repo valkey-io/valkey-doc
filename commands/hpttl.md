@@ -1,4 +1,4 @@
-Like [`HTTL`](httl.md) this command returns the remaining time to live of hash field/s that has an associated expiration time,
+Like [`HTTL`](httl.md) this command returns the remaining time to live of hash field(s) that has an associated expiration time,
 with the sole difference that `HTTL` returns the amount of remaining
 time in seconds while `HPTTL` returns it in milliseconds.
 
