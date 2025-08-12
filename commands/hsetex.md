@@ -18,8 +18,8 @@ Note for the following:
 
 1. The EX, PX, EXAT, PXAT, and KEEPTTL options are mutually exclusive.
 2. Setting a value on a volatile hash field (A field which has an assigned expiration time) will remove the expiration for that field.
-3. Providing '0' expiration TTL via `EX` or `PX` optional arguments will result in the specified fields to immediately expire and removed from the hash.
-4. Providing past expiration time via `EXAT` or `PXAT` optional arguments will result in the specified fields to immediately expire and removed from the hash.
+3. Providing '0' expiration TTL via `EX` or `PX` optional arguments will result in the specified fields immediately expiring and being removed from the hash.
+4. Providing past expiration time via `EXAT` or `PXAT` optional arguments will result in the specified fields immediately expiring and being removed from the hash.
 
 ## Notifications
 
