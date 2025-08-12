@@ -1,6 +1,6 @@
-The `HEXPIRE` command allows manipulating existing hash fields expiration time.
-When set, an expiration time of a hash field determine when the field will be automatically reclaimed.
-Note, that providing a millisecond time of '0' will cause immediate expiration and reclamation of the field/s.
+The `HEXPIRE` command allows manipulating the hash expiration time for existing fields.
+When set, the expiration time of a hash field will determine when the field will be automatically reclaimed.
+Note, that providing a millisecond time of '0' will cause immediate expiration and reclaiming of the field(s).
 
 ## Options
 
@@ -13,9 +13,9 @@ The `HEXPIRE` command supports a set of options that modify its behavior:
 
 ## Notifications
 
-* `hexpire` keyspace event will be issued once in case all the specified fields have been set with an expiration time which is in the future.
-* `hexpired` keyspace event will be issued once in case all the specified fields have been set with an expiration time which is zero or in the past.
-* `del` keyspace event will be issued once in case all the specified fields have been set with an expiration time which is zero or in the past, 
+* `hexpire` keyspace event will be issued once if all the specified fields are set to an expiration time in the future.
+* `hexpired` keyspace event will be issued once if all the specified fields are set to an expiration time which is zero or in the past.
+* `del` keyspace event will be issued once if all the specified fields are set to an expiration time which is zero or in the past, 
         and there are no more fields in the hash object.
 
 ## Examples
