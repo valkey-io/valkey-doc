@@ -84,9 +84,9 @@ See the [complete list of hash commands](../commands/#hash).
 
 ## Field expiration 
 
-In valkey 9.0 we added the ability to associate an expiration time to a hash field. When set, the expiration time of a hash field determine when the field will be automatically reclaimed.
-Once a hash field expiration time is past, it will no longer be available and all of the hash command API will treat this field as "non exist".
-Note, however, that expired hash fields are reclaimed via a background subsystem. For this reason it might take time since the fields was "logically" expired till the hash fields is "actively" expired and reclaimed. During this time, when the fields is only "logically" expired, some hash commands (e.g. [`HLEN`](hlen.md)) might still take into account the "logically" expired fields in the hash object cardinality calculations. Another side effect of using "volatile" fields in hash objects, is the ability to perform random choosing from hash objects. When large hash objects have most of their volatile fields "logically" expired, some commands like [`HRANDFIELD`](hrandfield.md) might not be able to collect elements which are not "logically" expired and return an empty reply.  
+In Valkey 9.0 we added the ability to associate an expiration time with a hash field. When set, the expiration time of a hash field determines when the field could be automatically reclaimed.
+Once a hash field expiration time is past, it will no longer be available and all of the hash command APIs will treat this field as "nonexistent".
+Note that expired hash fields are reclaimed via a background subsystem. For this reason it might take time between when fields "logically" expire and when hash fields are "actively" expired and reclaimed. During this time, when the fields is only "logically" expired, some hash commands (e.g. [`HLEN`](hlen.md)) might still take  "logically" expired fields into account in hash object cardinality calculations. Another side effect of using "volatile" fields in hash objects, is the ability to random choose from hash objects. When large hash objects have most of their volatile fields "logically" expired, some commands like [`HRANDFIELD`](hrandfield.md) might not be able to collect elements which are not "logically" expired and may return an empty reply.  
 
 ### Command API
 
@@ -96,9 +96,9 @@ Note, however, that expired hash fields are reclaimed via a background subsystem
 
 [`HSETEX`](hsetex.md) allows setting multiple hash fields and values while also associate an expiration time with each field.
 
-[`HGETEX`](hgetex.md) allows fetching multiple hash fields values while also mutate their expiration time.
+[`HGETEX`](hgetex.md) allows fetching multiple hash fields values while also mutating their expiration time.
 
-Note that commands that some commands which override hash fields (e.g. `HSET` and `HMSET`) will cause a hash field associated expiration time to be removed and the field will be "persisted".
+Note that some commands which override hash fields (e.g. `HSET` and `HMSET`) will cause a hash field associated expiration time to be removed and the field will be "persisted".
 The `HSETEX`(hsetex.md) command has a special flag `KEEPTTL` which allows overriding hash fields without mutating their expiration time.
 
 ## Performance
