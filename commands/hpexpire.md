@@ -13,9 +13,9 @@ The `HPXPIRE` command supports a set of options that modify its behavior:
 
 ## Notifications
 
-* `hexpire` keyspace event will be issued once in case all the specified fields have been set with an expiration time which is in the future.
-* `hexpired` keyspace event will be issued once in case all the specified fields have been set with an expiration time which is zero or in the past.
-* `del` keyspace event will be issued once in case all the specified fields have been set with an expiration time which is zero or in the past, 
+* `hexpire` keyspace event will be issued once if all the specified fields have been set with an expiration time which is in the future.
+* `hexpired` keyspace event will be issued once if all the specified fields have been set with an expiration time which is zero or in the past.
+* `del` keyspace event will be issued once if all the specified fields have been set with an expiration time which is zero or in the past, 
   and there are no more fields in the hash object.
 
 ## Examples
