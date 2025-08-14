@@ -57,8 +57,8 @@ Debian/Ubuntu/Mint/Devuan/Raspbian/PureOS
 ```bash
 sudo apt update
 sudo apt install valkey
-# For symlinked binaries to redis-cli and redis-server
-sudo apt install valkey-compat
+# For symlinked binaries to redis-cli and other redis-* tools (on Ubuntu)
+sudo apt install valkey-redis-compat
 ```
 
 #### apk (Alpine Linux/Kali Linux/Wolfi)
