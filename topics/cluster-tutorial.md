@@ -422,7 +422,7 @@ async function runExample() {
 
         console.log(`Starting from counter: ${last}`);
 
-        // Write keys sequentially with verification, following original Ruby logic
+        // Write keys sequentially with verification
         for (let x = parseInt(last) + 1; x <= 1000000000; x++) {
             try {
                 // Set the key
@@ -452,7 +452,7 @@ async function runExample() {
 runExample().catch(console.error);
 ```
 
-The application writes keys in the format `foo<number>` to `number`, one after the other, following the same logic as the original Ruby example. For each key, it performs a SET operation, immediately verifies the value with a GET operation, updates a counter, and includes a small delay between operations.
+The application writes keys in the format `foo<number>` to `number`, one after the other. For each key, it performs a SET operation, immediately verifies the value with a GET operation, updates a counter, and includes a small delay between operations.
 
 The program includes comprehensive error handling to display errors instead of
 crashing, so all cluster operations are wrapped in try-catch blocks.
