@@ -398,7 +398,7 @@ async function runExample() {
     // Check `GlideClientConfiguration/GlideClusterClientConfiguration` for additional options.
     const client = await GlideClusterClient.createClient({
         addresses: addresses,
-        // if the cluster nodes use TLS, you'll need to enable it. Otherwise the connection attempt will time out silently.
+        // if the cluster nodes use TLS, you'll need to enable it.
         // useTLS: true,
         // It is recommended to set a timeout for your specific use case
         requestTimeout: 500, // 500ms timeout
