@@ -409,24 +409,37 @@ async function runExample() {
         console.log("Connected to Valkey cluster");
 
         // Get the last counter value, or start from 0
-        let last = await client.get("__last__");
-        last = last ? parseInt(last) : 0;
+        let last = false;
+        while (!last) {
+            try {
+                last = await client.get("__last__");
+                last = last || 0;
+            } catch (error) {
+                console.log(`Error getting counter: ${error.message}`);
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+        }
 
         console.log(`Starting from counter: ${last}`);
 
-        // Write keys sequentially with individual SET operations
-        for (let x = last + 1; x <= 1000000000; x++) {
+        // Write keys sequentially with verification, following original Ruby logic
+        for (let x = parseInt(last) + 1; x <= 1000000000; x++) {
             try {
+                // Set the key
                 await client.set(`foo${x}`, x.toString());
                 
-                // Update counter every 1000 operations and display progress
-                if (x % 1000 === 0) {
-                    await client.set("__last__", x.toString());
-                    console.log(`Progress: ${x} keys written`);
-                }
+                // Get and verify the value
+                const value = await client.get(`foo${x}`);
+                console.log(value);
+                
+                // Update the counter
+                await client.set("__last__", x.toString());
+                
+                // Add delay equivalent to Ruby's sleep 0.1
+                await new Promise(resolve => setTimeout(resolve, 100));
                 
             } catch (error) {
-                console.log(`Error writing key foo${x}: ${error.message}`);
+                console.log(`Error: ${error.message}`);
             }
         }
     } catch (error) {
@@ -439,7 +452,7 @@ async function runExample() {
 runExample().catch(console.error);
 ```
 
-The application writes keys in the format `foo<number>` with their corresponding numeric values using individual `SET` operations. This approach ensures compatibility with cluster deployments where keys may be distributed across different nodes based on their hash slots.
+The application writes keys in the format `foo<number>` to `number`, one after the other, following the same logic as the original Ruby example. For each key, it performs a SET operation, immediately verifies the value with a GET operation, updates a counter, and includes a small delay between operations.
 
 The program includes comprehensive error handling to display errors instead of
 crashing, so all cluster operations are wrapped in try-catch blocks.
@@ -455,11 +468,11 @@ discovers the complete cluster topology once it connects to any node.
 Now that we have the cluster client instance, we can use it like any other
 Valkey client to perform operations across the cluster.
 
-The **counter initialization section** reads a counter so that when we restart the example
+The **counter initialization section** reads a counter with retry logic so that when we restart the example
 we don't start again with `foo0`, but continue from where we left off.
 The counter is stored in Valkey itself using the key `__last__`.
 
-The **main processing loop** sets keys sequentially using individual `SET` operations, updating progress every 1000 keys and displaying any errors that occur.
+The **main processing loop** sets keys sequentially, immediately verifies each value with a GET operation, updates the counter after each key, and includes a 100ms delay between operations to match the original Ruby example's timing.
 
 Starting the application produces the following output:
 
@@ -467,9 +480,15 @@ Starting the application produces the following output:
 node example.js
 Connected to Valkey cluster
 Starting from counter: 0
-Progress: 1000 keys written
-Progress: 2000 keys written
-Progress: 3000 keys written
+1
+2
+3
+4
+5
+6
+7
+8
+9
 ^C (I stopped the program here)
 ```
 
