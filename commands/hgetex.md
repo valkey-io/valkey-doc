@@ -18,14 +18,6 @@ Note for the following:
 2. Providing '0' expiration TTL via `EX` or `PX` optional arguments will cause the specified fields to expire immediately and be removed from the hash.
 3. Providing past expiration time via `EXAT` or `PXAT` optional arguments will cause the specified fields to expire immediately and be removed from the hash.
 
-## Notifications
-
-* `hexpire` keyspace event will be issued once if at least one field has been set with an expiration time which is in the future.
-* `hexpired` keyspace event will be issued once if at least one field has been set with an expiration time which is zero or in the past.
-* `hpersist` keyspace event will be issued once if the `PERSIST` option was specified and at least one field's expiration time was removed.
-* `del` keyspace event will be issued once if all the specified fields have been set with an expiration time which is zero or in the past, 
-  and there are no more fields in the hash object.
-
 ## Examples
 
 ```

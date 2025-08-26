@@ -11,13 +11,6 @@ The `HEXPIRE` command supports a set of options that modify its behavior:
 * GT — For each specified field, set expiration only when the new expiration is greater than current one.
 * LT — For each specified field, set expiration only when the new expiration is less than current one.
 
-## Notifications
-
-* `hexpire` keyspace event will be issued once if all the specified fields are set to an expiration time in the future.
-* `hexpired` keyspace event will be issued once if all the specified fields are set to an expiration time which is zero or in the past.
-* `del` keyspace event will be issued once if all the specified fields are set to an expiration time which is zero or in the past, 
-        and there are no more fields in the hash object.
-
 ## Examples
 
 ```
