@@ -166,7 +166,8 @@ Keys with a time to live associated are expired by Valkey in two ways:
 
 The `expired` events are generated when a key is accessed and is found to be expired by one of the above systems, as a result there are no guarantees that the Valkey server will be able to generate the `expired` event at the time the key time to live reaches the value of zero.
 
-Since Valkey 9.0, hash fields can also have an associated time to live. Hash fields are only reclaimed when explicitly provided an expiration time in the past or via the same background subsystem which is also responsible to expire keys. For that reason there are no guarantees that the Valkey server will be able to generate the `hexpired` event at the time the hash field time to live reaches the value of zero.
+Since Valkey 9.0, hash fields can also have an associated time to live.
+Hash fields are deleted when explicitly provided an expiration time in the past or via the same background job which is also responsible to expire keys. For that reason, there are no guarantees that the Valkey server will be able to generate the `hexpired` event at the time the hash field time to live reaches the value of zero.
 
 Basically `expired` and `hexpired` events **are generated when the Valkey server deletes a key** and not when the time to live theoretically reaches the value of zero.
 For that reason there can be a significant delay between the time the key time to live drops to zero, and the time the corresponding event is generated.
