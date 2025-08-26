@@ -1,6 +1,6 @@
 The `HEXPIRE` command allows manipulating the expiration time for existing hash fields.
 When set, the expiration time of a hash field will determine when the field will be automatically deleted.
-Note, that providing a millisecond time of '0' will cause immediate expiration and reclaiming of the field(s).
+Note, that providing a millisecond time of '0' will cause immediate expiration and deletion of the field(s).
 
 ## Options
 
