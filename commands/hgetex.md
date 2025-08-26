@@ -1,4 +1,4 @@
-The `HGETEX` command get the value of one or more fields of a given hash key, and optionally manipulates their expiration time.
+The `HGETEX` command returns the value of one or more fields of a given hash key, and optionally manipulates their expiration time.
 The command will return an array in the size of the number of requested fields.
 Without providing any optional flags, this command behaves exactly like a normal [`HMGET`](hmget.md) command.
 
@@ -43,7 +43,7 @@ Note for the following:
 2) "v2"
 3) "v3"
 127.0.0.1:6379> HGETEX myhash FIELDS 3 f1 f2 f3 
-1) "nil"
-2) "nil"
-3) "nil"
+1) (nil)
+2) (nil)
+3) (nil)
 ```
