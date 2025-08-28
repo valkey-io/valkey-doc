@@ -76,4 +76,4 @@ The script should be called with `EVAL ...script... 1 resource-name token-value`
 
 ## See also
 
-* [`DELIFEQ`](delifeq.md) - Deletes the key if its value matches the given string.
+* [`DELIFEQ`](../commands/delifeq.md) - Deletes the key if its value matches the given string.

@@ -3,7 +3,7 @@ title: "Command tips"
 description: Get additional information about a command
 ---
 
-This page documents a small part of the reply of the [`COMMAND`](../command.md).
+This page documents a small part of the reply of the [`COMMAND`](../commands/command.md).
 In the reply of the COMMAND command, each command is represented by an array.
 The 8th element in this array is the command tips.
 It's an array of strings.
@@ -11,7 +11,7 @@ It's an array of strings.
 These provide Valkey clients with additional information about the command.
 The information can instruct Valkey Cluster clients as to how the command should be executed and its output processed in a clustered deployment.
 
-Unlike the command's flags (see the 3rd element of [`COMMAND`](../command.md)'s reply), which are strictly internal to the server's operation, tips don't serve any purpose other than being reported to clients.
+Unlike the command's flags (see the 3rd element of [`COMMAND`](../commands/command.md)'s reply), which are strictly internal to the server's operation, tips don't serve any purpose other than being reported to clients.
 
 
 ## `nondeterministic_output`

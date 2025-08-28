@@ -9,11 +9,11 @@ instance or in the other instance, unless a timeout error occurs. In 3.2 and
 above, multiple keys can be pipelined in a single call to `MIGRATE` by passing
 the empty string ("") as key and adding the `KEYS` clause.
 
-The command internally uses [`DUMP`](dump.md) to generate the serialized version of the key
-value, and [`RESTORE`](restore.md) in order to synthesize the key in the target instance.
+The command internally uses [`DUMP`](../commands/dump.md) to generate the serialized version of the key
+value, and [`RESTORE`](../commands/restore.md) in order to synthesize the key in the target instance.
 The source instance acts as a client for the target instance.
 If the target instance returns OK to the `RESTORE` command, the source instance
-deletes the key using [`DEL`](del.md).
+deletes the key using [`DEL`](../commands/del.md).
 
 The timeout specifies the maximum idle time in any moment of the communication
 with the destination instance in milliseconds.

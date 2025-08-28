@@ -1,5 +1,5 @@
 Sets the list element at `index` to `element`.
-For more information on the `index` argument, see [`LINDEX`](lindex.md).
+For more information on the `index` argument, see [`LINDEX`](../commands/lindex.md).
 
 An error is returned for out of range indexes.
 

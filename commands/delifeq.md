@@ -55,4 +55,4 @@ DELIFEQ mykey abc123
 
 ## See also
 
-* [`SET IFEQ`](set.md) - Sets the key only if it matches the given value.
+* [`SET IFEQ`](../commands/set.md) - Sets the key only if it matches the given value.
