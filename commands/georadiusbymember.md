@@ -7,6 +7,10 @@ Please check the example below and the `GEORADIUS` documentation for more inform
 
 Note that `GEORADIUSBYMEMBER_RO` was added to provide a read-only command that can be used in replicas. See the `GEORADIUS` page for more information.
 
+## Alternative
+
+`GEOSEARCH` and `GEOSEARCHSTORE` with the `BYRADIUS` and `FROMMEMBER` arguments.
+
 ## Examples
 
 ```

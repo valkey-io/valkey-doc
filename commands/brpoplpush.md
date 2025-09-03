@@ -14,3 +14,7 @@ Please see the pattern description in the `RPOPLPUSH` documentation.
 ## Pattern: Circular list
 
 Please see the pattern description in the `RPOPLPUSH` documentation.
+
+## Alternative
+
+`BLMOVE` with the `RIGHT` and `LEFT` arguments.
