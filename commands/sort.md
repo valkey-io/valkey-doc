@@ -113,7 +113,7 @@ To use pattern with hash tag, see [Hash tags](../topics/cluster-spec.md#hash-tag
 
 Any use of `GET` or `BY` which reference external key pattern will only be allowed in case the current user running the command has full key read permissions.
 Full key read permissions can be set for the user by, for example, specifying `'%R~*'` or `'~*` with the relevant command access rules.
-You can check the [`ACL SETUSER`](acl_setuser.md) command manual for more information on setting ACL access rules.
+You can check the [`ACL SETUSER`](acl-setuser.md) command manual for more information on setting ACL access rules.
 If full key read permissions aren't set, the command will fail with an error.
 
 ## Storing the result of a SORT operation
