@@ -6,7 +6,8 @@ SET`.
 
 `CONFIG GET` takes multiple arguments, which are glob-style patterns.
 Any configuration parameter matching any of the patterns are reported as a list
-of key-value pairs, sorted alphabetically by keys.
+of key-value pairs.
+In Valkey 9.0 and later, the list is sorted alphabetically by keys.
 Example:
 
 ```
