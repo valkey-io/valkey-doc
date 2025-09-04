@@ -15,8 +15,8 @@ Scripts **should never** access keys with programmatically-generated names or ba
 **Note:**
 in some cases, users will abuse Lua EVAL by embedding values in the script instead of providing them as argument, and thus generating a different script on each call to EVAL.
 These are added to the Lua interpreter and cached to valkey-server, consuming a large amount of memory over time.
-Starting from Valkey 8.0, scripts loaded with `EVAL` or `EVAL_RO` will be deleted from Valkey after a certain number (least recently used order).
-The number of evicted scripts can be viewed through `INFO`'s `evicted_scripts`.
+Starting from Valkey 8.0, scripts loaded with `EVAL` or [`EVAL_RO`](eval_ro.md) will be deleted from Valkey after a certain number (least recently used order).
+The number of evicted scripts can be viewed through the `evicted_scripts` field in the `stats` section of the [`INFO`](info.md) command.
 
 Please refer to the [Valkey Programmability](../topics/programmability.md) and [Introduction to Eval Scripts](../topics/eval-intro.md) for more information about Lua scripts.
 
