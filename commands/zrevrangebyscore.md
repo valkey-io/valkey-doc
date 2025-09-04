@@ -9,6 +9,10 @@ order.
 Apart from the reversed ordering, `ZREVRANGEBYSCORE` is similar to
 `ZRANGEBYSCORE`.
 
+## Alternative
+
+`ZRANGE` with the `REV` and `BYSCORE` arguments.
+
 ## Examples
 
 ```

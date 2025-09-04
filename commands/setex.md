@@ -8,6 +8,10 @@ SET key value EX seconds
 
 An error is returned when `seconds` is invalid.
 
+## Alternative
+
+`SET` with the `EX` argument.
+
 ## Examples
 
 ```
