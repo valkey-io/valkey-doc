@@ -6,4 +6,4 @@ The maximum number of entries in the different command log is governed by the `c
 
 Once the command log reaches its maximal size, the oldest entry is removed whenever a new entry is created.
 
-The command log can be cleared with the `COMMANDLOG RESET` command.
+The command log can be cleared with the [`COMMANDLOG RESET`](commandlog-reset.md) command.

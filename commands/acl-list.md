@@ -2,7 +2,7 @@ The command shows the currently active ACL rules in the Valkey server. Each
 line in the returned array defines a different user, and the format is the
 same used in the valkey.conf file or the external ACL file, so you can
 cut and paste what is returned by the ACL LIST command directly inside a
-configuration file if you wish (but make sure to check `ACL SAVE`).
+configuration file if you wish (but make sure to check [`ACL SAVE`](acl-save.md)).
 
 ## Examples
 

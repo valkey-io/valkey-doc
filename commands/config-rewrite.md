@@ -1,4 +1,4 @@
-The `CONFIG REWRITE` command rewrites the `valkey.conf` file the server was started with, applying the minimal changes needed to make it reflect the configuration currently used by the server, which may be different compared to the original one because of the use of the `CONFIG SET` command.
+The `CONFIG REWRITE` command rewrites the `valkey.conf` file the server was started with, applying the minimal changes needed to make it reflect the configuration currently used by the server, which may be different compared to the original one because of the use of the [`CONFIG SET`](config-set.md) command.
 
 The rewrite is performed in a very conservative way:
 

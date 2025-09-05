@@ -16,7 +16,7 @@ If `BGSAVE CANCEL` is used, it will immediately terminate any in-progress RDB sa
 In case a background save is scheduled to run (e.g. using `BGSAVE SCHEDULE` command) the scheduled execution will be 
 cancelled as well.
 
-A client may be able to check if the operation succeeded using the `LASTSAVE`
+A client may be able to check if the operation succeeded using the [`LASTSAVE`](lastsave.md)
 command.
 
 Please refer to the [persistence documentation][tp] for detailed information.
