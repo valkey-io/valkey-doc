@@ -108,9 +108,12 @@ Different commands generate different kind of events according to the following 
 * `LTRIM` generates an `ltrim` event, and additionally a `del` event if the resulting list is empty and the key is removed.
 * `RPOPLPUSH` and `BRPOPLPUSH` generate an `rpop` event and an `lpush` event. In both cases the order is guaranteed (the `lpush` event will always be delivered after the `rpop` event). Additionally a `del` event will be generated if the resulting list is zero length and the key is removed.
 * `LMOVE` and `BLMOVE` generate an `lpop`/`rpop` event (depending on the wherefrom argument) and an `lpush`/`rpush` event (depending on the whereto argument). In both cases the order is guaranteed (the `lpush`/`rpush` event will always be delivered after the `lpop`/`rpop` event). Additionally a `del` event will be generated if the resulting list is zero length and the key is removed.
-* `HSET`, `HSETNX` and `HMSET` all generate a single `hset` event.
+* `HSET`, `HSETNX`, `HMSET` and `HSETEX` generate a single `hset` event if the specified fields were added or modified.
 * `HINCRBY` generates an `hincrby` event.
 * `HINCRBYFLOAT` generates an `hincrbyfloat` event.
+* `HEXPIRE` and all its variants (`HPEXPIRE`, `HPEXPIRE`, `HEXPIREAT` and `HPEXPIREAT`) generate a single `hexpire` event when called with a positive timeout (or a future timestamp). Note that when these commands are called with a negative timeout value or timestamp in the past, only a single `hexpired` event is generated and if the hash object has no more items left it will be deleted and a `del` event is generated as well.
+* `HSETEX` and `HGETEX` generate a single `hexpire` event when called with a positive timeout (or a future timestamp). Note that when these commands are called with a negative timeout value or timestamp in the past, only a single `hexpired` event is generated and if the hash object has no more items left it will be deleted and a `del` event is generated as well.
+* `HPERSIST` and `HGETEX`, will generate an `hpersist` event if at least 1 hash field expiration time was removed. 
 * `HDEL` generates a single `hdel` event, and an additional `del` event if the resulting hash is empty and the key is removed.
 * `SADD` generates a single `sadd` event, even in the variadic case.
 * `SREM` generates a single `srem` event, and an additional `del` event if the resulting set is empty and the key is removed.
@@ -163,9 +166,12 @@ Keys with a time to live associated are expired by Valkey in two ways:
 
 The `expired` events are generated when a key is accessed and is found to be expired by one of the above systems, as a result there are no guarantees that the Valkey server will be able to generate the `expired` event at the time the key time to live reaches the value of zero.
 
-If no command targets the key constantly, and there are many keys with a TTL associated, there can be a significant delay between the time the key time to live drops to zero, and the time the `expired` event is generated.
+Since Valkey 9.0, hash fields can also have an associated time to live.
+Hash fields are deleted when explicitly provided an expiration time in the past or via the same background job which is also responsible to expire keys. For that reason, there are no guarantees that the Valkey server will be able to generate the `hexpired` event at the time the hash field time to live reaches the value of zero.
 
-Basically `expired` events **are generated when the Valkey server deletes the key** and not when the time to live theoretically reaches the value of zero.
+Basically `expired` and `hexpired` events **are generated when the Valkey server deletes a key** and not when the time to live theoretically reaches the value of zero.
+For that reason there can be a significant delay between the time the key time to live drops to zero, and the time the corresponding event is generated.
+
 
 ### Events in a cluster
 

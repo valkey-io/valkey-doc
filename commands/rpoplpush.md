@@ -13,6 +13,10 @@ If `source` and `destination` are the same, the operation is equivalent to
 removing the last element from the list and pushing it as first element of the
 list, so it can be considered as a list rotation command.
 
+## Alternative
+
+`LMOVE` with the `RIGHT` and `LEFT` arguments.
+
 ## Examples
 
 ```

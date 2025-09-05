@@ -39,6 +39,10 @@ Since `GEORADIUS` and `GEORADIUSBYMEMBER` have a `STORE` and `STOREDIST` option 
 
 Two read-only variants of the commands were added. They are exactly like the original commands but refuse the `STORE` and `STOREDIST` options. The two variants are called `GEORADIUS_RO` and `GEORADIUSBYMEMBER_RO`, and can safely be used in replicas.
 
+## Alternative
+
+`GEOSEARCH` and `GEOSEARCHSTORE` with the `BYRADIUS` argument.
+
 ## Examples
 
 ```

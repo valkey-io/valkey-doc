@@ -10,10 +10,10 @@ These modules enable advanced data structures and search capabilities to extend 
 The bundle is designed to help developers quickly get started with powerful Valkey features without needing to manually install or configure anything. 
 Some of the modules included in the bundle are:
 
-1. [Valkey JSON](/topics/valkey-json/) - Allows users to natively store, query, and modify JSON data structures using the JSONPath query language.
-2. [Valkey Bloom](/topics/bloomfilters/) - Provides space-efficient probabilistic data structures, such as Bloom filters, for adding elements and checking whether they exist in a set.
-3. [Valkey Search](/topics/search/) - Enables the creation of indexes and similarity searches through the use of complex filters. 
-4. [Valkey LDAP](/topics/ldap/) - Handles user authentication against LDAP based identity providers.  
+1. [Valkey JSON](valkey-json.md) - Allows users to natively store, query, and modify JSON data structures using the JSONPath query language.
+2. [Valkey Bloom](bloomfilters.md) - Provides space-efficient probabilistic data structures, such as Bloom filters, for adding elements and checking whether they exist in a set.
+3. [Valkey Search](search.md) - Enables the creation of indexes and similarity searches through the use of complex filters.
+4. [Valkey LDAP](ldap.md) - Handles user authentication against LDAP based identity providers.
 
 # Quick Start to Using the Bundle
 
@@ -236,7 +236,7 @@ Valkey Bundle supports more advanced setup options too including:
     logfile "/var/log/valkey/valkey.log"
     ```
 
-    Check out the [Configuration Documentation](/topics/valkey.conf/) to learn more.
+    Check out the [Configuration Documentation](valkey.conf.md) to learn more.
 
     After setting up the configuration file, run the container with a volume mount that maps your local directory into the container:
     
@@ -250,7 +250,7 @@ Valkey Bundle supports more advanced setup options too including:
 
 Once you’ve set up the Valkey Bundle, it’s time to start exploring the modules. Check out the documentation for each one to learn what they can do and how to use them effectively.
 
-1. [Valkey JSON Documentation](/topics/valkey-json/)
-2. [Valkey Bloom Documentation](/topics/bloomfilters/)
-3. [Valkey Search Documentation](/topics/search/)
-4. [Valkey LDAP Documentation](/topics/ldap/)
+1. [Valkey JSON Documentation](valkey-json.md)
+2. [Valkey Bloom Documentation](bloomfilters.md)
+3. [Valkey Search Documentation](search.md)
+4. [Valkey LDAP Documentation](ldap.md)

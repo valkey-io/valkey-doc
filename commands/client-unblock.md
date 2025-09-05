@@ -1,4 +1,4 @@
-This command can unblock, from a different connection, a client blocked in a blocking operation, such as for instance `BRPOP` or `XREAD` or `WAIT`.
+This command can unblock, from a different connection, a client blocked in a blocking operation, such as for instance [`BRPOP`](brpop.md) or [`XREAD`](xread.md) or [`WAIT`](wait.md).
 
 By default the client is unblocked as if the timeout of the command was
 reached, however if an additional (and optional) argument is passed, it is possible to specify the unblocking behavior, that can be **TIMEOUT** (the default) or **ERROR**. If **ERROR** is specified, the behavior is to unblock the client returning as error the fact that the client was force-unblocked. Specifically the client will receive the following error:
@@ -19,7 +19,7 @@ the new key, and issue the blocking command again.
 To obtain this behavior the following pattern is used. The process uses
 an additional *control connection* in order to send the `CLIENT UNBLOCK` command
 if needed. In the meantime, before running the blocking operation on the other
-connections, the process runs `CLIENT ID` in order to get the ID associated
+connections, the process runs [`CLIENT ID`](client-id.md) in order to get the ID associated
 with that connection. When a new key should be added, or when a key should
 no longer be monitored, the relevant connection blocking command is aborted
 by sending `CLIENT UNBLOCK` in the control connection. The blocking command

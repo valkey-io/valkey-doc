@@ -4,7 +4,7 @@ of an RDB file.
 
 You almost never want to call `SAVE` in production environments where it will
 block all the other clients.
-Instead usually `BGSAVE` is used.
+Instead usually [`BGSAVE`](bgsave.md) is used.
 However in case of issues preventing Valkey to create the background saving child
 (for instance errors in the fork(2) system call), the `SAVE` command can be a
 good last resort to perform the dump of the latest dataset.

@@ -16,9 +16,9 @@ Each histogram consists of the following fields:
   * At max, there will be log2(1,000,000,000)=30 buckets
 
 This command requires the extended latency monitoring feature to be enabled, which is the default.
-If you need to enable it, call `CONFIG SET latency-tracking yes`.
+If you need to enable it, call [`CONFIG SET latency-tracking yes`](config-set.md).
 
-To delete the latency histograms' data use the `CONFIG RESETSTAT` command.
+To delete the latency histograms' data use the [`CONFIG RESETSTAT`](config-resetstat.md) command.
 
 ## Examples
 

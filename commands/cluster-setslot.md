@@ -1,4 +1,4 @@
-`CLUSTER SETSLOT` is responsible of changing the state of a hash slot in the receiving node in different ways. It can, depending on the subcommand used:
+`CLUSTER SETSLOT` is responsible for changing the state of a hash slot in the receiving node in different ways. It can, depending on the subcommand used:
 
 1. `MIGRATING` subcommand: Set a hash slot in *migrating* state.
 2. `IMPORTING` subcommand: Set a hash slot in *importing* state.
@@ -66,7 +66,7 @@ The `CLUSTER SETSLOT` command is an important piece used by Valkey Cluster in or
 
 1. Set the destination node slot to *importing* state using `CLUSTER SETSLOT <slot> IMPORTING <source-node-id>`.
 2. Set the source node slot to *migrating* state using `CLUSTER SETSLOT <slot> MIGRATING <destination-node-id>`.
-3. Get keys from the source node with `CLUSTER GETKEYSINSLOT` command and move them into the destination node using the `MIGRATE` command.
+3. Get keys from the source node with [`CLUSTER GETKEYSINSLOT`](cluster-getkeysinslot.md) command and move them into the destination node using the [`MIGRATE`](migrate.md) command.
 4. Send `CLUSTER SETSLOT <slot> NODE <destination-node-id>` to the destination node.
 5. Send `CLUSTER SETSLOT <slot> NODE <destination-node-id>` to the source node.
 6. Send `CLUSTER SETSLOT <slot> NODE <destination-node-id>` to the other primary nodes (optional).

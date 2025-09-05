@@ -8,7 +8,7 @@ A few more details:
 
 * A node flags another node with `PFAIL` when the node is not reachable for a time greater than the configured *node timeout*, which is a fundamental configuration parameter of a Valkey Cluster.
 * Nodes in `PFAIL` state are provided in gossip sections of heartbeat packets.
-* Every time a node processes gossip packets from other nodes, it creates (and refreshes the TTL if needed) **failure reports**, remembering that a given node said another given node is in `PFAIL` condition.
+* Every time a node processes gossip packets from other nodes, it creates (and refreshes the TTL if needed) **failure reports**, remembering that a given node said another given node is in `PFAIL` condition. However, once a node has been marked `FAIL`, additional failure reports are ignored.
 * Each failure report has a time to live of two times the *node timeout* time.
 * If at a given time a node has another node flagged with `PFAIL`, and at the same time collected the majority of other primary nodes *failure reports* about this node (including itself if it is a primary), then it elevates the failure state of the node from `PFAIL` to `FAIL`, and broadcasts a message forcing all the nodes that can be reached to flag the node as `FAIL`.
 

@@ -4,7 +4,7 @@ You can change both trivial parameters or switch from one to another persistence
 option using this command.
 
 The list of configuration parameters supported by `CONFIG SET` can be obtained
-issuing a `CONFIG GET *` command, that is the symmetrical command used to obtain
+issuing a [`CONFIG GET *`](config-get.md) command, that is the symmetrical command used to obtain
 information about the configuration of a running Valkey instance.
 
 All the configuration parameters set using `CONFIG SET` are immediately loaded

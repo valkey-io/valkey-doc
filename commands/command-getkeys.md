@@ -5,7 +5,7 @@ from a full Valkey command.
 
 `COMMAND` provides information on how to find the key names of each command (see `firstkey`, [key specifications](../topics/key-specs.md#logical-operation-flags), and `movablekeys`),
 but in some cases it's not possible to find keys of certain commands and then the entire command must be parsed to discover some / all key names.
-You can use `COMMAND GETKEYS` or `COMMAND GETKEYSANDFLAGS` to discover key names directly from how Valkey parses the commands.
+You can use `COMMAND GETKEYS` or [`COMMAND GETKEYSANDFLAGS`](command-getkeysandflags.md) to discover key names directly from how Valkey parses the commands.
 
 ## Examples
 

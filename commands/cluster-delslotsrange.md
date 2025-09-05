@@ -1,4 +1,4 @@
-The `CLUSTER DELSLOTSRANGE` command is similar to the `CLUSTER DELSLOTS` command in that they both remove hash slots from the node.
+The `CLUSTER DELSLOTSRANGE` command is similar to the [`CLUSTER DELSLOTS`](cluster-delslots.md) command in that they both remove hash slots from the node.
 The difference is that `CLUSTER DELSLOTS` takes a list of hash slots to remove from the node, while `CLUSTER DELSLOTSRANGE` takes a list of slot ranges (specified by start and end slots) to remove from the node.
 
 ## Example

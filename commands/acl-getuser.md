@@ -3,7 +3,7 @@ The command returns all the rules defined for an existing ACL user.
 Specifically, it lists the user's ACL flags, password hashes, commands, key patterns, channel patterns (Added in version 6.2) and selectors (Added in version 7.0).
 Additional information may be returned in the future if more metadata is added to the user.
 
-Command rules are always returned in the same format as the one used in the `ACL SETUSER` command.
+Command rules are always returned in the same format as the one used in the [`ACL SETUSER`](acl-setuser.md) command.
 Before version 7.0, keys and channels were returned as an array of patterns, however in version 7.0 later they are now also returned in same format as the one used in the `ACL SETUSER` command.
 Note: This description of command rules reflects the user's effective permissions, so while it may not be identical to the set of rules used to configure the user, it is still functionally identical.
 

@@ -1,4 +1,4 @@
-Resets the statistics reported by Valkey using the `INFO` and `LATENCY HISTOGRAM` commands.
+Resets the statistics reported by Valkey using the [`INFO`](info.md) and [`LATENCY HISTOGRAM`](latency-histogram.md) commands.
 
 The following is a non-exhaustive list of values that are reset:
 
