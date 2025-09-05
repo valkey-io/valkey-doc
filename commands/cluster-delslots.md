@@ -9,7 +9,7 @@ has consequently removed the associations for the passed hash slots,
 we say those hash slots are *unbound*. Note that the existence of
 unbound hash slots occurs naturally when a node has not been
 configured to handle them (something that can be done with the
-`CLUSTER ADDSLOTS` command) and if it has not received any information about
+[`CLUSTER ADDSLOTS`](cluster-addslots.md) command) and if it has not received any information about
 who owns those hash slots (something that it can learn from heartbeat
 or update messages).
 

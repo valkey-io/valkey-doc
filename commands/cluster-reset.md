@@ -1,7 +1,7 @@
 Reset a Valkey Cluster node, in a more or less drastic way depending on the
 reset type, that can be **hard** or **soft**. Note that this command
 **does not work for primaries if they hold one or more keys**, in that case
-to completely reset a primary node keys must be removed first, e.g. by using `FLUSHALL` first,
+to completely reset a primary node keys must be removed first, e.g. by using [`FLUSHALL`](flushall.md) first,
 and then `CLUSTER RESET`.
 
 Effects on the node:

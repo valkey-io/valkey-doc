@@ -1,4 +1,4 @@
-`CLUSTER INFO` provides `INFO` style information about Valkey Cluster vital parameters.
+`CLUSTER INFO` provides [`INFO`](info.md) style information about Valkey Cluster vital parameters.
 The following fields are always present in the reply:
 
 ```
@@ -29,10 +29,10 @@ total_cluster_links_buffer_limit_exceeded:0
 * `cluster_nodes_fail`: Number of nodes in `FAIL` state. A non-zero value indicates one or more nodes are unreachable and have been marked as failed by a quorum of voting nodes.
 * `cluster_voting_nodes_pfail`: Number of voting nodes in `PFAIL` state. A non-zero value indicates one or more primary nodes serving at least one slot are unreachable but not yet confirmed as failed by a quorum of voting nodes.
 * `cluster_voting_nodes_fail`: Number of voting nodes in `FAIL` state. A non-zero value indicates one or more primary nodes serving at least one slot have been marked as failed by a quorum of voting nodes.
-* `cluster_known_nodes`: The total number of known nodes in the cluster, including nodes in `HANDSHAKE` state that may not currently be proper members of the cluster.
+* `cluster_known_nodes`: The total number of known nodes in the cluster, including nodes in [`HANDSHAKE`](../topics/cluster-spec.md#node-handshake) state that may not currently be proper members of the cluster.
 * `cluster_size`: The number of primary nodes serving at least one hash slot in the cluster.
-* `cluster_current_epoch`: The local `Current Epoch` variable. This is used in order to create unique increasing version numbers during fail overs.
-* `cluster_my_epoch`: The `Config Epoch` of the node we are talking with. This is the current configuration version assigned to this node.
+* `cluster_current_epoch`: The local [Current Epoch](../topics/cluster-spec.md#cluster-current-epoch). This is used in order to create unique increasing version numbers during fail overs.
+* `cluster_my_epoch`: The [Config Epoch](../topics/cluster-spec.md#configuration-epoch) of the node we are talking with. This is the current configuration version assigned to this node.
 * `cluster_stats_messages_sent`: Number of messages sent via the cluster node-to-node binary bus.
 * `cluster_stats_messages_received`: Number of messages received via the cluster node-to-node binary bus.
 * `total_cluster_links_buffer_limit_exceeded`: Accumulated count of cluster links freed due to exceeding the `cluster-link-sendbuf-limit` configuration.
@@ -40,10 +40,10 @@ total_cluster_links_buffer_limit_exceeded:0
 The following message-related fields may be included in the reply if the value is not 0:
 Each message type includes statistics on the number of messages sent and received.
 Here are the explanation of these fields:
-
-* `cluster_stats_messages_ping_sent` and `cluster_stats_messages_ping_received`: Cluster bus PING (not to be confused with the client command `PING`).
+]
+* `cluster_stats_messages_ping_sent` and `cluster_stats_messages_ping_received`: Cluster bus PING (not to be confused with the client command [`PING`](ping.md).
 * `cluster_stats_messages_pong_sent` and `cluster_stats_messages_pong_received`: PONG (reply to PING).
-* `cluster_stats_messages_meet_sent` and `cluster_stats_messages_meet_received`: Handshake message sent to a new node, either through gossip or `CLUSTER MEET`.
+* `cluster_stats_messages_meet_sent` and `cluster_stats_messages_meet_received`: Handshake message sent to a new node, either through gossip or [`CLUSTER MEET`](cluster-meet.md).
 * `cluster_stats_messages_fail_sent` and `cluster_stats_messages_fail_received`: Mark node xxx as failing.
 * `cluster_stats_messages_publish_sent` and `cluster_stats_messages_publish_received`: Pub/Sub Publish propagation, see [Pubsub](../topics/pubsub.md#pubsub).
 * `cluster_stats_messages_auth-req_sent` and `cluster_stats_messages_auth-req_received`: Replica initiated leader election to replace its primary.

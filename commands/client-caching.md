@@ -4,7 +4,7 @@ Please check the
 [client side caching documentation](../topics/client-side-caching.md) for
 background information.
 
-When tracking is enabled Valkey, using the `CLIENT TRACKING` command, it is
+When tracking is enabled Valkey, using the [`CLIENT TRACKING`](client-tracking.md) command, it is
 possible to specify the `OPTIN` or `OPTOUT` options, so that keys
 in read only commands are not automatically remembered by the server to
 be invalidated later. When we are in `OPTIN` mode, we can enable the
