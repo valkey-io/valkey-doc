@@ -34,7 +34,9 @@ The list of configuration directives, and their meaning and intended usage
 is available in the self documented example valkey.conf shipped into the
 Valkey distribution.
 
-* The self documented [valkey.conf for Valkey OSS 7.2](https://raw.githubusercontent.com/valkey-io/valkey/7.2/valkey.conf).
+* The self documented [valkey.conf for Valkey 8.1](https://raw.githubusercontent.com/valkey-io/valkey/8.1/valkey.conf).
+* The self documented [valkey.conf for Valkey 8.0](https://raw.githubusercontent.com/valkey-io/valkey/8.0/valkey.conf).
+* The self documented [valkey.conf for Valkey 7.2](https://raw.githubusercontent.com/valkey-io/valkey/7.2/valkey.conf).
 * The self documented [redis.conf for Redis OSS 7.2](https://raw.githubusercontent.com/redis/redis/7.2/redis.conf).
 * The self documented [redis.conf for Redis OSS 7.0](https://raw.githubusercontent.com/redis/redis/7.0/redis.conf).
 * The self documented [redis.conf for Redis OSS 6.2](https://raw.githubusercontent.com/redis/redis/6.2/redis.conf).
