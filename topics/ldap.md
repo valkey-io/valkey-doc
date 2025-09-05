@@ -10,7 +10,7 @@ This module allows Valkey to authenticate users using external LDAP-based system
 
 This module supports two LDAP authentication modes. The `bind` mode, and the `search+bind` mode.
 
-The `bind` mode is used when the username provided in the Valkey `AUTH` command matches a substring of the distinguished name (DN) of user entries in the LDAP directory. The `search+bind` mode offers greater flexibility, allowing the username to match any attribute value of an LDAP user entry, making it suitable for more complex directory structures.
+The `bind` mode is used when the username provided in the Valkey [`AUTH`](../commands/auth.md) command matches a substring of the distinguished name (DN) of user entries in the LDAP directory. The `search+bind` mode offers greater flexibility, allowing the username to match any attribute value of an LDAP user entry, making it suitable for more complex directory structures.
 
 ## Bind Mode Authentication
 
@@ -39,7 +39,8 @@ You can configure these values using the `ldap.bind_dn_prefix` and `ldap.bind_dn
 
 In the `search+bind` mode, the module first binds to the LDAP directory using a username and password of an account that has permissions to perform search operations in the LDAP directory. These credentials are stored in the module configuration, where you specify the bind DN (Distinguished Name) in `ldap.search_bind_dn` and the password in `ldap.search_bind_passwd`.
 
-If no username and password is configured for search bind account, an anonymous bind will be attempted to the directory. 
+If no username and password is configured for search bind account, an anonymous bind will be attempted to the directory.
+
 **Warning:** Anonymous binds can expose sensitive directory information if not properly restricted. 
 Ensure that your LDAP server is configured to limit access for anonymous users to prevent unintended data exposure.
 
@@ -79,7 +80,9 @@ However, this flexibility comes at the cost of additional LDAP requests, making 
 
 ## Setting Up Valkey Users
 
-The LDAP server is used solely for authenticating users. Authorization rules for each user must be configured in Valkey using either the `ACL SETUSER` command, through entries in `valkey.conf`, or using an [ACL file](../acl). This means that user accounts must exist in Valkey in order for LDAP authentication to succeed.
+The LDAP server is used solely for authenticating users.
+Authorization rules for each user must be configured in Valkey using either the [`ACL SETUSER`](../commands/acl-setuser.md) command, through entries in `valkey.conf`, or using an [ACL file](acl.md).
+This means that user accounts must exist in Valkey in order for LDAP authentication to succeed.
 
 For example, to allow the user `bob` to authenticate via LDAP, a corresponding user named `bob` must be present in the Valkey ACL database.
 
