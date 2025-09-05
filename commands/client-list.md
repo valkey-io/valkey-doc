@@ -37,6 +37,30 @@ You can use one or more optional arguments to filter the list:
 
 - **`CAPA capa`**: Filters the list to include only clients with the specified capabilities.
 
+- **`NOT-ID client-id [client-id ...]`**: Excludes clients in the IDs set.
+
+- **`NOT-TYPE`**: Excludes clients of the specified type.
+
+- **`NOT-ADDR`**: Excludes clients of the specified address and port.
+
+- **`NOT-LADDR`**: Excludes clients connected to the specified local address and port.
+
+- **`NOT-USER`**: Excludes clients of the specified user.
+
+- **`NOT-FLAGS`**: Excludes clients with the specified flag string.
+
+- **`NOT-NAME`**: Excludes clients with the specified name.
+
+- **`NOT-LIB-NAME`**: Excludes clients using the specified library name.
+
+- **`NOT-LIB-VER`**: Excludes clients with the specified library version.
+
+- **`NOT-DB`**: Excludes clients with the specified database ID.
+
+- **`NOT-CAPA`**: Excludes clients with the specified capabilities.
+
+- **`NOT-IP`**: Excludes clients with the specified IP address.
+
 Filters can be combined to perform more precise searches. The command will handle multiple filters via logical AND.
 
 Here is the meaning of the fields:
