@@ -47,6 +47,10 @@ comparison of the numbers. This can be used in order to implement range
 queries on 64 bit values. As in the example below, after the first 8 bytes
 we can store the value of the element we are actually indexing.
 
+## Alternative
+
+`ZRANGE` with the `BYLEX` argument.
+
 ## Examples
 
 ```

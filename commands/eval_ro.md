@@ -1,4 +1,4 @@
-This is a read-only variant of the `EVAL` command that cannot execute commands that modify data.
+This is a read-only variant of the [`EVAL`](eval.md) command that cannot execute commands that modify data.
 
 For more information about when to use this command vs `EVAL`, please refer to [Read-only scripts](../topics/programmability.md#read-only-scripts).
 

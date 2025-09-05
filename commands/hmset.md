@@ -3,6 +3,10 @@ Sets the specified fields to their respective values in the hash stored at
 This command overwrites any specified fields already existing in the hash.
 If `key` does not exist, a new key holding a hash is created.
 
+## Alternative
+
+`HSET` with multiple field-value pairs.
+
 ## Examples
 
 ```

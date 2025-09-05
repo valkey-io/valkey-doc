@@ -57,8 +57,8 @@ Debian/Ubuntu/Mint/Devuan/Raspbian/PureOS
 ```bash
 sudo apt update
 sudo apt install valkey
-# For symlinked binaries to redis-cli and redis-server
-sudo apt install valkey-compat
+# For symlinked binaries to redis-cli and other redis-* tools (on Ubuntu)
+sudo apt install valkey-redis-compat
 ```
 
 #### apk (Alpine Linux/Kali Linux/Wolfi)
@@ -78,7 +78,7 @@ sudo apk add valkey-compat
 ```bash
 sudo yum install valkey
 # For symlinked binaries to redis-cli and redis-server
-sudo yum install valkey-compat
+sudo yum install valkey-compat-redis
 # For valkey-doc (can be used with man, e.g. `man hgetall`, `man valkey.conf`, etc.)
 sudo yum install valkey-doc
 ```
@@ -91,7 +91,7 @@ You can use the EPEL repository - https://fedoraproject.org/wiki/EPEL to install
 ```bash
 sudo dnf install valkey
 # For symlinked binaries to redis-cli and redis-server
-sudo dnf install valkey-compat
+sudo dnf install valkey-compat-redis
 # For valkey-doc (can be used with man, e.g. `man hgetall`, `man valkey.conf`, etc.)
 sudo dnf install valkey-doc
 ```

@@ -7,4 +7,6 @@ In practical terms, Valkey databases should be used to separate different keys b
 
 Valkey 9.0 and later supports multiple databases in cluster mode. You can use `SELECT <dbid>`  to switch between them.
 
-Since the currently selected database is a property of the connection, clients should track the currently selected database and re-select it on reconnection. While there is no command in order to query the selected database in the current connection, the [`CLIENT LIST`](client-list.md) output shows, for each client, the currently selected database.
+Since the currently selected database is a property of the connection, clients should track the currently selected database and re-select it on reconnection.
+
+While there is no dedicated command to query the currently selected database for a connection, you can infer it from the output of [`CLIENT LIST`](client-list.md) or [`CLIENT INFO`](client-info.md), where each client entry includes the `db=N` field indicating the selected database.

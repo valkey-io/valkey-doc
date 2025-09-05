@@ -1,6 +1,6 @@
 Invoke a function.
 
-Functions are loaded to the server with the `FUNCTION LOAD` command.
+Functions are loaded to the server with the [`FUNCTION LOAD`](function-load.md) command.
 The first argument is the name of a loaded function.
 
 The second argument is the number of input key name arguments, followed by all the keys accessed by the function.
