@@ -82,6 +82,27 @@ See the [complete list of hash commands](../commands/#hash).
 2) "1"
 ```
 
+## Field expiration 
+
+In Valkey 9.0 we added the ability to associate an expiration time with a hash field. When set, the field and it's corresponding value are automatically deleted after the time has past. 
+Once a hash field expiration time is past, it will no longer be available and all of the hash command APIs will treat this field as "nonexistent".
+Note that expired hash fields are deleted via a periodic job.
+For this reason it might take time between when fields logically expire and when hash fields are deleted.
+During this time, logically expired fields still consume memory and some some hash commands (e.g. [`HLEN`](../commands/hlen.md)) might still take logically expired fields into account in hash object cardinality calculations.
+Another side effect of using volatile fields (fields with time to live) in hash objects, is the ability to randomly choose from hash objects. When large hash objects have most of their volatile fields logically expired, some commands like [`HRANDFIELD`](../commands/hrandfield.md) might not be able to collect elements which are not logically expired and may return an empty reply.  
+
+### Command API
+
+[`HEXPIRE`](../commands/hexpire.md), [`HPEXPIRE`](../commands/hpexpire.md), [`HEXPIREAT`](../commands/hexpireat.md), [`HPEXPIREAT`](../commands/hpexpireat.md) and [`HPERSIST`](../commands/hpersist.md) commands are used in order to set or manipulate the expiration time of specific hash fields.
+
+[`HEXPIRETIME`](../commands/hexpiretime.md), [`HEXPIRETIME`](../commands/hpexpiretime.md), [`HTTL`](../commands/httl.md) and [`HPTTL]`(../commands/hpttl.md) commands are used in order to query the expiration time of specific hash fields.
+
+[`HSETEX`](../commands/hsetex.md) allows setting multiple hash fields and values while also associate an expiration time with each field.
+
+[`HGETEX`](../commands/hgetex.md) allows fetching multiple hash fields values while also mutating their expiration time.
+
+Note that some commands which override hash fields (e.g. `HSET` and `HMSET`) will remove an expiration time associated with a hash field.
+The [`HSETEX`](../commands/hsetex.md) supports the `KEEPTTL` flag, which allows overriding hash fields without mutating their expiration time.
 
 ## Performance
 

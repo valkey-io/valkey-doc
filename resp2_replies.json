@@ -661,6 +661,72 @@
   "HVALS": [
     "[Array reply](../topics/protocol.md#arrays): a list of values in the hash, or an empty list when the key does not exist."
   ],
+  "HSETEX": [
+    "One of the following:",
+    "* [Integer reply](../topics/protocol.md#integers): `0` if none of the provided fields' values and/or expiration times were set.",
+    "* [Integer reply](../topics/protocol.md#integers): `1` if all the fields' values and/or expiration times were set."
+  ],
+  "HGETEX": [
+    "[Array reply](../topics/protocol.md#arrays): a list of values associated with the given fields, in the same order as they are requested."
+  ],
+  "HEXPIRE": [
+    "[Array reply](../topics/protocol.md#arrays): a list of integer codes indicating the result of setting expiry on each specified field, in the same order as the fields are requested.",
+    "* -2: Field does not exist in the HASH, or key does not exist.",
+    "* 0: The specified NX | XX | GT | LT condition has not been met.",
+    "* 1: The expiration time was applied.",
+    "* 2: When called with 0 seconds."
+  ],
+  "HPEXPIRE": [
+    "[Array reply](../topics/protocol.md#arrays): a list of integer codes indicating the result of setting expiry on each specified field, in the same order as the fields are requested.",
+    "* -2: Field does not exist in the HASH, or key does not exist.",
+    "* 0: The specified NX | XX | GT | LT condition has not been met.",
+    "* 1: The expiration time was applied.",
+    "* 2: When called with 0 seconds."
+  ],
+  "HEXPIREAT": [
+    "[Array reply](../topics/protocol.md#arrays): a list of integer codes indicating the result of setting expiry on each specified field, in the same order as the fields are requested.",
+    "* -2: Field does not exist in the HASH, or key does not exist.",
+    "* 0: The specified NX | XX | GT | LT condition has not been met.",
+    "* 1: The expiration time was applied.",
+    "* 2: When called with 0 seconds."
+  ],
+  "HPEXPIREAT": [
+    "[Array reply](../topics/protocol.md#arrays): a list of integer codes indicating the result of setting expiry on each specified field, in the same order as the fields are requested.",
+    "* -2: Field does not exist in the HASH, or key does not exist.",
+    "* 0: The specified NX | XX | GT | LT condition has not been met.",
+    "* 1: The expiration time was applied.",
+    "* 2: When called with 0 seconds."
+  ],
+  "HPERSIST": [
+    "[Array reply](../topics/protocol.md#arrays): a list of integer codes indicating the result of setting expiry on each specified field, in the same order as the fields are requested.",
+    "* -2: Field does not exist in the provided hash key, or the hash key does not exist.",
+    "* -1: Field exists in the provided hash key, but has no expiration associated with it.",
+    "* 1: The expiration time was removed from the hash key field."
+  ],
+  "HTTL": [
+    "[Array reply](../topics/protocol.md#arrays): a list of values associated with the result of getting the remaining time-to-live of the specific fields, in the same order as they are requested.",
+    "* -2: Field does not exist in the provided hash key, or the hash key is empty.",
+    "* -1: Field exists in the provided hash key, but has no expiration associated with it.",
+    "* [Integer](../topics/protocol.md#integers): The expiration time associated with the hash key field, in seconds."
+  ],
+  "HPTTL": [
+    "[Array reply](../topics/protocol.md#arrays): a list of values associated with the result of getting the remaining time-to-live of the specific fields, in the same order as they are requested.",
+    "* -2: Field does not exist in the provided hash key, or the hash key is empty.",
+    "* -1: Field exists in the provided hash key, but has no expiration associated with it.",
+    "* [Integer](../topics/protocol.md#integers): The expiration time associated with the hash key field, in milliseconds."
+  ],
+  "HEXPIRETIME": [
+    "[Array reply](../topics/protocol.md#arrays): a list of values associated with the result of getting the absolute expiry timestamp of the specific fields, in the same order as they are requested.",
+    "* -2: Field does not exist in the provided hash key, or the hash key is empty.",
+    "* -1: Field exists in the provided hash key, but has no expiration associated with it.",
+    "* [Integer](../topics/protocol.md#integers): The expiration time associated with the hash key field, in seconds."
+  ],
+  "HPEXPIRETIME": [
+    "[Array reply](../topics/protocol.md#arrays): a list of values associated with the result of getting the absolute expiry timestamp of the specific fields, in the same order as they are requested.",
+    "* -2: Field does not exist in the provided hash key, or the hash key is empty.",
+    "* -1: Field exists in the provided hash key, but has no expiration associated with it.",
+    "* [Integer](../topics/protocol.md#integers): The expiration time associated with the hash key field, in milliseconds."
+  ],
   "INCR": [
     "[Integer reply](../topics/protocol.md#integers): the value of the key after the increment."
   ],
