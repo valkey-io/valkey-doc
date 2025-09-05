@@ -1,0 +1,19 @@
+{
+    "name": "valkey-swift",
+    "description": "Swift client for Valkey.",
+    "repo":"https://github.com/valkey-io/valkey-swift",
+    "installation": "swift package add-dependency https://github.com/valkey-io/valkey-swift",
+    "version":"v0.1.0",
+    "version_released":"2025-08-04",
+    "language":"swift",
+    "license": "Apache-2.0",
+    "read_from_replica": false,
+    "smart_backoff_to_prevent_connection_storm": true,
+    "pubsub_state_restoration": false,
+    "cluster_scan": false,
+    "latency_based_read_from_replica": false,
+    "AZ_based_read_from_replica": false,
+    "client_side_caching": false,
+    "client_capa_redirect": false,
+    "persistent_connection_pool": true
+}

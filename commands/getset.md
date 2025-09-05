@@ -20,6 +20,10 @@ This can be done using `GETSET mycounter "0"`:
 "0"
 ```
 
+## Alternative
+
+`SET` with the `GET` argument.
+
 ## Examples
 
 ```

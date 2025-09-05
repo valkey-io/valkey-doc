@@ -12,7 +12,7 @@ of vectors with over 99% recall.
 
 Valkey-Search allows users to create indexes and perform similarity searches, incorporating complex filters.
 It supports Approximate Nearest Neighbor (ANN) search with HNSW and exact matching using K-Nearest Neighbors (KNN).
-Users can index data using either **[Valkey Hash](/topics/hashes)** or **[Valkey-JSON](/topics/valkey-json)** data types.
+Users can index data using either **[Valkey Hash](hashes.md)** or **[Valkey-JSON](valkey-json.md)** data types.
 
 While Valkey-Search currently focuses on Vector Search, its goal is to extend Valkey into a full-fledged search engine,
 supporting full-text search and additional indexing options.
@@ -38,7 +38,7 @@ FT._LIST
 FT.SEARCH
 ```
 
-For a detailed description of the supported commands, examples and configuration options, see the [Command Reference](/commands/#search).
+For a detailed description of the supported commands, examples and configuration options, see the [Command Reference](../commands/#search).
 
 ## Scaling
 
