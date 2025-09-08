@@ -1,6 +1,7 @@
 Renames `key` to `newkey`.
 It returns an error when `key` does not exist.
-If `newkey` already exists it is overwritten, when this happens `RENAME` executes an implicit [`DEL`](del.md) operation, so if the deleted key contains a very big value it may cause high latency even if `RENAME` itself is usually a constant-time operation.
+
+If `newkey` already exists, it is overwritten. By default, Valkey uses implicit lazy freeing (similar to `UNLINK`), so large values are released asynchronously. If lazy freeing is disabled and synchronous deletion is configured, overwriting a key with a very large value may cause high latency.
 
 In Cluster mode, both `key` and `newkey` must be in the same **hash slot**, meaning that in practice only keys that have the same hash tag can be reliably renamed in cluster.
 
