@@ -108,4 +108,4 @@ For more information, see:
 To extend the features provided by the included data types, use one of these options:
 
 1. Write your own custom [server-side functions in Lua](programmability.md).
-2. Write your own Valkey module using [Modules Introduction](modules-intro.md) or check out the available [modules](modules-api-ref.md).
+2. Write your own Valkey module using [Modules Introduction](modules-intro.md) and [Modules API](modules-api-ref.md).
