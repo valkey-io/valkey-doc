@@ -373,6 +373,10 @@ The client needs to reissue the query to the specified node's endpoint address a
 The endpoint can be either an IP address, a hostname, or it can be empty (e.g. `-MOVED 3999 :6380`). 
 An empty endpoint indicates that the server node has an unknown endpoint, and the client should send the next request to the same endpoint as the current request but with the provided port. 
 
+The endpoint can be an IPv6 address, which can contain multiple colons.
+Here, an IPv6 address is *not* enclosed in square brackets as it would be in other contexts such as URIs.
+To properly split the string `endpoint:port` into `endpoint` and `port`, a cluster client needs to locate the *last* colon.
+
 Note that even if the client waits a long time before reissuing the query,
 and in the meantime the cluster configuration changed, the destination node
 will reply again with a MOVED error if the hash slot 3999 is now served by
