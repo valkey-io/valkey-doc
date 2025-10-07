@@ -10,7 +10,7 @@ A client should issue this command on startup in order to retrieve the map assoc
 This map should be used to direct commands to the node that is likely serving the slot associated with a given command.
 In the event the command is sent to the wrong node, in that it received a '-MOVED' redirect, this command can then be used to update the topology of the cluster.
 
-The command returns an array of shards, with each shard containing two fields, 'slots' and 'nodes'. 
+The command returns an array of shards, with each shard containing three fields, 'slots', 'nodes' and 'id'. 
 
 The 'slots' field is a list of slot ranges served by this shard, stored as pair of integers representing the inclusive start and end slots of the ranges.
 For example, if a node owns the slots 1, 2, 3, 5, 7, 8 and 9, the slots ranges would be stored as [1-3], [5-5], [7-9].
@@ -50,6 +50,8 @@ This can happen in a cluster that consists of only one node or the node has not 
 The value `?` is displayed if the node is incorrectly configured to use announced hostnames but no hostname is configured using `cluster-announce-hostname`.
 Clients may treat the empty string in the same way as NULL, that is the same endpoint it used to send the current command to, while `"?"` should be treated as an unknown node, not necessarily the same node as the one serving the current command.
 
+The 'id' field is the unique id of the shard.
+
 ## Examples
 
 ```
@@ -86,6 +88,8 @@ Clients may treat the empty string in the same way as NULL, that is the same end
          12) (integer) 72156
          13) "health"
          14) "online"
+   5) "id"
+   6) "cd7688ca959bf54a32569ccf260b26715b82a6e3"         
 2) 1) "slots"
    2) 1) (integer) 10923
       2) (integer) 16383
@@ -118,6 +122,8 @@ Clients may treat the empty string in the same way as NULL, that is the same end
          12) (integer) 72156
          13) "health"
          14) "online"
+   5) "id"
+   6) "0d77234c440a6b05c2d77d1b9f37ac63585fc747"         
 3) 1) "slots"
    2) 1) (integer) 5461
       2) (integer) 10922
@@ -150,4 +156,6 @@ Clients may treat the empty string in the same way as NULL, that is the same end
          12) (integer) 72156
          13) "health"
          14) "online"
+   5) "id"
+   6) "a96f023185ea6d7f5e9a0d6ada6f112741217e6a"         
 ```
