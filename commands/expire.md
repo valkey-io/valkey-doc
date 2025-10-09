@@ -152,10 +152,10 @@ If the number of expired keys remains high after the slow cycle, the active expi
 
 You can modify the active expire key effort with the `active-expire-effort` parameter in the configuration file up to the maximum value of `10`. The default `active-expire-effort` value is `1`, and it is described by the following base values:
 
-* `ACTIVE_EXPIRE_CYCLE_KEYS_PER_LOOP` = 20 - The number of keys for each DB loop.    
-* `ACTIVE_EXPIRE_CYCLE_FAST_DURATION` = 1000 – The maximum duration of the fast cycle in microseconds. 
-* `ACTIVE_EXPIRE_CYCLE_SLOW_TIME_PERC` = 25 – The maximum % of CPU to use during the slow cycle.
-* `ACTIVE_EXPIRE_CYCLE_ACCEPTABLE_STALE` = 10 – The maximum % of expired keys to tolerate in memory. 
+* `ACTIVE_EXPIRE_CYCLE_KEYS_PER_LOOP` has a base value of 20. The number of keys for each DB loop.
+* `ACTIVE_EXPIRE_CYCLE_FAST_DURATION` has a base value of 1000. The maximum duration of the fast cycle in microseconds.
+* `ACTIVE_EXPIRE_CYCLE_SLOW_TIME_PERC` has a base value of 25. The maximum % of CPU to use during the slow cycle.
+* `ACTIVE_EXPIRE_CYCLE_ACCEPTABLE_STALE` has a base value of 10. The maximum % of expired keys to tolerate in memory.
 
 Changing the `active-expire-effort` value results in a lower percentage of expired keys tolerated in memory. However, it will lead to longer cycles and increased CPU usage, which may introduce latency.
 
