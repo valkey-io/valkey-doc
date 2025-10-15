@@ -280,7 +280,7 @@ first-args
 firstkey
 FlameGraph
 fmt
-foo[0-9]
+foo[0-9]+
 formatter
 fp_error
 france_location
