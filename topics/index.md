@@ -72,6 +72,7 @@ It's released under the
 * [Sentinel client spec](sentinel-clients.md): How to build clients for Valkey Sentinel.
 * [Cluster tutorial](cluster-tutorial.md): A gentle introduction to Valkey Cluster, a deployment mode for horizontal scaling and high availability.
 * [Cluster specification](cluster-spec.md): The more formal description of the behavior and algorithms used in Valkey Cluster.
+* [Atomic slot migration](atomic-slot-migration.md): An overview of slot migration using Atomic Slot Migration.
 
 ### Security
 * [Security](security.md): An overview of Valkey's security.
