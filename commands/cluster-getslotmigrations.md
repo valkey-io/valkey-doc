@@ -28,11 +28,11 @@ The following information is reported for each slot migration entry:
 - `source_node` -- The primary node sending the slot ownership as part of the
   migration. This information is only supplied on the primary node of the
   participating shards.
-- `create_time` -- The time, in seconds since the unix epoch, when the slot
+- `create_time` -- The Unix timestamp (in seconds) when the slot
   migration was started.
-- `last_update_time` -- The time, in seconds since the unix epoch when the slot
+- `last_update_time` -- The Unix timestamp (in seconds) when the slot
   migration's status was last changed.
-- `last_ack_time` -- The time, in seconds since the unix epoch, when the slot
+- `last_ack_time` -- The Unix timestamp (in seconds) when the slot
   migration last received a heartbeat.
 - `state` -- The current state of the slot migration. The terminal states are
   `success` if completed successfully, `failed` if some unexpected failure

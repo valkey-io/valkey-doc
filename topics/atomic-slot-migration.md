@@ -7,7 +7,8 @@ In [Valkey Cluster](cluster-spec.md), you can use a process known as slot
 migration to scale your cluster in or out. During slot migration, one or more of
 the 16384 hash slots are moved from a source node to a target node. Valkey 9.0
 introduces a new option for migrating hash slots known as **atomic slot
-migration**.
+migration**, which is faster, more reliable, and has less impact on client
+applications than the legacy `CLUSTER SETSLOT`-based migration.
 
 ## Performing an atomic slot migration using `CLUSTER MIGRATESLOTS`
 

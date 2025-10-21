@@ -1,4 +1,8 @@
-`CLUSTER SETSLOT` is responsible for changing the state of a hash slot in the receiving node in different ways. It can, depending on the subcommand used:
+`CLUSTER SETSLOT` is responsible for changing the state of a hash slot in the receiving node in different ways. It is part of the legacy mechanism for cluster resharding.
+
+**Note:** For live resharding, the newer [atomic slot migration](../topics/atomic-slot-migration.md) mechanism using `CLUSTER MIGRATESLOTS` is recommended as it is faster, more reliable, and has less impact on client applications.
+
+`CLUSTER SETSLOT` can, depending on the subcommand used:
 
 1. `MIGRATING` subcommand: Set a hash slot in *migrating* state.
 2. `IMPORTING` subcommand: Set a hash slot in *importing* state.
