@@ -1,4 +1,4 @@
-Internal command to allow navigation of the Atomic Slot Migration state machine.
+Internal command to allow navigation of the atomic slot migration state machine.
 
-For more information about Atomic Slot Migration in Valkey please check the
+For more information about atomic slot migration in Valkey please check the
 [atomic slot migration][../topics/atomic-slot-migration.md] page.

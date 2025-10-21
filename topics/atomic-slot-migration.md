@@ -1,5 +1,5 @@
 ---
-title: Atomic Slot Migration
+title: Atomic slot migration
 description: Overview of atomic slot migration
 ---
 
@@ -27,7 +27,7 @@ asynchronously.
 For more details on `CLUSTER MIGRATESLOTS` see the
 [command documentation](../commands/cluster-migrateslots.md).
 
-## Polling Atomic Slot Migrations
+## Polling atomic slot migrations
 
 The `CLUSTER GETSLOTMIGRATIONS` command allows operators to poll the status of
 their migration. `CLUSTER GETSLOTMIGRATIONS` can be executed on either the
@@ -39,20 +39,20 @@ of the failure to allow for retry decisions.
 For more details on `CLUSTER GETSLOTMIGRATIONS` see the
 [command documentation](../commands/cluster-getslotmigrations.md).
 
-## Canceling Atomic Slot Migrations
+## Canceling atomic slot migrations
 
 If you need to cancel a slot migration after the process was started,
 Valkey provides the `CLUSTER CANCELSLOTMIGRATIONS` command to
-cancel all active Atomic Slot Migrations for which that node is the source node.
+cancel all active atomic slot migrations for which that node is the source node.
 This command can be sent to the whole cluster to cancel all slot migrations
 everywhere.
 
 For more details on `CLUSTER CANCELSLOTMIGRATIONS` see the
 [command documentation](../commands/cluster-cancelslotmigrations.md).
 
-## Behind the scenes of Atomic Slot Migration
+## Behind the scenes of atomic slot migration
 
-Atomic Slot Migration utilizes a completely different process than
+atomic slot migration utilizes a completely different process than
 `CLUSTER SETSLOT`-based migrations:
 
 1. Immediately after `CLUSTER MIGRATESLOTS` is received by the source node, it
@@ -100,7 +100,7 @@ when being executed on **both the source and target node**. It is expected that
 operators would retry the migration after flushing, which should now succeed
 almost instantly due to an empty database.
 
-## Configuring Atomic Slot Migration
+## Configuring atomic slot migration
 
 Some configurations may be worth tuning based on your workload:
 
@@ -110,12 +110,12 @@ Some configurations may be worth tuning based on your workload:
   buffer limit. Both the hard and soft limits of the `replica` client output
   buffer should be configured large enough to accumulate the accumulated
   mutations.
-- `slot-migration-max-failover-repl-bytes`: By default, Atomic Slot Migration
+- `slot-migration-max-failover-repl-bytes`: By default, atomic slot migration
   will only proceed to pausing mutations on the source node once all in-flight
   mutations have been sent to the target node. However, for workloads with
-  persistently high write throughput, Atomic Slot Migration can be configured to
+  persistently high write throughput, atomic slot migration can be configured to
   do the pause so long as all in-flight mutations are under a given threshold.
-- `cluster-slot-migration-log-max-len`: Atomic Slot Migration keeps track of all
+- `cluster-slot-migration-log-max-len`: atomic slot migration keeps track of all
   in progress migrations and recently completed or failed migrations. These can
   be viewed with `CLUSTER GETSLOTMIGRATIONS`. The number of recently completed
   migrations stored can be increased using this configuration.
