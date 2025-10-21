@@ -103,7 +103,7 @@ almost instantly due to an empty database.
 
 Some configurations may be worth tuning based on your workload:
 
-- `client-output-buffer-limit`: Since the new atomic slot migration uses the
+- `client-output-buffer-limit`: Since atomic slot migration uses the
   replication process to migrate the slots, the amount of accumulated mutations
   while snapshotting could exceed that of the configured replication output
   buffer limit. Both the hard and soft limits of the `replica` client output
