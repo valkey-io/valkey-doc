@@ -409,7 +409,7 @@ later in this document, otherwise it is not a complete Valkey Cluster client.
 
 #### Atomic slot migration
 
-Valkey 9.0 introduces a new server-side mechanism for live resharding called
+Valkey 9.0 introduced a server-side mechanism for live resharding called
 [atomic slot migration](atomic-slot-migration.md), which is the recommended method.
 
 When compared to legacy slot migration, atomic slot migration allows you to
