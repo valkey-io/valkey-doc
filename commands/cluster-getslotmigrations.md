@@ -16,33 +16,33 @@ shard.
 
 The following information is reported for each slot migration entry:
 
-- `name` -- A unique 40 byte name for the slot migration
-- `operation` -- The operation performed by the slot migration job on this node
+- `name`: A unique 40 byte name for the slot migration
+- `operation`: The operation performed by the slot migration job on this node
   (either `EXPORT` or `IMPORT`)
-- `slot_ranges` -- The range(s) of slots being migrated, with both start and end
+- `slot_ranges`: The range(s) of slots being migrated, with both start and end
   inclusive. The start and end slot are separated by `-` in each range, and
   multiple ranges are joined together with a space ("` `").
-- `target_node` -- The primary node receiving the slot ownership as part of the
+- `target_node`: The primary node receiving the slot ownership as part of the
   migration. This information is only supplied on the primary node of the
   participating shards.
-- `source_node` -- The primary node sending the slot ownership as part of the
+- `source_node`: The primary node sending the slot ownership as part of the
   migration. This information is only supplied on the primary node of the
   participating shards.
-- `create_time` -- The Unix timestamp (in seconds) when the slot
+- `create_time`: The Unix timestamp (in seconds) when the slot
   migration was started.
-- `last_update_time` -- The Unix timestamp (in seconds) when the slot
+- `last_update_time`: The Unix timestamp (in seconds) when the slot
   migration's status was last changed.
-- `last_ack_time` -- The Unix timestamp (in seconds) when the slot
+- `last_ack_time`: The Unix timestamp (in seconds) when the slot
   migration last received a heartbeat.
-- `state` -- The current state of the slot migration. The terminal states are
+- `state`: The current state of the slot migration. The terminal states are
   `success` if completed successfully, `failed` if some unexpected failure
   occurred, and `cancelled` if a `CLUSTER CANCELSLOTMIGRATIONS` request was
   received during the migration. Any other state denotes an active slot
   migration.
-- `message` -- Either a human readable status message, if there is more
+- `message`: Either a human readable status message, if there is more
   information to display about the state, or empty string if no message is
   available.
-- `cow_size` -- The copy-on-write overhead accumulated while the migration was
+- `cow_size`: The copy-on-write overhead accumulated while the migration was
   in progress, in bytes.
 
 ## Examples
