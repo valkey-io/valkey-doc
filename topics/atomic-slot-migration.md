@@ -3,13 +3,14 @@ title: Atomic Slot Migration
 description: Overview of atomic slot migration
 ---
 
-You can use a process known as slot migration to scale Valkey clusters in or out.
-During slot migration, one or more of the 16384 hash slots are moved from a
-source node to a target node. Valkey 9.0 introduces a new option for migrating
-hash slots known as Atomic Slot Migration.
+In [Valkey Cluster](./cluster-spec.md), you can use a process known as
+slot migration to scale Valkey clusters in or out. During slot migration, one or
+more of the 16384 hash slots are moved from a source node to a target node.
+Valkey 9.0 introduces a new option for migrating hash slots known as atomic slot
+migration.
 
 
-## Performing an Atomic Slot Migration using `CLUSTER MIGRATESLOTS`
+## Performing an atomic slot migration using `CLUSTER MIGRATESLOTS`
 
 Valkey 9.0 does not get rid of the existing slot migration option, but it does
 introduce atomic slot migration as a second option. To perform an atomic slot
@@ -22,18 +23,6 @@ migration, an operator performs the following steps:
 `CLUSTER MIGRATESLOTS` initiates a migration of the designated slot range to the
 specified target node. The slot migration process is then performed
 asynchronously.
-
-The command also accepts many slot ranges, through repeated start and end slot
-pairs, and even supports multiple migrations in one command, through repeated
-`SLOTSRANGE` and `NODE` blocks. For example:
-
-```
-CLUSTER MIGRATESLOTS SLOTSRANGE 0 9 20 29 NODE <target A> SLOTSRANGE 10 19 NODE <target B>
-```
-
-Initiates two slot migration jobs, one to `<target A>` with 20 slots (0-9
-inclusive, 20-29 inclusive) and another to `<target B>` with 10 slots (10-19
-inclusive).
 
 For more details on `CLUSTER MIGRATESLOTS` see the
 [command documentation](../commands/cluster-migrateslots.md).
@@ -110,68 +99,6 @@ read operations on both the target primary and the target replica.
 when being executed on **both the source and target node**. It is expected that
 operators would retry the migration after flushing, which should now succeed
 almost instantly due to an empty database.
-
-### Deep Dive on `CLUSTER SYNCSLOTS`
-
-The `CLUSTER SYNCSLOTS` command is introduced as a new command for internal
-communication between nodes. It implements various subcommands to allow the
-navigation of the Atomic Slot Migration state machine:
-
-- `CLUSTER SYNCSLOTS ESTABLISH SOURCE <source-node-id> NAME <unique-migration-name> SLOTSRANGE <start> <end> ...`:
-  Inform a target node of an in progress slot migration and begin tracking the
-  current connection as a slot migration link.
-- `CLUSTER SYNCSLOTS SNAPSHOT-EOF`: Used as a marker to inform the target the
-  full snapshot of the hash slot contents have been sent.
-- `CLUSTER SYNCSLOTS REQUEST-PAUSE`: Inform a source node that the target has
-  received all of the snapshot and is ready to proceed.
-- `CLUSTER SYNCSLOTS PAUSED`: Used as a marker to inform the target no more
-  mutations should occur as the source has paused mutations.
-- `CLUSTER SYNCSLOTS REQUEST-FAILOVER`: Inform a source node that the target is
-  fully caught up and ready to takeover the hash slots.
-- `CLUSTER SYNCSLOTS FAILOVER-GRANTED`: Inform a target node that the source
-  node is still paused and takeover can be safely performed.
-- `CLUSTER SYNCSLOTS FINISH`: Inform a replica of the target node that a
-  migration is completed (or failed).
-- `CLUSTER SYNCSLOTS CAPA`: Reserved command allowing capability negotiation
-  (for forwards and backwards compatibility).
-
-```
-     User                        Source                                          Target                         Target Replica
-       |----CLUSTER MIGRATESLOTS--->|                                                |                                 |
-       |                            |------------ SYNCSLOTS ESTABLISH -------------->|                                 |
-       |            ...             |                                                |----- SYNCSLOTS ESTABLISH ------>|
-       |                            |<-------------------- +OK ----------------------|                                 |
-       |-CLUSTER GETSLOTMIGRATIONS->|                                                |                                 |
-       |<-----{"state": "..."}------|~~~~~~~~~~~~~~~~~~ snapshot ~~~~~~~~~~~~~~~~~~~>|                                 |
-       |            ...             |                                                |~~~~~~ forward snapshot ~~~~~~~~>|
-       |                            |----------- SYNCSLOTS SNAPSHOT-EOF ------------>|                                 |
-       |-CLUSTER GETSLOTMIGRATIONS->|                                                |                                 |
-       |<-----{"state": "..."}------|<----------- SYNCSLOTS REQUEST-PAUSE -----------|                                 |
-       |            ...             |                                                |                                 |
-       |                            |~~~~~~~~~~~~ incremental changes ~~~~~~~~~~~~~~>|                                 |
-       |-CLUSTER GETSLOTMIGRATIONS->|                                                |~~~~~~ forward changes ~~~~~~~~~>|
-       |                            |--------------- SYNCSLOTS PAUSED -------------->|                                 |
-       |            ...             |                                                |                                 |
-       |                            |<---------- SYNCSLOTS REQUEST-FAILOVER ---------|                                 |
-       |-CLUSTER GETSLOTMIGRATIONS->|                                                |                                 |
-       |<-----{"state": "..."}------|---------- SYNCSLOTS FAILOVER-GRANTED --------->|                                 |
-       |            ...             |                                                |                                 |
-       |                            |                                            (performs takeover &                  |
-       |-CLUSTER GETSLOTMIGRATIONS->|                                             propagates topology)                 |
-       |<-----{"state": "..."}------|                                                |                                 |
-       |            ...             |                                                |------- SYNCSLOTS FINISH ------->|
-       |                      (finds out about topology                              |                                 |
-       |                       change & marks migration done)                        |                                 |
-       |                            |                                                |                                 |
-       |-CLUSTER GETSLOTMIGRATIONS->|                                                |                                 |
-       |<---{"state": "success"}----|                                                |                                 |
-```
-
-Since the `CLUSTER SYNCSLOTS` command is considered an internal command, the
-subcommands and semantics are subject to change in future versions.
-
-## Benefits of Atomic Slot Migration
-
 
 ## Configuring Atomic Slot Migration
 
