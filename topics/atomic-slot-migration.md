@@ -74,7 +74,7 @@ Atomic slot migration utilizes a completely different process than
 7. Once the target node is completely caught up, it takes over the hash slots
    and broadcasts ownership to the cluster
 8. When the source node finds out about the migration, it deletes the keys in
-   the hash slot and unpauses write commands. Clients will now get `MOVED`
+   the hash slot and un-pauses write commands. Clients will now get `MOVED`
    redirections to the target node, which now owns the hash slots. The slot
    migration is completed.
 
