@@ -22,7 +22,7 @@ The following information is reported for each slot migration entry:
   (either `EXPORT` or `IMPORT`)
 - `slot_ranges` -- The range(s) of slots being migrated, with both start and end
   inclusive. The start and end slot are separated by `-` in each range, and
-  multiple ranges are joined together with ` `
+  multiple ranges are joined together with a space ("` `").
 - `target_node` -- The primary node receiving the slot ownership as part of the
   migration. This information is only supplied on the primary node of the
   participating shards.
