@@ -410,7 +410,7 @@ later in this document, otherwise it is not a complete Valkey Cluster client.
 #### Atomic slot migration
 
 Valkey 9.0 expands Valkey Cluster's live resharding capabilities through
-[atomic slot migration](./atomic-slot-migration.md).
+[atomic slot migration](atomic-slot-migration.md).
 
 When compared to legacy slot migration, atomic slot migration allows you to
 perform live resharding faster, with higher reliability, and less client-side
@@ -418,7 +418,7 @@ impact.
 
 You can find more details about atomic slot migration in the following pages:
 
-* [Atomic slot migration overview](../topics/atomic-slot-migration.md)
+* [Atomic slot migration overview](atomic-slot-migration.md)
 * [`CLUSTER MIGRATESLOTS` command documentation](../commands/cluster-migrateslots.md)
 * [`CLUSTER GETSLOTMIGRATIONS` command documentation](../commands/cluster-getslotmigrations.md)
 * [`CLUSTER CANCELSLOTMIGRATIONS` command documentation](../commands/cluster-cancelslotmigrations.md)
