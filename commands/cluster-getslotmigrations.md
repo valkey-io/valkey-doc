@@ -2,13 +2,12 @@
 and recently completed
 [atomic slot migrations](../topics/atomic-slot-migration.md).
 
-Each job previously started by
-[`CLUSTER MIGRATESLOTS`](cluster-migrateslots.md) creates a single entry. The
-number of visible slot migration entries depends on the configured
-`cluster-slot-migration-log-max-len`. After the limit is reached, the oldest
-inactive entry is removed. Note that active slot migrations will always be
-visible through `CLUSTER GETSLOTMIGRATIONS`, even if there are more entries than
-the configured limit.
+Each job previously started by [`CLUSTER MIGRATESLOTS`](cluster-migrateslots.md)
+creates a single entry. The number of visible slot migration entries depends on
+the configured `cluster-slot-migration-log-max-len`. After the limit is reached,
+the oldest inactive entry is removed. Note that active slot migrations will
+always be visible through `CLUSTER GETSLOTMIGRATIONS`, even if there are more
+entries than the configured limit.
 
 Information about the slot migration operations is stored in-memory and is not
 persisted across restarts. Slot migration entries are visible on the primary

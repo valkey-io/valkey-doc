@@ -3,16 +3,15 @@ title: Atomic slot migration
 description: Overview of atomic slot migration
 ---
 
-In [Valkey Cluster](cluster-spec.md), you can use a process known as
-slot migration to scale Valkey clusters in or out. During slot migration, one or
-more of the 16384 hash slots are moved from a source node to a target node.
-Valkey 9.0 introduces a new option for migrating hash slots known as atomic slot
-migration.
-
+In [Valkey Cluster](cluster-spec.md), you can use a process known as slot
+migration to scale your cluster in or out. During slot migration, one or more of
+the 16384 hash slots are moved from a source node to a target node. Valkey 9.0
+introduces a new option for migrating hash slots known as **atomic slot
+migration**.
 
 ## Performing an atomic slot migration using `CLUSTER MIGRATESLOTS`
 
-Valkey 9.0 does not get rid of the existing slot migration option, but it does
+Valkey 9.0 does not get rid of the legacy slot migration option, but it does
 introduce atomic slot migration as a second option. To perform an atomic slot
 migration, an operator performs the following steps:
 
@@ -29,30 +28,29 @@ For more details on `CLUSTER MIGRATESLOTS` see the
 
 ## Polling atomic slot migrations
 
-The `CLUSTER GETSLOTMIGRATIONS` command allows operators to poll the status of
-their migration. `CLUSTER GETSLOTMIGRATIONS` can be executed on either the
-source node or the target node. In progress migrations will always be shown, and
-recently completed migrations will be visible up to a configurable threshold. In
-the case of a failure, the slot migration will also include a short description
-of the failure to allow for retry decisions.
+The `CLUSTER GETSLOTMIGRATIONS` command allows you to poll the status of your
+migration. `CLUSTER GETSLOTMIGRATIONS` can be executed on either the source node
+or the target node. In progress migrations will always be shown, and recently
+completed migrations will be visible up to a configurable threshold. In the case
+of a failure, the slot migration will also include a short description of the
+failure to allow for retry decisions.
 
 For more details on `CLUSTER GETSLOTMIGRATIONS` see the
 [command documentation](../commands/cluster-getslotmigrations.md).
 
 ## Canceling atomic slot migrations
 
-If you need to cancel a slot migration after the process was started,
-Valkey provides the `CLUSTER CANCELSLOTMIGRATIONS` command to
-cancel all active atomic slot migrations for which that node is the source node.
-This command can be sent to the whole cluster to cancel all slot migrations
-everywhere.
+If you need to cancel a slot migration after the process was started, Valkey
+provides the `CLUSTER CANCELSLOTMIGRATIONS` command to cancel all active atomic
+slot migrations for which that node is the source node. This command can be sent
+to the whole cluster to cancel all slot migrations everywhere.
 
 For more details on `CLUSTER CANCELSLOTMIGRATIONS` see the
 [command documentation](../commands/cluster-cancelslotmigrations.md).
 
 ## Behind the scenes of atomic slot migration
 
-atomic slot migration utilizes a completely different process than
+Atomic slot migration utilizes a completely different process than
 `CLUSTER SETSLOT`-based migrations:
 
 1. Immediately after `CLUSTER MIGRATESLOTS` is received by the source node, it
@@ -70,8 +68,8 @@ atomic slot migration utilizes a completely different process than
    accumulated mutations. Any new mutations received during this step are also
    sent.
 6. Once the amount of in-flight mutations goes below a configured threshold, the
-   parent process pauses write commands temporarily to allow final synchronization
-   of the hash slots.
+   parent process pauses write commands temporarily to allow final
+   synchronization of the hash slots.
 7. Once the target node is completely caught up, it takes over the hash slots
    and broadcasts ownership to the cluster
 8. When the source node finds out about the migration, it deletes the keys in
