@@ -7325,8 +7325,6 @@ Here is a list of events you can use as 'eid' and related sub events:
         char *job_name;                     // Unique ID for the operation (40 chars)
         ValkeyModuleSlotRange *slot_ranges; // Array of slot ranges involved in the operation
         uint32_t num_slot_ranges;           // Number of slot ranges in slot_ranges array
-        char *source_node_id;               // Source node ID (40 chars)
-        char *target_node_id;               // Target node ID (40 chars)
 
    The `ValkeyModuleSlotRange` structure has the following fields:
 
