@@ -405,7 +405,25 @@ later in this document, otherwise it is not a complete Valkey Cluster client.
 
 ### Live resharding
 
-Valkey Cluster supports the ability to add and remove nodes while the cluster
+#### Atomic slot migration
+
+Valkey 9.0 introduced a server-side mechanism for live resharding called
+[atomic slot migration](atomic-slot-migration.md), which is the recommended method.
+
+When compared to legacy slot migration, atomic slot migration allows you to
+perform live resharding faster, with higher reliability, and less client-side
+impact. Atomic slot migration is started using the `CLUSTER MIGRATESLOTS` command.
+
+You can find more details about atomic slot migration in the following pages:
+
+* [Atomic slot migration overview](atomic-slot-migration.md)
+* [`CLUSTER MIGRATESLOTS` command documentation](../commands/cluster-migrateslots.md)
+* [`CLUSTER GETSLOTMIGRATIONS` command documentation](../commands/cluster-getslotmigrations.md)
+* [`CLUSTER CANCELSLOTMIGRATIONS` command documentation](../commands/cluster-cancelslotmigrations.md)
+
+#### Legacy slot migration
+
+Valkey Cluster also supports a legacy, client-driven mechanism to add and remove nodes while the cluster
 is running. Adding or removing a node is abstracted into the same
 operation: moving a hash slot from one node to another. This means
 that the same basic mechanism can be used in order to rebalance the cluster, add
