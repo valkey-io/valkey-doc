@@ -273,8 +273,8 @@ The supported flags are:
 The following is an example of how it could be used:
 
     if (ValkeyModule_IsChannelsPositionRequest(ctx)) {
-        ValkeyModule_ChannelAtPosWithFlags(ctx, 1, VALKEYMODULE_CMD_CHANNEL_SUBSCRIBE | VALKEYMODULE_CMD_CHANNEL_PATTERN); 
-        ValkeyModule_ChannelAtPosWithFlags(ctx, 1, `VALKEYMODULE_CMD_CHANNEL_PUBLISH`);
+        ValkeyModule_ChannelAtPosWithFlags(ctx, 1, VALKEYMODULE_CMD_CHANNEL_SUBSCRIBE | VALKEYMODULE_CMD_CHANNEL_PATTERN);
+        ValkeyModule_ChannelAtPosWithFlags(ctx, 1, VALKEYMODULE_CMD_CHANNEL_PUBLISH);
     }
 
 Note: One usage of declaring channels is for evaluating ACL permissions. In this context,
@@ -992,6 +992,13 @@ to reduce overhead or handle trusted custom command logic.
 are affected by this option, allowing them to operate without
 command validation check.
 
+`VALKEYMODULE_OPTIONS_HANDLE_ATOMIC_SLOT_MIGRATION`:
+When set, this option indicates that the module is capable of handling
+atomic slot migration. If not set, the module is assumed to not be aware of
+atomic slot migration and CLUSTER MIGRATESLOTS will return an error. Modules
+should set this flag if they understand keys may be loaded during the
+migration but before ownership is transferred.
+
 <span id="ValkeyModule_SignalModifiedKey"></span>
 
 ### `ValkeyModule_SignalModifiedKey`
@@ -1308,8 +1315,7 @@ be used for read only accesses and never modified.
 
 ### `ValkeyModule_StringToLongLong`
 
-    int ValkeyModule_StringToLongLong(const ValkeyModuleString *str,
-                                      long long *ll);
+    int ValkeyModule_StringToLongLong(const ValkeyModuleString *str, long long *ll);
 
 **Available since:** 4.0.0
 
@@ -1753,8 +1759,7 @@ The function always returns `VALKEYMODULE_OK`.
 
 ### `ValkeyModule_ReplyWithString`
 
-    int ValkeyModule_ReplyWithString(ValkeyModuleCtx *ctx,
-                                     ValkeyModuleString *str);
+    int ValkeyModule_ReplyWithString(ValkeyModuleCtx *ctx, ValkeyModuleString *str);
 
 **Available since:** 4.0.0
 
@@ -2082,6 +2087,7 @@ With flags having the following meaning:
     VALKEYMODULE_CLIENTINFO_FLAG_TRACKING     Client with keys tracking on.
     VALKEYMODULE_CLIENTINFO_FLAG_UNIXSOCKET   Client using unix domain socket.
     VALKEYMODULE_CLIENTINFO_FLAG_MULTI        Client in MULTI state.
+    VALKEYMODULE_CLIENTINFO_FLAG_READONLY     Client in ReadOnly state.
 
 However passing NULL is a way to just check if the client exists in case
 we are not interested in any additional information.
@@ -2236,6 +2242,12 @@ Available flags and their meaning:
                                 context is using RESP3.
 
  * `VALKEYMODULE_CTX_FLAGS_SERVER_STARTUP`: The instance is starting
+
+ * `VALKEYMODULE_CTX_FLAGS_SLOT_IMPORT_CLIENT`: Indicate the that client attached to this
+                                              context is the slot import client.
+
+ * `VALKEYMODULE_CTX_FLAGS_SLOT_EXPORT_CLIENT`: Indicate the that client attached to this
+                                              context is the slot export client.
 
 <span id="ValkeyModule_AvoidReplicaTraffic"></span>
 
@@ -3644,7 +3656,7 @@ Return the attribute of the given reply, or NULL if no attribute exists.
 
 ### `ValkeyModule_CallReplyAttributeElement`
 
-     int ValkeyModule_CallReplyAttributeElement(ValkeyModuleCallReply *reply,
+    int ValkeyModule_CallReplyAttributeElement(ValkeyModuleCallReply *reply,
                                                size_t idx,
                                                ValkeyModuleCallReply **key,
                                                ValkeyModuleCallReply **val);
@@ -3664,7 +3676,7 @@ NULL if not required.
 
 ### `ValkeyModule_CallReplyPromiseSetUnblockHandler`
 
-     void ValkeyModule_CallReplyPromiseSetUnblockHandler(ValkeyModuleCallReply *reply,
+    void ValkeyModule_CallReplyPromiseSetUnblockHandler(ValkeyModuleCallReply *reply,
                                                         ValkeyModuleOnUnblocked on_unblock,
                                                         void *private_data);
 
@@ -4564,9 +4576,10 @@ occurrence of the AUTH or HELLO command will not be tracked in the INFO command 
 
 The following is an example of how non-blocking module based authentication can be used:
 
-     int auth_cb(ValkeyModuleCtx *ctx, ValkeyModuleString *username, ValkeyModuleString *password, ValkeyModuleString
-**err) { const char *user = [`ValkeyModule_StringPtrLen`](#ValkeyModule_StringPtrLen)(username, NULL); const char *pwd =
-[`ValkeyModule_StringPtrLen`](#ValkeyModule_StringPtrLen)(password, NULL); if (!strcmp(user,"foo") && !strcmp(pwd,"`valid_password`")) {
+     int auth_cb(ValkeyModuleCtx *ctx, ValkeyModuleString *username, ValkeyModuleString *password, ValkeyModuleString **err) {
+         const char *user = ValkeyModule_StringPtrLen(username, NULL);
+         const char *pwd = ValkeyModule_StringPtrLen(password, NULL);
+         if (!strcmp(user,"foo") && !strcmp(pwd,"valid_password")) {
              ValkeyModule_AuthenticateClientWithACLUser(ctx, "foo", 3, NULL, NULL, NULL);
              return VALKEYMODULE_AUTH_HANDLED;
          }
@@ -4594,10 +4607,10 @@ The following is an example of how non-blocking module based authentication can 
 ### `ValkeyModule_BlockClient`
 
     ValkeyModuleBlockedClient *ValkeyModule_BlockClient(ValkeyModuleCtx *ctx,
-                                          ValkeyModuleCmdFunc reply_callback,
-                                          ValkeyModuleCmdFunc timeout_callback,
-                                          void (*free_privdata)(ValkeyModuleCtx *, void *),
-                                          long long timeout_ms);
+                                                        ValkeyModuleCmdFunc reply_callback,
+                                                        ValkeyModuleCmdFunc timeout_callback,
+                                                        void (*free_privdata)(ValkeyModuleCtx *, void *),
+                                                        long long timeout_ms);
 
 **Available since:** 4.0.0
 
@@ -4617,17 +4630,27 @@ The callbacks are called in the following contexts:
     free_privdata:    called in order to free the private data that is passed
                       by ValkeyModule_UnblockClient() call.
 
-Note: [`ValkeyModule_UnblockClient`](#ValkeyModule_UnblockClient) should be called for every blocked client,
-      even if client was killed, timed-out or disconnected. Failing to do so
-      will result in memory leaks.
+Notes:
+1. [`ValkeyModule_UnblockClient`](#ValkeyModule_UnblockClient) should be called for every blocked client,
+even if client was killed, timed-out or disconnected. Failing to do so
+will result in memory leaks.
+2. Attempting to block the client on keyspace event notification in versions
+   prior to 8.1.1 leads to a crash.
 
 There are some cases where [`ValkeyModule_BlockClient()`](#ValkeyModule_BlockClient) cannot be used:
 
-1. If the client is a Lua script.
+1. If the client is executing a script.
 2. If the client is executing a MULTI block.
+3. If the client is a temporary module client.
+4. If the client is already blocked.
 
-In these cases, a call to [`ValkeyModule_BlockClient()`](#ValkeyModule_BlockClient) will **not** block the
-client, but instead produce a specific error reply.
+In cases 1 and 2, a call to [`ValkeyModule_BlockClient()`](#ValkeyModule_BlockClient) will **not** block the
+client, but instead produce a specific error reply. Note that if the
+BlockClient call originated from within a keyspace notification, no error
+reply is generated but nullptr is returned while the errno is set to EINVAL.
+
+In case 3 and 4, a call to [`ValkeyModule_BlockClient()`](#ValkeyModule_BlockClient) are no-op, returning
+nullptr. errno is set to EINVAL for case 3 while ENOTSUP for case 4.
 
 A module that registers a `timeout_callback` function can also be unblocked
 using the `CLIENT UNBLOCK` command, which will trigger the timeout callback.
@@ -4645,8 +4668,8 @@ or multiple times within the blocking command background work.
 ### `ValkeyModule_BlockClientOnAuth`
 
     ValkeyModuleBlockedClient *ValkeyModule_BlockClientOnAuth(ValkeyModuleCtx *ctx,
-                                                ValkeyModuleAuthCallback reply_callback,
-                                                void (*free_privdata)(ValkeyModuleCtx *, void *));
+                                                              ValkeyModuleAuthCallback reply_callback,
+                                                              void (*free_privdata)(ValkeyModuleCtx *, void *));
 
 **Available since:** 7.2.0
 
@@ -4654,6 +4677,14 @@ Block the current client for module authentication in the background. If module 
 progress on the client, the API returns NULL. Otherwise, the client is blocked and the `ValkeyModule_BlockedClient`
 is returned similar to the [`ValkeyModule_BlockClient`](#ValkeyModule_BlockClient) API.
 Note: Only use this API from the context of a module auth callback.
+
+There are some cases where [`ValkeyModule_BlockClientOnAuth()`](#ValkeyModule_BlockClientOnAuth) cannot be used:
+
+1. If the client is not in the middle of module based authentication. This will not block the client
+   but instead produce a specific error reply.
+
+For details on other return values and error codes, see the comment block for
+[`ValkeyModule_BlockClient()`](#ValkeyModule_BlockClient).
 
 <span id="ValkeyModule_BlockClientGetPrivateData"></span>
 
@@ -4804,6 +4835,12 @@ actually reply to the client.
 A common usage for 'privdata' is a thread that computes something that
 needs to be passed to the client, included but not limited some slow
 to compute reply or some reply obtained via networking.
+
+Returns `VALKEYMODULE_OK` on success. On failure, `VALKEYMODULE_ERR` is returned
+and `errno` is set as follows:
+
+- EINVAL if bc is NULL.
+- ENOTSUP if bc contains `blocked on keys` but its timeout callback is NULL.
 
 Note 1: this function can be called from threads spawned by the module.
 
@@ -5201,8 +5238,7 @@ known cluster node, `VALKEYMODULE_ERR` is returned.
 
 ### `ValkeyModule_GetClusterNodesList`
 
-    char **ValkeyModule_GetClusterNodesList(ValkeyModuleCtx *ctx,
-                                            size_t *numnodes);
+    char **ValkeyModule_GetClusterNodesList(ValkeyModuleCtx *ctx, size_t *numnodes);
 
 **Available since:** 5.0.0
 
@@ -5299,7 +5335,13 @@ The list of flags reported is the following:
 
 ### `ValkeyModule_GetClusterNodeInfoForClient`
 
-    int ValkeyModule_GetClusterNodeInfoForClient(ValkeyModuleCtx *ctx,;
+    int ValkeyModule_GetClusterNodeInfoForClient(ValkeyModuleCtx *ctx,
+                                                 uint64_t client_id,
+                                                 const char *node_id,
+                                                 char *ip,
+                                                 char *primary_id,
+                                                 int *port,
+                                                 int *flags);
 
 **Available since:** 8.0.0
 
@@ -6225,8 +6267,7 @@ When return value is `VALKEYMODULE_ERR`, the section should and will be skipped.
 
 ### `ValkeyModule_InfoBeginDictField`
 
-    int ValkeyModule_InfoBeginDictField(ValkeyModuleInfoCtx *ctx,
-                                        const char *name);
+    int ValkeyModule_InfoBeginDictField(ValkeyModuleInfoCtx *ctx, const char *name);
 
 **Available since:** 6.0.0
 
@@ -7218,7 +7259,7 @@ Here is a list of events you can use as 'eid' and related sub events:
     * `VALKEYMODULE_SUBEVENT_EVENTLOOP_BEFORE_SLEEP`
     * `VALKEYMODULE_SUBEVENT_EVENTLOOP_AFTER_SLEEP`
 
-* `ValkeyModule_Event_Config`
+* `ValkeyModuleEvent_Config`
 
     Called when a configuration event happens
     The following sub events are available:
@@ -7232,7 +7273,7 @@ Here is a list of events you can use as 'eid' and related sub events:
                                    // name of each modified configuration item
         uint32_t num_changes;      // The number of elements in the config_names array
 
-* `ValkeyModule_Event_Key`
+* `ValkeyModuleEvent_Key`
 
     Called when a key is removed from the keyspace. We can't modify any key in
     the event.
@@ -7248,6 +7289,57 @@ Here is a list of events you can use as 'eid' and related sub events:
 
         ValkeyModuleKey *key;    // Key name
 
+* `ValkeyModuleEvent_AuthenticationAttempt`
+
+    Called when an authentication attempt is made, either successful or not.
+
+    The data pointer can be casted to a ValkeyModuleAuthenticationInfo
+    structure with the following fields:
+
+        uint64_t client_id;      // Client ID.
+        const char *username;    // Username used for authentication.
+        const char *module_name; // Name of the module that is handling the
+                                 // authentication. It is NULL if the
+                                 // authentication is handled by the core.
+        ValkeyModuleAuthenticationResult result;   // Result of the authentication:
+                                                   // VALKEYMODULE_AUTH_RESULT_GRANTED or
+                                                   // VALKEYMODULE_AUTH_RESULT_DENIED
+
+* `ValkeyModuleEvent_AtomicSlotMigration`
+
+   Called when an atomic slot migration (CLUSTER MIGRATESLOTS) is started or
+   ended in this node. This node may be a target or a source node, or the
+   target or source might be this node's primary. The following sub events
+   are available:
+
+    * `VALKEYMODULE_SUBEVENT_ATOMIC_SLOT_MIGRATION_IMPORT_STARTED`
+    * `VALKEYMODULE_SUBEVENT_ATOMIC_SLOT_MIGRATION_EXPORT_STARTED`
+    * `VALKEYMODULE_SUBEVENT_ATOMIC_SLOT_MIGRATION_IMPORT_ABORTED`
+    * `VALKEYMODULE_SUBEVENT_ATOMIC_SLOT_MIGRATION_EXPORT_ABORTED`
+    * `VALKEYMODULE_SUBEVENT_ATOMIC_SLOT_MIGRATION_IMPORT_COMPLETED`
+    * `VALKEYMODULE_SUBEVENT_ATOMIC_SLOT_MIGRATION_EXPORT_COMPLETED`
+
+   The data pointer can be casted to `ValkeyModuleAtomicSlotMigrationInfo`
+   structure with the following fields:
+
+        char *job_name;                     // Unique ID for the operation (40 chars)
+        ValkeyModuleSlotRange *slot_ranges; // Array of slot ranges involved in the operation
+        uint32_t num_slot_ranges;           // Number of slot ranges in slot_ranges array
+
+   The `ValkeyModuleSlotRange` structure has the following fields:
+
+         int start; // First slot in this range, inclusive
+         int end;   // Last slot in this range, inclusive
+
+   Modules can use these notifications to track the start and end of slot
+   migrations. Slot migrations will start with a STARTED subevent and end
+   with a COMPLETED subevent if they are successful and ownership is
+   transferred, or an ABORTED subevent if they were not successful and no
+   ownership change was made. While a slot migration is active, modules will
+   see incoming commands and keyspace notifications for importing keys.
+   Importing keys will not be accessible to clients unless the slot migration
+   is COMPLETED.
+
 The function returns `VALKEYMODULE_OK` if the module was successfully subscribed
 for the specified event. If the API is called from a wrong context or unsupported event
 is given then `VALKEYMODULE_ERR` is returned.
@@ -7256,8 +7348,7 @@ is given then `VALKEYMODULE_ERR` is returned.
 
 ### `ValkeyModule_IsSubEventSupported`
 
-    int ValkeyModule_IsSubEventSupported(ValkeyModuleEvent event,
-                                         int64_t subevent);
+    int ValkeyModule_IsSubEventSupported(ValkeyModuleEvent event, int64_t subevent);
 
 **Available since:** 6.0.9
 
@@ -7549,7 +7640,10 @@ Example:
 
 ### `ValkeyModule_RegisterScriptingEngine`
 
-    int ValkeyModule_RegisterScriptingEngine(ValkeyModuleCtx *module_ctx,;
+    int ValkeyModule_RegisterScriptingEngine(ValkeyModuleCtx *module_ctx,
+                                             const char *engine_name,
+                                             ValkeyModuleScriptingEngineCtx *engine_ctx,
+                                             ValkeyModuleScriptingEngineMethods *engine_methods);
 
 **Available since:** 8.1.0
 
@@ -7588,7 +7682,7 @@ Returns `VALKEYMODULE_OK`.
 
 ### `ValkeyModule_GetFunctionExecutionState`
 
-    ValkeyModuleScriptingEngineExecutionState ValkeyModule_GetFunctionExecutionState(;
+    ValkeyModuleScriptingEngineExecutionState ValkeyModule_GetFunctionExecutionState( ValkeyModuleScriptingEngineServerRuntimeCtx *server_ctx);
 
 **Available since:** 8.1.0
 
@@ -7640,7 +7734,7 @@ returns `VALKEYMODULE_OK` if when key is valid.
 Set the key access frequency. only relevant if the server's maxmemory policy
 is LFU based.
 The frequency is a logarithmic counter that provides an indication of
-the access frequencyonly (must be <= 255).
+the access frequency (must be <= 255).
 returns `VALKEYMODULE_OK` if the LFU was updated, `VALKEYMODULE_ERR` otherwise.
 
 <span id="ValkeyModule_GetLFU"></span>
