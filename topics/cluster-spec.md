@@ -5,9 +5,7 @@ description: >
 ---
 
 Welcome to the **Valkey Cluster Specification**. Here you'll find information
-about the algorithms and design rationales of Valkey Cluster. This document is a work
-in progress as it is continuously synchronized with the actual implementation
-of Valkey.
+about the algorithms and design rationales of Valkey Cluster.
 
 ## Main properties and rationales of the design
 
@@ -15,7 +13,7 @@ of Valkey.
 
 Valkey Cluster is a distributed implementation of Valkey with the following goals in order of importance in the design:
 
-* High performance and linear scalability up to 1000 nodes. There are no proxies, asynchronous replication is used, and no merge operations are performed on values.
+* High performance and linear scalability up to 2000 nodes. There are no proxies, asynchronous replication is used, and no merge operations are performed on values.
 * Acceptable degree of write safety: the system tries (in a best-effort way) to retain all the writes originating from clients connected with the majority of the primary nodes. Usually there are small windows where acknowledged writes can be lost. Windows to lose acknowledged writes are larger when clients are in a minority partition.
 * Availability: Valkey Cluster is able to survive partitions where the majority of the primary nodes are reachable and there is at least one reachable replica for every primary node that is no longer reachable. Moreover using *replicas migration*, primaries no longer replicated by any replica will receive one from a primary which is covered by multiple replicas.
 
