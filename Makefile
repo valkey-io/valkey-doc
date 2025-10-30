@@ -212,7 +212,7 @@ $(MAN_DIR)/man3/%.3valkey.gz: commands/%.md $(BUILD_DIR)/.commands-per-group.jso
 		--version $(VERSION) --date $(DATE) \
 		--commands-per-group-json $(BUILD_DIR)/.commands-per-group.json \
 		--valkey-root $(FINAL_ROOT) $< \
-		| utils/links-to-man.py - | $(to_man) > $@
+		| utils/links-to-man.py --is-command-page - | $(to_man) > $@
 $(MAN_DIR)/man5/%.5.gz: topics/%.md $(man_scripts)
 	utils/preprocess-markdown.py --man --page-type config \
 	 --version $(VERSION) --date $(DATE) $< \
