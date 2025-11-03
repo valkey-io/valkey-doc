@@ -192,7 +192,7 @@ Example of default bloom filter information:
 
 ```bash
 127.0.0.1:6379> BF.ADD default_filter item
-1
+(integer) 1
 127.0.0.1:6379> BF.INFO default_filter
  1) Capacity
  2) (integer) 100
@@ -231,10 +231,15 @@ You can modify these default values using the CONFIG SET command. However, note 
 Example usage of changing all the different properties:
 ```bash
 127.0.0.1:6379> CONFIG SET bf.bloom-fp-rate 0.001
+OK
 127.0.0.1:6379> CONFIG SET bf.bloom-capacity 1000
+OK
 127.0.0.1:6379> CONFIG SET bf.bloom-expansion 4
+OK
 127.0.0.1:6379> CONFIG SET bf.bloom-tightening-ratio 0.6
-127.0.0.1:6379> CONFIG SET bf.bloom-use-random-seed false
+OK
+127.0.0.1:6379> CONFIG SET bf.bloom-use-random-seed no
+OK
 ```
 
 ### Memory usage limit
@@ -244,6 +249,7 @@ The `bf.bloom-memory-usage-limit` configuration (default 128MB) controls the max
 Example usage of increasing the limit:
 ```bash
 127.0.0.1:6379> CONFIG SET bf.bloom-memory-usage-limit 268435456
+OK
 ```
 
 Having a limit on the max memory per bloom object prevents them from growing unbounded, thus maintaining server performance during serialization.
