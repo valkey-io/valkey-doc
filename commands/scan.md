@@ -71,6 +71,8 @@ However because `SCAN` has very little state associated (just the cursor) it has
 * A given element may be returned multiple times. It is up to the application to handle the case of duplicated elements, for example only using the returned elements in order to perform operations that are safe when re-applied multiple times.
 * Elements that were not constantly present in the collection during a full iteration, may be returned or not: it is undefined.
 
+Starting with Valkey **9.1**, you can make the `SCAN` family (including `HSCAN`, `SSCAN`, and `ZSCAN`) return keys in a **consistent order**. Set the immutable startup configuration **`hash-seed`** to the **same string (up to 256 characters) on all nodes** which helps clients resume an in-progress scan even after a failover.
+
 ## Number of elements returned at every SCAN call
 
 `SCAN` family functions do not guarantee that the number of elements returned per call are in a given range. The commands are also allowed to return zero elements, and the client should not consider the iteration complete as long as the returned cursor is not zero.
