@@ -1,1 +1,1 @@
-See `SCAN` for `SSCAN` documentation.
+See [`SCAN`](scan.md)  for `SSCAN` documentation.
