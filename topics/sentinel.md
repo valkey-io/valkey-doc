@@ -596,7 +596,8 @@ The `SENTINEL` command is the main API for Sentinel. The following is the list o
 * **SENTINEL CONFIG SET `<name>` `<value>`** (`>= 6.2`) Set the value of a global Sentinel configuration parameter.
 * **SENTINEL CKQUORUM `<primary name>`** Check if the current Sentinel configuration is able to reach the quorum needed to failover a primary, and the majority needed to authorize the failover. This command should be used in monitoring systems to check if a Sentinel deployment is ok.
 * **SENTINEL FLUSHCONFIG** Force Sentinel to rewrite its configuration on disk, including the current Sentinel state. Normally Sentinel rewrites the configuration every time something changes in its state (in the context of the subset of the state which is persisted on disk across restart). However sometimes it is possible that the configuration file is lost because of operation errors, disk failures, package upgrade scripts or configuration managers. In those cases a way to force Sentinel to rewrite the configuration file is handy. This command works even if the previous configuration file is completely missing.
-* **SENTINEL FAILOVER `<primary name>`** Force a failover as if the primary was not reachable, and without asking for agreement to other Sentinels (however a new version of the configuration will be published so that the other Sentinels will update their configurations).
+* **SENTINEL FAILOVER `<primary name>` [COORDINATED]** Force a failover as if the primary was not reachable, and without asking for agreement to other Sentinels (however a new version of the configuration will be published so that the other Sentinels will update their configurations).\
+In Valkey 9.0 and later, this command accepts a `COORDINATED` option. When used, Sentinel attempts to be elected as failover leader and will trigger a coordinated failover between the primary and one of its replicas.
 * **SENTINEL GET-MASTER-ADDR-BY-NAME `<primary name>`** Return the ip and port number of the primary with that name. If a failover is in progress or terminated successfully for this primary it returns the address and port of the promoted replica.
 * **SENTINEL INFO-CACHE** Return cached `INFO` output from primaries and replicas.
 * **SENTINEL IS-MASTER-DOWN-BY-ADDR <ip> <port> <current-epoch> <runid>** Check if the primary specified by ip:port is down from current Sentinel's point of view. This command is mostly for internal use.
@@ -656,6 +657,21 @@ Global parameters that can be manipulated include:
 * `resolve-hostnames`, `announce-hostnames`. See [_IP addresses and DNS names_](#ip-addresses-and-dns-names).
 * `announce-ip`, `announce-port`. See [_Sentinel, Docker, NAT, and possible issues_](#sentinel-docker-nat-and-possible-issues).
 * `sentinel-user`, `sentinel-pass`. See [_Configuring Sentinel instances with authentication_](#configuring-sentinel-instances-with-authentication).
+
+### Coordinated failover
+
+Starting with Valkey 9.0, coordinated failover provides a way to switch the primary
+role to a replica with minimal disruption. This is particularly useful for planned
+maintenance, such as when the current primary must be taken offline for updates.
+
+When using the `SENTINEL FAILOVER` command with the `COORDINATED` option, Sentinel
+supervises an orderly handover using the `FAILOVER` command between the current
+primary and its selected successor.
+
+Since coordinated failovers can complete very quickly, client libraries must fully implement
+the [Sentinel client protocol](sentinel-clients.md) to handle role changes reliably. Clients
+that rely only on Sentinel pub/sub messages risk reconnecting to the old primary after it has
+been demoted to a replica, which can result in `READONLY` errors.
 
 ### Adding or removing Sentinels
 
@@ -801,9 +817,9 @@ following directives:
     sentinel auth-user <primary-name> <username>
     sentinel auth-pass <primary-name> <password>
 
-Where `<username>` and `<password>` are the username and password for accessing the group's instances. These credentials should be provisioned on all of the group's Valkey instances with the minimal control permissions. For example:
+Where `<username>` and `<password>` are the username and password for accessing the group's instances. These credentials should be provisioned on all of the group's Valkey instances with the minimal control permissions. Since Valkey Sentinel 9.0, the sentinel user requires the `+failover` and `+client` permissions for proper operation. For example:
 
-    127.0.0.1:6379> ACL SETUSER sentinel-user ON >somepassword allchannels +multi +slaveaof +ping +exec +subscribe +config|rewrite +role +publish +info +client|setname +client|kill +script|kill
+    127.0.0.1:6379> ACL SETUSER sentinel-user ON >somepassword +subscribe +publish +failover +script|kill +ping +info +multi +slaveof +config +client +exec &__sentinel__:hello
 
 ### Valkey password-only authentication
 
