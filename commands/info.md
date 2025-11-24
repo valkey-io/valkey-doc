@@ -579,9 +579,8 @@ Here is the meaning of all fields in the **replication** section:
 *   `master_repl_offset`: The server's current replication offset
 *   `second_repl_offset`: The offset up to which replication IDs are accepted
 *   `repl_backlog_active`: Flag indicating replication backlog is active
-*   `repl_backlog_size`: Total size in bytes of the replication backlog buffer
-*   `repl_backlog_first_byte_offset`: The primary offset of the replication
-     backlog buffer
+*   `repl_backlog_size`: The value of the replication backlog buffer `repl-backlog-size` configuration item
+*   `repl_backlog_first_byte_offset`: Replication "primary offset" of first byte in the replication backlog buffer
 *   `repl_backlog_histlen`: Size in bytes of the data in the replication backlog
      buffer
 
