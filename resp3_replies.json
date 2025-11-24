@@ -209,7 +209,7 @@
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
   ],
   "CLIENT INFO": [
-    "[Bulk string reply](../topics/protocol.md#bulk-strings): a unique string for the current client, as described at the `CLIENT LIST` page."
+    "[Verbatim string reply](../topics/protocol.md#verbatim-strings): a unique string for the current client, as described at the `CLIENT LIST` page."
   ],
   "CLIENT KILL": [
     "One of the following:",
@@ -217,7 +217,7 @@
     "* [Integer reply](../topics/protocol.md#integers): when called in filter/value format, the number of clients killed."
   ],
   "CLIENT LIST": [
-    "[Bulk string reply](../topics/protocol.md#bulk-strings): information and statistics about client connections."
+    "[Verbatim string reply](../topics/protocol.md#verbatim-strings): information and statistics about client connections."
   ],
   "CLIENT NO-EVICT": [
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
@@ -291,7 +291,7 @@
     "[Array reply](../topics/protocol.md#arrays): a list of subcommands and their descriptions."
   ],
   "CLUSTER INFO": [
-    "[Bulk string reply](../topics/protocol.md#bulk-strings): A map between named fields and values in the form of `<field>:<value>` lines separated by newlines composed by the two bytes `CRLF`."
+    "[Verbatim string reply](../topics/protocol.md#verbatim-strings): A map between named fields and values in the form of `<field>:<value>` lines separated by newlines composed by the two bytes `CRLF`."
   ],
   "CLUSTER KEYSLOT": [
     "[Integer reply](../topics/protocol.md#integers): The hash slot number for the specified key"
@@ -309,7 +309,7 @@
     "[Bulk string reply](../topics/protocol.md#bulk-strings): the node's shard ID."
   ],
   "CLUSTER NODES": [
-    "[Bulk string reply](../topics/protocol.md#bulk-strings): the serialized cluster configuration."
+    "[Verbatim string reply](../topics/protocol.md#verbatim-strings): the serialized cluster configuration."
   ],
   "CLUSTER REPLICAS": [
     "[Array reply](../topics/protocol.md#arrays): a list of replica nodes replicating from the specified primary node provided in the same format used by `CLUSTER NODES`."
@@ -739,7 +739,7 @@
     "[Bulk string reply](../topics/protocol.md#bulk-strings): the value of the key after the increment."
   ],
   "INFO": [
-    "[Bulk string reply](../topics/protocol.md#bulk-strings): a map of info fields, one field per line in the form of `<field>:<value>` where the value can be a comma separated map like `<key>=<val>`. Also contains section header lines starting with `#` and blank lines.",
+    "[Verbatim string reply](../topics/protocol.md#verbatim-strings): a map of info fields, one field per line in the form of `<field>:<value>` where the value can be a comma separated map like `<key>=<val>`. Also contains section header lines starting with `#` and blank lines.",
     "",
     "Lines can contain a section name (starting with a `#` character) or a property. All the properties are in the form of `field:value` terminated by `\\r\\n`."
   ],
@@ -1016,7 +1016,7 @@
     "[Verbatim string reply](../topics/protocol.md#verbatim-strings): a human readable latency analysis report."
   ],
   "LATENCY GRAPH": [
-    "[Bulk string reply](../topics/protocol.md#bulk-strings): Latency graph"
+    "[Verbatim string reply](../topics/protocol.md#verbatim-strings): Latency graph"
   ],
   "LATENCY HELP": [
     "[Array reply](../topics/protocol.md#arrays): a list of sub-commands and their descriptions."
@@ -1102,7 +1102,7 @@
     "[Array reply](../topics/protocol.md#arrays): a list of sub-commands and their descriptions."
   ],
   "MEMORY MALLOC-STATS": [
-    "[Bulk string reply](../topics/protocol.md#bulk-strings): the memory allocator's internal statistics report."
+    "[Verbatim string reply](../topics/protocol.md#verbatim-strings): the memory allocator's internal statistics report."
   ],
   "MEMORY PURGE": [
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
