@@ -638,7 +638,7 @@ For each replica, the following line is added:
 *   `wait_bgsave`: The replica is waiting for the primary to generate the RDB file.
 *   `send_bulk`: Primary is sending the RDB file to replica.
 *   `online`: RDB file transmitted, sending just updates.
-*   `rdb_transmitted`: RDB file transmitted, this state is used only for a replica that only wants RDB without replication buffer. Added in Valkey 9.1.
+*   `rdb_transmitted`: RDB file transmitted, this state is used for the rdb-channel during dual-channel replication when the RDB transfer is complete but the replica has not yet established its main connection. Added in Valkey 9.1.
 *   `bg_transfer`: Main channel of a replica which uses dual-channel replication. Added in Valkey 8.0.
 
 `type` added in Valkey 8.0, represents the type of the replica client and can be one of the following strings.
