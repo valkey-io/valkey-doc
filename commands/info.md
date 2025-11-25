@@ -230,6 +230,7 @@ acl_access_denied_channel:0
 # Replication
 role:master
 connected_slaves:0
+replicas_waiting_psync:0
 master_failover_state:no-failover
 master_replid:488d931b7e08f8e091f674ea64480165971a25f1
 master_replid2:0000000000000000000000000000000000000000
