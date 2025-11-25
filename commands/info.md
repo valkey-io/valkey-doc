@@ -573,6 +573,7 @@ Here is the meaning of all fields in the **replication** section:
 
 *   `role`: Value is "master" if the instance is replica of no one, or "slave" if the instance is a replica of some primary instance.
      Note that a replica can be primary of another replica (chained replication).
+*   `replicas_waiting_psync`: The number of replicas waiting for partial resynchronization during the dual-channel replication. Added in Valkey 8.0.
 *   `master_failover_state`: The state of an ongoing failover, if any.
 *   `master_replid`: The replication ID of the Valkey server.
 *   `master_replid2`: The secondary replication ID, used for PSYNC after a failover.
@@ -595,6 +596,8 @@ If the instance is a replica, these additional fields are provided:
 *   `master_sync_in_progress`: Indicate the primary is syncing to the replica
 *   `slave_read_repl_offset`: The read replication offset of the replica instance.
 *   `slave_repl_offset`: The replication offset of the replica instance
+*   `replicas_repl_buffer_size`: Currently accumulated replication stream data in bytes during the dual-channel replication. Added in Valkey 8.0.
+*   `replicas_repl_buffer_peak`: Peak number of bytes accumulated replication stream data during the lifetime of this instance. Added in Valkey 8.0.
 *   `slave_priority`: The priority of the instance as a candidate for failover
 *   `slave_read_only`: Flag indicating if the replica is read-only
 *   `replica_announced`: Flag indicating if the replica is announced by Sentinel.
@@ -627,7 +630,21 @@ If the server is configured with the `min-replicas-to-write` directive, an addit
 
 For each replica, the following line is added:
 
-*   `slaveXXX`: id, IP address, port, state, offset, lag
+*   `slaveXXX:ip=xxx,port=xxx,state=xxx,offset=xxx,lag=xxx,type=xxx`
+
+`state` represents the state of the replica client and can be one of the following strings.
+
+*   `wait_bgsave`: The replica is waiting for the primary to generate the RDB file.
+*   `send_bulk`: Primary is sending the RDB file to replica.
+*   `online`: RDB file transmitted, sending just updates.
+*   `rdb_transmitted`: RDB file transmitted, this state is used only for a replica that only wants RDB without replication buffer. Added in Valkey 9.1.
+*   `bg_transfer`: Main channel of a replica which uses dual-channel replication. Added in Valkey 8.0.
+
+`type` added in Valkey 8.0, represents the type of the replica client and can be one of the following strings.
+
+*   `replica`: Normal replica client.
+*   `main-channel`: Main channel of a replica which uses dual-channel replication. Once dual channel replication is complete, the type will become `replica`.
+*   `rdb-channel`: RDB channel of a replica which uses dual-channel replication. Once dual channel replication is complete, the replica client will disconnect.
 
 Here is the meaning of all fields in the **cpu** section:
 
