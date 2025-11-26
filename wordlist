@@ -675,6 +675,7 @@ race:usa
 radix
 rc[0-9]*
 RC[0-9]+
+rdb-channel
 rdb-preamble
 RDB-saving
 rdd
