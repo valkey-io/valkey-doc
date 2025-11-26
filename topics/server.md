@@ -78,4 +78,4 @@ the config file:
 
 ## See also
 
-[Valkey documentation](./), [Introduction](introduction.md), [Configuration](valkey.conf.md), [Installation](installation.md), [valkey-cli](cli.md)
+[Valkey documentation](index.md), [Introduction](introduction.md), [Configuration](valkey.conf.md), [Installation](installation.md), [valkey-cli](cli.md)
