@@ -30,7 +30,7 @@ The primary output is composed of the following parts:
 
 1. The string `master`.
 2. The current primary replication offset, which is an offset that primaries and replicas share to understand, in partial resynchronizations, the part of the replication stream the replicas needs to fetch to continue.
-3. An array composed of three elements array representing the connected replicas. Every sub-array contains the replica IP, port, and the last acknowledged replication offset.
+3. An array composed of three elements array representing the online replicas. Every sub-array contains the replica IP, port, and the last acknowledged replication offset.
 
 ## Output of the command on replicas
 
@@ -49,7 +49,7 @@ The replica output is composed of the following parts:
 1. The string `slave`, because of Redis OSS compatibility (see note at the end of this page).
 2. The IP of the primary.
 3. The port number of the primary.
-4. The state of the replication from the point of view of the primary, that can be `connect` (the instance needs to connect to its primary), `connecting` (the primary-replica connection is in progress), `sync` (the primary and replica are trying to perform the synchronization), `connected` (the replica is online).
+4. The state of the replication from the point of view of the replica, that can be `connect` (the instance needs to connect to its primary), `connecting` (the primary-replica connection is in progress), `handshake` (the primary and replica are doing the handshake), `sync` (the primary and replica are trying to perform the synchronization), `connected` (the replica is online).
 5. The amount of data received from the replica so far in terms of primary replication offset.
 
 ## Sentinel output
