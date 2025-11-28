@@ -10,8 +10,7 @@ values. The following metrics are reported:
      allocator (see [`INFO`](info.md)'s `used_memory`)
 *   `startup.allocated`: Initial amount of memory consumed by Valkey at startup
      in bytes (see `INFO`'s `used_memory_startup`)
-*   `replication.backlog`: Size in bytes of the replication backlog (see
-     `INFO`'s `repl_backlog_active`)
+*   `replication.backlog`: Memory usage by replication backlog (see `INFO`'s `mem_replication_backlog`)
 *   `clients.slaves`: The total size in bytes of all replicas overheads (output
      and query buffers, connection contexts)
 *   `clients.normal`: The total size in bytes of all clients overheads (output
