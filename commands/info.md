@@ -226,6 +226,7 @@ acl_access_denied_auth:0
 acl_access_denied_cmd:0
 acl_access_denied_key:0
 acl_access_denied_channel:0
+acl_access_denied_tls_cert:0
 
 # Replication
 role:master
@@ -569,6 +570,7 @@ Here is the meaning of all fields in the **stats** section:
 *   `acl_access_denied_cmd`: Number of commands rejected because of access denied to the command
 *   `acl_access_denied_key`: Number of commands rejected because of access denied to a key
 *   `acl_access_denied_channel`: Number of commands rejected because of access denied to a channel 
+*   `acl_access_denied_tls_cert`: Number of failed authentications using automatic TLS clients authentication feature
 
 Here is the meaning of all fields in the **replication** section:
 
