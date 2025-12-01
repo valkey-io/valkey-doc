@@ -570,7 +570,7 @@ Here is the meaning of all fields in the **stats** section:
 *   `acl_access_denied_cmd`: Number of commands rejected because of access denied to the command
 *   `acl_access_denied_key`: Number of commands rejected because of access denied to a key
 *   `acl_access_denied_channel`: Number of commands rejected because of access denied to a channel 
-*   `acl_access_denied_tls_cert`: Number of failed authentications using automatic TLS clients authentication feature
+*   `acl_access_denied_tls_cert`: Number of failed authentications using automatic TLS clients authentication feature. Added in Valkey 9.0.
 
 Here is the meaning of all fields in the **replication** section:
 
