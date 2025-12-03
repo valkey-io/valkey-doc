@@ -235,23 +235,7 @@ def get_reply(name, resp_json_file):
         return None
 
 def acl_categories(json):
-    flags = set(json["command_flags"] if "command_flags" in json else [])
     acl   = set(json["acl_categories"] if "acl_categories" in json else [])
-    if "WRITE" in flags:
-        acl.add("WRITE")
-    if "READONLY" in flags and "SCRIPTING" not in acl:
-        acl.add("READ")
-    if "ADMIN" in flags:
-        acl.add("ADMIN")
-        acl.add("DANGEROUS")
-    if "PUBSUB" in flags:
-        acl.add("PUBSUB")
-    if "FAST" in flags:
-        acl.add("FAST")
-    if "BLOCKING" in flags:
-        acl.add("BLOCKING")
-    if "FAST" not in acl:
-        acl.add("SLOW")
     return ["@" + cat.lower() for cat in sorted(acl)]
 
 def command_see_also(group, commands_per_group_file, exclude_command):
