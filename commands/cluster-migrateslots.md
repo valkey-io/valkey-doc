@@ -20,3 +20,5 @@ error message is returned and no slot migrations are initiated.
 
 To check on the progress of the slot migration, use the
 [`CLUSTER GETSLOTMIGRATIONS`](cluster-getslotmigrations.md) command.
+
+To cancel the slot migration jobs, use the [`CLUSTER CANCELSLOTMIGRATIONS`](cluster-cancelslotmigrations.md) command.
