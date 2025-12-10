@@ -32,7 +32,7 @@ FT.CREATE <index-name>
 
 - `PREFIX <prefix-count> <prefix>` (optional): If this clause is specified, then only keys that begin with the same bytes as one or more of the specified prefixes will be included into this index. If this clause is omitted, all keys of the correct type will be included. A zero-length prefix would also match all keys of the correct type.
 
-- **SCORE** (optional): A number representing the default base score that is assigned to a document. This score is used when **SCORE_FIELD** is not specified. (default: 1.0) The current implementation only allows 1.0 as a 
+- **SCORE** (optional): A number representing the default base score that is assigned to a document. This score is used when **SCORE_FIELD** is not specified. (default: 1.0) The current implementation only allows the value to be 1.0.
 
 - **SCORE_FIELD** (optional): The attribute to look at inside your JSON or Hash to determine the score of the entry.
 
