@@ -11,23 +11,30 @@ contains special characters, the `AS` clause is required.
 
 ```
 FT.CREATE <index-name>
-    [ON HASH | JSON]
+    [ON HASH | ON JSON]
     [PREFIX <count> <prefix> [<prefix>...]]
+    [SCORE default_value]
+    [SCORE_FIELD attribute_name]
     SCHEMA
         (
             <field-identifier> [AS <field-alias>]
                   NUMERIC
                 | TAG [SEPARATOR <sep>] [CASESENSITIVE]
-                | VECTOR [HNSW | FLAT] <attr_count> [<attribute_name> <attribute_value>]+)
+                | VECTOR [HNSW | FLAT] <attr_count> [<attribute_name> <attribute_value>]+
+            [SORTABLE]
         )+
 ```
 
 
 - `<index-name>` (required): This is the name you give to your index. If an index with the same name exists already, an error is returned.
 
-- `ON HASH | JSON` (optional): Only keys that match the specified type are included into this index. If omitted, HASH is assumed.
+- `ON HASH | ON JSON` (optional): Only keys that match the specified type are included into this index. If omitted, HASH is assumed.
 
 - `PREFIX <prefix-count> <prefix>` (optional): If this clause is specified, then only keys that begin with the same bytes as one or more of the specified prefixes will be included into this index. If this clause is omitted, all keys of the correct type will be included. A zero-length prefix would also match all keys of the correct type.
+
+- **SCORE** (optional): A number representing the default base score that is assigned to a document. This score is used when **SCORE_FIELD** is not specified. (default: 1.0) The current implementation only allows 1.0 as a 
+
+- **SCORE_FIELD** (optional): The attribute to look at inside your JSON or Hash to determine the score of the entry.
 
 ## Field types
 
@@ -54,6 +61,9 @@ FT.CREATE <index-name>
   - `EF_CONSTRUCTION <number>` (optional): controls the number of vectors examined during index construction. Higher values for this parameter will improve recall ratio at the expense of longer index creation times. The default value is 200\. Maximum value is 4096\.
   - `EF_RUNTIME <number>` (optional):  controls  the number of vectors to be examined during a query operation. The default is 10, and the max is 4096\. You can set this parameter value for each query you run. Higher values increase query times, but improve query recall.
 
+### Field options
+
+**SORTABLE**: This parameter is currently ignored as all field types are considered to be sortable
 
 ## Examples
 
