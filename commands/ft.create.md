@@ -14,7 +14,6 @@ FT.CREATE <index-name>
     [ON HASH | ON JSON]
     [PREFIX <count> <prefix> [<prefix>...]]
     [SCORE default_value]
-    [SCORE_FIELD attribute_name]
     SCHEMA
         (
             <field-identifier> [AS <field-alias>]
@@ -32,9 +31,7 @@ FT.CREATE <index-name>
 
 - `PREFIX <prefix-count> <prefix>` (optional): If this clause is specified, then only keys that begin with the same bytes as one or more of the specified prefixes will be included into this index. If this clause is omitted, all keys of the correct type will be included. A zero-length prefix would also match all keys of the correct type.
 
-- **SCORE** (optional): A number representing the default base score that is assigned to a document. This score is used when **SCORE_FIELD** is not specified. (default: 1.0) The current implementation only allows the value to be 1.0.
-
-- **SCORE_FIELD** (optional): The attribute to look at inside your JSON or Hash to determine the score of the entry.
+- **SCORE** (optional): A number representing the default base score that is assigned to a document. This parameter is reserved for future expansion (default: 1.0) 
 
 ## Field types
 
@@ -63,7 +60,7 @@ FT.CREATE <index-name>
 
 ### Field options
 
-**SORTABLE**: This parameter is currently ignored as all field types are considered to be sortable
+**SORTABLE**: This parameter is accepted for compatibility, but has no effect and is not required.
 
 ## Examples
 
