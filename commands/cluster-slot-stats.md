@@ -8,6 +8,8 @@ The following statistics are supported:
 * `network-bytes-in` -- Amount of network ingress (in bytes) received for given slot.
 * `network-bytes-out` -- Amount of network egress (in bytes) sent out for given slot.
 
+**Note:** By default, only `key-count` is returned. To enable `cpu-usec`, `network-bytes-in`, and `network-bytes-out` statistics, set `cluster-slot-stats-enabled yes` in the configuration.
+
 ## Options
 
 * `ORDERBY` -- Returns an ordered slot statistics based on the specified statistic and sub-arguments to identify hot / cold slots across the cluster. Either `ASC` or `DESC` modifiers can be used. In the event of a tie in the stats, ascending slot number is used as a tie breaker.
