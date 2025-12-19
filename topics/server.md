@@ -38,7 +38,7 @@ Additional options:
 **`--test-memory`** _megabytes_
 : Run a memory test and exit.
 
-**`--check-sytem`**
+**`--check-system`**
 : Output some operating system properties relevant for running Valkey and exit.
 
 **`--sentinel`**
