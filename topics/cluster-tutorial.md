@@ -397,7 +397,7 @@ async function runExample() {
     ];
     // Check `GlideClientConfiguration/GlideClusterClientConfiguration` for additional options.
     const client = await GlideClusterClient.createClient({
-        addresses: addresses,
+        addresses,
         // if the cluster nodes use TLS, you'll need to enable it.
         // useTLS: true,
         // It is recommended to set a timeout for your specific use case
@@ -435,7 +435,7 @@ async function runExample() {
                 // Update the counter
                 await client.set("__last__", x.toString());
                 
-                // Add delay equivalent to Ruby's sleep 0.1
+                // Add delay between operations
                 await new Promise(resolve => setTimeout(resolve, 100));
                 
             } catch (error) {
@@ -472,7 +472,7 @@ The **counter initialization section** reads a counter with retry logic so that 
 we don't start again with `foo0`, but continue from where we left off.
 The counter is stored in Valkey itself using the key `__last__`.
 
-The **main processing loop** sets keys sequentially, immediately verifies each value with a GET operation, updates the counter after each key, and includes a 100ms delay between operations to match the original Ruby example's timing.
+The **main processing loop** sets keys sequentially, immediately verifies each value with a GET operation, updates the counter after each key, and includes a 100ms delay between operations.
 
 Starting the application produces the following output:
 
