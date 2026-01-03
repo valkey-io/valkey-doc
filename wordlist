@@ -550,6 +550,7 @@ nils
 no-appendfsync-on-rewrite
 node-redis
 node-redlock
+redlock-universal
 NodeJS
 noeviction
 non-reachability
