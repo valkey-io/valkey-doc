@@ -54,7 +54,9 @@ When `maxclients` is set to a number greater than Valkey can support, a message 
 
 ```
 $ ./valkey-server --maxclients 100000
-[41422] 23 Jan 11:28:33.179 # Unable to set the max number of files limit to 100032 (Invalid argument), setting the max clients configuration to 10112.
+41422:M 03 Dec 2025 17:00:00.000 # You requested maxclients of 100000 requiring at least 100032 max file descriptors.
+41422:M 03 Dec 2025 17:00:00.000 # Server can't set maximum open files to 100032 because of OS error: Operation not permitted.
+41422:M 03 Dec 2025 17:00:00.000 # Current maximum open files is 10000. maxclients has been reduced to 9968 to compensate for low ulimit. If you need higher maxclients increase 'ulimit -n'.
 ```
 
 When Valkey is configured in order to handle a specific number of clients it
