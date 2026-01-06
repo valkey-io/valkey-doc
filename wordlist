@@ -709,6 +709,7 @@ Redises
 RedisHost.
 redisObjectVM
 Redisson
+RediSearch
 Redistributions
 Redlock
 Redlock-cpp
