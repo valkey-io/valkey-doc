@@ -31,7 +31,7 @@ FT.CREATE <index-name>
 
 - `PREFIX <prefix-count> <prefix>` (optional): If this clause is specified, then only keys that begin with the same bytes as one or more of the specified prefixes will be included into this index. If this clause is omitted, all keys of the correct type will be included. A zero-length prefix would also match all keys of the correct type.
 
-- **SCORE** (optional): A number representing the default base score that is assigned to a document. The current implementation only allows the value to be 1.0. This parameter is reserved for future expansion (default: 1.0) 
+- **SCORE** (optional): The current implementation only allows the value to be 1.0. This parameter is accepted to make valkey-search more interoperable with RedisSearch. (default: 1.0) 
 
 ## Field types
 
