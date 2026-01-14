@@ -39,4 +39,4 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           
           git tag -m "Documentation for Valkey $VERSION" "$VERSION"
-          git push origin "$VERSION"
+          git push fork "$VERSION"
