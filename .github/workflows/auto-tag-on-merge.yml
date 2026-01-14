@@ -1,0 +1,42 @@
+name: Auto Tag Documentation
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+
+jobs:
+  create-tag:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if documentation PR
+        id: check-pr
+        run: |
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          
+          if [[ "$PR_TITLE" =~ ^Update\ documentation\ for\ Valkey\ ([0-9]+\.[0-9]+\.[0-9]+) ]]; then
+            VERSION="${BASH_REMATCH[1]}"
+            echo "version=$VERSION" >> $GITHUB_OUTPUT
+            echo "is_doc_pr=true" >> $GITHUB_OUTPUT
+          else
+            echo "is_doc_pr=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Checkout
+        if: steps.check-pr.outputs.is_doc_pr == 'true'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create and push tag
+        if: steps.check-pr.outputs.is_doc_pr == 'true'
+        run: |
+          VERSION="${{ steps.check-pr.outputs.version }}"
+          
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          git tag -m "Documentation for Valkey $VERSION" "$VERSION"
+          git push origin "$VERSION"
