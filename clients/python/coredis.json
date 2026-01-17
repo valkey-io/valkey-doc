@@ -2,7 +2,7 @@
     "name": "coredis",
     "description": "Fast, async, fully-typed Valkey client with support for cluster and sentinel",
     "repo":"https://github.com/alisaifee/coredis",
-    "website": "https://coredis.readthedocs.io/en/latest",
+    "website": "https://coredis.readthedocs.io",
     "installation": "pip install coredis",
     "version":"5.5.0",
     "version_released":"2026-01-12",
