@@ -1,5 +1,5 @@
 The `HSETEX` command allows setting the value of one or more fields of a given hash key, and optionally manipulating their expiration time.
-The command will return 1 in case all provided fields have been set or 0 in case `FNX` or `FXX` were provided and non of the specified fields were set.
+The command will return 1 in case all provided fields have been set or 0 in case `FNX` or `FXX` were provided and none of the specified fields were set.
 Without providing any optional flags, this command behaves exactly like a normal [`HSET`](hset.md) command.
 
 ## Options
