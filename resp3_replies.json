@@ -634,6 +634,9 @@
   "HMGET": [
     "[Array reply](../topics/protocol.md#arrays): a list of values associated with the given fields, in the same order as they are requested."
   ],
+  "HGETDEL": [
+    "[Array reply](../topics/protocol.md#arrays): a list of values associated with the given fields that are deleted or `nil` for the fields that do not exist. These are in same order as requested."
+  ],
   "HMSET": [
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
   ],
