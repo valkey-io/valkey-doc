@@ -98,7 +98,7 @@ perform eavesdropping.
 ## TLS support
 
 Valkey has optional support for TLS on all communication channels, including
-client connections, replication links, and the Valkey Cluster bus protocol.
+client connections, replication links, and the Valkey Cluster bus protocol. Read more about TLS [here](tls.md).
 
 ## Attacks triggered by malicious inputs from external clients
 

@@ -77,7 +77,7 @@ It's released under the
 ### Security
 * [Security](security.md): An overview of Valkey's security.
 * [Access Control Lists](acl.md): ACLs make it possible to allow users to run only selected commands and access only specific key patterns.
-* [Encryption](encryption.md): How to use TLS for communication.
+* [TLS](tls.md): How to use TLS for communication.
 
 ### Platform Specific
 * [ARM and Raspberry Pi](ARM.md): ARM and the Raspberry Pi are supported platforms. This page contains general information and benchmarks.
