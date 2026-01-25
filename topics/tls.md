@@ -4,50 +4,28 @@ description: Valkey TLS support
 ---
 
 SSL/TLS is supported by Valkey as an optional feature
-that needs to be enabled at compile time.
+that needs to be enabled at compile time. See the [Valkey build guide](https://github.com/valkey-io/valkey#building-valkey-using-makefile) for more details.
 
 ## Getting Started
 
-### Building
+### Quick start
 
-To build with TLS support you'll need OpenSSL development libraries (e.g.
-`libssl-dev` on Debian/Ubuntu).
+To start a TLS-enabled Valkey server:
 
-Build Valkey with the following command:
+    ./src/valkey-server \
+        --tls-port 6379 --port 0 \
+        --tls-cert-file /path/to/server.crt \
+        --tls-key-file /path/to/server.key \
+        --tls-ca-cert-file /path/to/ca.crt
 
-```sh
-make BUILD_TLS=yes
-```
-
-### Tests
-
-To run Valkey test suite with TLS, you'll need TLS support for TCL (i.e.
-`tcl-tls` package on Debian/Ubuntu).
-
-1. Run `./utils/gen-test-certs.sh` to generate a root CA and a server
-   certificate.
-
-2. Run `./runtest --tls` or `./runtest-cluster --tls` to run Valkey and Valkey
-   Cluster tests in TLS mode.
-
-### Running manually
-
-To manually run a Valkey server with TLS mode (assuming `gen-test-certs.sh` was
-invoked so sample certificates/keys are available):
-
-    ./src/valkey-server --tls-port 6379 --port 0 \
-        --tls-cert-file ./tests/tls/valkey.crt \
-        --tls-key-file ./tests/tls/valkey.key \
-        --tls-ca-cert-file ./tests/tls/ca.crt
-
-To connect to this Valkey server with `valkey-cli`:
+To connect to this TLS-enabled Valkey server with `valkey-cli`:
 
     ./src/valkey-cli --tls \
-        --cert ./tests/tls/valkey.crt \
-        --key ./tests/tls/valkey.key \
-        --cacert ./tests/tls/ca.crt
+        --cert /path/to/client.crt \
+        --key /path/to/client.key \
+        --cacert /path/to/ca.crt
 
-### Certificate configuration
+### TLS material configuration
 
 In order to support TLS, Valkey must be configured with a X.509 certificate and a
 private key. In addition, it is necessary to specify a CA certificate bundle
