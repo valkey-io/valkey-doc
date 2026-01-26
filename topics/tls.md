@@ -4,7 +4,9 @@ description: Valkey TLS support
 ---
 
 SSL/TLS is supported by Valkey as an optional feature
-that needs to be enabled at compile time. See the [Valkey build guide](https://github.com/valkey-io/valkey#building-valkey-using-makefile) for more details.
+that needs to be enabled at compile time. See the 
+[Valkey build guide](https://github.com/valkey-io/valkey#building-valkey-using-makefile) 
+for more details.
 
 ## Getting Started
 
@@ -75,6 +77,28 @@ certificate and private key to authenticate itself to connecting peers:
 tls-client-cert-file /path/to/client.crt
 tls-client-key-file /path/to/client.key
 ```
+
+**Automatic TLS material reload**
+
+Valkey can automatically reload TLS materials at a specified interval
+(in seconds), the default value is 0 (disabled). Reloading is performed in a background
+thread, so it does not block the main server thread. For example, to reload materials daily:
+
+```
+tls-auto-reload-interval 86400
+```
+
+**TLS material validation**
+
+Valkey performs validation on all TLS materials whenever they are loaded
+or reloaded. If any check fails, the load operation will fail immediately,
+preventing Valkey from using invalid TLS materials.
+
+The validation ensures that:
+
+- TLS files or directories are not empty or malformed
+- Certificates match their corresponding private keys
+- Certificates are within their valid time period
 
 ### Client certificate authentication
 
