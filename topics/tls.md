@@ -25,20 +25,6 @@ To connect to this TLS-enabled Valkey server with `valkey-cli`:
         --key /path/to/client.key \
         --cacert /path/to/ca.crt
 
-### TLS material configuration
-
-In order to support TLS, Valkey must be configured with a X.509 certificate and a
-private key. In addition, it is necessary to specify a CA certificate bundle
-file or path to be used as a trusted root when validating certificates. To
-support DH based ciphers, a DH params file can also be configured. For example:
-
-```
-tls-cert-file /path/to/valkey.crt
-tls-key-file /path/to/valkey.key
-tls-ca-cert-file /path/to/ca.crt
-tls-dh-params-file /path/to/valkey.dh
-```
-
 ### TLS listening port
 
 The `tls-port` configuration directive enables accepting SSL/TLS connections on
@@ -52,6 +38,42 @@ TLS on the default Valkey port, use:
 ```
 port 0
 tls-port 6379
+```
+
+### TLS material configuration
+
+To enable TLS, Valkey must be configured with the appropriate X.509
+certificates and private keys.
+
+**Server certificate and key**
+
+When acting as a TLS server, Valkey requires a server certificate and
+private key, configured using:
+
+```
+tls-cert-file /path/to/valkey.crt
+tls-key-file /path/to/valkey.key
+```
+
+**CA certificate configuration**
+
+A trusted Certificate Authority (CA) must be configured in order to
+validate peer certificates. This can be done by specifying either a CA
+certificate bundle file or a directory containing CA certificates:
+
+```
+tls-ca-cert-file /path/to/ca.crt
+tls-ca-cert-dir /path/to/ca-certs/
+```
+
+**Client certificate and key (mutual TLS)**
+
+When mutual TLS (mTLS) is enabled, Valkey can be configured with a client
+certificate and private key to authenticate itself to connecting peers:
+
+```
+tls-client-cert-file /path/to/client.crt
+tls-client-key-file /path/to/client.key
 ```
 
 ### Client certificate authentication
