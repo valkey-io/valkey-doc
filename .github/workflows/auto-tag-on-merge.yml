@@ -31,7 +31,7 @@ jobs:
           VERSION="${{ steps.check-pr.outputs.version }}"
           
           HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-            "https://api.github.com/repos/hanxizh9910/valkey/releases/tags/$VERSION")
+            "https://api.github.com/repos/valkey-io/valkey/releases/tags/$VERSION")
           
           if [[ "$HTTP_STATUS" == "200" ]]; then
             echo "is_valid=true" >> $GITHUB_OUTPUT
