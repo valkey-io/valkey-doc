@@ -24,14 +24,30 @@ jobs:
             echo "is_doc_pr=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Checkout
+      - name: Verify Valkey release exists
         if: steps.check-pr.outputs.is_doc_pr == 'true'
+        id: verify-release
+        run: |
+          VERSION="${{ steps.check-pr.outputs.version }}"
+          
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            "https://api.github.com/repos/hanxizh9910/valkey/releases/tags/$VERSION")
+          
+          if [[ "$HTTP_STATUS" == "200" ]]; then
+            echo "is_valid=true" >> $GITHUB_OUTPUT
+          else
+            echo "is_valid=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+      - name: Checkout
+        if: steps.check-pr.outputs.is_doc_pr == 'true' && steps.verify-release.outputs.is_valid == 'true'
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Create and push tag
-        if: steps.check-pr.outputs.is_doc_pr == 'true'
+        if: steps.check-pr.outputs.is_doc_pr == 'true' && steps.verify-release.outputs.is_valid == 'true'
         run: |
           VERSION="${{ steps.check-pr.outputs.version }}"
           
