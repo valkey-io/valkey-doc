@@ -344,6 +344,7 @@ Hitmeister
 HLLs
 HMAC-SHA256
 hmget
+hgetdel
 holdApplicationUntilProxyStarts
 Homebrew
 hostname
