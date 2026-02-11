@@ -37,7 +37,7 @@ The current list of attributes:
 * tls-port (optional): The TLS port of the node. At least one of port or tls-port will be present.
 * role: The replication role of this node.
 * replication-offset: The replication offset of this node. This information can be used to send commands to the most up to date replicas.
-* health: Either `online`, `failed`, or `loading`. This information should be used to determine which nodes should be sent traffic. The `loading` health state should be used to know that a node is not currently eligible to serve traffic, but may be eligible in the future. 
+* health: Either `online`, `fail`, or `loading`. This information should be used to determine which nodes should be sent traffic. The `loading` health state should be used to know that a node is not currently eligible to serve traffic, but may be eligible in the future. 
 
 The endpoint, along with the port, defines the location that clients should use to send requests for a given slot.
 A NULL value for the endpoint indicates the node has an unknown endpoint and the client should connect to the same endpoint it used to send the `CLUSTER SHARDS` command but with the port returned from the command.
