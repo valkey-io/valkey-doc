@@ -215,7 +215,7 @@ properties is violated.
 ### Disclaimer about consistency
 
 Please consider thoroughly reviewing the [Analysis of Redlock](#analysis-of-redlock) section at the end of this page.
-Martin Kleppman's article and antirez's answer to it are very relevant.
+Martin Kleppmann's article and antirez's answer to it are very relevant.
 If you are concerned about consistency and correctness, you should pay attention to the following topics:
 
 1. You should implement fencing tokens.
