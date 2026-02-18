@@ -248,15 +248,3 @@ Returned result:
     3) description
     4) \x00\x00\x80?\x00\x00\x00\x00\x00\x00\x00\x00
 ```
-
-## Query On JSON Index without RETURN clause
-
-Simple query showing the JSON output
-
-## Simple Query with RETURN Clause
-
-Simple query showing selecting return of additional fields
-
-## Query showing NOCONTENT
-
-## Query showing SORTBY
