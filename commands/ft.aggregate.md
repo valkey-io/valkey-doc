@@ -29,8 +29,8 @@ FT.AGGREGATE <index-name> <query>
 - `<index>` (required): This index name you want to query.
 - `<query>` (required): The query string, see [Search - query language](../topics/search-query.md) for details.
 - `DIALECT <dialect>` (optional): Specifies your dialect. The only supported dialect is 2.
-- `INORDER` (optional): Indicates that proximity matching of terms must be in order.
-- `LOAD * | LOAD <count> <field> [<field> ...]` (optional): This controls which fields of those keys are loaded into the working set. A star (\*) indicates that all of the fields of the - `PARAMS <count> <name> <value> [<name> <value> ...]` (optional): `count` is of the number of arguments, i.e., twice the number of `name`/`value` pairs. `PARAMS` can be used in both the query string as well as within an expression context. See [Search - query language](../topics/search-query.md) for usage details.
+- `INORDER` (optional): Indicates that proximity matching of terms must be inorder.
+- `LOAD * | LOAD <count> <field> [<field> ...]` (optional): This controls which fields of those keys are loaded into the working set. A star (\*) indicates that all of the fields of the - `PARAMS <count> <name> <value> [<name> <value> ...]` (optional): `count` is of the number of arguments, i.e., twice the number of `name`/`value` pairs. Params can be used in both the query string as well as within an expression context. See [Search - query language](../topics/search-query.md) for usage details.
   keys are loaded. The key itself can be loaded by specifying `@__key`. For vector queries, the distance can also be loaded by using the name of that field.
 - `SLOP <slop>` (Optional): Specifies a slop value for proximity matching of terms.
 - `TIMEOUT <timeout>` (optional): Lets you set a timeout value for the search command. This must be an integer in milliseconds.
@@ -66,7 +66,7 @@ The `LIMIT` stage discards records from the working set based on the provided of
 
 The `SORTBY` stage reorders the records in accordance with a sort key. A sort key can be constructed using a number of expressions optionally combined with a direction.
 
-If the MAX clause is present, then the output is trimmed after the first N records. It is more efficient to use the MAX clause than to follow the `SORTBY` stage with a limit stage.
+If the MAX clause is present, then the output is trimmed after the first N records. It is more efficient to use the MAX clause than to follow the sortby stage with a limit stage.
 
 ## GROUPBY Stage
 
