@@ -22,7 +22,7 @@ FT.SEARCH <index> <query>
 - `ALLSHARDS` (Optional): If specified, the command is terminated with a timeout error if a valid response from all shards is not received within the timeout interval. This is the default.
 - `CONSISTENT` (Optional): If specified, the command is terminated with an error if the cluster is in an inconsistent state. This is the default.
 - `DIALECT <dialect>` (optional): Specifies your dialect. The only supported dialect is 2.
-- `INORDER` (optional): Indicates that proximity matching of terms must be inorder.
+- `INORDER` (optional): Indicates that proximity matching of terms must be in order.
 - `INCONSISTENT` (Optional): If specified, the command will generate a best-effort reply if the cluster remains inconsistent within the timeout interval.
 - `LIMIT <offset> <count>` (optional): Lets you choose a portion of the result. The first `<offset>` keys are skipped and only a maximum of `<count>` keys are included. The default is LIMIT 0 10, which returns at most 10 keys.
 - `NOCONTENT` (optional): When present, only the resulting key names are returned, no key values are included.

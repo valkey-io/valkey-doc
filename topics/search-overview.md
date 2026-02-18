@@ -56,10 +56,10 @@ Processing of the mutation queue does not respect the order of mutations. If mul
 
 The automatic ingestion only applies to keys which are modified _after_ the creation of an index. But what about keys that exist _before_ the creation of an index? These keys cannot be instantly inserted into the index. By default, the creation of an index initiates an internal background process which scans the keyspace to locate and insert preexisting keys into the index. This process, known as backfilling, can be monitored via the `FT.INFO` command. The backfill process runs once after the creation of the index. Once it has completed it will not be initiated again. The backfill process does not directly change the behavior of an index. Applications may continue to modify indexed keys and they will be updated in the same way as if no backfill was executing. Query operations can freely be executed, but will only contain the results from keys which are currently in the index, i.e., all keys modified after creation of the index and _some_ of the keys that existed before creation of the index.
 
-The backfill process can be quite lengthy on a large system even if no keys are found. The backfill process can be suppressed by specifying the `SKIPINITIALSCAN` option on the `FT.CREATE` command. Applications that know _a priori_ that no preexisting keys exist or exist and need not be put into the index can specify this option as an optimization.
+The backfill process can be quite lengthy on a large system even if no keys are found. The backfill process can be suppressed by specifying the `SKIPINITIALSCAN` option on the `FT.CREATE` command. Applications that know that no preexisting keys exist or exist and need not be put into the index can specify this option as an optimization.
 
 The snapshot process (save or full sync) only partially preserves the state of the backfilling process. The process is able to save the fact that a backfill is in progress, but does not save the backfill cursor (because a `SCAN` cursor isn't valid across reloads).
-Thus on reload a backfilling index must restart the backfill at the begining. However, because the indexes for vector fields are saved and restored, the of vector fields (the really slow part) is preserved.
+Thus on reload a backfilling index must restart the backfill at the beginning. However, because the indexes for vector fields are saved and restored, the of vector fields (the really slow part) is preserved.
 
 ## Query Operations
 
@@ -80,7 +80,7 @@ Search fully supports cluster mode and uses gRPC and protobuf for intra-cluster 
 
 In cluster mode, Valkey distributes keys according to the hash algorithm of the keyname. This placement of data is not affected by the presence of the search module or any search indexes. Since search commands operate at the index level -- not the key level -- search is responsible for dealing with the distribution of data, performing intra-cluster RPC to execute commands as needed. Thus the application interface to search operates the same in cluster and non-cluster mode.
 
-Search uses a simple architecture where index definitions are replicated on every node but the corresponding index only contains the data which is co-resident on that node. Index update operations remain wholly local to a node and will scale horizontally (save/restore operations also wholly node local). Vertical scaling is also effective because of the multithreaded architecture of search.
+Search uses a simple architecture where index definitions are replicated on every node but the corresponding index only contains the data which is co-resident on that node. Index update operations remain wholly local to a node and will scale horizontally (save/restore operations also wholly node local). Vertical scaling is also effective because of the multi threaded architecture of search.
 
 Query operations are performed by one node of each shard on its local index and the results are transparently merged together to form a full command response. Query operations are subject to increasing overhead as the cluster shard count increases, meaning that query operations may scale sub-linearly with increasing shard count.
 

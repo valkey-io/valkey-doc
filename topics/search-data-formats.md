@@ -22,7 +22,7 @@ The valid separator characters are: `,.<>{}[]"':;!@#$%^&*()-+=~`
 After splitting, each tag is processed as follows:
 
 1. Leading and trailing ASCII whitespace is stripped from each tag.
-2. Empty tags (those that are empty or whitespace-only after trimming) are silently discarded.
+2. Empty tags (those that are empty or whitespace only after trimming) are silently discarded.
 3. Duplicate tags within a single field value are deduplicated.
 
 If the field value produces no valid tags after processing, the key is tracked but not indexed for that field.
@@ -303,7 +303,7 @@ Given English stemming with the default `MINSTEMSIZE` of 4 and input `"The Runni
 | After tokenization      | `The`, `Running`, `Searches`, `cat`                  |
 | After case folding      | `the`, `running`, `searches`, `cat`                  |
 | After stop word removal | `running`, `searches`, `cat`                         |
-| Indexed tokens          | `running` (pos 0), `searches` (pos 1), `cat` (pos 2) |
+| Indexed tokens          | `running` (position 0), `searches` (position 1), `cat` (position 2) |
 | Stem mappings           | `run` -> {`running`}, `search` -> {`searches`}       |
 
 The word `the` is removed as a stop word. The word `cat` (3 characters) is below the minimum stem size and is not stemmed. A search for `run` will match `running` through the stem mapping.

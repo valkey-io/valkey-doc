@@ -95,10 +95,10 @@ As another example, the following query will return documents containing "hello 
 @color:{hello world | hello universe}
 ```
 
-This example will match black or any word that starts with ferd:
+This example will match black or any word that starts with fred:
 
 ```
-@color:{black | ferd*}
+@color:{black | fred*}
 ```
 
 For more examples see [Tag Fields](#example-tag-queries).
@@ -189,7 +189,7 @@ The exact phrase search operator matches an exact sequence of words in a text fi
 
 ### Fuzzy Search
 
-The fuzzy search operator matches words within a fixed Damerau-Levenshtein distance. See [Damerau-Levenshtein edit distance](https://en.wikipedia.org/wiki/Damerau%E2%80%93Levenshtein_distance) for more information. Fuzzy matching is specified by enclosing the base word in percent symbols `%` one for each allowable edit distance. The maximum allowed edit distance is control by the configuration setting `search.fuzzy-max-distance`.
+The fuzzy search operator matches words within a fixed damerau-levenshtein distance. See [damerau-levenshtein edit distance](https://en.wikipedia.org/wiki/Damerau%E2%80%93Levenshtein_distance) for more information. Fuzzy matching is specified by enclosing the base word in percent symbols `%` one for each allowable edit distance. The maximum allowed edit distance is control by the configuration setting `search.fuzzy-max-distance`.
 
 ```
 %hello%                 matches words that are one edit away from hello such as hello, hello1

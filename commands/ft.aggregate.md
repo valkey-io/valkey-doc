@@ -29,7 +29,7 @@ FT.AGGREGATE <index-name> <query>
 - `<index>` (required): This index name you want to query.
 - `<query>` (required): The query string, see [Search - query language](../topics/search-query.md) for details.
 - `DIALECT <dialect>` (optional): Specifies your dialect. The only supported dialect is 2.
-- `INORDER` (optional): Indicates that proximity matching of terms must be inorder.
+- `INORDER` (optional): Indicates that proximity matching of terms must be in order.
 - `LOAD * | LOAD <count> <field> [<field> ...]` (optional): This controls which fields of those keys are loaded into the working set. A star (\*) indicates that all of the fields of the - `PARAMS <count> <name> <value> [<name> <value> ...]` (optional): `count` is of the number of arguments, i.e., twice the number of `name`/`value` pairs. `PARAMS` can be used in both the query string as well as within an expression context. See [Search - query language](../topics/search-query.md) for usage details.
   keys are loaded. The key itself can be loaded by specifying `@__key`. For vector queries, the distance can also be loaded by using the name of that field.
 - `SLOP <slop>` (Optional): Specifies a slop value for proximity matching of terms.
@@ -38,7 +38,7 @@ FT.AGGREGATE <index-name> <query>
 
 - `APPLY <expression> as <field>` (optional): An expression is computed and insert into the record. See [APPLY Stage](#apply-stage) below. See [Search - expressions](../topics/search-expressions.md) for details on the expression syntax.
 - `FILTER <expression>` (optional): The filter expression is applied, see [FILTER Stage](#filter-stage) for more details. See [Search - expressions](../topics/search-expressions.md) for details on the expression syntax.
-- `GROUPBY <count> <field> <field> ... [REDUCE <reducer> <count> [<expression> [<expression> ...]]]` (optional): The working set is grouped into buckets according to the input fields. One record is generated for each bucket including the outputs of each reducer. See [GROUPBY Stage](#groupby-stage) for details.
+- `GROUPBY <count> <field> <field> ... [REDUCE <reducer> <count> [<expression> [<expression> ...]]]` (optional): The working set is grouped into buckets according to the input fields. One summarization record is generated for each bucket including the outputs of each reducer. See [GROUPBY Stage](#groupby-stage) for details.
 - `LIMIT <offset> <count>` (optional): The working set is trimmed, see [LIMIT Stage](#limit-stage) for details.
 - `SORTBY <count> <expression> [ASC | DESC] [<expression> [ASC | DESC] ...] [MAX <num>]` (optional): The working set is sorted. See [SORTBY Stage](#sortby-stage) for more details.
 
@@ -75,9 +75,9 @@ For each unique combination of values a separate bucket is created to hold all r
 
 Each bucket of records is processed into a single output record, discarding the bucket contents. That output record has two sections. The first section has one value for each of the specified `GROUPBY` fields. This section provides the values that formed (named) this unique bucket.
 
-The second section is the output of the reducers for that bucket. Reducers provide an efficient mechanism for reducing (summarizing) the contents of a bucket. Each reducer function processes each record of the bucket and generates a single output value which is inserted into the second section of groupby output record for this bucket.
+The second section is the output of the reducers for that bucket. Reducers provide an efficient mechanism for reducing (summarizing) the contents of a bucket. Each reducer function processes each record of the bucket and generates a single output value which is inserted into the second section of `GROUPBY` output record for this bucket.
 
-The output of the groupby stage is one record for each unique bucket.
+The output of the `GROUPBY`stage is one record for each unique bucket.
 
 ### Reducers
 
