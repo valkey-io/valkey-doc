@@ -5,10 +5,10 @@ description: Valkey Search Module Overview
 
 # Valkey-Search
 
-**Valkey-Search** (BSD-3-Clause), provided as a Valkey module, is a high-performance Vector Similarity Search engine
+**Valkey-Search** (BSD-3-Clause), provided as a Valkey module, is a high-performance Search engine
 optimized for AI-driven / Search / Analytics / Recommendation System related workloads. It delivers single-digit millisecond
 latency and high QPS, capable of handling billions of vectors with over 99% recall as part of vector searches. It also provides
-support for hybrid or pure non vector workloads including  Numeric, Tag, and Full-text searches.
+support for hybrid / pure non vector workloads including Numeric, Tag, and Full-text searches.
 
 Valkey-Search allows users to create indexes and perform searches, incorporating complex filters.
 Users can index data using either **[Valkey Hash](hashes.md)** or **[Valkey-JSON](valkey-json.md)** data types.
