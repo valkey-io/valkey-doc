@@ -150,7 +150,7 @@ If the blob size does not match the expected `DIM * 4` bytes, the vector is reje
 
 ## JSON Vector Format
 
-For JSON-type indexes, vectors are stored as a JSON string containing a bracketed, comma-separated list of floating-point values:
+For JSON type indexes, vectors are stored as a JSON string containing a bracketed, comma-separated list of floating-point values:
 
 ```
 JSON.SET doc:1 $ '{"embedding": "[1.0, 0.0, 0.0]"}'

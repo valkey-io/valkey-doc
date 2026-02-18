@@ -121,7 +121,7 @@ Bounds without a leading open paren are inclusive, whereas bounds with the leadi
 
 Use the following table as a guide for mapping mathematical expressions to filtering queries:
 
-| Desired comparison | Numeric Matcher    |
+| Desired comparison | Numeric matcher    |
 | :----------------: | :----------------- |
 | min ≤ field ≤ max  | @field:[min max]   |
 | min < field ≤ max  | @field:[(min max]  |
