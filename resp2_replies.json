@@ -820,8 +820,9 @@
     "* [Integer reply](../topics/protocol.md#integers):",
     "  * The number of containers cleared.",
     "  * Returns 0 if clearing an empty array or object.",
-    "  * Returns 0 if clearing a non-container value.",
+    "  * Returns 0 if clearing a non-container value except JSON string.",
     "  * Returns 0 if no array or object value is located by the path.",
+    "  * Always Returns 1 if clearing a JSON string value regardless of the length of the JSON string value including empty string.",
     ""
   ],
   "JSON.DEBUG": [
