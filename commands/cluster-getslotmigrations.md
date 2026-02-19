@@ -44,6 +44,9 @@ The following information is reported for each slot migration entry:
   available.
 - `cow_size`: The copy-on-write overhead accumulated while the migration was
   in progress, in bytes.
+- `remaining_repl_size`: The number of bytes remaining in the source node's
+  output buffer that are pending to be sent to the target node during slot
+  migration. Added in Valkey 9.1.
 
 ## Examples
 
@@ -73,6 +76,8 @@ The following information is reported for each slot migration entry:
    20) ""
    21) "cow_size"
    22) (integer) 0
+   23) "remaining_repl_size"
+   24) (integer) 0
 ```
 
 ### Response in RESP 3
@@ -90,4 +95,5 @@ The following information is reported for each slot migration entry:
     9# "state" => "success"
    10# "message" => ""
    11# "cow_size" => (integer) 0
+   12# "remaining_repl_size" => (integer) 0
 ```
