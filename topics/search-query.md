@@ -44,7 +44,7 @@ Where:
 
 ## Filter Expression
 
-A filter identifies a set of keys. Filters are constructed by combining matching operators with `AND` or `OR` operators.
+A filter identifies a set of keys. Filters can be constructed using individual query operator as well as by combining operators with `AND`, `OR`, `NEGATE` operators.
 
 It is not the case that the of filtering terminology implies an O(N) scan of keys in an index. Valkey search intelligently combines the usage of secondary indexes and simple filtering to efficiently locate the keys that a filter identifies. Determining the computational complexity of a particular filter is difficult, but generally no worse than O(log N) and sometimes as fast as O(1).
 
