@@ -1,164 +1,193 @@
 Performs a search of the specified index. The keys which match the query expression are returned.
 
-- `index` (required): This index name you want to query.
-- `query` (required): The query string, see below for details.
-- `NOCONTENT` (optional): When present, only the resulting key names are returned, no key values are included.
-- `TIMEOUT <timeout>` (optional): Lets you set a timeout value for the search command. This must be an integer in milliSeconds.
-- `PARAMS <count> <name1> <value1> <name2> <value2> ...` (optional): `count` is of the number of arguments,
-    i.e., twice the number of value name pairs. See the query string for usage details.
-- `RETURN <count> <field1> <field2> ...` (options): `count` is the number of fields to return.
-    Specifies the fields you want to retrieve from your documents, along with any aliases for the returned values.
-    By default, all fields are returned unless the `NOCONTENT` option is set, in which case no fields are returned.
-    If num is set to 0, it behaves the same as `NOCONTENT`.
-- `LIMIT <offset> <count` (optional): Lets you choose a portion of the result.
-    The first `<offset>` keys are skipped and only a maximum of `<count>` keys are included. The default is LIMIT 0 10,
-    which returns at most 10 keys.
+```
+FT.SEARCH <index> <query>
+  [ALLSHARDS | SOMESHARDS]
+  [CONSISTENT | INCONSISTENT]
+  [DIALECT <dialect>]
+  [INORDER]
+  [LIMIT <offset> <num>]
+  [NOCONTENT]
+  [PARAMS <count> <name> <value> [ <name> <value> ...]]
+  [RETURN <count> <field> [AS <name>] <field> [AS <name>]...]
+  [SLOP <slop>]
+  [SORTBY <field> [ ASC | DESC]]
+  [TIMEOUT <timeout>]
+  [VERBATIM]
+  [WITHSORTKEYS]
+```
+
+- `<index>` (required): This index name you want to query.
+- `<query>` (required): The query string, see [Search - query language](../topics/search-query.md) for details.
+- `ALLSHARDS` (Optional): If specified, the command is terminated with a timeout error if a valid response from all shards is not received within the timeout interval. This is the default.
+- `CONSISTENT` (Optional): If specified, the command is terminated with an error if the cluster is in an inconsistent state. This is the default.
 - `DIALECT <dialect>` (optional): Specifies your dialect. The only supported dialect is 2.
+- `INORDER` (optional): Indicates that proximity matching of terms must be in order.
+- `INCONSISTENT` (Optional): If specified, the command will generate a best-effort reply if the cluster remains inconsistent within the timeout interval.
+- `LIMIT <offset> <count>` (optional): Lets you choose a portion of the result. The first `<offset>` keys are skipped and only a maximum of `<count>` keys are included. The default is LIMIT 0 10, which returns at most 10 keys.
+- `NOCONTENT` (optional): When present, only the resulting key names are returned, no key values are included.
+- `PARAMS <count> <name> <value> [<name> <value> ...]` (optional): `count` is of the number of arguments, i.e., twice the number of value/name pairs. [Search - query language](../topics/search-query.md) for details.
+- `RETURN <count> <field> [AS <name>] <field> [AS <name>] ...` (options): `count` is the number of fields to return. Specifies the fields you want to retrieve from your documents, along with any renaming for the returned values. By default, all fields are returned unless the `NOCONTENT` option is set, in which case no fields are returned. If num is set to 0, it behaves the same as `NOCONTENT`.
+- `SLOP <slop>` (Optional): Specifies a slop value for proximity matching of terms.
+- `SOMESHARDS` (Optional): If specified, the command will generate a best-effort reply if all shards have not responded within the timeout interval.
+- `SORTBY <field> [ASC | DESC]` (Optional): If present, results are sorted according the value of the specified field and the optional sort-direction instruction. By default, vector results are sorted in distance order and non-vector results are not sorted in any particular order. Sorting is applied before the `LIMIT` clause is applied.
+- `TIMEOUT <timeout>` (optional): Lets you set a timeout value for the search command. This must be an integer in milliseconds.
+- `VERBATIM` (Optional): If specified stemming is not applied to term searches.
+- `WITHSORTKEYS` (Optional): If `SORTBY` is specified then enabling this option augments the output with the value of the field used for sorting.
 
-On success, the first entry in the response array represents the count of matching keys, followed by one array entry for
-each matching key. Note that if the `LIMIT` option is specified it will only control the number of returned keys and will
-not affect the value of the first entry.
+Response
 
-When `NOCONTENT` is specified, each entry in the response contains only the matching keyname,
-Otherwise, each entry includes the matching keyname, followed by an array of the returned fields.
+The shape and contents of the response depend on the options specified in the command.
+In all cases, the response is an array with the first element being a count of the number of keys which match the query.
+The value of this count is unaffected by the presence of the `LIMIT` clause.
 
-The result fields for a key consists of a set of name/value pairs. The first name/value pair is for the distance computed.
-The name of this pair is constructed from the vector field name prepended with `__` and appended with `_score` and
-the value is the computed distance. The remaining name/value pairs are the members and values of the key
-as controlled by the `RETURN` clause.
+The `LIMIT` clause trims the list of matched keys to generate a list of returned keys. The remainder of the response array is for the returned keys.
 
-The query string conforms to this syntax:
+### `NOCONTENT` or `RETURN 0` was specified.
 
-```
-<filtering>=>[ KNN <K> @<vector_field_name> $<vector_parameter_name> <query-modifiers> ]
-```
+The remainder of the response array is one entry per returned key, consisting of the key name.
 
-Where:
+### `RETURN` with arguments was specified.
 
-- `filtering` Is either a `*` or a filter expression. A `*` indicates no filtering and thus all vectors within the
-    index are searched. A filter expression can be provided to designate a subset of the vectors to be searched.
-- `vector_field_name` The name of a vector field within the specified index.
-- `K` The number of nearest neighbor vectors to return.
-- `vector_parameter_name` A `PARAM` name whose corresponding value provides the query vector for the KNN algorithm.
-    Note that this parameter must be encoded as a 32-bit IEEE 754 binary floating point in little-endian format.
-- `query-modifiers` (Optional) A list of keyword/value pairs that modify this particular KNN search. Currently two
-    keywords are supported:
-  - `EF_RUNTIME` This keyword is accompanied by an integer value which overrides the default value of `EF_RUNTIME`
-    specified when the index was created.
-  - `AS` This keyword is accompanied by a string value which becomes the name of the score field in the result,
-    overriding the default score field name generation algorithm.
+The remainder of the response array is two entries per returned key. The first entry is the key name and
+the second entry is an array of name/value pairs. The array of name/value pairs is driven by the `RETURN` clause.
+Each of the named fields in the `RETURN` clause is returned along with the value of that field for this particular key. If the named field isn't present in this key then it won't be included.
+In addition, if this is a vector search, then one additional name/value pair will be included which is the computed vector distance for this returned key -- see [Search - query language](../topics/search-query.md) for details on how to control the name of that field.
 
-## Filter Expression
+### Neither `NOCONTENT` nor `RETURN` was specified.
 
-A filter expression is constructed as a logical combination of Tag and Numeric search operators contained within parenthesis.
+If the index is on `HASH` keys, then the result is the same as if a `RETURN` clause had been present that listed all of the fields of a key.
 
-## Tag
+If the index is on `JSON` keys, then one name/value pair is inserted with name `$` and the value being the entire JSON key as a string.
+In addition, if this is a vector search, then one additional name/value pair will be included which is the computed vector distance for this returned key -- see [Search - query language](../topics/search-query.md) for details on how to control the name of that field.
 
-The tag search operator is specified with one or more strings separated by the `|` character.
-A key will satisfy the Tag search operator if the indicated field contains any one of the specified strings.
+# Examples
 
-```
-@<field_name>:{<tag>}
-or
-@<field_name>:{<tag1> | <tag2>}
-or
-@<field_name>:{<tag1> | <tag2> | ...}
-```
+## Non-vector Queries On Hash Index
 
-For example, the following query will return documents with blue OR black OR green color.
-
-`@color:{blue | black | green}`
-
-As another example, the following query will return documents containing "hello world" or "hello universe"
-
-`@color:{hello world | hello universe}`
-
-## Numeric Range
-
-Numeric range operator allows for filtering queries to only return values that are in between a given start and end value.
-Both inclusive and exclusive range queries are supported. For simple relational comparisons, \+inf, \-inf can be used
-with a range query.
-
-The syntax for a range search operator is:
+For these queries the following index and data definitions were used:
 
 ```
-@<field_name>:[ [(] <bound> [(] <bound>]
+FT.CREATE index on hash SCHEMA color TAG city TAG
+hset key1 color blue city London
+hset key2 color black city Paris
+hset key3 color green city Berlin
+hset key4 color white city Tokyo
+hset key5 color blend
 ```
 
-where <bound> is either a number or \+inf or \-inf
-
-Bounds without a leading open paren are inclusive, whereas bounds with the leading open parenthesis are exclusive.
-
-Use the following table as a guide for mapping mathematical expressions to filtering queries:
+A simple query returning all data of matched keys
 
 ```
-min <= field <= max         @field:[min max]
-min < field <= max          @field:[(min max]
-min <= field < max	        @field:[min (max]
-min < field < max	        @field:[(min (max]
-field >= min	            @field:[min +inf]
-field > min	                @field:[(min +inf]
-field <= max	            @field:[-inf max]
-field < max	                @field:[-inf (max]
-field == val	            @field:[val val]
+FT.SEARCH index @color:{bl*}
+1) (integer) 3
+2) "key1"
+3) 1) "city"
+   2) "London"
+   3) "color"
+   4) "blue"
+4) "key5"
+5) 1) "color"
+   2) "blend"
+   3) "cityextra"
+   4) "Unknown"
+6) "key2"
+7) 1) "city"
+   2) "Paris"
+   3) "color"
+   4) "black"
 ```
 
-## Logical Operators
-
-Multiple tags and numeric search operators can be used to construct complex queries using logical operators.
-
-### Logical `AND`
-
-To set a logical AND, use a space between the predicates. For example:
+The same query with the `NOCONTENT` clause.
 
 ```
-query1 query2 query3
+FT.SEARCH index @color:{bl*} NOCONTENT
+1) (integer) 3
+2) "key1"
+3) "key5"
+4) "key2"
 ```
 
-### Logical `OR`
-
-To set a logical OR, use the `|` character between the predicates. For example:
+The same query with a `RETURN` clause.
 
 ```
-query1 | query2 | query3
+FT.SEARCH index @color:{bl*} RETURN 2 color city
+1) (integer) 3
+2) "key1"
+3) 1) "color"
+   2) "blue"
+   3) "city"
+   4) "London"
+4) "key5"
+5) 1) "color"
+   2) "blend"
+6) "key2"
+7) 1) "color"
+   2) "black"
+   3) "city"
+   4) "Paris"
 ```
 
-**Logical Negation**
+## Non-vector Queries On JSON Index
 
-Any query can be negated by prepending the `-` character before each query. Negative queries return all entries that don't
-match the query. This also includes keys that don't have the field.
+Repeating the queries above, except the data is JSON
 
-For example, a negative query on @genre:{comedy} will return all books that are not comedy AND all books that don't have
-a genre field.
+```
+FT.CREATE index on json SCHEMA $.color as color TAG $.city as city TAG
+json.set key1 . {"color":"blue","city":"London"}
+json.set key2 . {"color":"black","city":"Paris"}
+json.set key3 . {"color":"green","city":"Berlin"}
+json.set key4 . {"color":"white","city":"Tokyo"}
+json.set key5 . {"color":"blend","cityextra":"Unknown"}
+```
 
-The following query will return all books with "comedy" genre that are not published between 2015 and 2024, or that have
-no year field:
+A simple query returning all data of matched keys
 
-`@genre: [comedy] \-@year:[2015 2024]`
+```
+FT.SEARCH index @color:{bl*}
+1) (integer) 3
+2) "key2"
+3) 1) "$"
+   2) "{\"color\":\"black\",\"city\":\"Paris\"}"
+4) "key5"
+5) 1) "$"
+   2) "{\"color\":\"blend\",\"cityextra\":\"Unknown\"}"
+6) "key1"
+7) 1) "$"
+   2) "{\"color\":\"blue\",\"city\":\"London\"}"
+```
 
-## Operator Precedence
+The same query with `NOCONTENT`
 
-Typical operator precedence rules apply, i.e., Logical negate is the highest priority, followed by Logical and and then
-Logical Or with the lowest priority. Parenthesis can be used to override the default precedence rules.
+```
+FT.SEARCH index @color:{bl*} NOCONTENT
+1) (integer) 3
+2) "key2"
+3) "key5"
+4) "key1"
+```
 
-**Examples of Combining Logical Operators**
+The same query with a `RETURN` clause.
 
-Logical operators can be combined to form complex filter expressions.
+```
+FT.SEARCH index @color:{bl*} RETURN 2 color city
+1) (integer) 3
+2) "key2"
+3) 1) "color"
+   2) "black"
+   3) "city"
+   4) "Paris"
+4) "key5"
+5) 1) "color"
+   2) "blend"
+6) "key1"
+7) 1) "color"
+   2) "blue"
+   3) "city"
+   4) "London"
+```
 
-The following query will return all books with "comedy" or "horror" genre (AND) published between 2015 and 2024:
-
-`@genre:[comedy|horror] @year:[2015 2024]`
-
-The following query will return all books with "comedy" or "horror" genre (OR) published between 2015 and 2024:
-
-`@genre:[comedy|horror] | @year:[2015 2024]`
-
-The following query will return all books that either don't have a genre field, or have a genre field not equal to "comedy",
-that are published between 2015 and 2024:
-
-`-@genre:[comedy] @year:[2015 2024]`
-
-## Complete example: Simple vector search query
+## Pure vector search query
 
 For this example, assume we're building a property searching index where customers can search properties based on some features.
 Assume we have a list of properties with the following attributes:
@@ -219,4 +248,3 @@ Returned result:
     3) description
     4) \x00\x00\x80?\x00\x00\x00\x00\x00\x00\x00\x00
 ```
-
