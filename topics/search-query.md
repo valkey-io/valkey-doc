@@ -204,7 +204,7 @@ The fuzzy search operator matches words within a fixed damerau-levenshtein dista
 
 Any query can be negated by prepending the `-` character before each query. Negative queries return all keys that don't match the query. This also includes keys that don't have the field.
 
-For example, a negative query on @genre:{comedy} will return all books that are not comedy AND all books that don't have a genre field.
+For example, the negative query `-@genre:{comedy}` will return all books that are not comedy AND all books that don't have a genre field.
 
 The following query will return all books with "comedy" genre that are not published between 2015 and 2024, or that have no year field:
 
