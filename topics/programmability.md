@@ -112,6 +112,6 @@ Interrupting the execution of a script has the potential of leaving the dataset 
 Therefore, when a script executes longer than the configured timeout, the following happens:
 
 * Valkey logs that a script is running for too long.
-* It starts accepting commands again from other clients but will reply with a BUSY error to all the clients sending normal commands. The only commands allowed in this state are `SCRIPT KILL`, `FUNCTION KILL`, and `SHUTDOWN NOSAVE`.
+* It starts accepting commands again from other clients but will reply with a BUSY error to all the clients sending normal commands. The only commands allowed in this state are those that manage the connection, control the busy state, or modify client metadata. Some of the allowed commands are `SCRIPT KILL`, `FUNCTION KILL`, `SHUTDOWN NOSAVE`, `AUTH`, `HELLO`, `QUIT`, `RESET`, `SELECT`, and various `CLIENT` sub-commands.
 * It is possible to terminate a script that only executes read-only commands using the `SCRIPT KILL` and `FUNCTION KILL` commands. These commands do not violate the scripting semantic as no data was written to the dataset by the script yet.
 * If the script had already performed even a single write operation, the only command allowed is `SHUTDOWN NOSAVE` that stops the server without saving the current data set on disk (basically, the server is aborted).
