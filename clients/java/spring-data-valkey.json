@@ -1,0 +1,29 @@
+{
+    "name": "Spring Data Valkey",
+    "description": "Spring Data Valkey provides Spring integration for Valkey with high-level abstractions including ValkeyTemplate, automatic repository implementations, Spring Cache integration, and Spring Boot auto-configuration. Supports Valkey GLIDE, Lettuce, and Jedis drivers.",
+    "repo": "https://github.com/valkey-io/spring-data-valkey",
+    "website": "https://spring.valkey.io",
+    "installation": [
+        {
+            "type": "Maven",
+            "command": "<dependency>\n  <groupId>io.valkey.springframework.boot</groupId>\n  <artifactId>spring-boot-starter-data-valkey</artifactId>\n  <version>LATEST</version>\n</dependency>"
+        },
+        {
+            "type": "Gradle",
+            "command": "implementation 'io.valkey.springframework.boot:spring-boot-starter-data-valkey:+'"
+        }
+    ],
+    "version": "v0.2.0",
+    "version_released": "2026-01-20",
+    "language": "java",
+    "license": "Apache-2.0",
+    "read_from_replica": true,
+    "smart_backoff_to_prevent_connection_storm": true,
+    "pubsub_state_restoration": true,
+    "cluster_scan": true,
+    "latency_based_read_from_replica": false,
+    "AZ_based_read_from_replica": true,
+    "client_side_caching": false,
+    "client_capa_redirect": false,
+    "persistent_connection_pool": true
+}
