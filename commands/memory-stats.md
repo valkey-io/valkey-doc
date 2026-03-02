@@ -11,6 +11,7 @@ values. The following metrics are reported:
 *   `startup.allocated`: Initial amount of memory consumed by Valkey at startup
      in bytes (see `INFO`'s `used_memory_startup`)
 *   `replication.backlog`: Memory usage by replication backlog (see `INFO`'s `mem_replication_backlog`)
+*   `replicas.repl.buffer`: Memory usage by replicas replication buffer (see `INFO`'s `mem_replicas_repl_buffer`). Added in Valkey 9.1.
 *   `clients.slaves`: The total size in bytes of all replicas overheads (output
      and query buffers, connection contexts)
 *   `clients.normal`: The total size in bytes of all clients overheads (output

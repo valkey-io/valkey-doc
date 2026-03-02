@@ -121,6 +121,7 @@ mem_fragmentation_bytes:8504448
 mem_not_counted_for_evict:0
 mem_replication_backlog:0
 mem_total_replication_buffers:0
+mem_replicas_repl_buffer:0
 mem_clients_slaves:0
 mem_clients_normal:0
 mem_cluster_links:0
@@ -392,7 +393,8 @@ Here is the meaning of all fields in the **memory** section:
 *   `mem_cluster_links`: Memory used by links to peers on the cluster bus when cluster mode is enabled.
 *   `mem_aof_buffer`: Transient memory used for AOF and AOF rewrite buffers
 *   `mem_replication_backlog`: Memory used by replication backlog
-*   `mem_total_replication_buffers`: Total memory consumed for replication buffers.
+*   `mem_total_replication_buffers`: Total memory consumed for replication buffers. Starting with Valkey 9.1, it also includes `mem_replicas_repl_buffer`.
+*   `mem_replicas_repl_buffer`: Total memory consumed by the replicas replication buffer on replica side during the dual channel replication. Added in Valkey 9.1.
 *   `mem_allocator`: Memory allocator, chosen at compile time.
 *   `mem_overhead_db_hashtable_rehashing`: Temporary memory overhead of database dictionaries currently being rehashed - Added in 8.0.
 *   `active_defrag_running`: When `activedefrag` is enabled, this indicates whether defragmentation is currently active, and the CPU percentage it intends to utilize.
