@@ -4,7 +4,7 @@ description: Valkey Access Control List
 ---
 
 The Valkey ACL, short for Access Control List, is a feature that allows certain connections to be limited in terms of the commands that can be executed and the keys that can be accessed.
-The way it works is that, after connecting, a client is required to provide a username and a valid password to authenticate.
+The way it works is that, after connecting, a client is required to either provide a username and a valid password, or a valid TLS certificate to authenticate.
 If authentication succeeded, the connection is associated with a given user and the limits the user has.
 Valkey can be configured so that new connections are already authenticated with a "default" user (this is the default configuration).
 Configuring the default user has, as a side effect, the ability to provide only a specific subset of functionalities to connections that are not explicitly authenticated.
@@ -82,7 +82,7 @@ Enable and disallow users:
 Allow and disallow commands:
 
 * `+<command>`: Add the command to the list of commands the user can call. Can be used with `|` for allowing subcommands (e.g "+config|get").
-* `-<command>`: Remove the command to the list of commands the user can call. Starting Valkey 7.0, it can be used with `|` for blocking subcommands (e.g "-config|set").
+* `-<command>`: Remove the command to the list of commands the user can call. Starting Valkey 7.0, it can be used with `|` for blocking subcommands (e.g "-config|set"). Note that commands which do not require authentication cannot be removed, e.g. AUTH, HELLO, and RESET.
 * `+@<category>`: Add all the commands in such category to be called by the user, with valid categories being like @admin, @set, @sortedset, ... and so forth, see the full list by calling the `ACL CAT` command. The special category @all means all the commands, both the ones currently present in the server, and the ones that will be loaded in the future via modules.
 * `-@<category>`: Like `+@<category>` but removes the commands from the list of commands the client can call.
 * `+<command>|first-arg`: Allow a specific first argument of an otherwise disabled command. It is only supported on commands with no sub-commands, and is not allowed as negative form like -SELECT|1, only additive starting with "+". This feature is deprecated and may be removed in the future.
@@ -111,9 +111,9 @@ Configure valid passwords for the user:
 * `#<hash>`: Add this SHA-256 hash value to the list of valid passwords for the user. This hash value will be compared to the hash of a password entered for an ACL user. This allows users to store hashes in the `acl.conf` file rather than storing cleartext passwords. Only SHA-256 hash values are accepted as the password hash must be 64 characters and only contain lowercase hexadecimal characters.
 * `!<hash>`: Remove this hash value from the list of valid passwords. This is useful when you do not know the password specified by the hash value but would like to remove the password from the user.
 * `nopass`: All the set passwords of the user are removed, and the user is flagged as requiring no password: it means that every password will work against this user. If this directive is used for the default user, every new connection will be immediately authenticated with the default user without any explicit AUTH command required. Note that the *resetpass* directive will clear this condition.
-* `resetpass`: Flushes the list of allowed passwords and removes the *nopass* status. After *resetpass*, the user has no associated passwords and there is no way to authenticate without adding some password (or setting it as *nopass* later).
+* `resetpass`: Flushes the list of allowed passwords and removes the *nopass* status. After *resetpass*, the user has no associated passwords, and there is no way to authenticate without adding some password (or setting it as *nopass* later) unless the authentication is based on mTLS.
 
-*Note: if a user is not flagged with nopass and has no list of valid passwords, that user is effectively impossible to use because there will be no way to log in as that user.*
+*Note: if a user is not flagged with nopass and has no list of valid passwords, that user is impossible to authenticate via password. Such users can still be authenticated through mTLS certificate fields if `tls-auth-clients-user` is enabled.*
 
 Configure selectors for the user:
 
