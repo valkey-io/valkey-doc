@@ -100,22 +100,20 @@ The validation ensures that:
 - Certificates match their corresponding private keys
 - Certificates are within their valid time period
 
-### Client authentication
+### Client certificate authentication
 
-#### CA only authentication (`tls-auth-clients`)
-
-By default, Valkey uses mutual TLS and requires clients to authenticate with a
+By default, Valkey uses mutual TLS and requires clients to present with a
 valid certificate verified against trusted root CAs configured via
-`tls-ca-cert-file` or `tls-ca-cert-dir`.
+`tls-ca-cert-file` or `tls-ca-cert-dir`. You may use `tls-auth-clients no` 
+to disable client authentication.
 
-You may use `tls-auth-clients no` to disable client authentication.
+The verification of client certificates doesn't by default authenticate the 
+client as a user. It only controls whether the client can connect or not. 
+The client can use the `AUTH` or the `HELLO` command to authenticate using 
+username and password after connecting.
 
-#### CA + identity authentication (`tls-auth-clients-user`)
-
-By default, identity-based user authentication is disabled
-(`tls-auth-clients-user off`), and clients must authenticate via the `AUTH`
-command.
-
+To let clients authenticate as a user with one of the identities in the client 
+certificate, configure `tls-auth-clients-user`.
 When enabled, Valkey automatically authenticates TLS clients as Valkey ACL users
 by extracting a field from the client certificate and looking up a matching user.
 If no match is found, the client remains as the default user.
