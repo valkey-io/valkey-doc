@@ -102,7 +102,7 @@ The validation ensures that:
 
 ### Client certificate authentication
 
-By default, Valkey uses mutual TLS and requires clients to present with a
+By default, Valkey uses mutual TLS and requires clients to present a
 valid certificate verified against trusted root CAs configured via
 `tls-ca-cert-file` or `tls-ca-cert-dir`. You may use `tls-auth-clients no` 
 to disable client authentication.
