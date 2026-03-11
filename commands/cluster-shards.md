@@ -38,6 +38,7 @@ The current list of attributes:
 * role: The replication role of this node.
 * replication-offset: The replication offset of this node. This information can be used to send commands to the most up to date replicas.
 * health: Either `online`, `fail`, or `loading`. This information should be used to determine which nodes should be sent traffic. The `loading` health state should be used to know that a node is not currently eligible to serve traffic, but may be eligible in the future. 
+* availability-zone (optional): The availability zone configured for this node. This field is returned only when the node has a non-empty `availability-zone` configuration value, and is omitted otherwise.
 
 The endpoint, along with the port, defines the location that clients should use to send requests for a given slot.
 A NULL value for the endpoint indicates the node has an unknown endpoint and the client should connect to the same endpoint it used to send the `CLUSTER SHARDS` command but with the port returned from the command.
@@ -72,6 +73,8 @@ The 'id' field is the unique id of the shard, which is randomly generated and 40
          12) (integer) 72156
          13) "health"
          14) "online"
+         15) "availability-zone"
+         16) "zone-a"
       2)  1) "id"
           2) "1901f5962d865341e81c85f9f596b1e7160c35ce"
           3) "port"
@@ -86,6 +89,8 @@ The 'id' field is the unique id of the shard, which is randomly generated and 40
          12) (integer) 72156
          13) "health"
          14) "online"
+         15) "availability-zone"
+         16) "zone-a"
    5) "id"
    6) "cd7688ca959bf54a32569ccf260b26715b82a6e3"         
 2) 1) "slots"
@@ -106,6 +111,8 @@ The 'id' field is the unique id of the shard, which is randomly generated and 40
          12) (integer) 72156
          13) "health"
          14) "online"
+         15) "availability-zone"
+         16) "zone-a"
       2)  1) "id"
           2) "6daa25c08025a0c7e4cc0d1ab255949ce6cee902"
           3) "port"
@@ -120,6 +127,8 @@ The 'id' field is the unique id of the shard, which is randomly generated and 40
          12) (integer) 72156
          13) "health"
          14) "online"
+         15) "availability-zone"
+         16) "zone-a"
    5) "id"
    6) "0d77234c440a6b05c2d77d1b9f37ac63585fc747"         
 3) 1) "slots"
@@ -140,6 +149,8 @@ The 'id' field is the unique id of the shard, which is randomly generated and 40
          12) (integer) 72156
          13) "health"
          14) "online"
+         15) "availability-zone"
+         16) "zone-a"
       2)  1) "id"
           2) "da6d5847aa019e9b9d2a8aa24a75f856fd3456cc"
           3) "port"
@@ -154,6 +165,8 @@ The 'id' field is the unique id of the shard, which is randomly generated and 40
          12) (integer) 72156
          13) "health"
          14) "online"
+         15) "availability-zone"
+         16) "zone-a"
    5) "id"
    6) "a96f023185ea6d7f5e9a0d6ada6f112741217e6a"         
 ```
