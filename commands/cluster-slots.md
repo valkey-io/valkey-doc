@@ -20,8 +20,9 @@ Clients may treat the empty string in the same way as NULL, that is the same end
 Additional networking metadata is provided as a map on the fourth argument for each node. 
 The following networking metadata may be returned:
 
-* IP: When the preferred endpoint is not set to IP.
-* Hostname: When a node has an announced hostname but the primary endpoint is not set to hostname.
+* `ip`: When the preferred endpoint is not set to IP.
+* `hostname`: When a node has an announced hostname but the primary endpoint is not set to hostname.
+* `availability-zone`: When the node has a non-empty `availability-zone` configuration value. This key is omitted when the value is empty.
 
 ## Nested Result Array
 Each nested result is:
@@ -52,11 +53,15 @@ If a cluster instance has non-contiguous slots (e.g. 1-400,900,1800-6000) then p
       3) "09dbe9720cda62f7865eabc5fd8857c5d2678366"
       4) 1) hostname
          2) "host-1.valkey.example.com"
+         3) availability-zone
+         4) "zone-a"
    4) 1) "127.0.0.1"
       2) (integer) 30004
       3) "821d8ca00d7ccf931ed3ffc7e3db0599d2271abf"
       4) 1) hostname
          2) "host-2.valkey.example.com"
+         3) availability-zone
+         4) "zone-a"
 2) 1) (integer) 5461
    2) (integer) 10922
    3) 1) "127.0.0.1"
@@ -64,11 +69,15 @@ If a cluster instance has non-contiguous slots (e.g. 1-400,900,1800-6000) then p
       3) "c9d93d9f2c0c524ff34cc11838c2003d8c29e013"
       4) 1) hostname
          2) "host-3.valkey.example.com"
+         3) availability-zone
+         4) "zone-a"
    4) 1) "127.0.0.1"
       2) (integer) 30005
       3) "faadb3eb99009de4ab72ad6b6ed87634c7ee410f"
       4) 1) hostname
          2) "host-4.valkey.example.com"
+         3) availability-zone
+         4) "zone-a"
 3) 1) (integer) 10923
    2) (integer) 16383
    3) 1) "127.0.0.1"
@@ -76,11 +85,15 @@ If a cluster instance has non-contiguous slots (e.g. 1-400,900,1800-6000) then p
       3) "044ec91f325b7595e76dbcb18cc688b6a5b434a1"
       4) 1) hostname
          2) "host-5.valkey.example.com"
+         3) availability-zone
+         4) "zone-a"
    4) 1) "127.0.0.1"
       2) (integer) 30006
       3) "58e6e48d41228013e5d9c1c37c5060693925e97e"
       4) 1) hostname
          2) "host-6.valkey.example.com"
+         3) availability-zone
+         4) "zone-a"
 ```
 
 **Warning:** In future versions there could be more elements describing the node better.
