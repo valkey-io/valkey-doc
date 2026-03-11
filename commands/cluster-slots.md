@@ -20,9 +20,9 @@ Clients may treat the empty string in the same way as NULL, that is the same end
 Additional networking metadata is provided as a map on the fourth argument for each node. 
 The following networking metadata may be returned:
 
-* IP: When the preferred endpoint is not set to IP.
-* Hostname: When a node has an announced hostname but the primary endpoint is not set to hostname.
-* AvailabilityZone: When the node has a non-empty `availability-zone` configuration value. This key is omitted when the value is empty.
+* `ip`: When the preferred endpoint is not set to IP.
+* `hostname`: When a node has an announced hostname but the primary endpoint is not set to hostname.
+* `availability-zone`: When the node has a non-empty `availability-zone` configuration value. This key is omitted when the value is empty.
 
 ## Nested Result Array
 Each nested result is:
