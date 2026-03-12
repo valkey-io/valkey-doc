@@ -56,7 +56,7 @@ H1 heading in each of the pages.
 
 ### Clients, modules, libraries, tools
 
-We maintain links to clients, modules, libraries and tools in various langauges in
+We maintain links to clients, modules, libraries and tools in various languages in
 JSON files stored under `clients/`, `modules/`, `libraries/` and `tools/`
 respectively.
 
