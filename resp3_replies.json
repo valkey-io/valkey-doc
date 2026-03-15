@@ -341,6 +341,11 @@
   "CLUSTER SLOTS": [
     "[Array reply](../topics/protocol.md#arrays): nested list of slot ranges with networking information."
   ],
+  "CLUSTERSCAN": [
+    "[Array reply](../topics/protocol.md#arrays): specifically, an array with two elements.",
+    "* The first element is a [Bulk string reply](../topics/protocol.md#bulk-strings) that represents the cursor.",
+    "* The second element is an [Array reply](../topics/protocol.md#arrays) with the names of scanned keys."
+  ],
   "COMMAND": [
     "[Array reply](../topics/protocol.md#arrays): a nested list of command details. The order of the commands in the array is random."
   ],
