@@ -13,8 +13,8 @@
             "command": "implementation 'io.valkey.springframework.boot:spring-boot-starter-data-valkey:+'"
         }
     ],
-    "version": "v0.2.0",
-    "version_released": "2026-01-20",
+    "version": "v1.0.0",
+    "version_released": "2026-03-16",
     "language": "java",
     "license": "Apache-2.0",
     "read_from_replica": true,
