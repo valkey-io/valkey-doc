@@ -248,3 +248,5 @@ Returned result:
     3) description
     4) \x00\x00\x80?\x00\x00\x00\x00\x00\x00\x00\x00
 ```
+
+Note: Text Indexing and Search support was added in valkey-search version 1.2.

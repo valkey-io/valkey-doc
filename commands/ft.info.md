@@ -106,3 +106,5 @@ An array of key value pairs
 - `backfill_complete_percent_max` (string) FLOAT32. Maximum backfill complete percent in all nodes
 - `backfill_complete_percent_min` (string) FLOAT32. Minimum backfill complete percent in all nodes
 - `state` (string) The current state of the index, one of: `ready`, `backfill_in_progress` or `backfill_paused_by_oom`
+
+Note: Text Indexing and Search support was added in valkey-search version 1.2.
