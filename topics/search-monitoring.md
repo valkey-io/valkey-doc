@@ -81,7 +81,7 @@ These metrics are only available when cluster mode is enabled.
 | search_inline_filtering_requests_count | Count | Queries using inline filtering |
 | search_nonvector_requests_count | Count | Exclusively non-vector search queries |
 | search_prefiltering_requests_count | Count | Queries using pre-filtering |
-| search_result_record_dropped_count | Count | Records dropped when results exceed limits |
+| search_result_record_dropped_count | Count | Records dropped when search results exceed limits |
 | search_successful_requests_count | Count | Total successful query requests |
 | search_vector_requests_count | Count | Query requests that include a vector component |
 
@@ -106,8 +106,8 @@ These metrics are only available when cluster mode is enabled.
 | :--- | :---: | :--- |
 | search_query_queue_size | Count | Current reader thread pool queue size |
 | search_reader_resumed_cnt | Count | Times the reader thread pool was resumed |
-| search_used_read_cpu | Percent | Average CPU used by reader threads (-1 if unavailable) |
-| search_used_write_cpu | Percent | Average CPU used by writer threads (-1 if unavailable) |
+| search_used_read_cpu | Decimal fractions | Average CPU used by reader threads (-1 if unavailable) |
+| search_used_write_cpu | Decimal fractions | Average CPU used by writer threads (-1 if unavailable) |
 | search_worker_pool_suspend_cnt | Count | Times the worker thread pool was suspended |
 | search_writer_queue_size | Count | Current writer thread pool queue size |
 | search_writer_resumed_cnt | Count | Times the writer thread pool was resumed |
@@ -139,7 +139,7 @@ The search module uses the Valkey configuration mechanism. Thus each of the name
 | search.skip-rdb-load | Boolean | false | Skip loading of saved index data from RDB file. Useful for recovering from a corrupted RDB or index. |
 | search.skip-corrupted-internal-update-entries | Boolean | false | Skip corrupted AOF entries during internal updates. May be useful for recovering from a corrupted AOF file. |
 | search.log-level | Enum | from core | Controls module log level verbosity: "debug", "verbose", "notice" or "warning". Default value is to fetch the log level from the core at startup. |
-| search.enable-partial-results | Boolean | true | Default option for delivering partial results when timeout occurs (uses SOMESHARDS if not explicitly provided) |
+| search.enable-partial-results | Boolean | true | Default option for delivering partial results when errors such as timeout occur. This applies a default behavior on commands which can be explicitly overriden by FT.INFO/FT.SEARCH commands using the ALLSHARDS option. |
 | search.enable-consistent-results | Boolean | false | Default option for delivering consistent results when timeout occurs (uses CONSISTENT if not explicitly provided) |
 | search.search-result-background-cleanup | Boolean | true | Enable search result cleanup on background thread |
 | search.high-priority-weight | Number | 100 | Fairness for high priority tasks in thread pools [0..100]. |
@@ -147,13 +147,13 @@ The search module uses the Valkey configuration mechanism. Thus each of the name
 | search.thread-pool-wait-time-samples | Number | 100 | Sample queue size for thread pool wait time tracking |
 | search.tag-min-prefix-length | Number | 2 | Minimum number of characters required before trailing `*` in TAG wildcard queries (length excludes `*`) |
 | search.max-term-expansions | Number | 200 | Maximum number of words to search in text operations (prefix, suffix, fuzzy) to limit memory usage |
-| search.search-result-buffer-multiplier | String | 1.5 | Multiplier for search result buffer size allocation |
+| search.search-result-buffer-multiplier | String | 1.5 | Multiplier for search result buffer size to handle rapid data changes. This ensures results are not dropped when concurrent mutations render in-flight data invalid before the response is sent. |
 | search.drain-mutation-queue-on-save | Boolean | false | Drain the mutation queue before RDB save. |
 | search.query-string-depth | Number | 1000 | Controls the depth of the query string parsing from the FT.SEARCH cmd |
 | search.query-string-terms-count | Number | 1000 | Controls the size of the query string parsing from the FT.SEARCH cmd (number of nodes in predicate tree) |
 | search.fuzzy-max-distance | Number | 3 | Controls the maximum allowed edit distance for fuzzy search queries |
 | search.max-vector-knn | Number | 10000 | Controls the max KNN parameter for vector search |
-| search.proximity-inorder-compat-mode | Boolean | false | Controls proximity iterator's inorder/overlap violation check logic (compatibility mode) |
+| search.proximity-inorder-compat-mode | Boolean | false | Enables / disables the overlap violation check logic in Proximity searches when INORDER is enabled. Use this to allow overlapping intersection blocks within the query string. |
 | search.max-prefixes | Number | 8 | Controls the max number of prefixes per index |
 | search.max-tag-field-length | Number | 256 | Controls the max length of a tag field |
 | search.max-numeric-field-length | Number | 128 | Controls the max length of a numeric field |
