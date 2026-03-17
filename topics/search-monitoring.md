@@ -5,59 +5,14 @@ description: Valkey Search Module INFO SEARCH
 
 ## Metrics - INFO SEARCH
 
-| Metric Name | Section | Unit | Description |
-| :--- | :---: | :---: | :--- |
-| search_hnsw_add_exceptions_count | hnswlib | Count | Count of exceptions during HNSW vector additions |
-| search_hnsw_create_exceptions_count | hnswlib | Count | Count of exceptions during HNSW index creation |
-| search_hnsw_modify_exceptions_count | hnswlib | Count | Count of exceptions during HNSW vector modifications |
-| search_hnsw_remove_exceptions_count | hnswlib | Count | Count of exceptions during HNSW vector removals |
-| search_hnsw_search_exceptions_count | hnswlib | Count | Count of exceptions during HNSW vector searches |
-| search_number_of_attributes | index_stats | Count | Total count of all attributes across all search indexes |
-| search_number_of_indexes | index_stats | Count | Total number of search indexes |
-| search_total_active_write_threads | index_stats | Count | Number of active writer threads (0 if suspended, otherwise the writer thread pool size) |
-| search_total_indexed_documents | index_stats | Count | Total number of documents indexed across all indexes |
-| search_background_indexing_status | indexing | String | Background indexing status: IN_PROGRESS or NO_ACTIVITY |
-| search_flat_vector_index_search_latency_usec | latency | Microseconds | Latency distribution (in microseconds) for flat vector index searches |
-| search_hnsw_vector_index_search_latency_usec | latency | Microseconds | Latency distribution (in microseconds) for HNSW vector index searches |
-| search_index_reclaimable_memory | memory | Bytes | Track memory that can be reclaimed after vector deletions |
-| search_used_memory_bytes | memory | Bytes | Total memory used by the module (in bytes) |
-| search_used_memory_human | memory | String | Total memory used by the module (in human readable format) |
-| search_successful_requests_count | query | Count | Total count of successful query requests |
-| search_failure_requests_count | query | Count | Total count of failed query requests |
-| search_hybrid_requests_count | query | Count | Count of hybrid queries (combining vector and non-vector filters) |
-| search_nonvector_requests_count | query | Count | Number of requests that are exclusively non-vector search queries |
-| search_vector_requests_count | query | Count | Number of query requests that include a vector component |
-| search_inline_filtering_requests_count | query | Count | Count of queries using inline filtering |
-| search_prefiltering_requests_count | query | Count | Count of queries using pre-filtering |
-| search_result_record_dropped_count | query | Count | Tracks records dropped when search results exceed configured limits |
-| search_rdb_load_failure_cnt | rdb | Count | Number of failed RDB load operations |
-| search_rdb_load_success_cnt | rdb | Count | Number of successful RDB load operations |
-| search_rdb_save_failure_cnt | rdb | Count | Number of failed RDB save operations |
-| search_rdb_save_success_cnt | rdb | Count | Number of successful RDB save operations |
-| search_string_interning_store_size | string_interning | Count | Number of unique strings in the interning store |
-| search_query_queue_size | thread-pool | Count | Current size of the reader thread pool queue |
-| search_reader_resumed_cnt | thread-pool | Count | Number of times the reader worker thread pool was resumed |
-| search_used_read_cpu | thread-pool | Percent | Average CPU percentage used by reader threads (returns -1 if unavailable) |
-| search_used_write_cpu | thread-pool | Percent | Average CPU percentage used by writer threads (returns -1 if unavailable) |
-| search_worker_pool_suspend_cnt | thread-pool | Count | Number of times the worker thread pool was suspended |
-| search_writer_queue_size | thread-pool | Count | Current size of the writer thread pool queue |
-| search_writer_resumed_cnt | thread-pool | Count | Number of times the writer worker thread pool was resumed |
-| search_writer_suspension_expired_cnt | thread-pool | Count | Number of times writer suspension expired due to timeout |
-| search_vector_externing_deferred_entry_cnt | vector_externing | Count | Count of deferred entries in vector externalization |
-| search_vector_externing_entry_count | vector_externing | Count | Total number of entries in the vector externalizer |
-| search_vector_externing_generated_value_cnt | vector_externing | Count | Count of generated values during vector externalization |
-| search_vector_externing_hash_extern_errors | vector_externing | Count | Count of errors during hash externalization |
-| search_vector_externing_lru_promote_cnt | vector_externing | Count | Number of LRU promotions in vector externalization |
-| search_vector_externing_num_lru_entries | vector_externing | Count | Number of entries in the vector externalizer LRU cache |
-
-### Coordinator metrics (cluster mode)
+### search_coordinator
 
 These metrics are only available when cluster mode is enabled.
 
 | Metric Name | Unit | Description |
 | :--- | :---: | :--- |
-| search_coordinator_bytes_in | Bytes | Total incoming gRPC response bytes received from remote nodes |
-| search_coordinator_bytes_out | Bytes | Total outgoing gRPC request bytes sent to remote nodes |
+| search_coordinator_bytes_in | Bytes | Total incoming gRPC response bytes from remote nodes |
+| search_coordinator_bytes_out | Bytes | Total outgoing gRPC request bytes to remote nodes |
 | search_coordinator_client_get_global_metadata_failure_count | Count | Failed client requests to get global metadata |
 | search_coordinator_client_get_global_metadata_failure_latency_usec | Microseconds | Latency for failed client metadata requests |
 | search_coordinator_client_get_global_metadata_success_count | Count | Successful client requests to get global metadata |
@@ -67,8 +22,8 @@ These metrics are only available when cluster mode is enabled.
 | search_coordinator_client_search_index_partition_success_count | Count | Successful client searches on index partitions |
 | search_coordinator_client_search_index_partition_success_latency_usec | Microseconds | Latency for successful partition searches |
 | search_coordinator_server_get_global_metadata_failure_count | Count | Failed server requests to get global metadata |
-| search_coordinator_server_get_global_metadata_failure_latency_usec | Microseconds | Latency for failed server metadata requests |
 | search_coordinator_server_get_global_metadata_success_count | Count | Successful server requests to get global metadata |
+| search_coordinator_server_get_global_metadata_failure_latency_usec | Microseconds | Latency for failed server metadata requests |
 | search_coordinator_server_get_global_metadata_success_latency_usec | Microseconds | Latency for successful server metadata requests |
 | search_coordinator_server_listening_port | Port | Port the coordinator server is listening on |
 | search_coordinator_server_search_index_partition_failure_count | Count | Failed server searches on index partitions |
@@ -76,6 +31,98 @@ These metrics are only available when cluster mode is enabled.
 | search_coordinator_server_search_index_partition_success_count | Count | Successful server searches on index partitions |
 | search_coordinator_server_search_index_partition_success_latency_usec | Microseconds | Latency for successful server partition searches |
 | search_coordinator_threads_cpu_time_sec | Seconds | Cumulative CPU time consumed by coordinator (gRPC) threads |
+
+### search_hnswlib
+
+| Metric Name | Unit | Description |
+| :--- | :---: | :--- |
+| search_hnsw_add_exceptions_count | Count | Exceptions during HNSW vector additions |
+| search_hnsw_create_exceptions_count | Count | Exceptions during HNSW index creation |
+| search_hnsw_modify_exceptions_count | Count | Exceptions during HNSW vector modifications |
+| search_hnsw_remove_exceptions_count | Count | Exceptions during HNSW vector removals |
+| search_hnsw_search_exceptions_count | Count | Exceptions during HNSW vector searches |
+
+### search_index_stats
+
+| Metric Name | Unit | Description |
+| :--- | :---: | :--- |
+| search_number_of_attributes | Count | Total attributes across all search indexes |
+| search_number_of_indexes | Count | Total number of search indexes |
+| search_total_active_write_threads | Count | Active writer threads (0 if suspended) |
+| search_total_indexed_documents | Count | Total documents indexed across all indexes |
+
+### search_latency
+
+| Metric Name | Unit | Description |
+| :--- | :---: | :--- |
+| search_flat_vector_index_search_latency_usec | Microseconds | Latency distribution for flat vector index searches |
+| search_hnsw_vector_index_search_latency_usec | Microseconds | Latency distribution for HNSW vector index searches |
+
+### search_indexing
+
+| Metric Name | Unit | Description |
+| :--- | :---: | :--- |
+| search_background_indexing_status | String | Background indexing status: IN_PROGRESS or NO_ACTIVITY |
+
+### search_memory
+
+| Metric Name | Unit | Description |
+| :--- | :---: | :--- |
+| search_index_reclaimable_memory | Bytes | Memory reclaimable after vector deletions |
+| search_used_memory_bytes | Bytes | Total memory used by the module |
+| search_used_memory_human | String | Total memory used by the module (human readable) |
+
+### search_query
+
+| Metric Name | Unit | Description |
+| :--- | :---: | :--- |
+| search_failure_requests_count | Count | Total failed query requests |
+| search_hybrid_requests_count | Count | Hybrid queries (vector and non-vector) |
+| search_inline_filtering_requests_count | Count | Queries using inline filtering |
+| search_nonvector_requests_count | Count | Exclusively non-vector search queries |
+| search_prefiltering_requests_count | Count | Queries using pre-filtering |
+| search_result_record_dropped_count | Count | Records dropped when results exceed limits |
+| search_successful_requests_count | Count | Total successful query requests |
+| search_vector_requests_count | Count | Query requests that include a vector component |
+
+### search_rdb
+
+| Metric Name | Unit | Description |
+| :--- | :---: | :--- |
+| search_rdb_load_failure_cnt | Count | Failed RDB load operations |
+| search_rdb_load_success_cnt | Count | Successful RDB load operations |
+| search_rdb_save_failure_cnt | Count | Failed RDB save operations |
+| search_rdb_save_success_cnt | Count | Successful RDB save operations |
+
+### search_string_interning
+
+| Metric Name | Unit | Description |
+| :--- | :---: | :--- |
+| search_string_interning_store_size | Count | Unique strings in the interning store |
+
+### search_thread-pool
+
+| Metric Name | Unit | Description |
+| :--- | :---: | :--- |
+| search_query_queue_size | Count | Current reader thread pool queue size |
+| search_reader_resumed_cnt | Count | Times the reader thread pool was resumed |
+| search_used_read_cpu | Percent | Average CPU used by reader threads (-1 if unavailable) |
+| search_used_write_cpu | Percent | Average CPU used by writer threads (-1 if unavailable) |
+| search_worker_pool_suspend_cnt | Count | Times the worker thread pool was suspended |
+| search_writer_queue_size | Count | Current writer thread pool queue size |
+| search_writer_resumed_cnt | Count | Times the writer thread pool was resumed |
+| search_writer_suspension_expired_cnt | Count | Times writer suspension expired due to timeout |
+
+### search_vector_externing
+
+| Metric Name | Unit | Description |
+| :--- | :---: | :--- |
+| search_vector_externing_deferred_entry_cnt | Count | Deferred entries in vector externalization |
+| search_vector_externing_entry_count | Count | Total entries in the vector externalizer |
+| search_vector_externing_generated_value_cnt | Count | Generated values during vector externalization |
+| search_vector_externing_hash_extern_errors | Count | Errors during hash externalization |
+| search_vector_externing_lru_promote_cnt | Count | LRU promotions in vector externalization |
+| search_vector_externing_num_lru_entries | Count | Entries in the vector externalizer LRU cache |
 
 ## Configurations
 
