@@ -154,5 +154,3 @@ Result:
 ```
 OK
 ```
-
-Note: Text Indexing and Search support was added in valkey-search version 1.2.

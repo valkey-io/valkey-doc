@@ -1,6 +1,6 @@
 ---
-title: "Valkey Search - Metrics and Configurables"
-description: Valkey Search Module INFO Fields and Module Configurations
+title: "Valkey Search - Metrics and configurations"
+description: Valkey Search Module INFO SEARCH Fields and Module configurations
 ---
 
 ## Metrics - INFO SEARCH
@@ -34,10 +34,9 @@ description: Valkey Search Module INFO Fields and Module Configurations
 | hnsw_search_exceptions_count                                   |     hnswlib      |    Count     | Count of exceptions during HNSW vector searches                                                                                                                                   |
 | number_of_attributes                                           |   index_stats    |    Count     | Total count of all attributes across all search indexes                                                                                                                                  |
 | number_of_indexes                                              |   index_stats    |    Count     | Total number of search indexes                                                                                                                                                     |
-| total_active_write_threads                                     |   index_stats    |    Count     | "Number of active writer threads (0 if suspended, otherwise the writer thread pool size)"                                                                                         |
+| total_active_write_threads                                     |   index_stats    |    Count     | Number of active writer threads (0 if suspended, otherwise the writer thread pool size)                                                                                         |
 | total_indexed_documents                                        |   index_stats    |    Count     | Total number of documents indexed across all indexes                                                                                                                              |
-| total_indexing_time                                            |   index_stats    | Milliseconds | Total indexing time                                                                                                                                                               |
-| background_indexing_status                                     |     indexing     |    String    | "String indicating background indexing status - ""IN_PROGRESS"" or ""NO_ACTIVITY"""                                                                                               |
+| background_indexing_status                                     |     indexing     |    String    | Background indexing status: IN_PROGRESS or NO_ACTIVITY                                                                                               |
 | flat_vector_index_search_latency_usec                          |     latency      | Microseconds | Latency distribution (in microseconds) for flat vector index searches                                                                                                             |
 | hnsw_vector_index_search_latency_usec                          |     latency      | Microseconds | Latency distribution (in microseconds) for HNSW vector index searches                                                                                                             |
 | index_reclaimable_memory                                       |      memory      |    Bytes     | Track memory that can be reclaimed after vector deletions                                                                                                                         |
@@ -50,7 +49,7 @@ description: Valkey Search Module INFO Fields and Module Configurations
 | vector_requests_count                                          |      query       |    Count     | Number of query requests that include a vector component                                                                                                                          |
 | inline_filtering_requests_count                                |      query       |    Count     | Count of queries using inline filtering                                                                                                                                           |
 | prefiltering_requests_count                                    |      query       |    Count     | Count of queries using pre-filtering                                                                                                                                              |
-| result_record_dropped_count                                    |      query       |    Count     | Tracks records dropped when ft.search results exceed configured limits                                                                                                            |
+| result_record_dropped_count                                    |      query       |    Count     | Tracks records dropped when search results exceed configured limits                                                                                                            |
 | rdb_load_failure_cnt                                           |       rdb        |    Count     | Number of failed RDB load operations                                                                                                                                              |
 | rdb_load_success_cnt                                           |       rdb        |    Count     | Number of successful RDB load operations                                                                                                                                          |
 | rdb_save_failure_cnt                                           |       rdb        |    Count     | Number of failed RDB save operations                                                                                                                                              |
@@ -71,9 +70,9 @@ description: Valkey Search Module INFO Fields and Module Configurations
 | vector_externing_lru_promote_cnt                               | vector_externing |    Count     | Number of LRU promotions in vector externalization                                                                                                                                |
 | vector_externing_num_lru_entries                               | vector_externing |    Count     | Number of entries in the vector externalizer LRU cache
 
-## Configurables
+## Configurations
 
-The search module uses the Valkey configuration mechanism. Thus each of the named configuration below can be set on the module load command OR via the `CONFIG SET` command.
+The search module uses the Valkey configuration mechanism. Thus each of the named configuration below can be set on the `MODULE LODEX` command OR via the `CONFIG SET` command.
 
 | Name           |  Type | Default Value | Description                                            |
 | :-------------------------------------------- | :-----: | :-----------: | :-------------------------------------------------------------------------------------------------------------------------------- |
@@ -92,7 +91,7 @@ The search module uses the Valkey configuration mechanism. Thus each of the name
 | search.search-result-background-cleanup | Boolean |   true   | Enable search result cleanup on background thread      |
 | search.high-priority-weight          | Number |   100   | Fairness for high priority tasks in thread pools [0..100].  |
 | search.ft-info-timeout-ms            | Number |   5000   | Timeout in milliseconds for FT.INFO command when CLUSTER or PRIMARY option is selected     |
-| search.ft-info-rpc-timeout-ms        | Number |   2500   | Timeout in milliseconds for RPC connections used by FT.INFO when CLUSTER OR PRIMARTY options is selected  |
+| search.ft-info-rpc-timeout-ms        | Number |   2500   | Timeout in milliseconds for RPC connections used by FT.INFO when CLUSTER OR PRIMARY options is selected  |
 | search.local-fanout-queue-wait-threshold | Number |   50   | When this value is less than the average read queue wait time (in milliSeconds)  the local node is preferred in a fanout operation. |
 | search.thread-pool-wait-time-samples | Number |   100   | Sample queue size for thread pool wait time tracking   |
 | search.tag-min-prefix-length                  | Number  |   2   |               | Minimum number of characters required before trailing `*` in TAG wildcard queries (length excludes `*`) 
