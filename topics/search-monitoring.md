@@ -162,3 +162,4 @@ The search module uses the Valkey configuration mechanism. Thus each of the name
 | search.max-nonvector-search-results-fetched | Number | 100000 | Controls the maximum number of results to fetch in background threads before content fetching on non-vector (numeric/tag/text) query paths |
 | search.max-attributes | Number | 1000 | Controls the max number of attributes per index |
 | search.cluster-map-expiration-ms | Number | 250 | Controls how long (in milliseconds) the coordinator caches the cluster topology map before refreshing it from the Valkey cluster. |
+| search.max-mutation-queue-size-on-restore | Number | 10000 | Controls the maximum mutation queue size during RDB load. If the queue exceeds this threshold, the restore process yields to the main thread, allowing the queue to be processed before continuing ingestion. This prevents excessive memory overhead. |
