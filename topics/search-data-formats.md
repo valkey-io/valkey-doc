@@ -219,7 +219,7 @@ The input string is split into words based on punctuation characters and whitesp
 **Punctuation characters** are configurable. The default set is:
 
 ```
-,.<>{}[]"':;!@#$%^&*()-+=~/\|
+,.<>{}[]"':;!@#$%^&*()-+=~/\|?
 ```
 
 A custom punctuation set can be specified at index creation time:
