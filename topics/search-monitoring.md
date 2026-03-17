@@ -32,16 +32,6 @@ These metrics are only available when cluster mode is enabled.
 | search_coordinator_server_search_index_partition_success_latency_usec | Microseconds | Latency for successful server partition searches |
 | search_coordinator_threads_cpu_time_sec | Seconds | Cumulative CPU time consumed by coordinator (gRPC) threads |
 
-### search_hnswlib
-
-| Metric Name | Unit | Description |
-| :--- | :---: | :--- |
-| search_hnsw_add_exceptions_count | Count | Exceptions during HNSW vector additions |
-| search_hnsw_create_exceptions_count | Count | Exceptions during HNSW index creation |
-| search_hnsw_modify_exceptions_count | Count | Exceptions during HNSW vector modifications |
-| search_hnsw_remove_exceptions_count | Count | Exceptions during HNSW vector removals |
-| search_hnsw_search_exceptions_count | Count | Exceptions during HNSW vector searches |
-
 ### search_index_stats
 
 | Metric Name | Unit | Description |
@@ -132,15 +122,15 @@ The search module uses the Valkey configuration mechanism. Thus each of the name
 | :--- | :---: | :---: | :--- |
 | search.query-string-bytes | Number | 10240 | Maximum allowable length of the query string for FT.SEARCH or FT.AGGREGATE commands |
 | search.hnsw-block-size | Number | 10240 | Number of vectors of space to add to HNSW index size when additional space required. |
-| search.reader-threads | Number | #cores | Reader thread pool size; dynamically resizes pool on modification |
-| search.writer-threads | Number | #cores | Writer thread pool size; dynamically resizes pool on modification |
+| search.reader-threads | Number | Physical core count | Reader thread pool size; dynamically resizes pool on modification |
+| search.writer-threads | Number | Physical core count | Writer thread pool size; dynamically resizes pool on modification |
 | search.utility-threads | Number | 1 | Utility thread pool size; dynamically resizes pool on modification |
 | search.max-worker-suspension-secs | Number | 60 | Controls how long the worker thread pool quiescing around a fork. Values > 0 are resumption timeouts if a fork runs too long. Values <=0 mean no quiescing. |
-| search.skip-rdb-load | Boolean | false | Skip loading of saved index data from RDB file. Useful for recovering from a corrupted RDB or index. |
+| search.skip-rdb-load | Boolean | false | When enabled, loads index schemas from the RDB but ignores all stored index content. This initializes empty, functional indexes that are then repopulated from the underlying data source. Use this to ensure a clean index state or to recover from corrupted index. |
 | search.skip-corrupted-internal-update-entries | Boolean | false | Skip corrupted AOF entries during internal updates. May be useful for recovering from a corrupted AOF file. |
 | search.log-level | Enum | from core | Controls module log level verbosity: "debug", "verbose", "notice" or "warning". Default value is to fetch the log level from the core at startup. |
-| search.enable-partial-results | Boolean | true | Default option for delivering partial results when errors such as timeout occur. This applies a default behavior on commands which can be explicitly overriden by FT.INFO/FT.SEARCH commands using the SOMESHARDS/ALLSHARDS option. |
-| search.enable-consistent-results | Boolean | false | Default option for delivering consistent results when timeout occurs (uses CONSISTENT if not explicitly provided) |
+| search.enable-partial-results | Boolean | true | Default option for delivering partial results when errors such as timeout occur. This applies a default behavior on commands which can be explicitly overridden by FT.INFO/FT.SEARCH commands using the SOMESHARDS (for partial results) option and the ALLSHARDS (for complete results) option. |
+| search.enable-consistent-results | Boolean | false | Default option for delivering consistent results when errors such as timeout occur. This applies a default behavior on commands which can be explicitly overridden by FT.INFO/FT.SEARCH commands using the CONSISTENT/INCONSISTENT option.|
 | search.search-result-background-cleanup | Boolean | true | Enable search result cleanup on background thread |
 | search.high-priority-weight | Number | 100 | Fairness for high priority tasks in thread pools [0..100]. |
 | search.local-fanout-queue-wait-threshold | Number | 50 | When this value is less than the average read queue wait time (in milliSeconds)  the local node is preferred in a fanout operation. |
