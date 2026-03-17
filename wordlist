@@ -1053,11 +1053,12 @@ Pre-filtering
 paren
 tokenized
 pre
-search_hnsw_create_exceptions_count
-search_hnsw_search_exceptions_count
-search_hnsw_remove_exceptions_count
-search_hnsw_add_exceptions_count
-search_hnsw_modify_exceptions_count
+search_[\w]+
+search\.[\w-]+
+externalizer
+quiescing
+inorder
+pre-filtering
 pre-allocation
 Valkey-Search's
 Chatbots
@@ -1107,3 +1108,4 @@ parsetime
 strptime
 s1
 s2
+schemas
