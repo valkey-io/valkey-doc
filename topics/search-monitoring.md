@@ -5,33 +5,6 @@ description: Valkey Search Module INFO SEARCH
 
 ## Metrics - INFO SEARCH
 
-### search_coordinator
-
-These metrics are only available when cluster mode is enabled.
-
-| Metric Name | Unit | Description |
-| :--- | :---: | :--- |
-| search_coordinator_bytes_in | Bytes | Total incoming gRPC response bytes from remote nodes |
-| search_coordinator_bytes_out | Bytes | Total outgoing gRPC request bytes to remote nodes |
-| search_coordinator_client_get_global_metadata_failure_count | Count | Failed client requests to get global metadata |
-| search_coordinator_client_get_global_metadata_failure_latency_usec | Microseconds | Latency for failed client metadata requests |
-| search_coordinator_client_get_global_metadata_success_count | Count | Successful client requests to get global metadata |
-| search_coordinator_client_get_global_metadata_success_latency_usec | Microseconds | Latency for successful client metadata requests |
-| search_coordinator_client_search_index_partition_failure_count | Count | Failed client searches on index partitions |
-| search_coordinator_client_search_index_partition_failure_latency_usec | Microseconds | Latency for failed partition searches |
-| search_coordinator_client_search_index_partition_success_count | Count | Successful client searches on index partitions |
-| search_coordinator_client_search_index_partition_success_latency_usec | Microseconds | Latency for successful partition searches |
-| search_coordinator_server_get_global_metadata_failure_count | Count | Failed server requests to get global metadata |
-| search_coordinator_server_get_global_metadata_success_count | Count | Successful server requests to get global metadata |
-| search_coordinator_server_get_global_metadata_failure_latency_usec | Microseconds | Latency for failed server metadata requests |
-| search_coordinator_server_get_global_metadata_success_latency_usec | Microseconds | Latency for successful server metadata requests |
-| search_coordinator_server_listening_port | Port | Port the coordinator server is listening on |
-| search_coordinator_server_search_index_partition_failure_count | Count | Failed server searches on index partitions |
-| search_coordinator_server_search_index_partition_failure_latency_usec | Microseconds | Latency for failed server partition searches |
-| search_coordinator_server_search_index_partition_success_count | Count | Successful server searches on index partitions |
-| search_coordinator_server_search_index_partition_success_latency_usec | Microseconds | Latency for successful server partition searches |
-| search_coordinator_threads_cpu_time_sec | Seconds | Cumulative CPU time consumed by coordinator (gRPC) threads |
-
 ### search_index_stats
 
 | Metric Name | Unit | Description |
@@ -40,13 +13,6 @@ These metrics are only available when cluster mode is enabled.
 | search_number_of_indexes | Count | Total number of search indexes |
 | search_total_active_write_threads | Count | Active writer threads (0 if suspended) |
 | search_total_indexed_documents | Count | Total documents indexed across all indexes |
-
-### search_latency
-
-| Metric Name | Unit | Description |
-| :--- | :---: | :--- |
-| search_flat_vector_index_search_latency_usec | Microseconds | Latency distribution for flat vector index searches |
-| search_hnsw_vector_index_search_latency_usec | Microseconds | Latency distribution for HNSW vector index searches |
 
 ### search_indexing
 
@@ -113,6 +79,40 @@ These metrics are only available when cluster mode is enabled.
 | search_vector_externing_hash_extern_errors | Count | Errors during hash externalization |
 | search_vector_externing_lru_promote_cnt | Count | LRU promotions in vector externalization |
 | search_vector_externing_num_lru_entries | Count | Entries in the vector externalizer LRU cache |
+
+### search_latency
+
+| Metric Name | Unit | Description |
+| :--- | :---: | :--- |
+| search_flat_vector_index_search_latency_usec | Microseconds | Latency distribution for flat vector index searches |
+| search_hnsw_vector_index_search_latency_usec | Microseconds | Latency distribution for HNSW vector index searches |
+
+### search_coordinator
+
+These metrics are only available when cluster mode is enabled.
+
+| Metric Name | Unit | Description |
+| :--- | :---: | :--- |
+| search_coordinator_bytes_in | Bytes | Total incoming gRPC response bytes from remote nodes |
+| search_coordinator_bytes_out | Bytes | Total outgoing gRPC request bytes to remote nodes |
+| search_coordinator_client_get_global_metadata_failure_count | Count | Failed client requests to get global metadata |
+| search_coordinator_client_get_global_metadata_failure_latency_usec | Microseconds | Latency for failed client metadata requests |
+| search_coordinator_client_get_global_metadata_success_count | Count | Successful client requests to get global metadata |
+| search_coordinator_client_get_global_metadata_success_latency_usec | Microseconds | Latency for successful client metadata requests |
+| search_coordinator_client_search_index_partition_failure_count | Count | Failed client searches on index partitions |
+| search_coordinator_client_search_index_partition_failure_latency_usec | Microseconds | Latency for failed partition searches |
+| search_coordinator_client_search_index_partition_success_count | Count | Successful client searches on index partitions |
+| search_coordinator_client_search_index_partition_success_latency_usec | Microseconds | Latency for successful partition searches |
+| search_coordinator_server_get_global_metadata_failure_count | Count | Failed server requests to get global metadata |
+| search_coordinator_server_get_global_metadata_success_count | Count | Successful server requests to get global metadata |
+| search_coordinator_server_get_global_metadata_failure_latency_usec | Microseconds | Latency for failed server metadata requests |
+| search_coordinator_server_get_global_metadata_success_latency_usec | Microseconds | Latency for successful server metadata requests |
+| search_coordinator_server_listening_port | Port | Port the coordinator server is listening on |
+| search_coordinator_server_search_index_partition_failure_count | Count | Failed server searches on index partitions |
+| search_coordinator_server_search_index_partition_failure_latency_usec | Microseconds | Latency for failed server partition searches |
+| search_coordinator_server_search_index_partition_success_count | Count | Successful server searches on index partitions |
+| search_coordinator_server_search_index_partition_success_latency_usec | Microseconds | Latency for successful server partition searches |
+| search_coordinator_threads_cpu_time_sec | Seconds | Cumulative CPU time consumed by coordinator (gRPC) threads |
 
 ## Configurations
 
