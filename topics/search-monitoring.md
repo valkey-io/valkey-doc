@@ -131,7 +131,7 @@ The search module uses the Valkey configuration mechanism. Thus each of the name
 | search.log-level | Enum | from core | Controls module log level verbosity: "debug", "verbose", "notice" or "warning". Default value is to fetch the log level from the core at startup. |
 | search.enable-partial-results | Boolean | true | Default option for delivering partial results when errors such as timeout occur. This applies a default behavior on commands which can be explicitly overridden by FT.INFO/FT.SEARCH commands using the SOMESHARDS (for partial results) option and the ALLSHARDS (for complete results) option. |
 | search.enable-consistent-results | Boolean | false | Default option for delivering consistent results when errors such as timeout occur. This applies a default behavior on commands which can be explicitly overridden by FT.INFO/FT.SEARCH commands using the CONSISTENT/INCONSISTENT option.|
-| search.search-result-background-cleanup | Boolean | true | Enable search result cleanup on background thread |
+| search.search-result-background-cleanup | Boolean | false | Enable search result cleanup on background thread |
 | search.high-priority-weight | Number | 100 | Fairness for high priority tasks in thread pools [0..100]. |
 | search.local-fanout-queue-wait-threshold | Number | 50 | When this value is less than the average read queue wait time (in milliSeconds)  the local node is preferred in a fanout operation. |
 | search.thread-pool-wait-time-samples | Number | 100 | Sample queue size for thread pool wait time tracking |
