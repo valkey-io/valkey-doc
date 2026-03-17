@@ -136,16 +136,13 @@ The search module uses the Valkey configuration mechanism. Thus each of the name
 | search.writer-threads | Number | #cores | Writer thread pool size; dynamically resizes pool on modification |
 | search.utility-threads | Number | 1 | Utility thread pool size; dynamically resizes pool on modification |
 | search.max-worker-suspension-secs | Number | 60 | Controls how long the worker thread pool quiescing around a fork. Values > 0 are resumption timeouts if a fork runs too long. Values <=0 mean no quiescing. |
-| search.use-coordinator | Boolean | false | Controls whether this instance uses the coordinator. Generally required for CME; can only be set at startup |
-| search.skip-rdb-load | Boolean | false | Skip loading of saved index data from RDB file. May be useful for recovering from a corrupted RDB or index. |
+| search.skip-rdb-load | Boolean | false | Skip loading of saved index data from RDB file. Useful for recovering from a corrupted RDB or index. |
 | search.skip-corrupted-internal-update-entries | Boolean | false | Skip corrupted AOF entries during internal updates. May be useful for recovering from a corrupted AOF file. |
 | search.log-level | Enum | from core | Controls module log level verbosity: "debug", "verbose", "notice" or "warning". Default value is to fetch the log level from the core at startup. |
 | search.enable-partial-results | Boolean | true | Default option for delivering partial results when timeout occurs (uses SOMESHARDS if not explicitly provided) |
 | search.enable-consistent-results | Boolean | false | Default option for delivering consistent results when timeout occurs (uses CONSISTENT if not explicitly provided) |
 | search.search-result-background-cleanup | Boolean | true | Enable search result cleanup on background thread |
 | search.high-priority-weight | Number | 100 | Fairness for high priority tasks in thread pools [0..100]. |
-| search.ft-info-timeout-ms | Number | 5000 | Timeout in milliseconds for FT.INFO command when CLUSTER or PRIMARY option is selected |
-| search.ft-info-rpc-timeout-ms | Number | 2500 | Timeout in milliseconds for RPC connections used by FT.INFO when CLUSTER OR PRIMARY options is selected |
 | search.local-fanout-queue-wait-threshold | Number | 50 | When this value is less than the average read queue wait time (in milliSeconds)  the local node is preferred in a fanout operation. |
 | search.thread-pool-wait-time-samples | Number | 100 | Sample queue size for thread pool wait time tracking |
 | search.tag-min-prefix-length | Number | 2 | Minimum number of characters required before trailing `*` in TAG wildcard queries (length excludes `*`) |
@@ -171,9 +168,7 @@ The search module uses the Valkey configuration mechanism. Thus each of the name
 | search.backfill-batch-size | Number | 10240 | Controls the batch size for backfilling indexes |
 | search.coordinator-query-timeout-secs | Number | 120 | Controls the gRPC deadline timeout (in seconds) for distributed coordinator query operations. |
 | search.max-indexes | Number | 1000 | Controls the maximum number of search indexes that can be created in the system |
-| search.prefiltering-threshold-ratio | String | 0.001 | Controls when pre-filtering is used vs inline-filtering for hybrid queries (range 0.0 to 1.0) |
 | search.async-fanout-threshold | Number | 30 | Controls the threshold for async fanout operations (minimum number of targets to use async) |
 | search.max-nonvector-search-results-fetched | Number | 100000 | Controls the maximum number of results to fetch in background threads before content fetching on non-vector (numeric/tag/text) query paths |
 | search.max-attributes | Number | 1000 | Controls the max number of attributes per index |
-| search.hide-user-data-from-log | Boolean | true | Controls whether user data is hidden from log output |
 | search.cluster-map-expiration-ms | Number | 250 | Controls how long (in milliseconds) the coordinator caches the cluster topology map before refreshing it from the Valkey cluster. |
