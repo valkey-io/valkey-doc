@@ -139,7 +139,7 @@ The search module uses the Valkey configuration mechanism. Thus each of the name
 | search.skip-rdb-load | Boolean | false | Skip loading of saved index data from RDB file. Useful for recovering from a corrupted RDB or index. |
 | search.skip-corrupted-internal-update-entries | Boolean | false | Skip corrupted AOF entries during internal updates. May be useful for recovering from a corrupted AOF file. |
 | search.log-level | Enum | from core | Controls module log level verbosity: "debug", "verbose", "notice" or "warning". Default value is to fetch the log level from the core at startup. |
-| search.enable-partial-results | Boolean | true | Default option for delivering partial results when errors such as timeout occur. This applies a default behavior on commands which can be explicitly overriden by FT.INFO/FT.SEARCH commands using the ALLSHARDS option. |
+| search.enable-partial-results | Boolean | true | Default option for delivering partial results when errors such as timeout occur. This applies a default behavior on commands which can be explicitly overriden by FT.INFO/FT.SEARCH commands using the SOMESHARDS/ALLSHARDS option. |
 | search.enable-consistent-results | Boolean | false | Default option for delivering consistent results when timeout occurs (uses CONSISTENT if not explicitly provided) |
 | search.search-result-background-cleanup | Boolean | true | Enable search result cleanup on background thread |
 | search.high-priority-weight | Number | 100 | Fairness for high priority tasks in thread pools [0..100]. |
