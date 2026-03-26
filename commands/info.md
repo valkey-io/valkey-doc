@@ -274,8 +274,9 @@ Here is the description of fields.
 
 Here is the meaning of all fields in the **server** section:
 
-*   `redis_version`: Redis OSS version this Valkey server is compatible with
-*   `valkey_version`: Valkey version number (e.g. 7.2.5)
+*   `server_name`: The name of the server software (always `valkey` for Valkey servers). Use this field to distinguish Valkey from Redis OSS. Added in Valkey 7.2.5.
+*   `redis_version`: The Redis OSS version that this Valkey server is compatible with. This value is fixed at `7.2.4` across all Valkey releases to maintain compatibility with existing clients and tools that check this field for feature detection.
+*   `valkey_version`: The actual Valkey version number (e.g. `8.1.1`). Use this field instead of `redis_version` to check the Valkey version.
 *   `valkey_release_stage`: The status of the Valkey version: "ga" for generally available versions; "rc1", "rc2", etc. for release candidates; "dev" for development versions. Added in 8.1.
 *   `redis_git_sha1`:  Git SHA1
 *   `redis_git_dirty`: Git dirty flag
