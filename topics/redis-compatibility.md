@@ -19,6 +19,28 @@ Data files produced by Redis CE 7.4+ cannot be loaded by Valkey.
 
 For migration steps, refer to [Migration from Redis to Valkey](migration.md).
 
+## Protocol compatibility
+
+Valkey uses the same RESP (REdis Serialization Protocol) wire protocol as Redis, supporting both RESP2 and RESP3.
+Existing Redis client libraries (such as Jedis, redis-py, node-redis, ioredis, and go-redis) connect to Valkey without code changes.
+
+## Persistence format compatibility
+
+Valkey reads and writes the same RDB and AOF file formats as Redis OSS 7.2.
+You can copy an RDB snapshot from Redis OSS to Valkey and load it directly.
+RDB files produced by Redis CE 7.4+ are not compatible.
+
+## Configuration compatibility
+
+Valkey accepts Redis-style configuration files.
+An existing `redis.conf` can be used as-is with `valkey-server`.
+Configuration directives are the same as Redis OSS 7.2, with additional Valkey-specific options for new features.
+
+## CLI compatibility
+
+The `redis-cli` tool works with Valkey servers, and `valkey-cli` works with Redis OSS servers.
+Both tools use the same RESP protocol and command set.
+
 ## The `redis_version` and `server_name` INFO fields
 
 To maintain compatibility with existing clients and tools that check the server version, Valkey reports a fixed `redis_version` field in the [INFO](../commands/info.md) server output:
