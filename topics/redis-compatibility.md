@@ -52,14 +52,14 @@ redis_version:7.2.4
 This value does not change across Valkey releases.
 Clients and libraries that rely on `redis_version` to detect feature support continue to work without modification.
 
-The actual Valkey version is reported in a separate field:
+The actual Valkey version is reported in separate fields:
 
 ```
 server_name:valkey
-server_version:8.1.1
+valkey_version:8.1.1
 ```
 
-Use `server_version` to check the Valkey version.
+Use `valkey_version` to check the Valkey version.
 Use `redis_version` only for backward compatibility with Redis-era tooling.
 
 ## Lua scripting compatibility
@@ -85,6 +85,14 @@ server.error_reply('ERR something')
 
 Existing Lua scripts that use `redis.call()` and `redis.pcall()` work without changes.
 New scripts can use either namespace.
+
+Valkey also provides Lua globals for version detection:
+
+- `SERVER_NAME` - returns `"valkey"`
+- `SERVER_VERSION` - returns the Valkey version string (e.g. `"8.1.1"`)
+- `SERVER_VERSION_NUM` - returns the Valkey version as a number (e.g. `0x00080101`)
+
+The Redis-era globals (`REDIS_VERSION`, `REDIS_VERSION_NUM`) remain available and return the fixed Redis compatibility version (`7.2.4`).
 
 ## Module API compatibility
 
