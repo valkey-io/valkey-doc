@@ -25,10 +25,10 @@ This topic covers the different aspects of `valkey-cli`, starting from the simpl
 ## Options
 
 **`-h`** _hostname_
-: Server hostname (default: 127.0.0.1).
+: Server hostname (default: `$VALKEYCLI_HOST` if set, otherwise 127.0.0.1).
 
 **`-p`** _port_
-: Server port (default: 6379).
+: Server port (default: `$VALKEYCLI_PORT` if set, otherwise 6379).
 
 **`-t`** _timeout_
 : Server connection timeout in seconds (decimals allowed).
