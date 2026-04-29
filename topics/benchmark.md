@@ -60,6 +60,12 @@ In command arguments, the following placeholders are substituted:
 **`-n`** _requests_
 : Total number of requests (default 100000)
 
+**`--duration`** _seconds_
+: Run benchmark for specified number of seconds (mutually exclusive with -n)
+
+**`--warmup`** _seconds_
+: Run benchmark for specified warmup period before recording data.
+
 **`-d`** _size_
 : Data size of SET/GET value in bytes (default 3)
 
@@ -137,11 +143,11 @@ In command arguments, the following placeholders are substituted:
 **`-x`**
 : Read last argument from STDIN.
 
-**`--seed`** _num_
-: Set the seed for random number generator. Default seed is based on time.
-
 **`--rps`** _requests_
 : Limit the total number of requests per second. Default 0 (no limit).
+
+**`--seed`** _num_
+: Set the seed for random number generator. Default seed is based on time.
 
 **`--tls`**
 : Establish a secure TLS connection.
@@ -225,6 +231,14 @@ Benchmark a specific transaction:
 
     $ valkey-benchmark -- multi ';' set key:__rand_int__ __data__ ';' \
                           incr counter ';' exec\n\n");
+
+Run a time-based benchmark with warmup:
+
+    $ valkey-benchmark --warmup 10 --duration 60 -c 100 -t set,get
+
+Run a rate-limited benchmark:
+
+    $ valkey-benchmark -c 100 -n 500000 --rps 10000 -t set,get
 
 ### Running only a subset of the tests
 
