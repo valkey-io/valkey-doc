@@ -116,6 +116,13 @@ In command arguments, the following placeholders are substituted:
   Note: If `-r` is omitted, all commands in a benchmark will
   use the same key.
 
+**`--sequential`**       
+: Modifies the -r argument to replace the string __rand_int__ with
+  12 digit numbers sequentially instead of randomly.
+  __rand_1st__ through __rand_9th__ are available with independent counters.
+  Used to create expected number of elements with multiple replacements.
+  For example: ZADD myzset __rand_int__ element:__rand_1st__
+
 **`-P`** _numreq_
 : Pipeline _numreq_ requests. Default 1 (no pipeline).
 
