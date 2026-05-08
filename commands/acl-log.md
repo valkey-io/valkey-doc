@@ -3,6 +3,7 @@ The command shows a list of recent ACL security events:
 1. Failures to authenticate their connections with [`AUTH`](auth.md) or [`HELLO`](hello.md).
 2. Commands denied because against the current ACL rules.
 3. Commands denied because accessing keys not allowed in the current ACL rules.
+4. Commands denied because accessing a database not allowed in the current ACL rules.
 
 The optional argument specifies how many entries to show. By default
 up to ten failures are returned. The special `RESET` argument clears the log.
@@ -39,7 +40,7 @@ Entries are displayed starting from the most recent.
 Each log entry is composed of the following fields:
 
 1. `count`: The number of security events detected within a 60 second period that are represented by this entry.
-2. `reason`: The reason that the security events were logged. Either `command`, `key`, `channel`, or `auth`.
+2. `reason`: The reason that the security events were logged. Either `command`, `key`, `channel`, `database`, or `auth`. The `database` reason is reported when the user has no permission to access the database referenced by the command; the `object` field then contains the database id, or the command name when the command implicitly accesses every database (such as [`FLUSHALL`](flushall.md)).
 3. `context`: The context that the security events were detected in. Either `toplevel`, `multi`, `lua`, `script`, or `module`.
 4. `object`: The resource that the user had insufficient permissions to access. `auth` when the reason is `auth`.
 5. `username`: The username that executed the command that caused the security events or the username that had a failed authentication attempt.

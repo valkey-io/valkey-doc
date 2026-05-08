@@ -22,3 +22,7 @@ To check on the progress of the slot migration, use the
 [`CLUSTER GETSLOTMIGRATIONS`](cluster-getslotmigrations.md) command.
 
 To cancel the slot migration jobs, use the [`CLUSTER CANCELSLOTMIGRATIONS`](cluster-cancelslotmigrations.md) command.
+
+Because slot migrations may move keys belonging to any database, the caller
+must have ACL access to all databases (the `alldbs` rule). See
+[database permissions](../topics/acl.md#database-permissions).

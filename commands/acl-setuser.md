@@ -72,6 +72,9 @@ This is a list of all the supported Valkey ACL rules:
 * `-<command>`: Remove the command to the list of commands the user can call. It can be used with `|` for blocking subcommands (e.g., "-config|set").
 * `-@<category>`: Like `+@<category>` but removes all the commands in the category instead of adding them.
 * `nocommands`: Alias for `-@all`. Removes all the commands, and the user is no longer able to execute anything.
+* `db=<id>[,<id>...]`: Adds the specified database id(s) to the list of databases the selector is allowed to access. Multiple ids are separated by commas, e.g. `db=0,1,2`. Adding any explicit `db=` rule clears the `alldbs` flag on the selector. See [database permissions](../topics/acl.md#database-permissions) for more information.
+* `alldbs`: Allows the selector to access all databases. This is the default for new selectors.
+* `resetdbs`: Removes all databases from the list of allowed databases and clears the `alldbs` flag.
 
 ### User management rules
 
@@ -93,4 +96,30 @@ This is a list of all the supported Valkey ACL rules:
 OK
 127.0.0.1:6379> ACL SETUSER antirez heeyyyy
 (error) ERR Error in ACL SETUSER modifier 'heeyyyy': Syntax error
+```
+
+Restrict a user to a subset of databases:
+
+```
+127.0.0.1:6379> ACL SETUSER alice on +@all ~* resetdbs db=0,1 nopass
+OK
+127.0.0.1:6379> ACL LIST
+1) "user alice on nopass sanitize-payload ~* resetchannels db=0,1 +@all"
+2) "user default on nopass ~* &* alldbs +@all"
+```
+
+Adding `db=` automatically clears `alldbs`, so `resetdbs` is optional:
+
+```
+127.0.0.1:6379> ACL SETUSER alice on +@all ~* db=0,1 nopass
+OK
+```
+
+Different selectors can grant access on different databases:
+
+```
+127.0.0.1:6379> ACL SETUSER bob on nopass (db=0,1 +@write +select ~*) (db=2,3 +@read +select ~*)
+OK
+127.0.0.1:6379> ACL GETUSER bob
+...
 ```
