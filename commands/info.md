@@ -250,6 +250,7 @@ used_cpu_sys_children:0.003157
 used_cpu_user_children:0.008264
 used_cpu_sys_main_thread:68.478353
 used_cpu_user_main_thread:219.404508
+used_active_time_main_thread:192.003980
 
 # Modules
 
@@ -658,6 +659,22 @@ Here is the meaning of all fields in the **cpu** section:
 *   `used_cpu_user_children`: User CPU consumed by the background processes
 *   `used_cpu_sys_main_thread`: System CPU consumed by the Valkey server main thread
 *   `used_cpu_user_main_thread`: User CPU consumed by the Valkey server main thread
+*   `used_active_time_main_thread`: Clock time the Valkey server main thread has spent on actual work,
+    excluding time waiting for work.
+*   `used_active_time_io_thread_N` (where *N* is a number from 1 to the configured number of I/O threads):
+    Clock time each I/O thread spends doing actual work, excluding time waiting for work.
+
+The fields `used_active_time_main_thread` and `used_active_time_io_thread_N`
+were added in Valkey 9.1. They are a better indication than the CPU time metrics
+of the spare capacity of each thread, because Valkey uses busy-waiting when I/O
+threads are used, which makes the CPU time appear to be near 100% even if the
+server has spare capacity for handling more commands.
+
+The active time fields grow linearly with the server load. To understand how to
+interpret them, consider this example: If the main thread's used active time
+increases 5 seconds between two INFO calls 10 seconds apart, it means the main
+thread has spent half of the time executing commands and the other half waiting.
+It means that it's running at 50% of its capacity.
 
 The **commandstats** section provides statistics based on the command type,
  including the number of calls that reached command execution (not rejected),
