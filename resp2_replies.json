@@ -1158,6 +1158,11 @@
   "MSET": [
     "[Simple string reply](../topics/protocol.md#simple-strings): always `OK` because `MSET` can't fail."
   ],
+  "MSETEX": [
+    "One of the following:",
+    "* [Integer reply](../topics/protocol.md#integers): `0` if no key was set (at least one key already existed when `NX` was used, or at least one key didn't exist when `XX` was used).",
+    "* [Integer reply](../topics/protocol.md#integers): `1` if all the keys were set."
+  ],
   "MSETNX": [
     "One of the following:",
     "* [Integer reply](../topics/protocol.md#integers): `0` if no key was set (at least one key already existed).",
