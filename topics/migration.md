@@ -106,6 +106,8 @@ To perform a physical migration:
 8. Stop the Redis server.
 9. Start Valkey:
    > NOTE: If you enabled AOF in your Valkey configuration, disable it on the first start. Otherwise, the copied RDB file will not be imported into Valkey.
+   
+   > NOTE: Set `rdb-version-check relaxed` for the first start to prevent "RDB format version" errors.
 
    Run the following command:
 
