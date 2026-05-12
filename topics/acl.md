@@ -106,7 +106,10 @@ Allow and disallow Pub/Sub channels:
 
 Allow and disallow logical databases:
 
-* `db=<id>[,<id>...]`: Add the specified database id(s) to the list of databases the user is allowed to access. Multiple ids are separated by commas, e.g. `db=0,1,2`. Adding any explicit `db=` rule clears the `alldbs` flag on the selector. See [database permissions](#database-permissions) for more information.
+* `db=<id>[,<id>...]`: Sets the specified database id(s) as the databases the user is allowed to access.
+  Multiple ids are separated by commas, e.g. `db=0,1,2`; at least one id is required.
+  Clears the `alldbs` flag and any previously configured database ids on the selector.
+  See [database permissions](#database-permissions) for more information.
 * `alldbs`: Allow the user to access all databases. This is the default for newly created selectors.
 * `resetdbs`: Flush the list of allowed databases and clear the `alldbs` flag. After `resetdbs`, the user (or selector) cannot access any database until additional `db=` rules or `alldbs` are added.
 
@@ -448,31 +451,46 @@ If an application needs to make sure no data is accessed from a key, including s
 In addition to commands, keys, and Pub/Sub channels, ACL rules can restrict
 which databases (see [`SELECT`](../commands/select.md)) a user is
 allowed to access. By default a newly created selector has the `alldbs` flag
-set, meaning the user can use any database. Adding an explicit `db=` rule
+set, meaning the user can use any database. A `db=<id>[,<id>...]` rule
 restricts the selector to only the listed databases.
 
 The default scope for database permissions is `alldbs`. The following rules
 control database access:
 
 * `db=<id>[,<id>...]`: Allow access only to the listed database ids.
+  At least one id is required.
+  This replaces any previously configured database ids and clears `alldbs`.
 * `alldbs`: Allow access to every database (default for new selectors).
 * `resetdbs`: Remove every database from the allowed list and clear `alldbs`.
 
 For example, to create a user that may only operate on databases 0 and 1:
 
 ```
-> ACL SETUSER alice on +@all ~* resetdbs db=0,1 nopass
+> ACL SETUSER alice on +@all ~* db=0,1 nopass
 OK
 > ACL LIST
 1) "user alice on nopass sanitize-payload ~* resetchannels db=0,1 +@all"
 2) "user default on nopass ~* &* alldbs +@all"
 ```
 
-Because adding `db=` automatically clears `alldbs`, `resetdbs` can be omitted:
+A later `db=` rule replaces the previous database list:
 
 ```
-> ACL SETUSER alice on +@all ~* db=0,1 nopass
-"user alice on nopass sanitize-payload ~* resetchannels db=0,1 +@all"
+> ACL SETUSER alice db=2,3
+OK
+> ACL LIST
+1) "user alice on nopass sanitize-payload ~* resetchannels db=2,3 +@all"
+2) "user default on nopass ~* &* alldbs +@all"
+```
+
+Use `resetdbs` to remove database access from an existing user:
+
+```
+> ACL SETUSER alice resetdbs
+OK
+> ACL LIST
+1) "user alice on nopass sanitize-payload ~* resetchannels resetdbs +@all"
+2) "user default on nopass ~* &* alldbs +@all"
 ```
 
 Database permissions can also be combined with [selectors](#selectors) so that
@@ -480,8 +498,16 @@ different rule sets apply to different databases:
 
 ```
 > ACL SETUSER bob on nopass (db=0,1 +@write +select ~*) (db=2,3 +@read +select ~*)
-"user bob on nopass sanitize-payload resetchannels alldbs -@all (~* resetchannels db=0,1 -@all +@write +select) (~* resetchannels db=2,3 -@all +@read +select)"
+OK
+> ACL LIST
+1) "user bob on nopass sanitize-payload resetchannels alldbs -@all (~* resetchannels db=0,1 -@all +@write +select) (~* resetchannels db=2,3 -@all +@read +select)"
+2) "user default on nopass sanitize-payload ~* &* alldbs +@all"
 ```
+
+The `ACL LIST` output shows three sets of permissions for `bob`: the root
+permissions (`alldbs -@all`) and two selectors, one for each parenthesized rule
+set. A command is allowed when the root permissions or any selector matches it.
+See [selectors](#selectors) for more information.
 
 ### How database permissions are evaluated
 
@@ -494,9 +520,8 @@ the user to have access to that id:
 
 * [`SELECT`](../commands/select.md) - target database id.
 * [`SWAPDB`](../commands/swapdb.md) - both database ids.
-* [`MOVE`](../commands/move.md) - destination database id (the source is the
-  currently selected database, which the user already had to be allowed to
-  `SELECT`).
+* [`MOVE`](../commands/move.md) - destination database id, and the source
+  database which is the currently selected database.
 * [`COPY`](../commands/copy.md) - the destination database id when the `DB`
   option is used.
 

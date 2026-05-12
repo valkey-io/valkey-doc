@@ -3,7 +3,9 @@ The command shows a list of recent ACL security events:
 1. Failures to authenticate their connections with [`AUTH`](auth.md) or [`HELLO`](hello.md).
 2. Commands denied because against the current ACL rules.
 3. Commands denied because accessing keys not allowed in the current ACL rules.
-4. Commands denied because accessing a database not allowed in the current ACL rules.
+4. Commands denied because accessing Pub/Sub channels not allowed in the current ACL rules.
+5. Commands denied because accessing a database not allowed in the current ACL rules.
+6. TLS clients failing automatic authentication via certificate field because no matching user exists.
 
 The optional argument specifies how many entries to show. By default
 up to ten failures are returned. The special `RESET` argument clears the log.
@@ -40,9 +42,21 @@ Entries are displayed starting from the most recent.
 Each log entry is composed of the following fields:
 
 1. `count`: The number of security events detected within a 60 second period that are represented by this entry.
-2. `reason`: The reason that the security events were logged. Either `command`, `key`, `channel`, `database`, or `auth`. The `database` reason is reported when the user has no permission to access the database referenced by the command; the `object` field then contains the database id, or the command name when the command implicitly accesses every database (such as [`FLUSHALL`](flushall.md)).
+2. `reason`: The reason that the security events were logged. One of the following:
+   * `command`: the user has no permission to run the command.
+   * `key`: the user has no permission to access one of the keys used by the command.
+   * `channel`: the user has no permission to access one of the Pub/Sub channels used by the command.
+   * `database`: the user has no permission to access one of the databases referenced by the command.
+   * `auth`: authentication failed for the connection.
+   * `tls-cert`: automatic authentication from a TLS certificate failed because no matching user exists.
 3. `context`: The context that the security events were detected in. Either `toplevel`, `multi`, `lua`, `script`, or `module`.
-4. `object`: The resource that the user had insufficient permissions to access. `auth` when the reason is `auth`.
+4. `object`: The resource that the user had insufficient permissions to access. The value depends on `reason`:
+   * `command`: the command name.
+   * `key`: the key pattern.
+   * `channel`: the Pub/Sub channel.
+   * `database`: the database id, or the command name when the command implicitly accesses every database (such as [`FLUSHALL`](flushall.md)).
+   * `auth`: the literal string `AUTH`.
+   * `tls-cert`: the certificate that did not match any existing user.
 5. `username`: The username that executed the command that caused the security events or the username that had a failed authentication attempt.
 6. `age-seconds`: Age of the log entry in seconds.
 7. `client-info`: Displays the client info of a client which caused one of the security events.
