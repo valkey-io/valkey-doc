@@ -5,3 +5,7 @@
 Only slot migrations initiated on this node are cancelled. If this node is the
 target of a slot migration, the cancellation must be performed on the source
 node.
+
+Because the migrations being cancelled may touch keys in any database, the
+caller must have ACL access to all databases (the `alldbs` rule). See
+[database permissions](../topics/acl.md#database-permissions).
