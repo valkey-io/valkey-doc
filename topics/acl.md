@@ -369,8 +369,10 @@ That is true for all commands except DEBUG. In order to allow/block specific DEB
 Sometimes the ability to exclude or include a command or a subcommand as a whole is not enough.
 Many deployments may not be happy providing the ability to execute a `SELECT` for any DB, but may
 still want to be able to run `SELECT 0`.
+Database permissions are the preferred way to restrict which databases a user
+can access; see [database permissions](#database-permissions).
 
-In such case we could alter the ACL of a user in the following way:
+For versions without database permissions, we could alter the ACL of a user in the following way:
 
     ACL SETUSER myuser -select +select|0
 
