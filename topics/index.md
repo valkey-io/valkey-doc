@@ -62,7 +62,7 @@ It's released under the
 * [Persistence](persistence.md): Options for configuring durability using disk backups.
 * [Signals Handling](signals.md): How Valkey handles signals.
 * [Connections Handling](clients.md): How Valkey handles clients connections.
-* [Migration](migration.md): How to migrate from Redis to Valkey.
+* [Migration](migration.md): How to migrate from Redis to Valkey and understand Redis compatibility.
 * [Releases and Versioning](releases.md): Valkey's development cycle and version numbering.
 * [Administration](admin.md): Various administration topics.
 
@@ -100,4 +100,3 @@ It's released under the
 * [Command key specifications](key-specs.md): How to extract the names of keys accessed by every command.
 * [Command tips](command-tips.md): Command tips communicate non-trivial execution modes and post-processing information about commands.
 * [Command arguments](command-arguments.md): An overview of command arguments as returned by the `COMMAND DOCS` command.
-
