@@ -116,7 +116,7 @@ In command arguments, the following placeholders are substituted:
   Note: If `-r` is omitted, all commands in a benchmark will
   use the same key.
 
-**`-P`** _numreq_
+**`-P`** _numreq_ 
 : Pipeline _numreq_ requests. Default 1 (no pipeline).
 
 **`-q`**
