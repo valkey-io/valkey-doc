@@ -163,3 +163,71 @@ The exists function returns 0 if the input argument is Nil else 1. This can be u
 |    Syntax     | Operation                      |
 | :-----------: | :----------------------------- |
 | exists(value) | 0 if the value is Nil, else 1. |
+
+# Array Values
+
+## Producing Arrays
+
+An array is an ordered sequence of scalar elements produced by the `TOLIST` reducer during a `GROUPBY` stage. The resulting array value is available to expressions in subsequent pipeline stages.
+
+Syntax:
+
+```
+REDUCE TOLIST 1 <expression>
+```
+
+Arrays can be nested — an array may contain other arrays as elements, enabling multi-dimensional data structures within the expression evaluation context.
+
+## Element-wise Scalar Functions
+
+When a scalar function receives an array argument, it applies independently to each element, returning a new array of the same length.
+
+| Function | Description |
+| :------- | :---------- |
+| `lower(array)` | Applies lower-case conversion to each element |
+| `upper(array)` | Applies upper-case conversion to each element |
+| `strlen(array)` | Returns string length of each element |
+| `floor(array)` | Applies floor to each element |
+| `ceil(array)` | Applies ceiling to each element |
+| `abs(array)` | Applies absolute value to each element |
+| `log(array)` | Applies natural log to each element |
+| `sqrt(array)` | Applies square root to each element |
+
+## Array Arithmetic
+
+When both operands are arrays of equal length, arithmetic operators apply element-wise, producing a new array where each element is the result of applying the operator to the corresponding elements of the input arrays.
+
+When one operand is a scalar and the other is an array, the scalar is broadcast — promoted to an array of the same length — so the operation applies to each element.
+
+| Operator | Operation |
+| :------: | :-------- |
+| `+` | Element-wise addition |
+| `-` | Element-wise subtraction |
+| `*` | Element-wise multiplication |
+| `/` | Element-wise division |
+| `^` | Element-wise exponentiation |
+
+## Array-Specific Functions
+
+| Syntax | Description |
+| :----- | :---------- |
+| `vectorlen(array)` | Returns the number of elements in the array |
+| `vectorat(array, index)` | Returns the element at the zero-based index |
+| `isvector(value)` | Returns 1 if the value is an array, otherwise 0 |
+| `makevector(e1, e2, ...)` | Constructs an array from the provided arguments |
+| `flatten(array, depth)` | Flattens nested arrays to the specified depth |
+
+## Error Handling
+
+Array operations produce specific error messages when encountering invalid conditions.
+
+| Condition | Message Format |
+| :-------- | :------------- |
+| Arithmetic with incompatible type | `Type error: cannot add vector to string` |
+| Element-wise on mismatched lengths | `Length mismatch: vectors have lengths 3 and 5` |
+| Per-element computation failure | `Element error at index 2: division by zero` |
+| `vectorat` out-of-bounds | `Index out of bounds: index 5, vector length 3` |
+
+## RESP Serialization
+
+Array values are serialized as RESP arrays in the `FT.AGGREGATE` response. Each element of the array is serialized according to its scalar type: numeric values become bulk strings containing digits, string values become bulk strings, and nil values become RESP nil.
