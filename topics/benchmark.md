@@ -149,6 +149,20 @@ In command arguments, the following placeholders are substituted:
 **`--seed`** _num_
 : Set the seed for random number generator. Default seed is based on time.
 
+**`--num-functions`** _num_
+: Set the number of functions present in the Lua lib that is loaded when running the `function_load` test.
+
+**`--num-keys-in-fcall`** _num_
+: Set the number of keys passed to FCALL command when running the `fcall` test.
+
+**`--dataset`** _file_
+: The path to the CSV/TSV dataset file for the field placeholder replacement. 
+  All fields are auto-detected with natural content lengths.
+
+**`--maxdocs`** _num_
+: Maximum number of documents to load from dataset file. 
+  Default: unlimited.
+
 **`--tls`**
 : Establish a secure TLS connection.
 
@@ -188,6 +202,20 @@ In command arguments, the following placeholders are substituted:
 
 **`--mptcp`**
 : Establish an MPTCP connection.
+
+**`--fuzz`**
+: Enable fuzzy mode to generate random commands.
+  WARNING: Use for testing only, it is not recommended to use with production data.
+
+**`--fuzz-mode`** _modes_
+: Sets fuzzing modes (comma-separated): malformed-commands, config-commands.
+  malformed-commands: Generates also malformed commands.\n"
+  config-commands: Allows CONFIG SET commands.\n"
+  Default: valid commands only.
+
+**`--fuzz-loglevel`** _level_
+: Sets the log level for fuzzer (none, error, info, debug).
+  Default is 'info'.
 
 **`--help`**
 : Output help and exit.
@@ -230,7 +258,7 @@ Fill a list with 10000 random elements:
 Benchmark a specific transaction:
 
     $ valkey-benchmark -- multi ';' set key:__rand_int__ __data__ ';' \
-                          incr counter ';' exec\n\n");
+                          incr counter ';' exec
 
 Run a time-based benchmark with warmup:
 
