@@ -211,10 +211,10 @@ When one operand is a scalar and the other is an array, the scalar is broadcast 
 
 | Syntax | Description |
 | :----- | :---------- |
-| `vectorlen(array)` | Returns the number of elements in the array |
-| `vectorat(array, index)` | Returns the element at the zero-based index |
-| `isvector(value)` | Returns 1 if the value is an array, otherwise 0 |
-| `makevector(e1, e2, ...)` | Constructs an array from the provided arguments |
+| `arraylen(array)` | Returns the number of elements in the array |
+| `arrayat(array, index)` | Returns the element at the zero-based index |
+| `isarray(value)` | Returns 1 if the value is an array, otherwise 0 |
+| `makearray(e1, e2, ...)` | Constructs an array from the provided arguments |
 | `flatten(array, depth)` | Flattens nested arrays to the specified depth |
 
 ## Error Handling
@@ -223,10 +223,10 @@ Array operations produce specific error messages when encountering invalid condi
 
 | Condition | Message Format |
 | :-------- | :------------- |
-| Arithmetic with incompatible type | `Type error: cannot add vector to string` |
-| Element-wise on mismatched lengths | `Length mismatch: vectors have lengths 3 and 5` |
+| Arithmetic with incompatible type | `Type error: cannot add array to string` |
+| Element-wise on mismatched lengths | `Length mismatch: arrays have lengths 3 and 5` |
 | Per-element computation failure | `Element error at index 2: division by zero` |
-| `vectorat` out-of-bounds | `Index out of bounds: index 5, vector length 3` |
+| `arrayat` out-of-bounds | `Index out of bounds: index 5, array length 3` |
 
 ## RESP Serialization
 
