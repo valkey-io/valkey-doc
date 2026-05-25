@@ -295,6 +295,7 @@ Fsyncing
 fsyncing
 fsyncs
 func
+fuzzer
 Garantia
 Gbit
 gdb
@@ -964,6 +965,7 @@ VMware
 volatile-lru
 volatile-ttl
 vtype
+warmup
 Westmere
 wget
 wherefrom
