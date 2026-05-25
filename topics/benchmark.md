@@ -21,9 +21,18 @@ In command arguments, the following placeholders are substituted:
 
 `__rand_int__`
 : Replaced with a zero-padded random integer in the range selected using the -r option.
+  Multiple occurrences within a single command each get different values.
+
+`__rand_1st__`
+: Similar to __rand_int__ but multiple occurrences will have the same
+  value. __rand_2nd__ through __rand_9th__ are also available.
 
 `__data__`
 : Replaced with data of the size specified by the -d option.
+
+`__field:name__`
+: Replaced with data from the specified field/column in the
+  dataset. Requires the --dataset option.
 
 `{tag}`
 : Replaced with a tag that routes the command to the right cluster node.
@@ -107,7 +116,7 @@ In command arguments, the following placeholders are substituted:
 **`-r`** _keyspacelen_
 : Use random keys for SET/GET/INCR, random values for SADD,
   random members and scores for ZADD.
-  Using this option the benchmark will expand the string
+  Using this option the benchmark will replace the string
   `__rand_int__` inside an argument with a 12 digits number in
   the specified range from 0 to keyspacelen - 1. The
   substitution changes every time a command is executed.
@@ -116,6 +125,13 @@ In command arguments, the following placeholders are substituted:
   Note: If `-r` is omitted, all commands in a benchmark will
   use the same key.
 
+**`--sequential`**
+: Modifies the -r argument to replace the string __rand_int__
+  with 12 digit numbers sequentially instead of randomly.
+  __rand_1st__ through __rand_9th__ are available with independent counters.
+  Used to create expected number of elements with multiple replacements.
+  Example: ZADD myzset __rand_int__ element:__rand_1st__
+
 **`-P`** _numreq_ 
 : Pipeline _numreq_ requests. Default 1 (no pipeline).
 
@@ -123,7 +139,8 @@ In command arguments, the following placeholders are substituted:
 : Quiet. Just show query/sec values
 
 **`--precision`**
-: Number of decimal places to display in latency output (default 0)
+: Number of decimal places to display in latency output.
+  Default: 3.
 
 **`--csv`**
 : Output in CSV format
@@ -151,12 +168,14 @@ In command arguments, the following placeholders are substituted:
 
 **`--num-functions`** _num_
 : Set the number of functions present in the Lua lib that is loaded when running the `function_load` test.
+  Default: 10.
 
 **`--num-keys-in-fcall`** _num_
 : Set the number of keys passed to FCALL command when running the `fcall` test.
+  Default: 1.
 
 **`--dataset`** _file_
-: The path to the CSV/TSV dataset file for the field placeholder replacement. 
+: The path to the CSV/TSV dataset file for the field placeholder replacement.
   All fields are auto-detected with natural content lengths.
 
 **`--maxdocs`** _num_
@@ -209,8 +228,8 @@ In command arguments, the following placeholders are substituted:
 
 **`--fuzz-mode`** _modes_
 : Sets fuzzing modes (comma-separated): malformed-commands, config-commands.
-  malformed-commands: Generates also malformed commands.\n"
-  config-commands: Allows CONFIG SET commands.\n"
+  malformed-commands: Generates also malformed commands.
+  config-commands: Allows CONFIG SET commands.
   Default: valid commands only.
 
 **`--fuzz-loglevel`** _level_
@@ -268,6 +287,11 @@ Run a rate-limited benchmark:
 
     $ valkey-benchmark -c 100 -n 500000 --rps 10000 -t set,get
 
+Benchmark using real data from a CSV dataset file:
+
+    $ valkey-benchmark --dataset /path/to/data.csv -r 100000 -n 50000 \
+        SET doc:__rand_int__ __field:content__
+
 ### Running only a subset of the tests
 
 You don't need to run all the default tests every time you execute `valkey-benchmark`.
@@ -306,10 +330,10 @@ one million SET operations, using a random key for every operation out of
       3 bytes payload
       keep alive: 1
 
-    99.76% `<=` 1 milliseconds
-    99.98% `<=` 2 milliseconds
-    100.00% `<=` 3 milliseconds
-    100.00% `<=` 3 milliseconds
+    99.76% <= 1 milliseconds
+    99.98% <= 2 milliseconds
+    100.00% <= 3 milliseconds
+    100.00% <= 3 milliseconds
     72144.87 requests per second
 
     $ valkey-cli dbsize
