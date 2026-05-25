@@ -227,7 +227,7 @@ In command arguments, the following placeholders are substituted:
   WARNING: Use for testing only, it is not recommended to use with production data.
 
 **`--fuzz-mode`** _modes_
-: Sets fuzzing modes (comma-separated): malformed-commands, config-commands.
+: Sets fuzzing modes (comma-separated): `malformed-commands`, `config-commands`.
   malformed-commands: Generates also malformed commands.
   config-commands: Allows CONFIG SET commands.
   Default: valid commands only.
