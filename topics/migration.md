@@ -18,18 +18,18 @@ It keeps compatibility with Redis OSS 7.2 and earlier versions while adding Valk
 
 You can migrate a Redis server to Valkey.
 Valkey is compatible with Redis OSS 7.2 and all earlier open-source Redis versions, as Valkey 7.2.4 is a fork of Redis OSS 7.2.4.
-Migrating from any open-source Redis version to Valkey is effectively an upgrade.
+Migrating from one of these Redis versions to Valkey is effectively an upgrade.
 
 > NOTE: In this guide, whenever a reference to a `redis-cli` or `valkey-cli` command is provided, the reference will only point to the Valkey version of the documentation.
 
-Redis Community Edition (CE) versions 7.4 and later are not open source, and their data files are not compatible with Valkey.
+Redis Community Edition (CE) version 7.4 and later produce data files that are not compatible with Valkey.
 It may be possible to migrate the data to Valkey from proprietary Redis versions and other Redis-like software, but it requires another method and is not covered by this document.
 
 The following table provides migration options depending on the Redis version you run:
 
 | Redis source          | Valkey target       | Notes |
 |-----------------------|---------------------|-------|
-| OSS 2.x - 7.2.x       | Valkey 7.2 or later | Uses Redis OSS-compatible protocol, configuration, and RDB/AOF formats. |
+| OSS 2.x - 7.2.x       | Valkey 7.2 or later | Uses compatible protocol, configuration, and RDB/AOF formats. |
 | CE 7.4 and later      | n/a                 | Data files are not compatible with Valkey. |
 
 Compatibility details:
