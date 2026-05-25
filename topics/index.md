@@ -62,7 +62,7 @@ It's released under the
 * [Persistence](persistence.md): Options for configuring durability using disk backups.
 * [Signals Handling](signals.md): How Valkey handles signals.
 * [Connections Handling](clients.md): How Valkey handles clients connections.
-* [Migration](migration.md): How to migrate from Redis to Valkey and understand Redis compatibility.
+* [Migration](migration.md): How to migrate from Redis to Valkey and check Redis compatibility.
 * [Releases and Versioning](releases.md): Valkey's development cycle and version numbering.
 * [Administration](admin.md): Various administration topics.
 

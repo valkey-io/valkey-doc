@@ -1,6 +1,6 @@
 ---
 title: Migration from Redis to Valkey
-description: How to migrate from Redis to Valkey and understand Redis compatibility
+description: How to migrate from Redis to Valkey and check Redis compatibility
 ---
 
 This is a migration guide from Redis open source versions to Valkey.
@@ -11,117 +11,36 @@ Refer to [install Valkey](installation.md) for installation options.
 
 ## Why to migrate to Valkey?
 
-* Valkey is the vendor-neutral and open-source software
-* Enhanced performance with multi-threading and dual-channel replication
-* Improved memory efficiency by using one dictionary per slot in cluster mode and embedding keys in dictionaries. 
+Valkey is a vendor-neutral, open-source continuation of Redis OSS.
+It keeps compatibility with Redis OSS 7.2 and earlier versions while adding Valkey-specific features and improvements in later releases.
 
-### Migration compatibility matrix
+## Redis compatibility and migration options
 
 You can migrate a Redis server to Valkey.
-Valkey is compatible with Redis OSS 7.2 and all earlier open source Redis versions, as Valkey 7.2.4 is a fork of Redis 7.2.4.
-Migrating from any open source Redis version to Valkey is effectively an upgrade.
+Valkey is compatible with Redis OSS 7.2 and all earlier open-source Redis versions, as Valkey 7.2.4 is a fork of Redis OSS 7.2.4.
+Migrating from any open-source Redis version to Valkey is effectively an upgrade.
 
 > NOTE: In this guide, whenever a reference to a `redis-cli` or `valkey-cli` command is provided, the reference will only point to the Valkey version of the documentation.
 
-Redis Community Edition (CE), versions 7.4 and later, are not open source and the data files are not compatible with Valkey.
+Redis Community Edition (CE) versions 7.4 and later are not open source, and their data files are not compatible with Valkey.
 It may be possible to migrate the data to Valkey from proprietary Redis versions and other Redis-like software, but it requires another method and is not covered by this document.
 
 The following table provides migration options depending on the Redis version you run:
 
-| Redis                 | Valkey |
-|-----------------------|--------|
-| OSS 2.x - 7.2.x       | 7.2.x  |
-| OSS 2.x - 7.2.x       | 8.0    |
-| CE 7.4                | n/a    |
+| Redis source          | Valkey target       | Notes |
+|-----------------------|---------------------|-------|
+| OSS 2.x - 7.2.x       | Valkey 7.2 or later | Uses Redis OSS-compatible protocol, configuration, and RDB/AOF formats. |
+| CE 7.4 and later      | n/a                 | Data files are not compatible with Valkey. |
 
-## Redis compatibility
+Compatibility details:
 
-Valkey is a fork of Redis OSS 7.2.4 and maintains backward compatibility with Redis OSS 7.2 and all earlier open-source Redis versions.
-Valkey versions 8.0 and later add new features on top of this base.
-These features are Valkey-specific and are not present in Redis OSS.
-
-### Protocol compatibility
-
-Valkey uses the same RESP (REdis Serialization Protocol) wire protocol as Redis, supporting both RESP2 and RESP3.
-Existing Redis client libraries, such as Jedis, redis-py, node-redis, ioredis, and go-redis, connect to Valkey without code changes.
-
-### Persistence format compatibility
-
-Valkey reads and writes the same RDB and AOF file formats as Redis OSS 7.2.
-You can copy an RDB snapshot from Redis OSS to Valkey and load it directly.
-RDB files produced by Redis CE 7.4+ are not compatible.
-
-### Configuration compatibility
-
-Valkey accepts Redis-style configuration files.
-An existing `redis.conf` can be used as-is with `valkey-server`.
-Configuration directives are the same as Redis OSS 7.2, with additional Valkey-specific options for new features.
-
-### CLI compatibility
-
-The `redis-cli` tool works with Valkey servers, and `valkey-cli` works with Redis OSS servers.
-Both tools use the same RESP protocol and command set.
-
-### The `redis_version` and `server_name` INFO fields
-
-To maintain compatibility with existing clients and tools that check the server version, Valkey reports a fixed `redis_version` field in the [INFO](../commands/info.md) server output:
-
-```
-redis_version:7.2.4
-```
-
-This value does not change across Valkey releases.
-Clients and libraries that rely on `redis_version` to detect feature support continue to work without modification.
-
-The actual Valkey version is reported in separate fields:
-
-```
-server_name:valkey
-valkey_version:8.1.1
-```
-
-Use `valkey_version` to check the Valkey version.
-Use `redis_version` only for backward compatibility with Redis-era tooling.
-
-### Lua scripting compatibility
-
-Valkey supports both the `redis` and `server` namespaces in Lua scripts and functions.
-The following calls are equivalent:
-
-```lua
--- Redis-style (backward compatible)
-redis.call('SET', 'key', 'value')
-redis.pcall('GET', 'key')
-redis.log(redis.LOG_NOTICE, 'message')
-redis.status_reply('OK')
-redis.error_reply('ERR something')
-
--- Valkey-style
-server.call('SET', 'key', 'value')
-server.pcall('GET', 'key')
-server.log(server.LOG_NOTICE, 'message')
-server.status_reply('OK')
-server.error_reply('ERR something')
-```
-
-Existing Lua scripts that use `redis.call()` and `redis.pcall()` work without changes.
-New scripts can use either namespace.
-
-Valkey also provides Lua globals for version detection:
-
-- `SERVER_NAME` - returns `"valkey"`
-- `SERVER_VERSION` - returns the Valkey version string (e.g. `"8.1.1"`)
-- `SERVER_VERSION_NUM` - returns the Valkey version as a number (e.g. `0x00080101`)
-
-The Redis-era globals (`REDIS_VERSION`, `REDIS_VERSION_NUM`) remain available and return the fixed Redis compatibility version (`7.2.4`).
-
-### Module API compatibility
-
-Valkey supports both the `RedisModule_` and `ValkeyModule_` prefixed APIs for modules.
-The header files `redismodule.h` and `valkeymodule.h` are both available.
-
-Modules written for Redis OSS using the `RedisModule_` API work in Valkey without modification.
-New modules can use either API prefix.
+* Protocol: Valkey uses the RESP wire protocol and supports both RESP2 and RESP3. Existing Redis client libraries can connect to Valkey without code changes.
+* Persistence: Valkey reads and writes RDB and AOF files compatible with Redis OSS 7.2. RDB files produced by Redis CE 7.4 and later are not compatible.
+* Configuration: Valkey accepts Redis-style configuration files. Existing Redis OSS 7.2 configuration directives are supported, with additional Valkey-specific options for new features.
+* CLI: `redis-cli` works with Valkey servers, and `valkey-cli` works with Redis OSS servers.
+* INFO: Valkey reports `redis_version:7.2.4` in the [INFO](../commands/info.md) output for backward compatibility. Use `server_name` and `valkey_version` to detect the actual Valkey server and version.
+* Lua scripting: Existing scripts that use the `redis` namespace continue to work. Valkey also supports the `server` namespace and `SERVER_NAME`, `SERVER_VERSION`, and `SERVER_VERSION_NUM` globals.
+* Modules: Modules written for Redis OSS using the `RedisModule_` API work in Valkey. Valkey also provides the `ValkeyModule_` API and `valkeymodule.h` header for new modules.
 
 ## Migrate a standalone instance
 
