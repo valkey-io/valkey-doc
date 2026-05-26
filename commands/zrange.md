@@ -140,7 +140,7 @@ In RESP3, using `valkey-cli -3`, the reply is an array of 2-element arrays where
    2) (double) 1
 2) 1) "two"
    2) (double) 2
-``` 
+```
 
 This example shows how to query the sorted set by score, excluding the value `1` and up to infinity, returning only the second element of the result:
 
