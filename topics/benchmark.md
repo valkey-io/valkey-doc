@@ -21,9 +21,18 @@ In command arguments, the following placeholders are substituted:
 
 `__rand_int__`
 : Replaced with a zero-padded random integer in the range selected using the -r option.
+  Multiple occurrences within a single command each get different values.
+
+`__rand_1st__`
+: Similar to __rand_int__ but multiple occurrences will have the same
+  value. __rand_2nd__ through __rand_9th__ are also available.
 
 `__data__`
 : Replaced with data of the size specified by the -d option.
+
+`__field:name__`
+: Replaced with data from the specified field/column in the
+  dataset. Requires the --dataset option.
 
 `{tag}`
 : Replaced with a tag that routes the command to the right cluster node.
@@ -59,6 +68,12 @@ In command arguments, the following placeholders are substituted:
 
 **`-n`** _requests_
 : Total number of requests (default 100000)
+
+**`--duration`** _seconds_
+: Run benchmark for specified number of seconds (mutually exclusive with -n)
+
+**`--warmup`** _seconds_
+: Run benchmark for specified warmup period before recording data.
 
 **`-d`** _size_
 : Data size of SET/GET value in bytes (default 3)
@@ -101,7 +116,7 @@ In command arguments, the following placeholders are substituted:
 **`-r`** _keyspacelen_
 : Use random keys for SET/GET/INCR, random values for SADD,
   random members and scores for ZADD.
-  Using this option the benchmark will expand the string
+  Using this option the benchmark will replace the string
   `__rand_int__` inside an argument with a 12 digits number in
   the specified range from 0 to keyspacelen - 1. The
   substitution changes every time a command is executed.
@@ -110,14 +125,22 @@ In command arguments, the following placeholders are substituted:
   Note: If `-r` is omitted, all commands in a benchmark will
   use the same key.
 
-**`-P`** _numreq_
+**`--sequential`**
+: Modifies the -r argument to replace the string __rand_int__
+  with 12 digit numbers sequentially instead of randomly.
+  __rand_1st__ through __rand_9th__ are available with independent counters.
+  Used to create expected number of elements with multiple replacements.
+  Example: ZADD myzset __rand_int__ element:__rand_1st__
+
+**`-P`** _numreq_ 
 : Pipeline _numreq_ requests. Default 1 (no pipeline).
 
 **`-q`**
 : Quiet. Just show query/sec values
 
 **`--precision`**
-: Number of decimal places to display in latency output (default 0)
+: Number of decimal places to display in latency output.
+  Default: 3.
 
 **`--csv`**
 : Output in CSV format
@@ -137,11 +160,27 @@ In command arguments, the following placeholders are substituted:
 **`-x`**
 : Read last argument from STDIN.
 
+**`--rps`** _requests_
+: Limit the total number of requests per second. Default 0 (no limit).
+
 **`--seed`** _num_
 : Set the seed for random number generator. Default seed is based on time.
 
-**`--rps`** _requests_
-: Limit the total number of requests per second. Default 0 (no limit).
+**`--num-functions`** _num_
+: Set the number of functions present in the Lua lib that is loaded when running the `function_load` test.
+  Default: 10.
+
+**`--num-keys-in-fcall`** _num_
+: Set the number of keys passed to FCALL command when running the `fcall` test.
+  Default: 1.
+
+**`--dataset`** _file_
+: The path to the CSV/TSV dataset file for the field placeholder replacement.
+  All fields are auto-detected with natural content lengths.
+
+**`--maxdocs`** _num_
+: Maximum number of documents to load from dataset file. 
+  Default: unlimited.
 
 **`--tls`**
 : Establish a secure TLS connection.
@@ -182,6 +221,20 @@ In command arguments, the following placeholders are substituted:
 
 **`--mptcp`**
 : Establish an MPTCP connection.
+
+**`--fuzz`**
+: Enable fuzzy mode to generate random commands.
+  WARNING: Use for testing only, it is not recommended to use with production data.
+
+**`--fuzz-mode`** _modes_
+: Sets fuzzing modes (comma-separated): `malformed-commands`, `config-commands`.
+  malformed-commands: Generates also malformed commands.
+  config-commands: Allows CONFIG SET commands.
+  Default: valid commands only.
+
+**`--fuzz-loglevel`** _level_
+: Sets the log level for fuzzer (none, error, info, debug).
+  Default is 'info'.
 
 **`--help`**
 : Output help and exit.
@@ -224,7 +277,20 @@ Fill a list with 10000 random elements:
 Benchmark a specific transaction:
 
     $ valkey-benchmark -- multi ';' set key:__rand_int__ __data__ ';' \
-                          incr counter ';' exec\n\n");
+                          incr counter ';' exec
+
+Run a time-based benchmark with warmup:
+
+    $ valkey-benchmark --warmup 10 --duration 60 -c 100 -t set,get
+
+Run a rate-limited benchmark:
+
+    $ valkey-benchmark -c 100 -n 500000 --rps 10000 -t set,get
+
+Benchmark using real data from a CSV dataset file:
+
+    $ valkey-benchmark --dataset /path/to/data.csv -r 100000 -n 50000 \
+        SET doc:__rand_int__ __field:content__
 
 ### Running only a subset of the tests
 
@@ -264,10 +330,10 @@ one million SET operations, using a random key for every operation out of
       3 bytes payload
       keep alive: 1
 
-    99.76% `<=` 1 milliseconds
-    99.98% `<=` 2 milliseconds
-    100.00% `<=` 3 milliseconds
-    100.00% `<=` 3 milliseconds
+    99.76% <= 1 milliseconds
+    99.98% <= 2 milliseconds
+    100.00% <= 3 milliseconds
+    100.00% <= 3 milliseconds
     72144.87 requests per second
 
     $ valkey-cli dbsize

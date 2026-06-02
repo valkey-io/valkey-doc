@@ -141,6 +141,7 @@ commnad
 conf
 Config
 config
+config-commands
 config-file
 configEpoch
 configs
@@ -295,6 +296,7 @@ Fsyncing
 fsyncing
 fsyncs
 func
+fuzzer
 Garantia
 Gbit
 gdb
@@ -964,6 +966,7 @@ VMware
 volatile-lru
 volatile-ttl
 vtype
+warmup
 Westmere
 wget
 wherefrom
