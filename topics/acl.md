@@ -50,7 +50,7 @@ and verify what the configuration of a freshly started, defaults-configured
 Valkey instance is:
 
     > ACL LIST
-    1) "user default on nopass ~* &* alldbs +@all"
+    1) "user default on nopass ~* &* +@all"
 
 The command above reports the list of users in the same format that is
 used in the Valkey configuration files, by translating the current ACLs set
@@ -60,7 +60,7 @@ The first two words in each line are "user" followed by the username. The
 next words are ACL rules that describe different things. We'll show how the rules work in detail, but for now it is enough to say that the default
 user is configured to be active (on), to require no password (nopass), to
 access every possible key (`~*`) and Pub/Sub channel (`&*`), every
-database (`alldbs`), and be able to call every possible command (`+@all`).
+database, and be able to call every possible command (`+@all`).
 
 Also, in the special case of the default user, having the *nopass* rule means
 that new connections are automatically authenticated with the default user
@@ -110,7 +110,7 @@ Allow and disallow logical databases:
   Multiple ids are separated by commas, e.g. `db=0,1,2`; at least one id is required.
   Clears the `alldbs` flag and any previously configured database ids on the selector.
   See [database permissions](#database-permissions) for more information.
-* `alldbs`: Allow the user to access all databases. This is the default for newly created selectors.
+* `alldbs`: Allow the user to access all databases. This is the default for newly created selectors and is omitted from generated ACL strings.
 * `resetdbs`: Flush the list of allowed databases and clear the `alldbs` flag. After `resetdbs`, the user (or selector) cannot access any database until additional `db=` rules or `alldbs` are added.
 
 Configure valid passwords for the user:
@@ -203,10 +203,12 @@ computers to read, while `ACL GETUSER` is more human readable.
     8) "~cached:*"
     9) "channels"
     10) ""
-    11) "selectors"
-    12) (empty array)
+    11) "databases"
+    12) "alldbs"
+    13) "selectors"
+    14) (empty array)
 
-The `ACL GETUSER` returns a field-value array that describes the user in more parsable terms. The output includes the set of flags, a list of key patterns, passwords, and so forth. The output is probably more readable if we use RESP3, so that it is returned as a map reply:
+The `ACL GETUSER` returns a field-value array that describes the user in more parsable terms. The output includes the set of flags, a list of key patterns, passwords, and so forth. New fields may be added over time. For example, Valkey 9.1 added the `databases` field. The output is probably more readable if we use RESP3, so that it is returned as a map reply:
 
     > ACL GETUSER alice
     1# "flags" => 1~ "on"
@@ -214,7 +216,8 @@ The `ACL GETUSER` returns a field-value array that describes the user in more pa
     3# "commands" => "-@all +get"
     4# "keys" => "~cached:*"
     5# "channels" => ""
-    6# "selectors" => (empty array)
+    6# "databases" => "alldbs"
+    7# "selectors" => (empty array)
 
 *Note: from now on, we'll continue using the Valkey default protocol, version 2*
 
@@ -471,8 +474,8 @@ For example, to create a user that may only operate on databases 0 and 1:
 > ACL SETUSER alice on +@all ~* db=0,1 nopass
 OK
 > ACL LIST
-1) "user alice on nopass sanitize-payload ~* resetchannels db=0,1 +@all"
-2) "user default on nopass ~* &* alldbs +@all"
+1) "user alice on nopass ~* resetchannels db=0,1 +@all"
+2) "user default on nopass ~* &* +@all"
 ```
 
 A later `db=` rule replaces the previous database list:
@@ -481,8 +484,8 @@ A later `db=` rule replaces the previous database list:
 > ACL SETUSER alice db=2,3
 OK
 > ACL LIST
-1) "user alice on nopass sanitize-payload ~* resetchannels db=2,3 +@all"
-2) "user default on nopass ~* &* alldbs +@all"
+1) "user alice on nopass ~* resetchannels db=2,3 +@all"
+2) "user default on nopass ~* &* +@all"
 ```
 
 Use `resetdbs` to remove database access from an existing user:
@@ -491,8 +494,8 @@ Use `resetdbs` to remove database access from an existing user:
 > ACL SETUSER alice resetdbs
 OK
 > ACL LIST
-1) "user alice on nopass sanitize-payload ~* resetchannels resetdbs +@all"
-2) "user default on nopass ~* &* alldbs +@all"
+1) "user alice on nopass ~* resetchannels resetdbs +@all"
+2) "user default on nopass ~* &* +@all"
 ```
 
 Database permissions can also be combined with [selectors](#selectors) so that
@@ -502,13 +505,13 @@ different rule sets apply to different databases:
 > ACL SETUSER bob on nopass (db=0,1 +@write +select ~*) (db=2,3 +@read +select ~*)
 OK
 > ACL LIST
-1) "user bob on nopass sanitize-payload resetchannels alldbs -@all (~* resetchannels db=0,1 -@all +@write +select) (~* resetchannels db=2,3 -@all +@read +select)"
-2) "user default on nopass sanitize-payload ~* &* alldbs +@all"
+1) "user bob on nopass resetchannels -@all (~* resetchannels db=0,1 -@all +@write +select) (~* resetchannels db=2,3 -@all +@read +select)"
+2) "user default on nopass ~* &* +@all"
 ```
 
 The `ACL LIST` output shows three sets of permissions for `bob`: the root
-permissions (`alldbs -@all`) and two selectors, one for each parenthesized rule
-set. A command is allowed when the root permissions or any selector matches it.
+permissions (`-@all`, with implicit `alldbs`) and two selectors, one for each
+parenthesized rule set. A command is allowed when the root permissions or any selector matches it.
 See [selectors](#selectors) for more information.
 
 ### How database permissions are evaluated
