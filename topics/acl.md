@@ -657,4 +657,9 @@ No keys need to be accessed, so this translates to the following rules:
 
     ACL setuser replica-user on >somepassword +psync +replconf +ping
 
+For cluster deployments, Valkey 9.0 introduces the Atomic Slot Migration feature, which requires the replication user to be allowed to run `CLUSTER SYNCSLOTS`.
+So for Valkey 9.0 and above, this translates to the following rules:
+
+    ACL setuser replica-user on >somepassword +psync +replconf +ping +cluster|syncslots
+
 Note that you don't need to configure the replicas to allow the primary to be able to execute any set of commands. The primary is always authenticated as the root user from the point of view of replicas.
