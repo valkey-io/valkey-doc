@@ -249,10 +249,6 @@ However once the data structures are bigger and are promoted to use real hash ta
 
 Also note that this behavior is specific of `SSCAN`, `HSCAN` and `ZSCAN`. `SCAN` itself never shows this behavior because the key space is always represented by hash tables.
 
-## Further reading
-
-For more information about managing keys, please refer to the [The Valkey Keyspace](../topics/keyspace.md) tutorial.
-
 ## Scan-induced accumulation bias
 
 A common pattern is to iterate a large collection with `SCAN` (or `SSCAN`, `HSCAN`, `ZSCAN`) while deleting the returned elements, expecting the collection to drain over time. **Be careful when another process concurrently adds elements back into the same collection.** This combination can create a systematic load imbalance inside the underlying hash table.
@@ -262,6 +258,10 @@ The reason is that the `SCAN` cursor sweeps the hash table in a fixed order. Buc
 Over time some buckets grow far beyond their fair share. Scaled up to hundreds of thousands of elements, a single bucket can grow large enough that one `SCAN` call returns far more elements than the requested `COUNT` (recall that `COUNT` is only a hint, and `SCAN` may return all elements that hash to the buckets it visits in a given call).
 
 **Restarting the scan from the beginning makes this worse.** If your application aborts mid-iteration and restarts with a cursor of 0 - for example, automatically retrying from scratch whenever it hits an error - it repeatedly re-scans the already-depleted front of the table while never reaching the increasingly skewed buckets at the back. This turns the imbalance into a runaway feedback loop and can leave the hash table extremely skewed. To avoid this, **always resume from the cursor returned by the previous call** rather than restarting the iteration at 0. On a transient error, retry from the last cursor you received, not from the beginning.
+
+## Further reading
+
+For more information about managing keys, please refer to the [The Valkey Keyspace](../topics/keyspace.md) tutorial.
 
 ## Additional examples
 
