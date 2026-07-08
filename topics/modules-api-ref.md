@@ -106,7 +106,7 @@ You should avoid using `calloc()` directly.
 
     void *ValkeyModule_TryCalloc(size_t nmemb, size_t size);
 
-**Available since:** 9.1.0
+**Available since:** 8.0.0
 
 Similar to [`ValkeyModule_Calloc`](#ValkeyModule_Calloc), but returns NULL in case of allocation failure, instead
 of panicking.
@@ -127,7 +127,7 @@ Use like `realloc()` for memory obtained with [`ValkeyModule_Alloc()`](#ValkeyMo
 
     void *ValkeyModule_TryRealloc(void *ptr, size_t bytes);
 
-**Available since:** 9.1.0
+**Available since:** 8.0.0
 
 Similar to [`ValkeyModule_Realloc`](#ValkeyModule_Realloc), but returns NULL in case of allocation failure,
 instead of panicking.
@@ -463,7 +463,7 @@ subcommands)
 
     int ValkeyModule_AddACLCategory(ValkeyModuleCtx *ctx, const char *name);
 
-**Available since:** 9.1.0
+**Available since:** 8.0.0
 
 [`ValkeyModule_AddACLCategory`](#ValkeyModule_AddACLCategory) can be used to add new ACL command categories. Category names
 can only contain alphanumeric characters, underscores, or dashes. Categories can only be added
@@ -819,7 +819,7 @@ which part of the info is invalid and why.
                                        ValkeyModuleString **argv,
                                        int argc);
 
-**Available since:** 9.1.0
+**Available since:** 8.1.0
 
 [`ValkeyModule_UpdateRuntimeArgs`](#ValkeyModule_UpdateRuntimeArgs) can be used to update the module argument values.
 The function parameter 'argc' indicates the number of updated arguments, and 'argv'
@@ -2063,7 +2063,7 @@ using an ACL user, NULL is returned and errno is set to ENOTSUP
 
     int ValkeyModule_MustObeyClient(ValkeyModuleCtx *ctx);
 
-**Available since:** 9.1.0
+**Available since:** 8.1.0
 
 Returns 1 if commands are arriving from the primary client or AOF client
 and should never be rejected.
@@ -5419,7 +5419,7 @@ The list of flags reported is the following:
                                                  int *port,
                                                  int *flags);
 
-**Available since:** 9.1.0
+**Available since:** 8.0.0
 
 Like [`ValkeyModule_GetClusterNodeInfo()`](#ValkeyModule_GetClusterNodeInfo), but returns IP address specifically for the given
 client, depending on whether the client is connected over IPv4 or IPv6.
@@ -5470,7 +5470,7 @@ This function works even if cluster mode is not enabled.
 
     unsigned int ValkeyModule_ClusterKeySlot(ValkeyModuleString *key);
 
-**Available since:** 9.1.0
+**Available since:** 8.0.0
 
 Like [`ValkeyModule_ClusterKeySlotC()`](#ValkeyModule_ClusterKeySlotC) but gets the key as a `ValkeyModuleString`.
 
@@ -5480,7 +5480,7 @@ Like [`ValkeyModule_ClusterKeySlotC()`](#ValkeyModule_ClusterKeySlotC) but gets 
 
     const char *ValkeyModule_ClusterCanonicalKeyNameInSlot(unsigned int slot);
 
-**Available since:** 9.1.0
+**Available since:** 8.0.0
 
 Returns a short string that can be used as a key or as a hash tag in a key,
 such that the key maps to the given cluster slot. Returns NULL if slot is not
@@ -7873,7 +7873,7 @@ Example:
                                              ValkeyModuleScriptingEngineCtx *engine_ctx,
                                              ValkeyModuleScriptingEngineMethods *engine_methods);
 
-**Available since:** 9.1.0
+**Available since:** 8.1.0
 
 Registers a new scripting engine in the server.
 
@@ -7898,7 +7898,7 @@ message is logged.
     int ValkeyModule_UnregisterScriptingEngine(ValkeyModuleCtx *ctx,
                                                const char *engine_name);
 
-**Available since:** 9.1.0
+**Available since:** 8.1.0
 
 Removes the scripting engine from the server.
 
@@ -7912,7 +7912,7 @@ Returns `VALKEYMODULE_OK`.
 
     ValkeyModuleScriptingEngineExecutionState ValkeyModule_GetFunctionExecutionState( ValkeyModuleScriptingEngineServerRuntimeCtx *server_ctx);
 
-**Available since:** 9.1.0
+**Available since:** 8.1.0
 
 Returns the state of the current function being executed by the scripting
 engine.
@@ -8333,7 +8333,7 @@ be used again.
     ValkeyModuleString *ValkeyModule_DefragValkeyModuleString(ValkeyModuleDefragCtx *ctx,
                                                               ValkeyModuleString *str);
 
-**Available since:** 9.1.0
+**Available since:** 7.2.5
 
 Defrag a `ValkeyModuleString` previously allocated by [`ValkeyModule_Alloc`](#ValkeyModule_Alloc), [`ValkeyModule_Calloc`](#ValkeyModule_Calloc), etc.
 See [`ValkeyModule_DefragAlloc()`](#ValkeyModule_DefragAlloc) for more information on how the defragmentation process
