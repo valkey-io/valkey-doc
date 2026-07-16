@@ -1,0 +1,10 @@
+{
+    "name": "Langchain4j",
+    "description": "Java framework for building LLM applications with Valkey vector store support. Provides memory management and vector search capabilities for AI agents.",
+    "repo": "https://github.com/langchain4j/langchain4j-community",
+    "installation": "Add dependency: dev.langchain4j:langchain4j-valkey:1.15.0-beta25",
+    "version": "1.15.0-beta25",
+    "version_released": "2025-12-15",
+    "language": "java",
+    "license": "Apache-2.0"
+}

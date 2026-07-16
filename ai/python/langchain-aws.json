@@ -1,0 +1,10 @@
+{
+    "name": "LangChain AWS",
+    "description": "AWS integrations for LangChain including Valkey cache and vector store support for building LLM applications on AWS infrastructure.",
+    "repo": "https://github.com/langchain-ai/langchain-aws",
+    "installation": "pip install langchain-aws",
+    "version": "1.4.1",
+    "version_released": "2025-10-15",
+    "language": "python",
+    "license": "MIT"
+}

@@ -1,0 +1,10 @@
+{
+    "name": "Kong Gateway",
+    "description": "Cloud-native API gateway with Valkey support for rate limiting, caching, and session management. High-performance Lua-based gateway for managing API traffic and policies.",
+    "repo": "https://github.com/Kong/kong",
+    "installation": "docker pull kong/kong-gateway:3.9",
+    "version": "3.9.2",
+    "version_released": "2025-11-20",
+    "language": "lua",
+    "license": "Apache-2.0"
+}

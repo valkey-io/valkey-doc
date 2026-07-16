@@ -1,0 +1,10 @@
+{
+    "name": "Open-WebUI",
+    "description": "Extensible, self-hosted WebUI for LLMs with Valkey support for caching and session management. Feature-rich interface for running local AI models.",
+    "repo": "https://github.com/open-webui/open-webui",
+    "installation": "pip install open-webui",
+    "version": "0.9.6",
+    "version_released": "2026-01-08",
+    "language": "python",
+    "license": "MIT"
+}

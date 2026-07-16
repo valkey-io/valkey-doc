@@ -1,0 +1,10 @@
+{
+    "name": "DB-GPT",
+    "description": "Database-focused AI framework with Valkey vector store and cache store support. Enables natural language database interactions with semantic caching and vector search.",
+    "repo": "https://github.com/eosphoros-ai/DB-GPT",
+    "installation": "pip install dbgpt",
+    "version": "0.8.1",
+    "version_released": "2026-01-12",
+    "language": "python",
+    "license": "MIT"
+}
