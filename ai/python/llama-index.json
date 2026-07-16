@@ -1,0 +1,10 @@
+{
+    "name": "LlamaIndex",
+    "description": "Data framework for LLM applications with Valkey-based vector store and caching capabilities",
+    "repo": "https://github.com/run-llama/llama_index",
+    "installation": "pip install llama-index",
+    "version": "0.11.0",
+    "version_released": "2024-10-15",
+    "language": "python",
+    "license": "MIT"
+}

@@ -1,0 +1,10 @@
+{
+    "name": "Haystack",
+    "description": "Open-source NLP framework for building production-ready LLM applications with Valkey document store support",
+    "repo": "https://github.com/deepset-ai/haystack",
+    "installation": "pip install haystack-ai",
+    "version": "2.7.0",
+    "version_released": "2024-11-20",
+    "language": "python",
+    "license": "Apache-2.0"
+}

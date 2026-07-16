@@ -54,10 +54,10 @@ lines of three dashes (`---`). These are YAML fields of which we use only the
 `title` field (and possibly `linkTitle`). The title field is used instead of an
 H1 heading in each of the pages.
 
-### Clients, modules, libraries, tools
+### Clients, modules, libraries, tools, and AI libraries
 
-We maintain links to clients, modules, libraries and tools in various languages in
-JSON files stored under `clients/`, `modules/`, `libraries/` and `tools/`
+We maintain links to clients, modules, libraries, tools, and AI libraries in various languages in
+JSON files stored under `clients/`, `modules/`, `libraries/`, `tools/`, and `ai/`
 respectively.
 
 **Note**:  Clients listed here, while fully compatible with Valkey, are not all official clients for Valkey.
@@ -81,7 +81,7 @@ For example [clients/go/valkey-go.json](./clients/go/valkey-go.json):
 }
 ```
 
-Modules, libraries and tools follow a similar structure under their respective directories.
+Modules, libraries, tools and AI libraries follow a similar structure under their respective directories.
 
 ### Commands
 

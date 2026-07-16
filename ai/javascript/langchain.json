@@ -1,0 +1,10 @@
+{
+    "name": "LangChain.js",
+    "description": "JavaScript/TypeScript framework for building LLM applications with Valkey integration for caching and memory",
+    "repo": "https://github.com/langchain-ai/langchainjs",
+    "installation": "npm install langchain",
+    "version": "0.3.5",
+    "version_released": "2024-12-10",
+    "language": "javascript",
+    "license": "MIT"
+}

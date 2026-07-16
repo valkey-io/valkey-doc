@@ -1,0 +1,10 @@
+{
+    "name": "LangChain",
+    "description": "Framework for developing applications powered by language models with Valkey support for caching and vector storage",
+    "repo": "https://github.com/langchain-ai/langchain",
+    "installation": "pip install langchain",
+    "version": "0.3.0",
+    "version_released": "2024-09-15",
+    "language": "python",
+    "license": "MIT"
+}
