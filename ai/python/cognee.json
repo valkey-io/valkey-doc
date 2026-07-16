@@ -1,0 +1,10 @@
+{
+    "name": "Cognee Valkey Adapter",
+    "description": "Valkey vector database adapter for cognee AI memory framework. Plugin for building AI memory with vector search capabilities.",
+    "repo": "https://github.com/topoteretes/cognee-community",
+    "installation": "pip install cognee-community-vector-adapter-valkey",
+    "version": "0.2.0",
+    "version_released": "2025-12-28",
+    "language": "python",
+    "license": "Apache-2.0"
+}

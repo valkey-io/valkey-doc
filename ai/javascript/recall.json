@@ -1,0 +1,10 @@
+{
+    "name": "Recall",
+    "description": "Persistent cross-session memory for Claude and AI agents with support for Redis or Valkey storage. Survives context limits and session restarts.",
+    "repo": "https://github.com/joseairosa/recall",
+    "installation": "npx @modelcontextprotocol/create-server @joseairosa/recall",
+    "version": "1.7.0",
+    "version_released": "2025-11-24",
+    "language": "javascript",
+    "license": "MIT"
+}
