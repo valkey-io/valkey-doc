@@ -1,6 +1,7 @@
 {
     "name": "KServe",
-    "description": "Standardized model inference platform on Kubernetes with Valkey support for caching and serving scalability. Supports both predictive and generative AI workloads.",
+    "description": "Kubernetes-native model serving platform for deploying and scaling ML models with autoscaling, networking, and health checking built-in.",
+    "valkey_uses": "Caching layer for model predictions and feature storage to reduce inference latency and improve throughput",
     "repo": "https://github.com/kserve/kserve",
     "installation": "pip install kserve",
     "version": "0.15.1",

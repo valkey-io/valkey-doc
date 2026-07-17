@@ -22,7 +22,8 @@ Each AI library JSON file should contain the following fields:
 ```json
 {
     "name": "Library Name",
-    "description": "Brief description of the AI library and its Valkey integration",
+    "description": "One or two sentence description of the AI library and why someone would use it",
+    "valkey_uses": "Describes how Valkey is used (e.g., vector store, semantic search, AI memory, caching)",
     "repo": "https://github.com/org/repo",
     "installation": "pip install library-name",
     "version": "1.0.0",
@@ -35,7 +36,8 @@ Each AI library JSON file should contain the following fields:
 ### Field Descriptions
 
 - **name** (string, required): The name of the AI library
-- **description** (string, required): A brief description of what the library does and how it integrates with Valkey
+- **description** (string, required): A concise 1-2 sentence description of the library and why someone would use it
+- **valkey_uses** (string, required): Explanation of how Valkey is used within the library (vector store/search, semantic search, AI memory, caching, session storage, etc.)
 - **repo** (string, required): URL to the library's source code repository
 - **installation** (string, required): Installation command (e.g., `pip install`, `npm install`)
 - **version** (string, required): Current version number (semantic versioning)

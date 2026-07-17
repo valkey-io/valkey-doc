@@ -1,6 +1,7 @@
 {
     "name": "Langchain4j",
-    "description": "Java framework for building LLM applications with Valkey vector store support. Provides memory management and vector search capabilities for AI agents.",
+    "description": "Idiomatic Java library for building LLM applications with unified API over LLM providers, supporting RAG, tool calling, and enterprise Java frameworks.",
+    "valkey_uses": "Embedding store for vector search using Val key's built-in vector search capabilities (Valkey 8+)",
     "repo": "https://github.com/langchain4j/langchain4j-community",
     "installation": "Add dependency: dev.langchain4j:langchain4j-valkey:1.15.0-beta25",
     "version": "1.15.0-beta25",

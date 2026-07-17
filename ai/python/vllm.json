@@ -1,7 +1,8 @@
 {
     "name": "vLLM",
-    "description": "High-performance LLM inference engine with Valkey integration for caching, vector storage, and agentic memory. Includes ValkeyCachedBackend, ValkeyVectorStore, and ValkeyAgenticMemory components.",
-    "repo": "https://github.com/vllm-project/semantic-router",
+    "description": "Fast LLM inference and serving engine optimized for throughput with PagedAttention, supporting production deployments with high performance.",
+    "valkey_uses": "Caching backend for KV cache management, vector storage for semantic routing, and agentic memory components",
+    "repo": "https://github.com/vllm-project/vllm",
     "installation": "pip install vllm",
     "version": "0.3.0",
     "version_released": "2026-01-10",

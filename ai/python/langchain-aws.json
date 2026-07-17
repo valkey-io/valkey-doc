@@ -1,6 +1,7 @@
 {
     "name": "LangChain AWS",
-    "description": "AWS integrations for LangChain including Valkey cache and vector store support for building LLM applications on AWS infrastructure.",
+    "description": "Build LLM applications on AWS infrastructure with LangChain integrations for Bedrock, SageMaker, and other AWS services.",
+    "valkey_uses": "Cache store for LLM responses and vector store for semantic search with AWS ElastiCache for Valkey or MemoryDB",
     "repo": "https://github.com/langchain-ai/langchain-aws",
     "installation": "pip install langchain-aws",
     "version": "1.4.1",

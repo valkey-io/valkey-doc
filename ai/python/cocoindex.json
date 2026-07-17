@@ -1,6 +1,7 @@
 {
     "name": "CocoIndex",
-    "description": "Intelligent indexing and retrieval system with Valkey vector search support. Optimizes document indexing and semantic search for AI applications.",
+    "description": "Incremental data indexing framework for AI agents with real-time updates, supporting codebases, documents, and knowledge bases with minimal reprocessing.",
+    "valkey_uses": "Vector store for semantic code search and document embeddings with incremental indexing support",
     "repo": "https://github.com/cocoindex-io/cocoindex",
     "installation": "pip install cocoindex",
     "version": "1.0.12",

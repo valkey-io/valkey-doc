@@ -1,6 +1,7 @@
 {
     "name": "OpenMemory JavaScript SDK",
-    "description": "Real long-term memory engine for LLM agents with Valkey support. Multi-sector cognitive memory (episodic, semantic, procedural) with temporal reasoning and explainable recall.",
+    "description": "Create self-hosted cognitive memory for AI agents with multi-sector memory (episodic, semantic, procedural, emotional) and explainable recall traces.",
+    "valkey_uses": "Memory storage backend for cognitive memory sectors with temporal knowledge graph support and decay-based retention",
     "repo": "https://github.com/CaviraOSS/OpenMemory",
     "installation": "npm install openmemory-js",
     "version": "1.2.2",

@@ -1,6 +1,7 @@
 {
     "name": "Haystack Valkey Integration",
-    "description": "Valkey document store and vector database integration for Haystack AI framework. Enables semantic search and document retrieval.",
+    "description": "Build production-ready retrieval-augmented generation (RAG) pipelines using Haystack's modular components for NLP and LLM applications.",
+    "valkey_uses": "Document store with vector similarity search for semantic retrieval and document embeddings in RAG pipelines",
     "repo": "https://github.com/deepset-ai/haystack-integrations",
     "installation": "pip install valkey-haystack",
     "version": "0.2.0",

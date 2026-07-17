@@ -1,6 +1,7 @@
 {
     "name": "Recall",
-    "description": "Persistent cross-session memory for Claude and AI agents with support for Redis or Valkey storage. Survives context limits and session restarts.",
+    "description": "MCP server providing persistent cross-session memory for Claude and AI coding agents, surviving context compaction with automatic hooks.",
+    "valkey_uses": "Memory storage backend for facts, decisions, and conversation history across AI agent sessions",
     "repo": "https://github.com/joseairosa/recall",
     "installation": "npx @modelcontextprotocol/create-server @joseairosa/recall",
     "version": "1.7.0",

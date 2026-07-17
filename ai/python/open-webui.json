@@ -1,6 +1,7 @@
 {
     "name": "Open-WebUI",
-    "description": "Extensible, self-hosted WebUI for LLMs with Valkey support for caching and session management. Feature-rich interface for running local AI models.",
+    "description": "Self-hosted ChatGPT-like interface for running local LLMs with Ollama and OpenAI-compatible APIs, supporting RAG and offline operation.",
+    "valkey_uses": "Session storage and caching for chat histories, user preferences, and RAG document embeddings",
     "repo": "https://github.com/open-webui/open-webui",
     "installation": "pip install open-webui",
     "version": "0.9.6",
