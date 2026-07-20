@@ -4,8 +4,8 @@
     "valkey_uses": "Caching layer for LLM responses and session management to optimize multi-agent workflows and reduce API costs",
     "repo": "https://github.com/MervinPraison/PraisonAI",
     "installation": "pip install praisonai",
-    "version": "4.6.48",
-    "version_released": "2026-01-15",
+    "version": "4.6.46",
+    "version_released": "2026-05-21",
     "language": "python",
     "license": "MIT"
 }
