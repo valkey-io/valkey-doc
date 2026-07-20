@@ -4,8 +4,8 @@
     "valkey_uses": "Caching layer for model predictions and feature storage to reduce inference latency and improve throughput",
     "repo": "https://github.com/kserve/kserve",
     "installation": "pip install kserve",
-    "version": "0.15.1",
-    "version_released": "2026-02-10",
+    "version": "0.17.0",
+    "version_released": "2026-03-13",
     "language": "python",
     "license": "Apache-2.0"
 }
