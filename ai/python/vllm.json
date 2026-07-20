@@ -4,8 +4,8 @@
     "valkey_uses": "Caching backend for KV cache management, vector storage for semantic routing, and agentic memory components",
     "repo": "https://github.com/vllm-project/vllm",
     "installation": "pip install vllm",
-    "version": "0.3.0",
-    "version_released": "2026-01-10",
+    "version": "0.15.1",
+    "version_released": "2026-02-04",
     "language": "python",
     "license": "Apache-2.0"
 }
