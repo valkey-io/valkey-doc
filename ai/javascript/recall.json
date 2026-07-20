@@ -5,7 +5,7 @@
     "repo": "https://github.com/joseairosa/recall",
     "installation": "npx @modelcontextprotocol/create-server @joseairosa/recall",
     "version": "1.7.0",
-    "version_released": "2025-11-24",
+    "version_released": "2025-12-02",
     "language": "javascript",
     "license": "MIT"
 }
