@@ -5,7 +5,7 @@
     "repo": "https://github.com/cocoindex-io/cocoindex",
     "installation": "pip install cocoindex",
     "version": "1.0.12",
-    "version_released": "2026-01-05",
+    "version_released": "2026-06-20",
     "language": "python",
     "license": "Apache-2.0"
 }
