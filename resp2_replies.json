@@ -643,6 +643,13 @@
   "HMSET": [
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
   ],
+  "HOTKEYS": [],
+  "HOTKEYS GET": [
+    "[Array reply](../topics/protocol.md#arrays): a list of the hottest keys from the last completed detection window, ordered by estimated QPS from highest to lowest. Each element is a flat array of the field-value pairs `key`, `db`, and `qps`. An empty array when no keys were recorded in the last completed window."
+  ],
+  "HOTKEYS RESET": [
+    "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
+  ],
   "HRANDFIELD": [
     "Any of the following:",
     "* [Nil reply](../topics/protocol.md#bulk-strings): if the key doesn't exist",
