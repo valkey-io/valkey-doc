@@ -1,7 +1,7 @@
 {
     "name": "KServe",
     "description": "Kubernetes-native model serving platform for deploying and scaling ML models with autoscaling, networking, and health checking built-in.",
-    "valkey_uses": "Caching layer for model predictions and feature storage to reduce inference latency and improve throughput",
+    "valkey_uses": "Indirect LMCache remote KV-cache storage",
     "repo": "https://github.com/kserve/kserve",
     "installation": "pip install kserve",
     "version": "0.17.0",
