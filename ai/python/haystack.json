@@ -2,10 +2,10 @@
     "name": "Haystack Valkey Integration",
     "description": "Build production-ready retrieval-augmented generation (RAG) pipelines using Haystack's modular components for NLP and LLM applications.",
     "valkey_uses": "Document store with vector similarity search for semantic retrieval and document embeddings in RAG pipelines",
-    "repo": "https://github.com/deepset-ai/haystack-integrations",
+    "repo": "https://github.com/deepset-ai/haystack-core-integrations",
     "installation": "pip install valkey-haystack",
-    "version": "0.2.0",
-    "version_released": "2025-11-15",
+    "version": "0.3.0",
+    "version_released": "2026-07-22",
     "language": "python",
     "license": "Apache-2.0"
 }
