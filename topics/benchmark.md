@@ -30,7 +30,7 @@ In command arguments, the following placeholders are substituted:
 `__data__`
 : Replaced with data of the size specified by the -d option.
 
-`__field:name__`
+`__field:colname__`
 : Replaced with data from the specified field/column in the
   dataset. Requires the --dataset option.
 
