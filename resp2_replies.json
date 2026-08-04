@@ -879,6 +879,11 @@
     "    * [Simple error reply](../topics/protocol.md#simple-errors): If any path does not exist.",
     ""
   ],
+  "JSON.MERGE": [
+    "* [Simple string reply](../topics/protocol.md#simple-strings): 'OK' if the operation was successful.",
+    "* [Simple error reply](../topics/protocol.md#simple-errors): If the operation failed.",
+    ""
+  ],
   "JSON.MGET": [
     "* [Array reply](../topics/protocol.md#arrays): Array of Bulk Strings with size equal to the number of keys in the command.",
     "  * Each element is either:",
