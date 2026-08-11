@@ -654,7 +654,7 @@ Sentinel does not need to access any key in the database but does use Pub/Sub, s
 
 Valkey replicas require the following commands to be allowed on the primary instance:
 
-* PSYNC, REPLCONF, PING
+* SYNC, PSYNC, REPLCONF, PING
 
 For cluster deployments, Valkey 9.0 introduces the Atomic Slot Migration feature, which requires additional permissions:
 
@@ -662,6 +662,6 @@ For cluster deployments, Valkey 9.0 introduces the Atomic Slot Migration feature
 
 This translate to the following rules:
 
-    ACL setuser replica-user on >somepassword +psync +replconf +ping +cluster|syncslots +@write +select ~*
+    ACL setuser replica-user on >somepassword +sync +psync +replconf +ping +cluster|syncslots +@write +select ~*
 
 Note that you don't need to configure the replicas to allow the primary to be able to execute any set of commands. The primary is always authenticated as the root user from the point of view of replicas.
