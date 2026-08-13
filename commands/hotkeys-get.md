@@ -1,8 +1,8 @@
 Returns the hottest keys observed during the last completed detection window,
 ordered by estimated accesses per second (QPS), from highest to lowest.
 
-Hot key detection must be enabled by setting `hotkey-sampling-percentage` above
-`0`; otherwise the command returns an error.
+Hot key detection must be enabled by setting `hotkey-enabled` to `yes`;
+otherwise the command returns an error.
 
 Client key accesses are sampled into a *live* window whose length is
 `hotkey-window-seconds`. When a window completes it is *frozen*, and
