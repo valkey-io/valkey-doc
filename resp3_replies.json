@@ -8,6 +8,9 @@
   "ACL DELUSER": [
     "[Integer reply](../topics/protocol.md#integers): the number of users that were deleted. This number will not always match the number of arguments since certain users may not exist."
   ],
+  "ACL DIGEST": [
+    "[Bulk string reply](../topics/protocol.md#bulk-strings): the digest of the ACL rules currently in effect, as a hexadecimal string."
+  ],
   "ACL DRYRUN": [
     "Any of the following:",
     "* [Simple string reply](../topics/protocol.md#simple-strings): `OK` on success.",
