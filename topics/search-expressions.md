@@ -163,3 +163,44 @@ The exists function returns 0 if the input argument is Nil else 1. This can be u
 |    Syntax     | Operation                      |
 | :-----------: | :----------------------------- |
 | exists(value) | 0 if the value is Nil, else 1. |
+
+# Array Values
+
+## Producing Arrays
+
+An array is an ordered sequence of scalar elements produced by the `TOLIST` reducer during a `GROUPBY` stage. The resulting array value is available to expressions in subsequent pipeline stages.
+
+Syntax:
+
+```
+REDUCE TOLIST 1 <expression>
+```
+
+Arrays can be nested — an array may contain other arrays as elements, enabling multi-dimensional data structures within the expression evaluation context.
+
+## Scalar Functions on Arrays
+
+Scalar functions do not apply element-wise to arrays. Passing an array to a scalar function produces a nil or nan result, consistent with RediSearch behavior.
+
+Functions that return nil when applied to an array: `lower`, `upper`, `strlen`, `startswith`, `contains`.
+
+Functions that return nan when applied to an array: `floor`, `ceil`, `abs`, `log`, `log2`, `exp`, `sqrt`.
+
+## Array Arithmetic
+
+Any mathematical operation (`+`, `-`, `*`, `/`, `^`) involving an array operand returns the error `"Could not convert value to a number"`. This is consistent with RediSearch behavior.
+
+## Error Handling
+
+Array operations produce specific error messages when encountering invalid conditions, consistent with RediSearch error behavior.
+
+| Condition | Result |
+| :-------- | :----- |
+| Arithmetic with array operand | `"Could not convert value to a number"` |
+| `substr` with array argument | `"Invalid type for substr. Expected string"` |
+| String functions on array | nil (empty value) |
+| Numeric functions on array | nan |
+
+## RESP Serialization
+
+Array values are serialized as RESP arrays in the `FT.AGGREGATE` response. Each element of the array is serialized according to its scalar type: numeric values become bulk strings containing digits, string values become bulk strings, and nil values become RESP nil.
