@@ -18,8 +18,9 @@ Each returned entry contains:
 * `qps`: the estimated accesses per second over the completed window. Because
   counts are sampled and tracked approximately (Space-Saving), `qps` is an
   estimate rather than an exact value. It is reconstructed by scaling the
-  sampled count by `100 / hotkey-sampling-percentage` and dividing by
-  `hotkey-window-seconds`.
+  sampled count by `100 / hotkey-sampling-percentage` and dividing by the
+  duration the window actually spanned, which is `hotkey-window-seconds` plus
+  however late the rotation ran.
 
 At most `hotkey-top-k` keys are returned.
 
