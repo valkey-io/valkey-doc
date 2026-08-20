@@ -9,7 +9,7 @@ used to make the task of writing complex Lua scripts much simpler.
 The Valkey Lua debugger, codenamed LDB, has the following important features:
 
 * It uses a server-client model, so it's a remote debugger.
-The Valkey server acts as the debugging server, while the default client is `valkey-cli`. 
+The Valkey server acts as the debugging server, while the default client is `valkey-cli`.
 However other clients can be developed by following the simple protocol implemented by the server.
 * By default every new debugging session is a forked session.
 It means that while the Valkey Lua script is being debugged, the server does not block and is usable for development or in order to execute multiple debugging sessions in parallel.
@@ -44,7 +44,7 @@ To start a new debugging session using `valkey-cli` do the following:
 
 Note that with the `--eval` option of `valkey-cli` you can pass key names and arguments to the script, separated by a comma, like in the following example:
 
-```
+```text
 ./valkey-cli --ldb --eval /tmp/script.lua mykey somekey , arg1 arg2
 ```
 
@@ -61,7 +61,7 @@ Moreover the command will exit from `valkey-cli`.
 So a normal debugging cycle involves modifying the script after some debugging, and calling `restart` in order to start debugging again with the new script changes.
 * `help` -- this command is passed to the Valkey Lua debugger, that will print a list of commands like the following:
 
-```
+```text
 lua debugger> help
 Valkey Lua debugger help:
 [h]elp               Show this help.
@@ -101,7 +101,7 @@ It will stop at the first line of the script that actually does something before
 From this point you usually call `step` in order to execute the line and go to the next line.
 While you step Valkey will show all the commands executed by the server like in the following example:
 
-```
+```text
 * Stopped at 1, stop reason = step over
 -> 1   server.call('ping')
 lua debugger> step
@@ -115,7 +115,6 @@ executed, and the reply from the server. Note that this happens only in stepping
 If you use `continue` in order to execute the script till the next breakpoint, commands will not be dumped on the screen to prevent too much output.
 
 ## Termination of the debugging session
-
 
 When the scripts terminates naturally, the debugging session ends and
 `valkey-cli` returns in its normal non-debugging mode. You can restart the
@@ -156,9 +155,10 @@ when something special happens. In order to do so, you can use the
 `server.breakpoint()` function inside your Lua script. When called it simulates
 a breakpoint in the next line that will be executed.
 
-```
+```text
 if counter > 10 then server.breakpoint() end
 ```
+
 This feature is extremely useful when debugging, so that we can avoid
 continuing the script execution manually multiple times until a given condition
 is encountered.
@@ -175,7 +175,7 @@ However for tracking certain bugs, you may want to retain the changes performed
 to the key space by each debugging session. When this is a good idea you
 should start the debugger using a special option, `ldb-sync-mode`, in `valkey-cli`.
 
-```
+```text
 ./valkey-cli --ldb-sync-mode --eval /tmp/script.lua
 ```
 
@@ -192,7 +192,7 @@ The `server.debug()` command is a powerful debugging facility that can be
 called inside the Valkey Lua script in order to log things into the debug
 console:
 
-```
+```text
 lua debugger> list
 -> 1   local a = {1,2,3}
    2   local b = false
@@ -208,7 +208,6 @@ Tables and nested tables are displayed correctly in order to make values simple 
 
 ## Inspecting the program state with `print` and `eval`
 
-
 While the `server.debug()` function can be used in order to print values
 directly from within the Lua script, often it is useful to observe the local
 variables of a program while stepping or when stopped into a breakpoint.
@@ -223,7 +222,7 @@ print all variables and their respective values.
 The `eval` command executes small pieces of Lua scripts **outside the context of the current call frame** (evaluating inside the context of the current call frame is not possible with the current Lua internals).
 However you can use this command in order to test Lua functions.
 
-```
+```text
 lua debugger> e server.sha1hex('foo')
 <retval> "0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33"
 ```
