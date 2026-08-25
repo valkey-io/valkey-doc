@@ -1002,6 +1002,16 @@ atomic slot migration and CLUSTER MIGRATESLOTS will return an error. Modules
 should set this flag if they understand keys may be loaded during the
 migration but before ownership is transferred.
 
+`VALKEYMODULE_OPTIONS_HANDLE_FORKLESS`:
+Indicates that the module supports interaction with forkless operations.
+This requires that:
+* If the module defines a new type, the `rdb_save` function must be thread-safe.
+* If the module defines an `aux_save`/`aux_save2` function, the function must run only in the
+`VALKEYMODULE_AUX_BEFORE_RDB` section of the RDB and the function must export only limited data (as
+this function blocks the main thread during execution).
+* If the module calls `ValkeyModule_OpenKey` for anything other than keys declared in the context
+of a command, opening a key for write may return NULL if the key is currently in use by forkless.
+
 <span id="ValkeyModule_SignalModifiedKey"></span>
 
 ### `ValkeyModule_SignalModifiedKey`
@@ -2378,6 +2388,12 @@ Extra flags that can be pass to the API under the mode argument:
 * `VALKEYMODULE_OPEN_KEY_NOSTATS` - Don't update keyspace hits/misses counters.
 * `VALKEYMODULE_OPEN_KEY_NOEXPIRE` - Avoid deleting lazy expired keys.
 * `VALKEYMODULE_OPEN_KEY_NOEFFECTS` - Avoid any effects from fetching the key.
+
+If the module supports forkless operations, specifying `VALKEYMODULE_OPTIONS_HANDLE_FORKLESS`,
+it's possible that NULL may be returned
+if `VALKEYMODULE_WRITE` is selected AND the key is currently in-use for a forkless
+operation. In this case, the module may not write to the key and will have to try
+again at a later time.
 
 <span id="ValkeyModule_GetOpenKeyModesAll"></span>
 
