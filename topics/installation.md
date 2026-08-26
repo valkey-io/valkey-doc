@@ -171,7 +171,7 @@ $ valkey-cli ping
 PONG
 ```
 
-The command is sent to the Valkey instance running on localhost port 6379. For more information on valkey-cli's arguments, see the documentation [here](https://valkey.io/topics/cli/).
+The command is sent to the Valkey instance running on localhost port 6379. For more information on valkey-cli arguments, see the documentation [here](https://valkey.io/topics/cli/).
 
 You can run `valkey-cli` without arguments which prompts the program to enter interactive mode. For example:
 
