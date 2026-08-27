@@ -76,7 +76,7 @@ This is a list of all the supported Valkey ACL rules:
   Multiple ids are separated by commas, e.g. `db=0,1,2`; at least one id is required.
   Clears the `alldbs` flag and any previously configured database ids on the selector.
   See [database permissions](../topics/acl.md#database-permissions) for more information.
-* `alldbs`: Allows the selector to access all databases. This is the default for new selectors.
+* `alldbs`: Allows the selector to access all databases. This is the default for new selectors and is omitted from generated ACL strings.
 * `resetdbs`: Removes all databases from the list of allowed databases and clears the `alldbs` flag.
 
 ### User management rules
@@ -107,8 +107,8 @@ Restrict a user to a subset of databases:
 127.0.0.1:6379> ACL SETUSER alice on +@all ~* db=0,1 nopass
 OK
 127.0.0.1:6379> ACL LIST
-1) "user alice on nopass sanitize-payload ~* resetchannels db=0,1 +@all"
-2) "user default on nopass ~* &* alldbs +@all"
+1) "user alice on nopass ~* resetchannels db=0,1 +@all"
+2) "user default on nopass ~* &* +@all"
 ```
 
 A later `db=` rule replaces the previous database list:
@@ -117,8 +117,8 @@ A later `db=` rule replaces the previous database list:
 127.0.0.1:6379> ACL SETUSER alice db=2,3
 OK
 127.0.0.1:6379> ACL LIST
-1) "user alice on nopass sanitize-payload ~* resetchannels db=2,3 +@all"
-2) "user default on nopass ~* &* alldbs +@all"
+1) "user alice on nopass ~* resetchannels db=2,3 +@all"
+2) "user default on nopass ~* &* +@all"
 ```
 
 Different selectors can grant access on different databases:
@@ -127,11 +127,11 @@ Different selectors can grant access on different databases:
 127.0.0.1:6379> ACL SETUSER bob on nopass (db=0,1 +@write +select ~*) (db=2,3 +@read +select ~*)
 OK
 127.0.0.1:6379> ACL LIST
-1) "user bob on nopass sanitize-payload resetchannels alldbs -@all (~* resetchannels db=0,1 -@all +@write +select) (~* resetchannels db=2,3 -@all +@read +select)"
-2) "user default on nopass sanitize-payload ~* &* alldbs +@all"
+1) "user bob on nopass resetchannels -@all (~* resetchannels db=0,1 -@all +@write +select) (~* resetchannels db=2,3 -@all +@read +select)"
+2) "user default on nopass ~* &* +@all"
 ```
 
 The `ACL LIST` output shows three sets of permissions for `bob`: the root
-permissions (`alldbs -@all`) and two selectors, one for each parenthesized rule
-set. A command is allowed when the root permissions or any selector matches it.
+permissions (`-@all`, with implicit `alldbs`) and two selectors, one for each
+parenthesized rule set. A command is allowed when the root permissions or any selector matches it.
 See [selectors](../topics/acl.md#selectors) for more information.

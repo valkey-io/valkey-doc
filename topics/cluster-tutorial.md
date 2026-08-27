@@ -38,6 +38,11 @@ For a Valkey Cluster to work properly you need, for each node:
 
 If you don't open both TCP ports, your cluster will not work as expected.
 
+> **Cluster Bus Security Warning:** The Valkey cluster bus protocol (running on client port + 10000) does not perform application-layer authentication of messages by default. It blindly trusts all incoming traffic on this port. To prevent unauthorized nodes from taking over the cluster (e.g., hijacking slots or executing denial-of-service payloads), you must secure the cluster bus using one of the following:
+>
+> * **Network-level isolation:** Strict firewall rules or Security Groups that only permit incoming traffic on the cluster bus port from the IP addresses of other legitimate cluster nodes.
+> * **Mutual TLS (mTLS):** Enable TLS for the cluster bus (`tls-cluster yes`) and configure mutual certificate authentication so that only nodes with valid certificates can establish connections.
+
 #### Valkey Cluster and Docker
 
 Currently, Valkey Cluster does not support NATted environments and in general

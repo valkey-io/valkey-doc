@@ -1678,7 +1678,7 @@
     "[Array reply](../topics/protocol.md#arrays): when the additional _count_ argument is passed, the command returns an array of members, or an empty array when _key_ doesn't exist. If the _WITHSCORES_ modifier is used, the reply is a list of members and their scores from the sorted set."
   ],
   "ZRANGE": [
-    "[Array reply](../topics/protocol.md#arrays): a list of members in the specified range with, optionally, their scores when the _WITHSCORES_ option is given."
+    "[Array reply](../topics/protocol.md#arrays): a list of members in the specified range with, optionally, their scores when the _WITHSCORES_ option is given. When _WITHSCORES_ is used, the reply is a flat array where each member is immediately followed by its score as a [Bulk string reply](../topics/protocol.md#bulk-strings)."
   ],
   "ZRANGEBYLEX": [
     "[Array reply](../topics/protocol.md#arrays): a list of elements in the specified score range."

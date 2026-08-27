@@ -48,7 +48,7 @@ With sorted sets it is trivial to return a list of hackers sorted by their
 birth year because actually *they are already sorted*.
 
 Implementation note: Sorted sets are implemented via a
-dual-ported data structure containing both a skip list and a hash table, so
+dual-ported data structure containing both a B+ tree and a hash table, so
 every time we add an element Valkey performs an O(log(N)) operation. That's
 good, but when we ask for sorted elements Valkey does not have to do any work at
 all, it's already sorted. Note that the `ZRANGE` order is low to high, while the `ZREVRANGE` order is high to low:

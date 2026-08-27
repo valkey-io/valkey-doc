@@ -598,6 +598,7 @@ If the instance is a replica, these additional fields are provided:
 *   `master_link_status`: Status of the link (up/down)
 *   `master_last_io_seconds_ago`: Number of seconds since the last interaction
      with primary
+*   `last_successful_sync_duration_ms`: The duration of the last successful full sync in milliseconds, or -1 if no successful sync has occurred
 *   `master_sync_in_progress`: Indicate the primary is syncing to the replica
 *   `slave_read_repl_offset`: The read replication offset of the replica instance.
 *   `slave_repl_offset`: The replication offset of the replica instance

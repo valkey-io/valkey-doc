@@ -4,8 +4,8 @@
     "repo":"https://github.com/valkey-io/valkey-glide-php",
     "website": "https://glide.valkey.io/getting-started/quickstart/?lang=php",
     "installation": "pie install valkey-io/valkey-glide-php",
-    "version":"v1.1.0",
-    "version_released":"2025-05-15",
+    "version":"v1.1.2",
+    "version_released":"2026-07-03",
     "language":"php",
     "license": "Apache-2.0",
     "read_from_replica": true,
@@ -14,7 +14,7 @@
     "cluster_scan": true,
     "latency_based_read_from_replica": false,
     "AZ_based_read_from_replica": true,
-    "client_side_caching": true,
+    "client_side_caching": false,
     "client_capa_redirect": false,
     "persistent_connection_pool": false
 }
