@@ -33,7 +33,7 @@ two main goals that are well served by ACLs:
 Another typical usage of ACLs is related to managed Valkey instances. Valkey is
 often provided as a managed service both by internal company teams that handle
 the Valkey infrastructure for the other internal customers they have, or is
-provided in a software-as-a-service setup by cloud providers. In both 
+provided in a software-as-a-service setup by cloud providers. In both
 setups, we want to be sure that configuration commands are excluded for the
 customers.
 
@@ -94,7 +94,7 @@ Allow and disallow certain keys and key permissions:
 * `~<pattern>`: Add a pattern of keys that can be mentioned as part of commands. For instance `~*` allows all the keys. The pattern is a glob-style pattern like the one of `KEYS`. It is possible to specify multiple patterns.
 * `%R~<pattern>`: Add the specified read key pattern. This behaves similar to the regular key pattern but only grants permission to read from keys that match the given pattern. See [key permissions](#key-permissions) for more information.
 * `%W~<pattern>`: Add the specified write key pattern. This behaves similar to the regular key pattern but only grants permission to write to keys that match the given pattern. See [key permissions](#key-permissions) for more information.
-* `%RW~<pattern>`: Alias for `~<pattern>`. 
+* `%RW~<pattern>`: Alias for `~<pattern>`.
 * `allkeys`: Alias for `~*`.
 * `resetkeys`: Flush the list of allowed keys patterns. For instance the ACL `~foo:* ~bar:* resetkeys ~objects:*`, will only allow the client to access keys that match the pattern `objects:*`.
 
@@ -290,7 +290,7 @@ The following is a list of command categories and their meanings:
 * **hyperloglog** - Data type: hyperloglog related.
 * **fast** - Fast O(1) commands. May loop on the number of arguments, but not the
   number of elements in the key.
-* **keyspace** - Writing or reading from keys, databases, or their metadata 
+* **keyspace** - Writing or reading from keys, databases, or their metadata
   in a type agnostic way. Includes `DEL`, `RESTORE`, `DUMP`, `RENAME`, `EXISTS`, `DBSIZE`,
   `KEYS`, `EXPIRE`, `TTL`, `FLUSHALL`, etc. Commands that may modify the keyspace,
   key, or metadata will also have the `write` category. Commands that only read
@@ -422,10 +422,10 @@ This is achieved through rules that define key permissions.
 The key permission rules take the form of `%(<permission>)~<pattern>`.
 Permissions are defined as individual characters that map to the following key permissions:
 
-* W (Write): The data stored within the key may be updated or deleted. 
-* R (Read): User supplied data from the key is processed, copied or returned. Note that this does not include metadata such as size information (example `STRLEN`), type information (example `TYPE`) or information about whether a value exists within a collection (example `SISMEMBER`). 
+* W (Write): The data stored within the key may be updated or deleted.
+* R (Read): User supplied data from the key is processed, copied or returned. Note that this does not include metadata such as size information (example `STRLEN`), type information (example `TYPE`) or information about whether a value exists within a collection (example `SISMEMBER`).
 
-Permissions can be composed together by specifying multiple characters. 
+Permissions can be composed together by specifying multiple characters.
 Specifying the permission as 'RW' is considered full access and is analogous to just passing in `~<pattern>`.
 
 For a concrete example, consider a user with ACL rules `+@all ~app1:* (+@read ~app2:*)`.
@@ -437,10 +437,10 @@ However, using key selectors you can define a set of ACL rules that can handle t
 The first pattern is able to match `app1:user` and the second pattern is able to match `app2:user`.
 
 Which type of permission is required for a command is documented through [key specifications](key-specs.md#logical-operation-flags).
-The type of permission is based off the keys logical operation flags. 
-The insert, update, and delete flags map to the write key permission. 
+The type of permission is based off the keys logical operation flags.
+The insert, update, and delete flags map to the write key permission.
 The access flag maps to the read key permission.
-If the key has no logical operation flags, such as `EXISTS`, the user still needs either key read or key write permissions to execute the command. 
+If the key has no logical operation flags, such as `EXISTS`, the user still needs either key read or key write permissions to execute the command.
 
 Note: Side channels to accessing user data are ignored when it comes to evaluating whether read permissions are required to execute a command.
 This means that some write commands that return metadata about the modified key only require write permission on the key to execute.
@@ -660,8 +660,9 @@ For cluster deployments, Valkey 9.0 introduces the Atomic Slot Migration feature
 
 * CLUSTER SYNCSLOTS, @write, SELECT
 
+Since `@write` also includes dangerous commands such as `FLUSHALL` and `FLUSHDB`, you will need to exclude them.
 This translate to the following rules:
 
-    ACL setuser replica-user on >somepassword +sync +psync +replconf +ping +cluster|syncslots +@write +select ~*
+    ACL setuser replica-user on >somepassword +@write ~* -@dangerous +ping +select +psync +replconf +cluster|syncslots -flushall -flushdb -restore -restore-asking
 
 Note that you don't need to configure the replicas to allow the primary to be able to execute any set of commands. The primary is always authenticated as the root user from the point of view of replicas.
