@@ -1,8 +1,10 @@
 Returns the hottest keys observed during the last completed detection window,
 ordered by estimated accesses per second (QPS), from highest to lowest.
 
-Hot key detection must be enabled by setting `hotkeys-top-k` to a positive value
-(`0`, the default, disables it); otherwise the command returns an error.
+Hot key detection is enabled by setting `hotkeys-top-k` to a positive value
+(`0`, the default, disables it). While it is disabled the command succeeds and
+returns an empty array, so a polling client does not need to special-case the
+disabled state.
 
 Client key accesses are sampled into a *live* window whose length is
 `hotkeys-window-seconds`. When a window completes it is *frozen*, and
