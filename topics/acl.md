@@ -663,6 +663,6 @@ For cluster deployments, Valkey 9.0 introduces the Atomic Slot Migration feature
 Since `@write` also includes dangerous commands such as `FLUSHALL` and `FLUSHDB`, you will need to exclude them.
 This translate to the following rules:
 
-    ACL setuser replica-user on >somepassword +@write ~* -@dangerous +ping +select +psync +replconf +cluster|syncslots -flushall -flushdb -restore -restore-asking
+    ACL setuser replica-user on >somepassword +@write ~* -@dangerous +ping +select +sync +psync +replconf +cluster|syncslots -flushall -flushdb -restore -restore-asking
 
 Note that you don't need to configure the replicas to allow the primary to be able to execute any set of commands. The primary is always authenticated as the root user from the point of view of replicas.
