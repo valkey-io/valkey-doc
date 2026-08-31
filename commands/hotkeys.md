@@ -9,4 +9,5 @@ detection entirely (see also `hotkeys-sampling-percentage` and
 `hotkeys-window-seconds`).
 
 To see the list of available subcommands, refer to
-[`HOTKEYS GET`](hotkeys-get.md) and [`HOTKEYS RESET`](hotkeys-reset.md).
+[`HOTKEYS GET`](hotkeys-get.md) and [`HOTKEYS RESET`](hotkeys-reset.md), or run
+[`HOTKEYS HELP`](hotkeys-help.md).

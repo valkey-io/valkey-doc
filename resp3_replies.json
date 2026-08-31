@@ -647,7 +647,10 @@
   ],
   "HOTKEYS": [],
   "HOTKEYS GET": [
-    "[Array reply](../topics/protocol.md#arrays): a list of the hottest keys from the last completed detection window, ordered by estimated QPS from highest to lowest, where each element is a [Map reply](../topics/protocol.md#maps) with the fields `key`, `db`, and `qps`. An empty array when no keys were recorded in the last completed window."
+    "[Array reply](../topics/protocol.md#arrays): a list of the hottest keys from the last completed detection window, ordered by estimated QPS from highest to lowest, where each element is a [Map reply](../topics/protocol.md#maps) with the fields `key`, `db`, and `qps`. An empty array when no keys were recorded in the last completed window, or when hot key detection is disabled."
+  ],
+  "HOTKEYS HELP": [
+    "[Array reply](../topics/protocol.md#arrays): a list of sub-commands and their descriptions."
   ],
   "HOTKEYS RESET": [
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
