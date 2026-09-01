@@ -1,0 +1,11 @@
+{
+    "name": "CocoIndex",
+    "description": "Incremental data indexing framework for AI agents with real-time updates, supporting codebases, documents, and knowledge bases with minimal reprocessing.",
+    "valkey_uses": "Vector store for semantic code search and document embeddings with incremental indexing support",
+    "repo": "https://github.com/cocoindex-io/cocoindex",
+    "installation": "pip install cocoindex",
+    "version": "1.0.12",
+    "version_released": "2026-06-20",
+    "language": "python",
+    "license": "Apache-2.0"
+}

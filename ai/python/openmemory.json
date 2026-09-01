@@ -1,0 +1,11 @@
+{
+    "name": "OpenMemory Python SDK",
+    "description": "Create self-hosted cognitive memory for AI agents with multi-sector memory (episodic, semantic, procedural, emotional) and explainable recall traces.",
+    "valkey_uses": "Memory storage backend for cognitive memory sectors with temporal knowledge graph support and decay-based retention",
+    "repo": "https://github.com/CaviraOSS/OpenMemory",
+    "installation": "npm i openmemory-js",
+    "version": "1.3.0",
+    "version_released": "2025-12-06",
+    "language": "typescript",
+    "license": "Apache-2.0"
+}

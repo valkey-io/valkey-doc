@@ -1,0 +1,11 @@
+{
+    "name": "DB-GPT",
+    "description": "AI-native data application framework with Agentic Workflow Expression Language (AWEL) for building database-aware agents and workflows.",
+    "valkey_uses": "Vector store for semantic similarity search and cache store for LLM response caching in database query optimization",
+    "repo": "https://github.com/eosphoros-ai/DB-GPT",
+    "installation": "pip install dbgpt",
+    "version": "0.8.1",
+    "version_released": "2026-06-17",
+    "language": "python",
+    "license": "MIT"
+}

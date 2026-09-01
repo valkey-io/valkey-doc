@@ -1,0 +1,11 @@
+{
+    "name": "Recall",
+    "description": "MCP server providing persistent cross-session memory for Claude and AI coding agents, surviving context compaction with automatic hooks.",
+    "valkey_uses": "Memory storage backend for facts, decisions, and conversation history across AI agent sessions",
+    "repo": "https://github.com/joseairosa/recall",
+    "installation": "npx @modelcontextprotocol/create-server @joseairosa/recall",
+    "version": "1.7.0",
+    "version_released": "2025-12-02",
+    "language": "javascript",
+    "license": "MIT"
+}

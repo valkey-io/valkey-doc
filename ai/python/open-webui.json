@@ -1,0 +1,11 @@
+{
+    "name": "Open-WebUI",
+    "description": "Self-hosted ChatGPT-like interface for running local LLMs with Ollama and OpenAI-compatible APIs, supporting RAG and offline operation.",
+    "valkey_uses": "Session storage and caching for chat histories, user preferences, and RAG document embeddings",
+    "repo": "https://github.com/open-webui/open-webui",
+    "installation": "pip install open-webui",
+    "version": "0.9.6",
+    "version_released": "2026-06-01",
+    "language": "python",
+    "license": "Open WebUI (modified BSD-3)"
+}

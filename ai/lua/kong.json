@@ -1,0 +1,11 @@
+{
+    "name": "Kong Gateway",
+    "description": "Cloud-native API gateway with powerful plugins for traffic control, authentication, and observability for microservices and AI APIs.",
+    "valkey_uses": "Backend for rate limiting counters, caching responses, and session storage in distributed API gateway deployments",
+    "repo": "https://github.com/Kong/kong",
+    "installation": "docker pull kong/kong-gateway:3.14",
+    "version": "3.14",
+    "version_released": "2025-11-20",
+    "language": "lua",
+    "license": "Apache-2.0"
+}

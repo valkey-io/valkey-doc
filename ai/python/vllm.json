@@ -1,0 +1,11 @@
+{
+    "name": "vLLM",
+    "description": "Fast LLM inference and serving engine optimized for throughput with PagedAttention, supporting production deployments with high performance.",
+    "valkey_uses": "Caching backend for KV cache management, vector storage for semantic routing, and agentic memory components",
+    "repo": "https://github.com/vllm-project/vllm",
+    "installation": "pip install vllm",
+    "version": "0.15.1",
+    "version_released": "2026-02-04",
+    "language": "python",
+    "license": "Apache-2.0"
+}

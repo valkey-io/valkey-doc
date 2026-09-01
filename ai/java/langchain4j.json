@@ -1,0 +1,11 @@
+{
+    "name": "Langchain4j",
+    "description": "Idiomatic Java library for building LLM applications with unified API over LLM providers, supporting RAG, tool calling, and enterprise Java frameworks.",
+    "valkey_uses": "Embedding store for vector search using Valkey's vector search capabilities (Valkey 8+)",
+    "repo": "https://github.com/langchain4j/langchain4j-community",
+    "installation": "Add dependency: dev.langchain4j:langchain4j-community-valkey:1.15.0-beta25",
+    "version": "1.15.0-beta25",
+    "version_released": "2026-05-15",
+    "language": "java",
+    "license": "Apache-2.0"
+}
