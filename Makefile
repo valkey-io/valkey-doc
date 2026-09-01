@@ -268,3 +268,21 @@ distclean:
 install: install-man
 
 uninstall: uninstall-man
+
+# ---- Modules API Reference ----
+
+.PHONY: generate-modules-api-ref verify-modules-api-ref
+
+generate-modules-api-ref:
+	ruby $(VALKEY_ROOT)/utils/generate-module-api-doc.rb > topics/modules-api-ref.md
+
+verify-modules-api-ref:
+	@ruby $(VALKEY_ROOT)/utils/generate-module-api-doc.rb > topics/modules-api-ref.md.tmp
+	@if ! cmp -s topics/modules-api-ref.md topics/modules-api-ref.md.tmp; then \
+		echo "ERROR: topics/modules-api-ref.md does not match generated output from $(VALKEY_ROOT)/src/module.c"; \
+		diff -u topics/modules-api-ref.md topics/modules-api-ref.md.tmp; \
+		rm -f topics/modules-api-ref.md.tmp; \
+		exit 1; \
+	fi
+	@rm -f topics/modules-api-ref.md.tmp
+	@echo "topics/modules-api-ref.md matches $(VALKEY_ROOT)/src/module.c"

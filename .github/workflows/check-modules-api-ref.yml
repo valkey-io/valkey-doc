@@ -1,0 +1,99 @@
+name: Check Module API Reference
+
+on:
+  push:
+    paths:
+      - 'topics/modules-api-ref.md'
+      - '.github/workflows/check-modules-api-ref.yml'
+  pull_request:
+    paths:
+      - 'topics/modules-api-ref.md'
+      - '.github/workflows/check-modules-api-ref.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: check-modules-api-ref-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  verify-module-api-doc:
+    name: Verify Module API Reference
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout valkey-doc
+        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
+        with:
+          path: valkey-doc
+
+      - name: Checkout valkey
+        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
+        with:
+          repository: valkey-io/valkey
+          path: valkey
+          fetch-depth: 0
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.0'
+
+      - name: Verify topics/modules-api-ref.md matches module.c
+        working-directory: valkey-doc
+        run: |
+          DOC_FILE="topics/modules-api-ref.md"
+          VALKEY_DIR="../valkey"
+          GEN_SCRIPT="utils/generate-module-api-doc.rb"
+
+          if [ ! -f "$VALKEY_DIR/$GEN_SCRIPT" ]; then
+            echo "::error::Generator script $VALKEY_DIR/$GEN_SCRIPT not found!"
+            exit 1
+          fi
+
+          TMP_FILE=$(mktemp)
+          trap 'rm -f "$TMP_FILE"' EXIT
+
+          echo "Verifying $DOC_FILE against valkey unstable branch..."
+          ruby "$VALKEY_DIR/$GEN_SCRIPT" > "$TMP_FILE"
+
+          if cmp -s "$DOC_FILE" "$TMP_FILE"; then
+            echo "✓ $DOC_FILE matches generated documentation from unstable branch."
+            exit 0
+          fi
+
+          # Also check against the release version tag in Makefile if present
+          VERSION=$(grep -E '^VERSION \?=' Makefile | awk '{print $NF}')
+          if [ -n "$VERSION" ] && git -C "$VALKEY_DIR" rev-parse "$VERSION" >/dev/null 2>&1; then
+            echo "$DOC_FILE did not match unstable. Checking against release tag $VERSION..."
+            git -C "$VALKEY_DIR" checkout "$VERSION" >/dev/null 2>&1
+            ruby "$VALKEY_DIR/$GEN_SCRIPT" > "$TMP_FILE"
+            if cmp -s "$DOC_FILE" "$TMP_FILE"; then
+              echo "✓ $DOC_FILE matches generated documentation from release tag $VERSION."
+              exit 0
+            fi
+          fi
+
+          echo "::error file=$DOC_FILE::$DOC_FILE does not match the generated documentation from module.c."
+          echo ""
+          echo "========================================================================"
+          echo "ERROR: $DOC_FILE is auto-generated from doc comments in"
+          echo "src/module.c in the valkey-io/valkey repository using $GEN_SCRIPT."
+          echo ""
+          echo "Direct/manual edits to $DOC_FILE are not accepted."
+          echo ""
+          echo "To update the Module API documentation:"
+          echo "  1. Submit your doc comment updates to src/module.c in the Valkey repository:"
+          echo "     https://github.com/valkey-io/valkey"
+          echo "  2. Once merged, regenerate $DOC_FILE using:"
+          echo "     ruby $GEN_SCRIPT > <path-to-valkey-doc>/$DOC_FILE"
+          echo "========================================================================"
+          echo ""
+          echo "Diff between $DOC_FILE and generated doc (from unstable):"
+          git -C "$VALKEY_DIR" checkout unstable >/dev/null 2>&1 || true
+          ruby "$VALKEY_DIR/$GEN_SCRIPT" > "$TMP_FILE"
+          diff -u "$DOC_FILE" "$TMP_FILE" || true
+
+          exit 1

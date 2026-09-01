@@ -193,7 +193,7 @@ For examples, see [https://valkey.io/topics/modules-intro](https://valkey.io/top
 
 Return non-zero if a module command, that was declared with the
 flag "getkeys-api", is called in a special way to get the keys positions
-and not to get executed. Otherwise zero is returned.
+and not to get executed. Otherwise, zero is returned.
 
 <span id="ValkeyModule_KeyAtPosWithFlags"></span>
 
@@ -244,7 +244,7 @@ were introduced.
 
 Return non-zero if a module command, that was declared with the
 flag "getchannels-api", is called in a special way to get the channel positions
-and not to get executed. Otherwise zero is returned.
+and not to get executed. Otherwise, zero is returned.
 
 <span id="ValkeyModule_ChannelAtPosWithFlags"></span>
 
@@ -307,7 +307,7 @@ The function returns `VALKEYMODULE_ERR` in these cases:
 - The command name contains some chars that are not allowed.
 - A set of invalid flags were passed.
 
-Otherwise `VALKEYMODULE_OK` is returned and the new command is registered.
+Otherwise, `VALKEYMODULE_OK` is returned and the new command is registered.
 
 This function must be called during the initialization of the module
 inside the `ValkeyModule_OnLoad()` function. Calling this function outside
@@ -819,7 +819,7 @@ which part of the info is invalid and why.
                                        ValkeyModuleString **argv,
                                        int argc);
 
-**Available since:** 8.1.0
+**Available since:** 8.0.8
 
 [`ValkeyModule_UpdateRuntimeArgs`](#ValkeyModule_UpdateRuntimeArgs) can be used to update the module argument values.
 The function parameter 'argc' indicates the number of updated arguments, and 'argv'
@@ -841,7 +841,7 @@ The function always returns `VALKEYMODULE_OK`.
 **Available since:** 4.0.3
 
 Return non-zero if the module name is busy.
-Otherwise zero is returned.
+Otherwise, zero is returned.
 
 <span id="ValkeyModule_Milliseconds"></span>
 
@@ -1544,7 +1544,7 @@ The function always returns `VALKEYMODULE_OK`.
                                                 const char *fmt,
                                                 ...);
 
-**Available since:** 9.1.0
+**Available since:** 8.0.8
 
 Reply with a custom error created from a printf format and arguments.
 
@@ -2063,7 +2063,7 @@ using an ACL user, NULL is returned and errno is set to ENOTSUP
 
     int ValkeyModule_MustObeyClient(ValkeyModuleCtx *ctx);
 
-**Available since:** 8.1.0
+**Available since:** 8.0.8
 
 Returns 1 if commands are arriving from the primary client or AOF client
 and should never be rejected.
@@ -2109,9 +2109,13 @@ With flags having the following meaning:
     VALKEYMODULE_CLIENTINFO_FLAG_UNIXSOCKET   Client using unix domain socket.
     VALKEYMODULE_CLIENTINFO_FLAG_MULTI        Client in MULTI state.
     VALKEYMODULE_CLIENTINFO_FLAG_READONLY     Client in ReadOnly state.
-    VALKEYMODULE_CLIENTINFO_FLAG_PRIMARY      Client is a fake client used
-                                              for applying replicated
-                                              commands from the primary.
+    VALKEYMODULE_CLIENTINFO_FLAG_PRIMARY      Client is the replication link
+                                              from this replica's primary,
+                                              over which replicated commands
+                                              are applied.
+    VALKEYMODULE_CLIENTINFO_FLAG_REPLICA      Client is a replica connection.
+                                              Also set for MONITOR clients,
+                                              together with FLAG_MONITOR.
     VALKEYMODULE_CLIENTINFO_FLAG_MONITOR      Client in monitor mode.
     VALKEYMODULE_CLIENTINFO_FLAG_MODULE       Client is a module.
     VALKEYMODULE_CLIENTINFO_FLAG_AUTHENTICATED
@@ -2443,7 +2447,7 @@ If the key pointer is NULL or the key is empty, zero is returned.
 
 **Available since:** 4.0.0
 
-If the key is open for writing, remove it, and setup the key to
+If the key is open for writing, remove it, and set up the key to
 accept new writes as an empty key (that will be created on demand).
 On success `VALKEYMODULE_OK` is returned. If the key is not open for
 writing `VALKEYMODULE_ERR` is returned.
@@ -2457,7 +2461,7 @@ writing `VALKEYMODULE_ERR` is returned.
 **Available since:** 4.0.7
 
 If the key is open for writing, unlink it (that is delete it in a
-non-blocking way, not reclaiming memory immediately) and setup the key to
+non-blocking way, not reclaiming memory immediately) and set up the key to
 accept new writes as an empty key (that will be created on demand).
 On success `VALKEYMODULE_OK` is returned. If the key is not open for
 writing `VALKEYMODULE_ERR` is returned.
@@ -2952,7 +2956,7 @@ Empty keys will be handled correctly by doing nothing.
 **Available since:** 4.0.0
 
 On success retrieve the double score associated at the sorted set element
-'ele' and returns `VALKEYMODULE_OK`. Otherwise `VALKEYMODULE_ERR` is returned
+'ele' and returns `VALKEYMODULE_OK`. Otherwise, `VALKEYMODULE_ERR` is returned
 to signal one of the following conditions:
 
 * There is no such element 'ele' in the sorted set.
@@ -2995,7 +2999,7 @@ Return the "End of range" flag value to signal the end of the iteration.
 
 **Available since:** 4.0.0
 
-Setup a sorted set iterator seeking the first element in the specified
+Set up a sorted set iterator seeking the first element in the specified
 range. Returns `VALKEYMODULE_OK` if the iterator was correctly initialized
 otherwise `VALKEYMODULE_ERR` is returned in the following conditions:
 
@@ -3007,7 +3011,7 @@ Both can be infinite using the following two macros:
 * `VALKEYMODULE_POSITIVE_INFINITE` for positive infinite value
 * `VALKEYMODULE_NEGATIVE_INFINITE` for negative infinite value
 
-'minex' and 'maxex' parameters, if true, respectively setup a range
+'minex' and 'maxex' parameters, if true, respectively set up a range
 where the min and max value are exclusive (not included) instead of
 inclusive.
 
@@ -3036,7 +3040,7 @@ the range is selected for the start of the iteration instead.
 
 **Available since:** 4.0.0
 
-Setup a sorted set iterator seeking the first element in the specified
+Set up a sorted set iterator seeking the first element in the specified
 lexicographical range. Returns `VALKEYMODULE_OK` if the iterator was correctly
 initialized otherwise `VALKEYMODULE_ERR` is returned in the
 following conditions:
@@ -3114,7 +3118,7 @@ See also [`ValkeyModule_ValueLength()`](#ValkeyModule_ValueLength), which return
                                       const char *buf,
                                       size_t len);
 
-**Available since:** 9.1.0
+**Available since:** 8.0.8
 
 Sets the value of a hash field to a non-owning string reference (stringRef)
 pointing to the buffer parameter, which remains owned by the module.
@@ -3133,7 +3137,7 @@ The function receives the hash key, field name, buffer to share along with its s
     int ValkeyModule_HashHasStringRef(ValkeyModuleKey *key,
                                       ValkeyModuleString *field);
 
-**Available since:** 9.1.0
+**Available since:** 8.0.8
 
 Checks if the value of a hash entry is a shared string reference (stringRef).
 The function receives the hash key and field name to perform the check against.
@@ -3798,7 +3802,7 @@ Return the pointer and length of a string or error reply.
 **Available since:** 4.0.0
 
 Return a new string object from a call reply of type string, error or
-integer. Otherwise (wrong reply type) return NULL.
+integer. Otherwise, (wrong reply type) return NULL.
 
 <span id="ValkeyModule_SetContextUser"></span>
 
@@ -4071,7 +4075,7 @@ happens to be pretty lame as well.
 If [`ValkeyModule_CreateDataType()`](#ValkeyModule_CreateDataType) is called outside of `ValkeyModule_OnLoad()` function,
 there is already a module registering a type with the same name,
 or if the module name or encver is invalid, NULL is returned.
-Otherwise the new type is registered into the server, and a reference of
+Otherwise, the new type is registered into the server, and a reference of
 type `ValkeyModuleType` is returned: the caller of the function should store
 this reference into a global variable to make future use of it in the
 modules type API, since a single module may register multiple types.
@@ -4770,7 +4774,7 @@ For details on other return values and error codes, see the comment block for
 
 **Available since:** 7.2.0
 
-Get the private data that was previusely set on a blocked client
+Get the private data that was previously set on a blocked client
 
 <span id="ValkeyModule_BlockClientSetPrivateData"></span>
 
@@ -5048,7 +5052,7 @@ Return a context which can be used inside threads to make calls requiring a
 context with certain modules APIs. If 'bc' is not NULL then the module will
 be bound to a blocked client, and it will be possible to use the
 `ValkeyModule_Reply*` family of functions to accumulate a reply for when the
-client will be unblocked. Otherwise the thread safe context will be
+client will be unblocked. Otherwise, the thread safe context will be
 detached by a specific client.
 
 To call non-reply APIs, the thread safe context must be prepared with:
@@ -5285,7 +5289,10 @@ When a message of this type is received, the registered callback function
 will be invoked with details, including the 40-byte node ID of the sender.
 
 In Valkey 8.1 and later, the node ID is null-terminated. Prior to 8.1, it was
-not null-terminated
+not null-terminated.
+
+Note: Old versions of Valkey could not handle type 255. This was fixed in
+9.1.2, 9.0.6, 8.1.10, 8.0.11 and 7.2.15.
 
 <span id="ValkeyModule_SendClusterMessage"></span>
 
@@ -5388,7 +5395,7 @@ cluster mode, zero is returned.
 **Available since:** 5.0.0
 
 Populate the specified info for the node having as ID the specified 'id',
-then returns `VALKEYMODULE_OK`. Otherwise if the format of node ID is invalid
+then returns `VALKEYMODULE_OK`. Otherwise, if the format of node ID is invalid
 or the node ID does not exist from the POV of this local node, `VALKEYMODULE_ERR`
 is returned.
 
@@ -5459,7 +5466,7 @@ With the following effects:
 
     unsigned int ValkeyModule_ClusterKeySlotC(const char *key, size_t keylen);
 
-**Available since:** 9.1.0
+**Available since:** 8.0.8
 
 Returns the cluster slot of a key, similar to the `CLUSTER KEYSLOT` command.
 This function works even if cluster mode is not enabled.
@@ -5848,7 +5855,7 @@ If the user is able to access the pubsub channel then `VALKEYMODULE_OK` is retur
                                          int dbid,
                                          ValkeyModuleACLLogEntryReason *denial_reason);
 
-**Available since:** 9.1.0
+**Available since:** 8.0.8
 
 Check if the command with its arguments can be executed by the user, according to the
 ACLs associated with it. This function performs a comprehensive ACL check including:
@@ -6064,7 +6071,7 @@ Return the size of the dictionary (number of keys).
 
 Store the specified key into the dictionary, setting its value to the
 pointer 'ptr'. If the key was added with success, since it did not
-already exist, `VALKEYMODULE_OK` is returned. Otherwise if the key already
+already exist, `VALKEYMODULE_OK` is returned. Otherwise, if the key already
 exists the function returns `VALKEYMODULE_ERR`.
 
 <span id="ValkeyModule_DictReplaceC"></span>
@@ -6888,7 +6895,7 @@ it does not include the allocation size of the keys and values.
 
 **Available since:** 6.0.0
 
-Return the a number between 0 to 1 indicating the amount of memory
+Return a number between 0 to 1 indicating the amount of memory
 currently used, relative to the server "maxmemory" configuration.
 
 * 0 - No memory limit configured.
@@ -6949,7 +6956,7 @@ Callback for scan implementation.
     void scan_callback(ValkeyModuleCtx *ctx, ValkeyModuleString *keyname,
                        ValkeyModuleKey *key, void *privdata);
 
-- `ctx`: the module context provided to for the scan.
+- `ctx`: the module context provided for the scan.
 - `keyname`: owned by the caller and need to be retained if used after this
   function.
 - `key`: holds info on the key and value, it is provided as best effort, in
@@ -7015,7 +7022,7 @@ Callback for scan implementation.
 
     void scan_callback(ValkeyModuleKey *key, ValkeyModuleString* field, ValkeyModuleString* value, void *privdata);
 
-- key - the key context provided to for the scan.
+- key - the key context provided for the scan.
 - field - field name, owned by the caller and need to be retained if used
   after this function.
 - value - value string or NULL for set type, owned by the caller and need to
@@ -7764,7 +7771,7 @@ Create an integer config that server clients can interact with via the
                                                    ValkeyModuleConfigApplyFunc applyfn,
                                                    void *privdata);
 
-**Available since:** 9.1.0
+**Available since:** 8.0.8
 
 
 Create an unsigned integer config that server clients can interact with via the
@@ -7873,7 +7880,7 @@ Example:
                                              ValkeyModuleScriptingEngineCtx *engine_ctx,
                                              ValkeyModuleScriptingEngineMethods *engine_methods);
 
-**Available since:** 8.1.0
+**Available since:** 8.0.8
 
 Registers a new scripting engine in the server.
 
@@ -7898,7 +7905,7 @@ message is logged.
     int ValkeyModule_UnregisterScriptingEngine(ValkeyModuleCtx *ctx,
                                                const char *engine_name);
 
-**Available since:** 8.1.0
+**Available since:** 8.0.8
 
 Removes the scripting engine from the server.
 
@@ -7912,7 +7919,7 @@ Returns `VALKEYMODULE_OK`.
 
     ValkeyModuleScriptingEngineExecutionState ValkeyModule_GetFunctionExecutionState( ValkeyModuleScriptingEngineServerRuntimeCtx *server_ctx);
 
-**Available since:** 8.1.0
+**Available since:** 8.0.8
 
 Returns the state of the current function being executed by the scripting
 engine.
@@ -7929,13 +7936,14 @@ a `SCRIPT KILL`, or `FUNCTION KILL`.
     void ValkeyModule_ScriptingEngineDebuggerLog(ValkeyModuleString *msg,
                                                  int truncate);
 
-**Available since:** 9.1.0
+**Available since:** 8.0.8
 
 Function to send string messages to the client during a debug session.
 These messages are buffered in memory, and are only sent to the client when
 `ValkeyModule_VM_ScriptingEngineDebuggerFlushLogs` is called.
 
-- `msg`: the message to send.
+- `msg`: the message to send. Ownership of `msg` is transferred to the
+  debugger log. The caller must not free it or access it after this call.
 
 - `truncate`: if set to 1, the message will be truncated to the maximum length
   configured in the debugger settings.
@@ -7946,7 +7954,7 @@ These messages are buffered in memory, and are only sent to the client when
 
     void ValkeyModule_ScriptingEngineDebuggerLogRespReplyStr(const char *reply);
 
-**Available since:** 9.1.0
+**Available since:** 8.0.8
 
 Function to log a RESP reply C string as debugger output, in a human readable
 format.
@@ -7960,7 +7968,7 @@ the debugger settings, plus a few more chars used as prefix, it gets truncated.
 
     void ValkeyModule_ScriptingEngineDebuggerLogRespReply(ValkeyModuleCallReply *reply);
 
-**Available since:** 9.1.0
+**Available since:** 8.0.8
 
 Function to log a RESP reply as debugger output, in a human readable format.
 
@@ -7973,7 +7981,7 @@ the debugger settings, plus a few more chars used as prefix, it gets truncated.
 
     void ValkeyModule_ScriptingEngineDebuggerFlushLogs(void);
 
-**Available since:** 9.1.0
+**Available since:** 8.0.8
 
 Function to send all debugger messages in the memory buffer written with the
 [`ValkeyModule_ScriptingEngineDebuggerLog`](#ValkeyModule_ScriptingEngineDebuggerLog) function.
@@ -7985,7 +7993,7 @@ Function to send all debugger messages in the memory buffer written with the
     void ValkeyModule_ScriptingEngineDebuggerProcessCommands(int *client_disconnected,
                                                              ValkeyModuleString **err);
 
-**Available since:** 9.1.0
+**Available since:** 8.0.8
 
 Function used to process debugger commands sent by the client.
 
@@ -8333,7 +8341,7 @@ be used again.
     ValkeyModuleString *ValkeyModule_DefragValkeyModuleString(ValkeyModuleDefragCtx *ctx,
                                                               ValkeyModuleString *str);
 
-**Available since:** 7.2.5
+**Available since:** 7.2.4
 
 Defrag a `ValkeyModuleString` previously allocated by [`ValkeyModule_Alloc`](#ValkeyModule_Alloc), [`ValkeyModule_Calloc`](#ValkeyModule_Calloc), etc.
 See [`ValkeyModule_DefragAlloc()`](#ValkeyModule_DefragAlloc) for more information on how the defragmentation process
@@ -8376,7 +8384,7 @@ There is no guarantee that this info is always available, so this may return -1.
                                                   size_t len,
                                                   unsigned int flags);
 
-**Available since:** 9.1.0
+**Available since:** 8.0.8
 
 This function verifies that the user is authorized to carry out the operations indicated in the
 `flags` parameter on keys that begin with the specified prefix.
