@@ -3,8 +3,8 @@ title: "Serialization protocol specification"
 description: Valkey's serialization protocol (RESP) is the wire protocol that clients implement
 ---
 
-To communicate with the Valkey server, Valkey clients use a protocol called REdis Serialization Protocol (RESP).
-While the protocol was designed for Redis, it's used by many other client-server software projects.
+To communicate with the Valkey server, Valkey clients use a protocol called Redis Serialization Protocol (RESP).
+This protocol is used by many client-server software projects.
 
 RESP is a compromise among the following considerations:
 
@@ -30,14 +30,13 @@ The protocol outlined here is used only for client-server communication.
 
 The first version of the RESP protocol was experimental and was never widely used.
 
-The next version, RESP2, early became the standard communication method for clients with Redis OSS.
+The next version, RESP2, became the standard communication method for clients early on.
 
-[RESP3](https://github.com/redis/redis-specifications/blob/master/protocol/RESP3.md) is a superset of RESP2 that mainly aims to make a client author's life a little bit easier.
-Redis OSS 6.0 introduced experimental opt-in support of RESP3's features (excluding streaming strings and streaming aggregates).
-In addition, the introduction of the `HELLO` command allows clients to handshake and upgrade the connection's protocol version (see [Client handshake](#client-handshake)).
+[RESP3](https://github.com/redis/redis-specifications/blob/master/protocol/RESP3.md) is a superset of RESP2 that aims to make a client author's life a little easier.
+Valkey supports RESP3's features (excluding streaming strings and streaming aggregates) alongside RESP2.
+The `HELLO` command lets clients handshake and upgrade the connection's protocol version (see [Client handshake](#client-handshake)).
 
-Up to and including Redis OSS 7, both RESP2 and RESP3 clients can invoke all core commands.
-However, commands may return differently typed replies for different protocol versions.
+Both RESP2 and RESP3 clients can invoke all core commands. Depending on what RESP version you are using, your commands may return different replies based on the different protocol versions used.
 
 Future versions of Valkey may change the default protocol version, but it is unlikely that RESP2 will become entirely deprecated.
 It is possible, however, that new features in upcoming versions will require the use of RESP3.
@@ -556,7 +555,7 @@ Similarly, the client can easily detect a server that is only able to speak RESP
 
 The client can then proceed and use RESP2 to communicate with the server.
 
-Note that even if the protocol's version is supported, the `HELLO` command may return an error, perform no action and remain in RESP2 mode. 
+Note that even if the protocol's version is supported, the `HELLO` command may return an error, perform no action and remain in RESP2 mode.
 For example, when used with invalid authentication credentials in the command's optional `!AUTH` clause:
 
     Client: HELLO 3 AUTH default mypassword
@@ -569,7 +568,7 @@ The information in the reply is partly server-dependent, but certain fields are 
 * **version**: the server's version.
 * **proto**: the highest supported version of the RESP protocol.
 
-In Valkey' RESP3 implementation, the following fields are also emitted:
+In Valkey's RESP3 implementation, the following fields are also emitted:
 
 * **id**: the connection's identifier (ID).
 * **mode**: "standalone", "sentinel" or "cluster".
