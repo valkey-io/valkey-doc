@@ -95,7 +95,7 @@ Another side effect of using volatile fields (fields with time to live) in hash 
 
 [`HEXPIRE`](../commands/hexpire.md), [`HPEXPIRE`](../commands/hpexpire.md), [`HEXPIREAT`](../commands/hexpireat.md), [`HPEXPIREAT`](../commands/hpexpireat.md) and [`HPERSIST`](../commands/hpersist.md) commands are used in order to set or manipulate the expiration time of specific hash fields.
 
-[`HEXPIRETIME`](../commands/hexpiretime.md), [`HEXPIRETIME`](../commands/hpexpiretime.md), [`HTTL`](../commands/httl.md) and [`HPTTL]`(../commands/hpttl.md) commands are used in order to query the expiration time of specific hash fields.
+[`HEXPIRETIME`](../commands/hexpiretime.md), [`HEXPIRETIME`](../commands/hpexpiretime.md), [`HTTL`](../commands/httl.md) and [`HPTTL`](../commands/hpttl.md) commands are used in order to query the expiration time of specific hash fields.
 
 [`HSETEX`](../commands/hsetex.md) allows setting multiple hash fields and values while also associate an expiration time with each field.
 
