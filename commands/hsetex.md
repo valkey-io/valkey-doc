@@ -61,7 +61,7 @@ Override all hash items will also persist the fields
 
 Setting expiration time in the past will remove all the elements in the hash:
 ```
-127.0.0.1:6379> HSETEX EX 0 myhash FIELDS 3 f1 v1 f2 v2 f3 v3
+127.0.0.1:6379> HSETEX myhash EX 0 FIELDS 3 f1 v1 f2 v2 f3 v3
 (integer) 1
 127.0.0.1:6379> HTTL myhash FIELDS 3 f1 f2 f3
 1) (integer) -2
