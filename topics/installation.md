@@ -16,11 +16,18 @@ Ensure you check the [Valkey Releases page](https://valkey.io/download/releases/
 
 ## Install Valkey
 
-You can install Valkey using multiple methods, choose which one you need from the below options.
+You can install Valkey using multiple methods; choose the method that fits your needs from the options below:
+
+- [Install Valkey using tarballs](#install-valkey-using-tarballs)
+- [Install Valkey using Docker](#install-valkey-using-docker)
+- [Install Valkey on MacOS](#install-valkey-on-macos)
+- [Install Valkey on Linux/BSD package managers](#install-valkey-on-linuxbsd-package-managers)
+- [Install Valkey on Windows](#install-valkey-on-windows)
+- [Install Valkey as a system service](#install-valkey-as-a-system-service)
 
 ### Install Valkey using tarballs
 
-Once you have downloaded the release, unpack the tarball (e.g. `tar -xzvf valkey-8.0.1.tar.gz`) and follow the instructions in the included README.md.
+Once you have downloaded the release, unpack the tarball (e.g. `tar -xzvf valkey-8.0.1.tar.gz`) and follow the instructions in the included `README.md`.
 
 ### Install Valkey using Docker
 
