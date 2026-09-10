@@ -93,6 +93,17 @@ tls-client-cert-file /path/to/client.crt
 tls-client-key-file /path/to/client.key
 ```
 
+**Key passphrases**
+
+If a private key is encrypted using a passphrase, it can be specified
+for the server, alternate, or client keys using:
+
+```
+tls-key-file-pass pass1
+tls-alt-key-file-pass pass2
+tls-client-key-file-pass pass3
+```
+
 **Automatic TLS material reload**
 
 Valkey can automatically reload TLS materials at a specified interval
