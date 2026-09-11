@@ -1,0 +1,34 @@
+Returns the hottest keys observed during the last completed detection window,
+ordered by estimated accesses per second (QPS), from highest to lowest.
+
+Hot key detection is enabled by setting `hotkeys-top-k` to a positive value
+(`0`, the default, disables it). While it is disabled the command succeeds and
+returns an empty array, so a polling client does not need to special-case the
+disabled state.
+
+Client key accesses are sampled into a *live* window whose length is
+`hotkeys-window-seconds`. When a window completes it is *frozen*, and
+`HOTKEYS GET` always reports that last completed window — never the partial,
+in-progress one. Consequently, immediately after detection is enabled (or after
+[`HOTKEYS RESET`](hotkeys-reset.md)) the command returns an empty result until
+the first window completes.
+
+Each returned entry contains:
+
+* `key`: the key name.
+* `db`: the database in which the key was accessed.
+* `qps`: the estimated accesses per second over the completed window. Because
+  counts are sampled and tracked approximately (Space-Saving), `qps` is an
+  estimate rather than an exact value. It is reconstructed by scaling the
+  sampled count by `100 / hotkeys-sampling-percentage` and dividing by the
+  duration the window actually spanned, which is `hotkeys-window-seconds` plus
+  however late the rotation ran.
+
+At most `hotkeys-top-k` keys are returned.
+
+Note that `RENAME`, `MOVE`, and `SWAPDB` are not re-attributed: a tracked entry
+is keyed by (key name, database), so after one of these commands the
+accumulated counts remain under the key's previous identity until they age out.
+As these commands are not typically high-frequency, the stale entry is harmless
+— it stops accruing new hits immediately and disappears once the reporting
+window rotates (at most one `hotkeys-window-seconds` later).
