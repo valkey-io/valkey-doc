@@ -17,7 +17,7 @@ For negative values, -1 is the last bit, -2 is the penultimate, and so forth.
 
 ## Examples
 
-```
+```text
 127.0.0.1:6379> SET mykey "foobar"
 OK
 127.0.0.1:6379> BITCOUNT mykey
@@ -53,7 +53,7 @@ Later it will be trivial to know the number of single days the user visited the
 web site simply calling the `BITCOUNT` command against the bitmap.
 
 A similar pattern where user IDs are used instead of days is described
-in the article called "[Fast easy realtime metrics using Redis bitmaps][hbgc212fermurb]".
+in the article called "[Fast easy real-time metrics using Redis bitmaps][hbgc212fermurb]".
 
 [hbgc212fermurb]: http://blog.getspool.com/2011/11/29/fast-easy-realtime-metrics-using-redis-bitmaps
 
