@@ -9,17 +9,18 @@ time and the worst-case latency.
 
 While Valkey is an in-memory system, it deals with the operating system in
 different ways, for example, in the context of persisting to disk.
-Moreover Valkey implements a rich set of commands. Certain commands
-are fast and run in constant or logarithmic time. Other commands are slower
-O(N) commands that can cause latency spikes.
+Moreover, Valkey implements a rich set of commands. Certain commands
+are fast and run in constant or logarithmic time. Other commands have
+`O(N)` complexity and can cause latency spikes.
 
-Finally, Valkey is single threaded. This is usually an advantage
+Finally, Valkey is *mostly* single-threaded. This is usually an advantage
 from the point of view of the amount of work it can perform per core, and in
 the latency figures it is able to provide. However, it poses
-a challenge for latency, since the single
-thread must be able to perform certain tasks incrementally, for
+a challenge for latency, since the single-thread
+must be able to perform certain tasks incrementally, for
 example key expiration, in a way that does not impact the other clients
 that are served.
+Some other operations, such as reading, parsing, polling, and writing to the socket, can be offloaded to a configurable pool of I/O threads, but command execution itself still happens on the main thread.
 
 For all these reasons, there is a feature called
 **Latency Monitoring**, that helps the user to check and troubleshoot possible
@@ -60,7 +61,7 @@ The framework monitors and logs latency spikes in the execution time of these ev
 * `fast-command`: O(1) and O(log N) commands.
 * `fork`: the `fork(2)` system call.
 * `rdb-unlink-temp-file`: the `unlink(2)` system call.
-* `aof-fsync-always`: the `fsync(2)` system call when invoked by the `appendfsync allways` policy.
+* `aof-fsync-always`: the `fsync(2)` system call when invoked by the `appendfsync always` policy.
 * `aof-write`: writing to the AOF - a catchall event for `write(2)` system calls.
 * `aof-write-pending-fsync`: the `write(2)` system call when there is a pending fsync.
 * `aof-write-active-child`: the `write(2)` system call when there are active child processes.
@@ -75,26 +76,36 @@ The framework monitors and logs latency spikes in the execution time of these ev
 
 ## How to enable latency monitoring
 
-What is high latency for one use case may not be considered high latency for another. Some applications may require that all queries be served in less than 1 millisecond. For other applications, it may be acceptable for a small amount of clients to experience a 2 second latency on occasion.
+The acceptable latency depends on the application.
+Some applications require all queries to complete within 1 millisecond. Other applications may tolerate occasional latency of 2 seconds for a small number of clients.
 
-The first step to enable the latency monitor is to set a **latency threshold** in milliseconds. Only events that take longer than the specified threshold will be logged as latency spikes. The user should set the threshold according to their needs. For example, if the application requires a maximum acceptable latency of 100 milliseconds, the threshold should be set to log all the events blocking the server for a time equal or greater to 100 milliseconds.
+Set a **latency threshold** in milliseconds to enable latency monitoring.
+The default threshold is `0`, which disables latency monitoring.
 
-Enable the latency monitor at runtime in a production server
-with the following command:
+Valkey logs events that exceed the configured threshold as latency spikes.
+Set the threshold according to the application's latency requirements.
 
-    CONFIG SET latency-monitor-threshold 100
+For example, if the application requires a maximum latency of 100 milliseconds, set the threshold to 100:
 
-Monitoring is turned off by default (threshold set to 0), even if the actual cost of latency monitoring is near zero. While the memory requirements of latency monitoring are very small, there is no good reason to raise the baseline memory usage of a Valkey instance that is working well.
+```bash
+CONFIG SET latency-monitor-threshold 100
+```
+
+Latency monitoring is disabled by default.
+Latency monitoring requires very little memory. However, enabling it increases the baseline memory usage of a Valkey instance.
 
 ## Report information with the LATENCY command
 
-The user interface to the latency monitoring subsystem is the `LATENCY` command.
-Like many other Valkey commands, `LATENCY` accepts subcommands that modify its behavior. These subcommands are:
+The user interface to the latency monitoring subsystem is the [`LATENCY`](/commands/latency.md) command.
+Like many other Valkey commands, `LATENCY` accepts subcommands that modify its behavior.
+These subcommands are:
 
-* `LATENCY LATEST` - returns the latest latency samples for all events.
-* `LATENCY HISTORY` - returns latency time series for a given event.
-* `LATENCY RESET` - resets latency time series data for one or more events.
-* `LATENCY GRAPH` - renders an ASCII-art graph of an event's latency samples.
-* `LATENCY DOCTOR` - replies with a human-readable latency analysis report.
+* [`LATENCY LATEST`](/commands/latency-latest.md) - returns the latest latency samples for all events.
+* [`LATENCY HELP`](/commands/latency-help.md) - returns helpful text about the different subcommands.
+* [`LATENCY HISTORY`](/commands/latency-history.md) - returns timestamp-latency samples for an event.
+* [`LATENCY HISTOGRAM`](/commands/latency-histogram.md) - returns the cumulative distribution of latencies of a subset or all commands.
+* [`LATENCY RESET`](/commands/latency-reset.md) - resets the latency data for one or more events.
+* [`LATENCY GRAPH`](/commands/latency-graph.md) - returns a latency graph for an event.
+* [`LATENCY DOCTOR`](/commands/latency-doctor.md) - returns a human-readable latency analysis report.
 
 Refer to each subcommand's documentation page for further information.
