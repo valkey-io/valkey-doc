@@ -82,7 +82,9 @@ happens: in this case the replica will get a full copy of the dataset, from scra
 
 This is how a full synchronization works in more details:
 
-The primary starts a background saving process to produce an RDB file. At the same time it starts to buffer all new write commands received from the clients. When the background saving is complete, the primary transfers the database file to the replica, which saves it on disk, and then loads it into memory. The primary will then send all buffered commands to the replica. This is done as a stream of commands and is in the same format of the Valkey protocol itself.
+The primary starts a background process that produces a snapshot of the dataset in the RDB format. At the same time it starts to buffer all new write commands received from the clients. The snapshot is transferred to the replica, which loads it, and the primary then sends all the buffered commands to the replica. From there on it keeps sending the stream of new commands. This is done as a stream of commands and is in the same format of the Valkey protocol itself.
+
+How the snapshot is transferred and loaded — in particular whether it passes through a file on disk on the primary side, on the replica side, or neither — is covered in [Full synchronization](#full-synchronization).
 
 You can try it yourself via telnet. Connect to the Valkey port while the
 server is doing some work and issue the `SYNC` command. You'll see a bulk
@@ -91,7 +93,7 @@ in the telnet session. Actually `SYNC` is an old protocol no longer used by
 newer Valkey instances, but is still there for backward compatibility: it does
 not allow partial resynchronizations, so now `PSYNC` is used instead.
 
-As already said, replicas are able to automatically reconnect when the primary-replica link goes down for some reason. If the primary receives multiple concurrent replica synchronization requests, it performs a single background save in to serve all of them.
+As already said, replicas are able to automatically reconnect when the primary-replica link goes down for some reason. If the primary receives multiple concurrent replica synchronization requests, it performs a single background save to serve all the replicas that can share the same snapshot.
 
 ## Replication ID explained
 
@@ -134,15 +136,125 @@ working as a primary because of some network partition: retaining the same
 replication ID would violate the fact that the same ID and same offset of any
 two random instances mean they have the same data set.
 
-## Diskless replication
+## Full synchronization
 
-Normally a full resynchronization requires creating an RDB file on disk,
-then reloading the same RDB from disk to feed the replicas with the data.
+A full synchronization transfers a complete snapshot of the dataset from the
+primary to the replica. The snapshot is always in the RDB format, but it does not
+have to be written to a file: the primary can stream it directly over the
+replication link, and the replica can load it directly from the socket. The two
+sides are configured independently of each other.
 
-With slow disks this can be a very stressing operation for the primary.
-Valkey has support for diskless
-replication. In this setup the child process directly sends the
-RDB over the wire to replicas, without using the disk as intermediate storage.
+### On the primary: diskless or disk-based
+
+**Diskless** full sync is the default, controlled by `repl-diskless-sync` (enabled
+by default). The background process streams the snapshot straight to the replica's
+socket, so the primary never writes it to disk. This avoids the disk I/O and the
+disk space an RDB file would need, which matters most when the disk is slow or the
+dataset is large.
+
+Since the size of the payload is not known when the transfer begins, a streamed
+snapshot is delimited by a randomly generated end-of-file marker instead of being
+prefixed by its length. Replicas state during the handshake whether they
+understand this format; one that doesn't is served with a disk-based transfer
+instead.
+
+Before starting a transfer, the primary waits `repl-diskless-sync-delay` seconds
+(5 by default) so that replicas arriving in the meantime can be served by the same
+snapshot. Set it to 0 to start immediately. `repl-diskless-sync-max-replicas`
+limits how many replicas a single transfer may serve; 0, the default, means no
+limit.
+
+**Disk-based** full sync, selected with `repl-diskless-sync no`, makes the primary
+save the snapshot to its RDB file and then send that file, prefixed by its length.
+The file can be shared: replicas that ask for a full sync while the save is in
+progress can attach to it and receive the same file when it completes.
+
+Even with `repl-diskless-sync no`, a replica that needs something the RDB file
+cannot give it is still served by a diskless transfer, so that the file on disk
+stays valid and reusable for the other replicas. This happens when the replica
+asks for a filtered dataset, needs an older RDB version, or needs a different
+compression codec than the one the file is written in.
+
+For the same reason, concurrent full sync requests are grouped: one background
+save serves all the replicas that can share a snapshot, and any replica needing a
+different snapshot is served by a separate save.
+
+### On the replica: loading from a file or from the socket
+
+By default the replica stores the incoming snapshot in a temporary file and loads
+it once the transfer is complete. Note that this is independent of the primary's
+setting: a snapshot streamed by a diskless primary is still written to disk by the
+replica unless the replica is configured otherwise.
+
+Loading straight from the socket avoids that write and read, but it needs care,
+because the replica cannot safely discard its current dataset before the new one
+has arrived. The `repl-diskless-load` option chooses the strategy:
+
+* `disabled` (default) — don't load from the socket. Store the snapshot to a
+  temporary file first, then load it.
+* `on-empty-db` — load from the socket, but only when the replica's dataset is
+  empty, so there is nothing that could be lost. Otherwise fall back to storing
+  the snapshot to a file first.
+* `swapdb` — load from the socket while keeping the current dataset in memory, so
+  it can be restored if the transfer fails. The replica can keep serving the old
+  data while the transfer is in progress, but it needs enough memory to hold both
+  datasets; if it doesn't, it risks being killed by the OOM killer.
+* `flush-before-load` — **dangerous**: delete the current dataset before loading
+  the new one. If anything goes wrong before the transfer completes, the replica
+  is left with no data.
+
+## Dual-channel replication
+
+*Available since Valkey 8.0.*
+
+During a full synchronization, the primary normally buffers the write commands
+that arrive while the snapshot is being transferred, and it needs memory for such
+a buffer per synchronizing replica. With dual-channel replication the replica
+opens a second connection instead: the snapshot is transferred on one channel
+while the replica itself accumulates the concurrent command stream on the other.
+This takes the buffering off the primary, which is usually the busier of the two,
+in exchange for the replica needing memory for the accumulated stream.
+
+To use it, set `dual-channel-replication-enabled yes` on both the primary and the
+replica. The primary must also have `repl-diskless-sync` enabled, since the
+snapshot is streamed over the connection. Changing the setting does not affect a
+synchronization that is already running; it applies to subsequent ones.
+
+## Compressing the replication stream
+
+*Available since Valkey 9.2.*
+
+The data sent over the replication link can be compressed, trading CPU time for
+network bandwidth. This is useful when replicating over a constrained or metered
+network, such as between availability zones. Compression is controlled by
+`repl-compression`:
+
+* `no` (default) — send the stream uncompressed.
+* `yes` — compress with the current default algorithm, currently LZ4.
+* `lz4` — LZ4: fast, with moderate compression.
+* `zstd` — Zstandard: compresses better, at a higher CPU cost. Requires a build
+  with Zstandard support.
+
+Set `repl-compression` on both the primary and the replica. The value on the
+primary is the algorithm it is willing to use; the value on a replica determines
+which algorithms it tells the primary it can decode. A replica with
+`repl-compression no` therefore receives an uncompressed stream even if its
+primary has compression enabled.
+
+The algorithm is negotiated per replica: the primary uses the strongest algorithm
+that both sides support, without exceeding its own `repl-compression`. If a
+replica cannot decode the primary's configured algorithm, the primary uses the
+strongest weaker one the replica does support instead of giving up on compression
+entirely — a Zstandard-capable replica also announces LZ4, so a primary configured
+for `lz4` can compress to it as well. If there is nothing in common, the link
+stays uncompressed. Changing `repl-compression` renegotiates established links.
+
+This setting covers the diskless full sync payload and the continuous command
+stream. It is independent of `rdbcompression`, which controls the format of the
+RDB file on disk. A disk-based full sync sends that file as it is, so it is
+compressed according to `rdbcompression` rather than `repl-compression`. A replica
+that receives a compressed snapshot stores its own RDB file in its own
+`rdbcompression` format, converting the stream as it writes it.
 
 ## Configuration
 
@@ -158,10 +270,13 @@ There are also a few parameters for tuning the replication backlog taken
 in memory by the primary to perform the partial resynchronization. See the example
 `valkey.conf` shipped with the Valkey distribution for more information.
 
-Diskless replication can be enabled using the `repl-diskless-sync` configuration
-parameter. The delay to start the transfer to wait for more replicas to
-arrive after the first one is controlled by the `repl-diskless-sync-delay`
-parameter. Please refer to the example `valkey.conf` file in the Valkey distribution
+Full synchronization has its own parameters: `repl-diskless-sync`,
+`repl-diskless-sync-delay` and `repl-diskless-sync-max-replicas` on the primary
+and `repl-diskless-load` on the replica, all described in
+[Full synchronization](#full-synchronization). See also
+[Dual-channel replication](#dual-channel-replication) and
+[Compressing the replication stream](#compressing-the-replication-stream).
+Please refer to the example `valkey.conf` file in the Valkey distribution
 for more details.
 
 ## Read-only replica
