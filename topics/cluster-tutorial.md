@@ -38,16 +38,39 @@ For a Valkey Cluster to work properly you need, for each node:
 
 If you don't open both TCP ports, your cluster will not work as expected.
 
-#### Valkey Cluster and Docker
+#### Valkey Cluster with containers and NAT
 
-Currently, Valkey Cluster does not support NATted environments and in general
-environments where IP addresses or TCP ports are remapped.
+Containers and other environments using Network Address Translation rely on _port
+mapping_: a program running inside a container may be reachable from the outside on a
+different port than the one it believes it is using. This is useful for running
+multiple containers using the same ports, at the same time, on the same host.
 
-Docker uses a technique called _port mapping_: programs running inside Docker containers may be exposed with a different port compared to the one the program believes to be using. 
-This is useful for running multiple containers using the same ports, at the same time, in the same server.
+Because a Valkey Cluster node publishes its own address to the other nodes, such a
+remapping has to be made known to it. Configure each node to announce the address and
+ports on which the others can actually reach it:
 
-To make Docker compatible with Valkey Cluster, you need to use Docker's _host networking mode_. 
-Please see the `--net=host` option in the [Docker documentation](https://docs.docker.com/engine/userguide/networking/dockernetworks/) for more information.
+    cluster-announce-ip 10.1.1.5
+    cluster-announce-port 6379
+    cluster-announce-bus-port 6380
+
+The announced information is published in the cluster bus messages, so the other
+nodes can map the node to its reachable address. Announcing the bus port matters
+because it is otherwise assumed to be the client port plus 10000, which doesn't hold
+when the ports are remapped.
+
+A few related options cover more specific setups:
+
+* `cluster-announce-tls-port` announces the TLS port. If it is omitted while
+  `tls-cluster` is enabled, `cluster-announce-port` is taken to be the TLS port.
+* `cluster-announce-client-port` and `cluster-announce-client-tls-port` announce the
+  ports that *clients* should use, for cases where clients reach the node on a
+  different port than the other nodes do, such as through a load balancer.
+* `cluster-announce-client-ipv4` and `cluster-announce-client-ipv6` announce
+  client-facing addresses. When they are omitted, `cluster-announce-ip` is the
+  address exposed to clients.
+
+A node that doesn't announce anything falls back to auto-detecting its own address,
+which is the right behavior when no remapping is involved.
 
 #### Valkey Cluster data sharding
 
@@ -1034,5 +1057,4 @@ If not for backward compatibility, the Valkey project no longer uses the words "
 ## Learn more
 
 * [Valkey Cluster specification](cluster-spec.md)
-* [Docker documentation](https://docs.docker.com/engine/userguide/networking/dockernetworks/)
 
