@@ -20,7 +20,7 @@ The `HPEXPIREAT` command supports a set of options that modify its behavior:
 ```
 127.0.0.1:6379> HSET myhash f1 v1 f2 v2 f3 v3
 (integer) 3
-27.0.0.1:6379> HPEXPIREAT myhash 1754847944000 FIELDS 2 f2 f3
+127.0.0.1:6379> HPEXPIREAT myhash 1754847944000 FIELDS 2 f2 f3
 1) (integer) 1
 2) (integer) 1
 127.0.0.1:6379> HPEXPIRETIME myhash FIELDS 3 f1 f2 f3
