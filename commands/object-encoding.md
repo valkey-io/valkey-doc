@@ -29,7 +29,8 @@ Valkey objects can be encoded in different ways:
 
 * Sorted Sets can be encoded as:
 
-    - `skiplist`, normal sorted set encoding.
+    - `btree`, normal sorted set encoding.
+    - `skiplist`, the name used for the normal sorted set encoding before it was replaced by a B+ tree.
     - `listpack`, a space-efficient encoding used for small sorted sets.
 
 * Streams can be encoded as:

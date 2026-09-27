@@ -13,8 +13,8 @@
             "command":"//Choose the appropriate classifier \n implementation group: 'io.valkey', name: 'valkey-glide', version: '1.+', classifier: 'osx-aarch_64 OR linux-aarch_64 OR linux-x86_64'"
         }
     ],
-    "version":"v2.1.1",
-    "version_released":"2025-10-08",
+    "version":"v2.5.1",
+    "version_released":"2026-08-11",
     "language":"java",
     "license": "Apache-2.0",
     "read_from_replica": true,

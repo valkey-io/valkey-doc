@@ -3,6 +3,8 @@ line in the returned array defines a different user, and the format is the
 same used in the valkey.conf file or the external ACL file, so you can
 cut and paste what is returned by the ACL LIST command directly inside a
 configuration file if you wish (but make sure to check [`ACL SAVE`](acl-save.md)).
+Implicit defaults may be omitted: for example, access to all databases (`alldbs`)
+is not shown, while explicit `db=<dbid>` and `resetdbs` rules are shown.
 
 ## Examples
 

@@ -8,6 +8,9 @@
   "ACL DELUSER": [
     "[Integer reply](../topics/protocol.md#integers): the number of users that were deleted. This number will not always match the number of arguments since certain users may not exist."
   ],
+  "ACL DIGEST": [
+    "[Bulk string reply](../topics/protocol.md#bulk-strings): the digest of the ACL rules currently in effect, as a hexadecimal string."
+  ],
   "ACL DRYRUN": [
     "Any of the following:",
     "* [Simple string reply](../topics/protocol.md#simple-strings): `OK` on success.",
@@ -1160,6 +1163,11 @@
   "MSET": [
     "[Simple string reply](../topics/protocol.md#simple-strings): always `OK` because `MSET` can't fail."
   ],
+  "MSETEX": [
+    "One of the following:",
+    "* [Integer reply](../topics/protocol.md#integers): `0` if no key was set (at least one key already existed when `NX` was used, or at least one key didn't exist when `XX` was used).",
+    "* [Integer reply](../topics/protocol.md#integers): `1` if all the keys were set."
+  ],
   "MSETNX": [
     "One of the following:",
     "* [Integer reply](../topics/protocol.md#integers): `0` if no key was set (at least one key already existed).",
@@ -1740,7 +1748,7 @@
     "[Array reply](../topics/protocol.md#arrays): when the additional _count_ argument is passed, the command returns an array of members, or an empty array when _key_ doesn't exist. If the _WITHSCORES_ modifier is used, the reply is a list of members and their scores from the sorted set."
   ],
   "ZRANGE": [
-    "[Array reply](../topics/protocol.md#arrays): a list of members in the specified range with, optionally, their scores when the _WITHSCORES_ option is given."
+    "[Array reply](../topics/protocol.md#arrays): a list of members in the specified range with, optionally, their scores when the _WITHSCORES_ option is given. When _WITHSCORES_ is used, each entry is a 2-element array containing the member and its score as a [Double reply](../topics/protocol.md#doubles)."
   ],
   "ZRANGEBYLEX": [
     "[Array reply](../topics/protocol.md#arrays): a list of elements in the specified score range."

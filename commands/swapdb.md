@@ -2,9 +2,12 @@ This command swaps two Valkey databases, so that immediately all the
 clients connected to a given database will see the data of the other database, and
 the other way around. 
 
-**Note:** `SWAPDB` is **disabled in cluster mode** to prevent shard inconsistencies, 
-as swapping databases on one shard while leaving others unchanged could lead to 
+**Note:** `SWAPDB` is **disabled in cluster mode** to prevent shard inconsistencies,
+as swapping databases on one shard while leaving others unchanged could lead to
 data inconsistencies.
+
+The caller must have ACL permission to access **both** of the databases being
+swapped. See [database permissions](../topics/acl.md#database-permissions).
 
 ## Examples
 

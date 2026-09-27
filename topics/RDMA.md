@@ -40,7 +40,11 @@ Or append `loadmodule src/valkey-rdma.so bind=192.168.122.100 port=6379` in valk
 
     ./src/valkey-server valkey.conf
 
-To test whether the RDMA server is working properly, do not use `valkey-cli`, which (as of Valkey 8.1) does not yet support RDMA. Instead, there is a shell script `./runtest-rdma`, which simply wraps a Python script `./tests/rdma/run.py`. The Python script would start a server locally, start a client locally and test for ~6000 key-value pairs using RDMA write/read operations. To test remote RDMA connections, specify `./tests/rdma/rdma-test -h $remote_rdma_ip`.
+Starting from version 9.0, `valkey-cli` and `valkey-benchmark` support the `--rdma` parameter.
+
+    ./src/valkey-cli -h 192.168.122.100 --rdma
+
+    ./src/valkey-benchmark -h 192.168.122.100 --rdma
 
 ### Prerequisites
 Note that the network interface (192.168.122.100 of this example) should support

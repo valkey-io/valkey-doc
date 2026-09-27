@@ -7,7 +7,11 @@ index for the destination key. The `REPLACE` option removes the `destination`
 key before copying the value to it.
 
 The command returns zero when the `source` key does not exist or when the
-`destination` key already exists and the `REPLACE` option is not specified. 
+`destination` key already exists and the `REPLACE` option is not specified.
+
+When the `DB` option is used, the caller must have ACL permission to access
+the specified destination database. See
+[database permissions](../topics/acl.md#database-permissions).
 
 ## Examples
 

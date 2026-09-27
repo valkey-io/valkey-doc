@@ -13,7 +13,7 @@ The optional `REV` argument reverses the ordering, so elements are ordered from 
 The optional `LIMIT` argument can be used to obtain a sub-range from the matching elements (similar to _SELECT LIMIT offset, count_ in SQL).
 A negative `<count>` returns all elements from the `<offset>`. Keep in mind that if `<offset>` is large, the sorted set needs to be traversed for `<offset>` elements before getting to the elements to return, which can add up to O(N) time complexity.
 
-The optional `WITHSCORES` argument supplements the command's reply with the scores of elements returned. The returned list contains `value1,score1,...,valueN,scoreN` instead of `value1,...,valueN`. Client libraries are free to return a more appropriate data type (suggestion: an array with (value, score) arrays/tuples).
+The optional `WITHSCORES` argument supplements the command's reply with the scores of elements returned. In RESP2 the returned list contains `value1,score1,...,valueN,scoreN` instead of `value1,...,valueN`. Client libraries are free to return a more appropriate data type (suggestion: an array with (value, score) arrays/tuples).
 
 ## Index ranges
 
@@ -116,7 +116,9 @@ The binary nature of the comparison allows to use sorted sets as a general purpo
 2) "three"
 ```
 
-The following example using `WITHSCORES` shows how the command returns always an array, but this time, populated with *element_1*, *score_1*, *element_2*, *score_2*, ..., *element_N*, *score_N*.
+The following examples using `WITHSCORES` show how the response format differs by protocol version.
+
+In RESP2, the reply is a flat interleaved array of *element_1*, *score_1*, *element_2*, *score_2*, ..., *element_N*, *score_N* where scores are returned as strings:
 
 ```
 127.0.0.1:6379> ZADD myzset 1 "one" 2 "two" 3 "three"
@@ -126,6 +128,18 @@ The following example using `WITHSCORES` shows how the command returns always an
 2) "1"
 3) "two"
 4) "2"
+```
+
+In RESP3, using `valkey-cli -3`, the reply is an array of 2-element arrays where scores are returned as doubles:
+
+```
+127.0.0.1:6379> ZADD myzset 1 "one" 2 "two" 3 "three"
+(integer) 3
+127.0.0.1:6379> ZRANGE myzset 0 1 WITHSCORES
+1) 1) "one"
+   2) (double) 1
+2) 1) "two"
+   2) (double) 2
 ```
 
 This example shows how to query the sorted set by score, excluding the value `1` and up to infinity, returning only the second element of the result:
