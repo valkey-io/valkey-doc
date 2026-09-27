@@ -249,26 +249,18 @@ network, such as between availability zones. Compression is controlled by
 * `zstd` — Zstandard: compresses better, at a higher CPU cost. Requires a build
   with Zstandard support.
 
-Set `repl-compression` on both the primary and the replica. The value on the
-primary is the algorithm it is willing to use; the value on a replica determines
-which algorithms it tells the primary it can decode. A replica with
-`repl-compression no` therefore receives an uncompressed stream even if its
-primary has compression enabled.
-
-The algorithm is negotiated per replica: the primary uses the strongest algorithm
-that both sides support, without exceeding its own `repl-compression`. If a
-replica cannot decode the primary's configured algorithm, the primary uses the
-strongest weaker one the replica does support instead of giving up on compression
-entirely — a Zstandard-capable replica also announces LZ4, so a primary configured
-for `lz4` can compress to it as well. If there is nothing in common, the link
-stays uncompressed. Changing `repl-compression` renegotiates established links.
+Set `repl-compression` on both the primary and the replica. On each side the value
+is the strongest algorithm that side will use, and weaker ones are accepted as
+well. The link then uses the strongest algorithm the two have in common, or no
+compression if they have none: a `zstd` primary and an `lz4` replica settle on
+`lz4`, while a replica left at `no` receives an uncompressed stream no matter what
+its primary is set to. Changing `repl-compression` renegotiates established links.
 
 This setting covers the diskless full sync payload and the continuous command
-stream. It is independent of `rdbcompression`, which controls the format of the
-RDB file on disk. A disk-based full sync sends that file as it is, so it is
-compressed according to `rdbcompression` rather than `repl-compression`. A replica
-that receives a compressed snapshot stores its own RDB file in its own
-`rdbcompression` format, converting the stream as it writes it.
+stream. A disk-based full sync is only possible when the negotiated algorithm
+matches the format the RDB file is stored in, since that file is sent as it is, and
+falls back to diskless otherwise. Using the same value for `repl-compression` and
+`rdbcompression` therefore keeps disk-based full sync available.
 
 ## Configuration
 
