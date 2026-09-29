@@ -412,6 +412,11 @@
     "* [Integer reply](../topics/protocol.md#integers): `1` if the key was deleted.",
     "* [Integer reply](../topics/protocol.md#integers): `0` if the key was not deleted because it did not exist or the value was not equal to the provided value."
   ],
+  "DELEX": [
+    "One of the following:",
+    "* [Integer reply](../topics/protocol.md#integers): `1` if `key` was deleted.",
+    "* [Integer reply](../topics/protocol.md#integers): `0` if `key` was not deleted because it did not exist or the value did not follow the condition."
+  ],
   "DISCARD": [
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
   ],
