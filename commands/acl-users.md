@@ -1,5 +1,6 @@
 The command shows a list of all the usernames of the currently configured
-users in the Valkey ACL system.
+users in the Valkey ACL system. Roles are not included, use
+[`ACL ROLES`](acl-roles.md) to list them.
 
 ## Examples
 
