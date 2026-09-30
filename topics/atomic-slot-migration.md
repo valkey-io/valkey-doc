@@ -118,3 +118,40 @@ Some configurations may be worth tuning based on your workload:
   in progress migrations and recently completed or failed migrations. These can
   be viewed with `CLUSTER GETSLOTMIGRATIONS`. The number of recently completed
   migrations stored can be increased using this configuration.
+
+## ACL requirements for atomic slot migration
+
+Since atomic slot migration reuses much of Valkey's replication infrastructure, it's natural to assume the replication user only needs the same permissions as a normal replica:
+
+```bash
++psync +replconf +ping +cluster|syncslots
+```
+
+However, migrating a hash slot that contains data requires additional permissions in Valkey 9.0.
+Unlike normal replication, where incoming data is applied by an internal superuser client that does not require write permissions, atomic slot migration pushes data to the target node using the user configured by the `primaryuser` configuration parameter.
+During atomic slot migration, commands used to apply the migrated data on the target are executed through the authenticated replication connection and are subject to the configured replication user's ACL.
+
+The user configured by `primaryuser` needs the following ACL permissions for atomic slot migration to succeed:
+
+```bash
++@write ~* -@dangerous +ping +select +psync +replconf +cluster|syncslots -flushall -flushdb -restore -restore-asking
+```
+
+The above command includes:
+
+- `+@write ~*`: to apply the migrated key data as ordinary write commands.
+- `-@dangerous`: excludes destructive/administrative commands from `@write`.
+- `+select`: required because Valkey 9.0 supports multiple databases in cluster mode, and the migration command stream can contain [`SELECT`](https://valkey.io/commands/select/).
+- `-flushall -flushdb -restore -restore-asking`: explicitly re-excluded, since they would otherwise be reintroduced by `@write`.
+However, `DEL` and `UNLINK` are intentionally not excluded because they can appear while replaying the command stream during migration.
+
+**Note:** The ACL rule order matters: rules are applied left to right, so `+psync -@dangerous` and `-@dangerous +psync` produce different results.
+Be careful with ordering if customizing this ACL string.
+
+If the replication user lacks write permissions, the target node may log an error similar to:
+
+```text
+This slot-import-target is sending an error to its slot-import-source: '-NOPERM User replicator has no permissions to run the 'set' command' after processing the command 'set'
+```
+
+This means that the target rejected a migrated command because the replication user does not have the required ACL permission.
