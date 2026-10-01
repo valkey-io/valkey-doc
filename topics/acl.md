@@ -9,11 +9,11 @@ If authentication succeeded, the connection is associated with a given user and 
 Valkey can be configured so that new connections are already authenticated with a "default" user (this is the default configuration).
 Configuring the default user has, as a side effect, the ability to provide only a specific subset of functionalities to connections that are not explicitly authenticated.
 
-The standard way to authenticate is the two-argument form of the `AUTH` command:
+The standard way to authenticate is the two-argument form of the [`AUTH`](../commands/auth.md) command:
 
     AUTH <username> <password>
 
-If the password is valid matches, the connection will be authenticated to the user with the name `<username>`.
+If the password matches, the connection is authenticated to the user with the name `<username>`.
 
 When the single argument form of the command is used, where only the password is specified, it is assumed that the implicit username is "default".
 
@@ -28,12 +28,12 @@ accomplish by implementing this layer of protection. Normally there are
 two main goals that are well served by ACLs:
 
 1. You want to improve security by restricting the access to commands and keys, so that untrusted clients have no access and trusted clients have just the minimum access level to the database in order to perform the work needed. For instance, certain clients may just be able to execute read only commands.
-2. You want to improve operational safety, so that processes or humans accessing Valkey are not allowed to damage the data or the configuration due to software errors or manual mistakes. For instance, there is no reason for a worker that fetches delayed jobs from Valkey to be able to call the `FLUSHALL` command.
+2. You want to improve operational safety, so that processes or humans accessing Valkey are not allowed to damage the data or the configuration due to software errors or manual mistakes. For instance, there is no reason for a worker that fetches delayed jobs from Valkey to be able to call the [`FLUSHALL`](../commands/flushall.md) command.
 
 Another typical usage of ACLs is related to managed Valkey instances. Valkey is
 often provided as a managed service both by internal company teams that handle
 the Valkey infrastructure for the other internal customers they have, or is
-provided in a software-as-a-service setup by cloud providers. In both 
+provided in a software-as-a-service setup by cloud providers. In both
 setups, we want to be sure that configuration commands are excluded for the
 customers.
 
@@ -45,7 +45,7 @@ first to the last, left-to-right, because sometimes the order of the rules is
 important to understand what the user is really able to do.
 
 By default there is a single user defined, called *default*. We
-can use the `ACL LIST` command in order to check the currently active ACLs
+can use the [`ACL LIST`](../commands/acl-list.md) command in order to check the currently active ACLs
 and verify what the configuration of a freshly started, defaults-configured
 Valkey instance is:
 
@@ -83,7 +83,7 @@ Allow and disallow commands:
 
 * `+<command>`: Add the command to the list of commands the user can call. Can be used with `|` for allowing subcommands (e.g "+config|get").
 * `-<command>`: Remove the command to the list of commands the user can call. Starting Valkey 7.0, it can be used with `|` for blocking subcommands (e.g "-config|set"). Note that commands which do not require authentication cannot be removed, e.g. AUTH, HELLO, and RESET.
-* `+@<category>`: Add all the commands in such category to be called by the user, with valid categories being like @admin, @set, @sortedset, ... and so forth, see the full list by calling the `ACL CAT` command. The special category @all means all the commands, both the ones currently present in the server, and the ones that will be loaded in the future via modules.
+* `+@<category>`: Add all the commands in such category to be called by the user, with valid categories being like @admin, @set, @sortedset, ... and so forth, see the full list by calling the [`ACL CAT`](../commands/acl-cat.md) command. The special category @all means all the commands, both the ones currently present in the server, and the ones that will be loaded in the future via modules.
 * `-@<category>`: Like `+@<category>` but removes the commands from the list of commands the client can call.
 * `+<command>|first-arg`: Allow a specific first argument of an otherwise disabled command. It is only supported on commands with no sub-commands, and is not allowed as negative form like -SELECT|1, only additive starting with "+". This feature is deprecated and may be removed in the future.
 * `allcommands`: Alias for +@all. Note that it implies the ability to execute all the future commands loaded via the modules system.
@@ -94,7 +94,7 @@ Allow and disallow certain keys and key permissions:
 * `~<pattern>`: Add a pattern of keys that can be mentioned as part of commands. For instance `~*` allows all the keys. The pattern is a glob-style pattern like the one of `KEYS`. It is possible to specify multiple patterns.
 * `%R~<pattern>`: Add the specified read key pattern. This behaves similar to the regular key pattern but only grants permission to read from keys that match the given pattern. See [key permissions](#key-permissions) for more information.
 * `%W~<pattern>`: Add the specified write key pattern. This behaves similar to the regular key pattern but only grants permission to write to keys that match the given pattern. See [key permissions](#key-permissions) for more information.
-* `%RW~<pattern>`: Alias for `~<pattern>`. 
+* `%RW~<pattern>`: Alias for `~<pattern>`.
 * `allkeys`: Alias for `~*`.
 * `resetkeys`: Flush the list of allowed keys patterns. For instance the ACL `~foo:* ~bar:* resetkeys ~objects:*`, will only allow the client to access keys that match the pattern `objects:*`.
 
@@ -137,20 +137,20 @@ Reset the user:
 
 Users can be created and modified in two main ways:
 
-1. Using the ACL command and its `ACL SETUSER` subcommand.
-2. Modifying the server configuration, where users can be defined, and restarting the server. With an *external ACL file*, just call `ACL LOAD`.
+1. Using the ACL command and its [`ACL SETUSER`](../commands/acl-setuser.md) subcommand.
+2. Modifying the server configuration, where users can be defined, and restarting the server. With an *external ACL file*, just call [`ACL LOAD`](../commands/acl-load.md).
 
-In this section we'll learn how to define users using the `ACL` command.
+In this section we'll learn how to define users using the [`ACL`](../commands/acl.md) command.
 With such knowledge, it will be trivial to do the same things via the
 configuration files. Defining users in the configuration deserves its own
 section and will be discussed later separately.
 
-To start, try the simplest `ACL SETUSER` command call:
+To start, try the simplest [`ACL SETUSER`](../commands/acl-setuser.md) command call:
 
     > ACL SETUSER alice
     OK
 
-The `ACL SETUSER` command takes the username and a list of ACL rules to apply
+The [`ACL SETUSER`](../commands/acl-setuser.md) command takes the username and a list of ACL rules to apply
 to the user. However the above example did not specify any rule at all.
 This will just create the user if it did not exist, using the defaults for new
 users. If the user already exists, the command above will do nothing at all.
@@ -165,12 +165,12 @@ The new user "alice" is:
 
 * In the off status, so `AUTH` will not work for the user "alice".
 * The user also has no passwords set.
-* Cannot access any command. Note that the user is created by default without the ability to access any command, so the `-@all` in the output above could be omitted; however, `ACL LIST` attempts to be explicit rather than implicit.
+* Cannot access any command. Note that the user is created by default without the ability to access any command, so the `-@all` in the output above could be omitted; however, [`ACL LIST`](../commands/acl-list.md) attempts to be explicit rather than implicit.
 * There are no key patterns that the user can access.
 * There are no Pub/Sub channels that the user can access.
 
 Such user is completely useless. Let's try to define the user so that
-it is active, has a password, and can access with only the `GET` command
+it is active, has a password, and can access with only the [`GET`](../commands/get.md) command
 to key names starting with the string "cached:".
 
     > ACL SETUSER alice on >p1pp0 ~cached:* +get
@@ -189,8 +189,8 @@ Now the user can do something, but will refuse to do other things:
 
 Things are working as expected. In order to inspect the configuration of the
 user alice (remember that user names are case sensitive), it is possible to
-use an alternative to `ACL LIST` which is designed to be more suitable for
-computers to read, while `ACL GETUSER` is more human readable.
+use an alternative to [`ACL LIST`](../commands/acl-list.md) which is designed to be more suitable for
+computers to read, while [`ACL GETUSER`](../commands/acl-getuser.md) is more human readable.
 
     > ACL GETUSER alice
     1) "flags"
@@ -208,7 +208,7 @@ computers to read, while `ACL GETUSER` is more human readable.
     13) "selectors"
     14) (empty array)
 
-The `ACL GETUSER` returns a field-value array that describes the user in more parsable terms. The output includes the set of flags, a list of key patterns, passwords, and so forth. New fields may be added over time. For example, Valkey 9.1 added the `databases` field. The output is probably more readable if we use RESP3, so that it is returned as a map reply:
+[`ACL GETUSER`](../commands/acl-getuser.md) returns a field-value array that describes the user in more parsable terms. The output includes the set of flags, a list of key patterns, passwords, and so forth. New fields may be added over time. For example, Valkey 9.1 added the `databases` field. The output is probably more readable if we use RESP3, so that it is returned as a map reply:
 
     > ACL GETUSER alice
     1# "flags" => 1~ "on"
@@ -221,7 +221,7 @@ The `ACL GETUSER` returns a field-value array that describes the user in more pa
 
 *Note: from now on, we'll continue using the Valkey default protocol, version 2*
 
-Using another `ACL SETUSER` command (from a different user, because alice cannot run the `ACL` command), we can add multiple patterns to the user:
+Using another [`ACL SETUSER`](../commands/acl-setuser.md) command (from a different user, because alice cannot run the `ACL` command), we can add multiple patterns to the user:
 
     > ACL SETUSER alice ~objects:* ~items:* ~public:*
     OK
@@ -233,8 +233,8 @@ The user representation in memory is now as we expect it to be.
 
 ## Multiple calls to ACL SETUSER
 
-It is very important to understand what happens when `ACL SETUSER` is called
-multiple times. What is critical to know is that every `ACL SETUSER` call will
+It is very important to understand what happens when [`ACL SETUSER`](../commands/acl-setuser.md) is called
+multiple times. What is critical to know is that every [`ACL SETUSER`](../commands/acl-setuser.md) call will
 NOT reset the user, but will just apply the ACL rules to the existing user.
 The user is reset only if it was not known before. In that case, a brand new
 user is created with zeroed-ACLs. The user cannot do anything, is
@@ -248,11 +248,50 @@ the following sequence:
     > ACL SETUSER myuser +get
     OK
 
-Will result in myuser being able to call both `GET` and `SET`:
+Will result in myuser being able to call both [`GET`](../commands/get.md) and [`SET`](../commands/set.md):
 
     > ACL LIST
     1) "user default on nopass ~* &* +@all"
     2) "user myuser off resetchannels -@all +get +set"
+
+## Roles
+
+A role is a named, reusable set of permissions. Assign the same role to multiple users instead of repeating the same rules on every [`ACL SETUSER`](../commands/acl-setuser.md) call.
+
+Create a role using [`ACL SETROLE`](../commands/acl-setrole.md) command:
+
+```
+> ACL SETROLE reader +get ~app:*
+OK
+```
+
+Assign it to a user using the `role=` rule:
+
+```
+> ACL SETUSER alice on nopass +set ~other:* role=reader
+OK
+```
+
+A command is allowed if the user's own rules match it, or if any of the user's assigned roles match it.
+This follows the same first-match logic as [selectors](#selectors): Valkey checks the user's root permissions, then its selectors, then each assigned role, in the order the roles were added.
+
+In this example, alice can run [`SET`](../commands/set.md) on `other:*` keys and [`GET`](../commands/get.md) on
+`app:*` keys, but nothing else:
+
+    > ACL LIST
+    1) "role reader ~app:* resetchannels -@all +get"
+    2) "user alice on nopass ~other:* resetchannels -@all +set role=reader"
+    3) "user default on nopass ~* &* +@all"
+
+[`ACL SETROLE`](../commands/acl-setrole.md) applies incrementally, the same way [`ACL SETUSER`](../commands/acl-setuser.md) does: a second call adds to the role's existing rules instead of replacing them.
+A role cannot take the rules that only make sense for a user, such as `on`, `off`, `nopass`, `resetpass`, `reset`, a password token, or `role=`.
+
+Use [`ACL GETROLE`](../commands/acl-getrole.md) `<rolename>` to inspect a role's rules and its member users, and [`ACL ROLES`](../commands/acl-roles.md) to list every role name.
+
+Roles can be stored the same two ways as users: as `role` lines in `valkey.conf`, or as `role` lines in an external ACL file.
+
+Use [`ACL DELROLE`](../commands/acl-delrole.md) to delete a role; it fails if any user is still assigned to it.
+[`ACL SAVE`](../commands/acl-save.md) and [`CONFIG REWRITE`](../commands/config-rewrite.md) write roles before users, in that order.
 
 ## Command categories
 
@@ -370,10 +409,8 @@ That is true for all commands except DEBUG. In order to allow/block specific DEB
 **Note: This feature is deprecated and may be removed in the future.**
 
 Sometimes the ability to exclude or include a command or a subcommand as a whole is not enough.
-Many deployments may not be happy providing the ability to execute a `SELECT` for any DB, but may
-still want to be able to run `SELECT 0`.
-Database permissions are the preferred way to restrict which databases a user
-can access; see [database permissions](#database-permissions).
+Many deployments may not be happy providing the ability to execute a [`SELECT`](../commands/select.md) for any DB, but may still want to be able to run `SELECT 0`.
+Database permissions are the preferred way to restrict which databases a user can access; see [database permissions](#database-permissions).
 
 For versions without database permissions, we could alter the ACL of a user in the following way:
 
@@ -394,7 +431,7 @@ additional CPU cost is only paid when such commands are called, and not when
 other commands are called.
 
 It is possible to use this mechanism in order to allow subcommands in Valkey
-versions prior to 7.0 (see above section).
+versions prior to 7.0 (see [Allow/block subcommands](#allowblock-subcommands).
 
 ## +@all VS -@all
 
@@ -422,10 +459,10 @@ This is achieved through rules that define key permissions.
 The key permission rules take the form of `%(<permission>)~<pattern>`.
 Permissions are defined as individual characters that map to the following key permissions:
 
-* W (Write): The data stored within the key may be updated or deleted. 
-* R (Read): User supplied data from the key is processed, copied or returned. Note that this does not include metadata such as size information (example `STRLEN`), type information (example `TYPE`) or information about whether a value exists within a collection (example `SISMEMBER`). 
+* W (Write): The data stored within the key may be updated or deleted.
+* R (Read): User supplied data from the key is processed, copied or returned. Note that this does not include metadata such as size information (example `STRLEN`), type information (example `TYPE`) or information about whether a value exists within a collection (example `SISMEMBER`).
 
-Permissions can be composed together by specifying multiple characters. 
+Permissions can be composed together by specifying multiple characters.
 Specifying the permission as 'RW' is considered full access and is analogous to just passing in `~<pattern>`.
 
 For a concrete example, consider a user with ACL rules `+@all ~app1:* (+@read ~app2:*)`.
@@ -437,10 +474,10 @@ However, using key selectors you can define a set of ACL rules that can handle t
 The first pattern is able to match `app1:user` and the second pattern is able to match `app2:user`.
 
 Which type of permission is required for a command is documented through [key specifications](key-specs.md#logical-operation-flags).
-The type of permission is based off the keys logical operation flags. 
-The insert, update, and delete flags map to the write key permission. 
+The type of permission is based off the keys logical operation flags.
+The insert, update, and delete flags map to the write key permission.
 The access flag maps to the read key permission.
-If the key has no logical operation flags, such as `EXISTS`, the user still needs either key read or key write permissions to execute the command. 
+If the key has no logical operation flags, such as `EXISTS`, the user still needs either key read or key write permissions to execute the command.
 
 Note: Side channels to accessing user data are ignored when it comes to evaluating whether read permissions are required to execute a command.
 This means that some write commands that return metadata about the modified key only require write permission on the key to execute.
@@ -470,46 +507,38 @@ control database access:
 
 For example, to create a user that may only operate on databases 0 and 1:
 
-```
-> ACL SETUSER alice on +@all ~* db=0,1 nopass
-OK
-> ACL LIST
-1) "user alice on nopass ~* resetchannels db=0,1 +@all"
-2) "user default on nopass ~* &* +@all"
-```
+    > ACL SETUSER alice on +@all ~* db=0,1 nopass
+    OK
+    > ACL LIST
+    1) "user alice on nopass ~* resetchannels db=0,1 +@all"
+    2) "user default on nopass ~* &* +@all"
 
 A later `db=` rule replaces the previous database list:
 
-```
-> ACL SETUSER alice db=2,3
-OK
-> ACL LIST
-1) "user alice on nopass ~* resetchannels db=2,3 +@all"
-2) "user default on nopass ~* &* +@all"
-```
+    > ACL SETUSER alice db=2,3
+    OK
+    > ACL LIST
+    1) "user alice on nopass ~* resetchannels db=2,3 +@all"
+    2) "user default on nopass ~* &* +@all"
 
 Use `resetdbs` to remove database access from an existing user:
 
-```
-> ACL SETUSER alice resetdbs
-OK
-> ACL LIST
-1) "user alice on nopass ~* resetchannels resetdbs +@all"
-2) "user default on nopass ~* &* +@all"
-```
+    > ACL SETUSER alice resetdbs
+    OK
+    > ACL LIST
+    1) "user alice on nopass ~* resetchannels resetdbs +@all"
+    2) "user default on nopass ~* &* +@all"
 
 Database permissions can also be combined with [selectors](#selectors) so that
 different rule sets apply to different databases:
 
-```
-> ACL SETUSER bob on nopass (db=0,1 +@write +select ~*) (db=2,3 +@read +select ~*)
-OK
-> ACL LIST
-1) "user bob on nopass resetchannels -@all (~* resetchannels db=0,1 -@all +@write +select) (~* resetchannels db=2,3 -@all +@read +select)"
-2) "user default on nopass ~* &* +@all"
-```
+    > ACL SETUSER bob on nopass (db=0,1 +@write +select ~*) (db=2,3 +@read +select ~*)
+    OK
+    > ACL LIST
+    1) "user bob on nopass resetchannels -@all (~* resetchannels db=0,1 -@all +@write +select) (~* resetchannels db=2,3 -@all +@read +select)"
+    2) "user default on nopass ~* &* +@all"
 
-The `ACL LIST` output shows three sets of permissions for `bob`: the root
+The [`ACL LIST`](../commands/acl-list.md) output shows three sets of permissions for `bob`: the root
 permissions (`-@all`, with implicit `alldbs`) and two selectors, one for each
 parenthesized rule set. A command is allowed when the root permissions or any selector matches it.
 See [selectors](#selectors) for more information.
@@ -553,9 +582,8 @@ allowed to use.
 ## How passwords are stored internally
 
 Valkey internally stores passwords hashed with SHA256. If you set a password
-and check the output of `ACL LIST` or `ACL GETUSER`, you'll see a long hex
-string that looks pseudo random. Here is an example, because in the previous
-examples, for the sake of brevity, the long hex string was trimmed:
+and check the output of [`ACL LIST`](../commands/acl-list.md) or [`ACL GETUSER`](../commands/acl-getuser.md), you'll see a long hex string that looks pseudo random.
+Here is an example, because in the previous examples, for the sake of brevity, the long hex string was trimmed:
 
     > ACL GETUSER default
     1) "flags"
@@ -572,7 +600,7 @@ examples, for the sake of brevity, the long hex string was trimmed:
     12) (empty array)
 
 Using SHA256 provides the ability to avoid storing the password in clear text
-while still allowing for a very fast `AUTH` command, which is a very important
+while still allowing for a very fast [`AUTH`](../commands/auth.md) command, which is a very important
 feature of Valkey and is coherent with what clients expect from Valkey.
 
 However ACL *passwords* are not really passwords. They are shared secrets
@@ -588,7 +616,7 @@ algorithm that uses time and space to make password cracking hard,
 is a very poor choice. What we suggest instead is to generate strong
 passwords, so that nobody will be able to crack it using a
 dictionary or a brute force attack even if they have the hash. To do so, there is a special ACL
-command `ACL GENPASS` that generates passwords using the system cryptographic pseudorandom
+command [`ACL GENPASS`](../commands/acl-genpass.md) that generates passwords using the system cryptographic pseudorandom
 generator:
 
     > ACL GENPASS
@@ -612,7 +640,7 @@ good for simple use cases. When there are multiple users to define, in a
 complex environment, we recommend you use the ACL file instead.
 
 The format used inside `valkey.conf` and in the external ACL file is exactly
-the same, so it is trivial to switch from one to the other, and is
+the same, so you can easily switch from one to the other, and is
 the following:
 
     user <username> ... acl rules ...
@@ -627,15 +655,15 @@ the configuration directive called `aclfile`, like this:
     aclfile /etc/valkey/users.acl
 
 When you are just specifying a few users directly inside the `valkey.conf`
-file, you can use `CONFIG REWRITE` in order to store the new user configuration
+file, you can use [`CONFIG REWRITE`](../commands/config-rewrite.md) in order to store the new user configuration
 inside the file by rewriting it.
 
 The external ACL file however is more powerful. You can do the following:
 
-* Use `ACL LOAD` if you modified the ACL file manually and you want Valkey to reload the new configuration. Note that this command is able to load the file *only if all the users are correctly specified*. Otherwise, an error is reported to the user, and the old configuration will remain valid.
-* Use `ACL SAVE` to save the current ACL configuration to the ACL file.
+* Use [`ACL LOAD`](../commands/acl-load.md) if you modified the ACL file manually and you want Valkey to reload the new configuration. Note that this command is able to load the file *only if all the users are correctly specified*. Otherwise, an error is reported to the user, and the old configuration will remain valid.
+* Use [`ACL SAVE`](../commands/acl-save.md) to save the current ACL configuration to the ACL file.
 
-Note that `CONFIG REWRITE` does not also trigger `ACL SAVE`. When you use
+Note that [`CONFIG REWRITE`](../commands/config-rewrite.md) does not also trigger [`ACL SAVE`](../commands/acl-save.md). When you use
 an ACL file, the configuration and the ACLs are handled separately.
 
 ## ACL rules for Sentinel and Replicas
@@ -646,9 +674,9 @@ that must be allowed in order for everything to work correctly.
 
 For Sentinel, allow the user to access the following commands both in the primary and replica instances:
 
-* AUTH, CLIENT, SUBSCRIBE, SCRIPT, PUBLISH, PING, INFO, MULTI, SLAVEOF, CONFIG, CLIENT, EXEC.
+* AUTH, CLIENT, SUBSCRIBE, SCRIPT, PUBLISH, PING, INFO, MULTI, SLAVEOF, CONFIG, EXEC.
 
-Sentinel does not need to access any key in the database but does use Pub/Sub, so the ACL rule would be the following (note: `AUTH` is not needed since it is always allowed):
+Sentinel does not need to access any key in the database but does use Pub/Sub, so the ACL rule would be the following (note: [`AUTH`](../commands/auth.md) is not needed since it is always allowed):
 
     ACL SETUSER sentinel-user on >somepassword allchannels +multi +slaveof +ping +exec +subscribe +config|rewrite +role +publish +info +client|setname +client|kill +script|kill
 
@@ -656,7 +684,7 @@ Valkey replicas require the following commands to be allowed on the primary inst
 
 * PSYNC, REPLCONF, PING
 
-For cluster deployments, Valkey 9.0 introduces the Atomic Slot Migration feature, which requires the replication user to be allowed to run `CLUSTER SYNCSLOTS`.
+For cluster deployments, Valkey 9.0 introduces the Atomic Slot Migration feature, which requires the replication user to be allowed to run [`CLUSTER SYNCSLOTS`](../commands/cluster-syncslots.md).
 No keys need to be accessed, so this translates to the following rules:
 
     ACL setuser replica-user on >somepassword +psync +replconf +ping +cluster|syncslots
