@@ -11,23 +11,22 @@ This system works using three main mechanisms:
 2. When the link between the primary and the replica breaks, for network issues or because a timeout is sensed in the primary or the replica, the replica reconnects and attempts to proceed with a partial resynchronization: it means that it will try to just obtain the part of the stream of commands it missed during the disconnection.
 3. When a partial resynchronization is not possible, the replica will ask for a full resynchronization. This will involve a more complex process in which the primary needs to create a snapshot of all its data, send it to the replica, and then continue sending the stream of commands as the dataset changes.
 
-Valkey replication is asynchronous. The primary applies a write and replies to the
-client without waiting for any replica to receive it. This is what makes
-replication cheap for the primary, and it is the right trade-off for the vast
-majority of use cases. Replicas do report their progress, though — each replica
-periodically acknowledges how much of the replication stream it has processed — so
-the primary knows how far behind each of its replicas is, even though it never
-waits for them.
+Valkey uses asynchronous replication, which being low latency and
+high performance, is the natural replication mode for the vast majority of Valkey
+use cases. However, Valkey replicas asynchronously acknowledge the amount of data
+they received periodically with the primary. So the primary does not wait every time
+for a command to be processed by the replicas, however it knows, if needed, what
+replica already processed what command.
 
-Clients can use those acknowledgements to wait for their writes to be replicated.
-The [`WAIT`](../commands/wait.md) command blocks the calling client until a given number of replicas have
-acknowledged the writes it has sent so far, and [`WAITAOF`](../commands/waitaof.md) waits for the writes to
-be persisted to the AOF instead. Neither command makes replication synchronous: the
-writes have already been applied on the primary and are on their way regardless,
-and other clients are not held back. They also do not turn Valkey into a strongly
-consistent system — an acknowledged write can still be lost in a failover,
-depending on how persistence is configured — but they do narrow the window in which
-a write can be lost to harder-to-trigger failure modes.
+Synchronous replication of certain data can be requested by the clients using
+the [`WAIT`](../commands/wait.md) and [`WAITAOF`](../commands/waitaof.md) commands.
+However, these commands are only able to ensure there are the
+specified number of acknowledged copies in the other Valkey instances, it does not
+turn a set of Valkey instances into a CP system with strong consistency: acknowledged
+writes can still be lost during a failover, depending on the exact configuration
+of the Valkey persistence. However, with `WAIT`/`WAITAOF`, the probability of losing a write
+after a failure event is greatly reduced to certain hard to trigger failure
+modes.
 
 You can check the [Valkey Sentinel](sentinel.md) or [Valkey Cluster](cluster-tutorial.md) documentation for more information
 about high availability and failover. The rest of this document describes the basic characteristics of Valkey replication, starting with a few general facts:
