@@ -1,0 +1,5 @@
+{
+    "name": "LibreDB Studio",
+    "description": "Self-hosted, browser-based database GUI with Valkey support: non-blocking SCAN key browser, INFO health and metrics, SLOWLOG and CLIENT LIST panels",
+    "homepage": "https://libredb.org"
+}
