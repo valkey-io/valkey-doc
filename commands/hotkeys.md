@@ -25,15 +25,17 @@ under the old settings, but keeps the last completed window so an in-flight
 `HOTKEYS GET` still sees it. Use [`HOTKEYS RESET`](hotkeys-reset.md) to discard
 everything.
 
-Because only a fraction of accesses is sampled, the smallest non-zero rate that
-can be reported — and the granularity of every reported value — is about
-`100 / (hotkeys-sampling-percentage * hotkeys-window-seconds)` QPS, and the
-expected number of samples for a key in one window is
+Because only a fraction of accesses is sampled, a reported value is a statistical
+estimate whose precision follows the number of samples a key contributed to the
+window, which is about
 `qps * hotkeys-sampling-percentage / 100 * hotkeys-window-seconds`. With the
-defaults (1%, 1 second) every reported value is a multiple of 100 QPS and only
-keys at roughly 10,000 QPS and above have a trustworthy figure. Raise the
-sampling percentage, the window length, or both to resolve lower-rate keys more
-finely.
+defaults (1%, 1 second) the resolution is roughly 100 QPS, and a key at 10,000
+QPS contributes around 100 samples, giving its estimate a relative error of
+roughly ±10%; at 1,000 QPS it contributes around 10 samples and the error is
+closer to ±30%. Raising `hotkeys-sampling-percentage` and raising
+`hotkeys-window-seconds` both increase the sample count in proportion, so either
+buys the same accuracy — sampling at the cost of per-access overhead, the window
+at the cost of how quickly a report reacts.
 
 ## What counts as an access
 
@@ -85,15 +87,17 @@ section is not part of the default `INFO` output, so request it by name or use
 Hot key state, both the live window and the last completed one, is cleared by
 [`HOTKEYS RESET`](hotkeys-reset.md) and automatically by anything that discards
 an entire database or slot range: [`FLUSHDB`](flushdb.md),
-[`FLUSHALL`](flushall.md), a full sync or RDB reload that empties the dataset, a
-cluster reset, and dropping a slot. Ordinary key access and removal is treated
-as activity rather than a reset, so `DEL` and `UNLINK` count as accesses, and
-expiry and eviction do not clear state.
+[`FLUSHALL`](flushall.md), a full sync or RDB reload (except a
+`repl-diskless-load swapdb` sync, which swaps the loaded dataset in place and
+leaves hot key state untouched), a cluster reset, and dropping a slot. Ordinary
+key access and removal is treated as activity rather than a reset, so `DEL` and
+`UNLINK` count as accesses, and expiry and eviction do not clear state.
 
 Renaming or moving a key does not carry its statistics to the new name or
 database. An entry is tracked by (key name, database), so after
 [`RENAME`](rename.md), [`MOVE`](move.md) or [`SWAPDB`](swapdb.md) the
-accumulated counts stay under the key's previous identity. As these commands are
-not typically high-frequency, the stale entry is harmless: it stops accruing new
-hits immediately and ages out with the window, so `HOTKEYS GET` may report the
-previous name or database for up to `hotkeys-window-seconds`.
+accumulated counts stay under the key's previous identity. The entry stops
+accruing new hits immediately and then ages out: it leaves the live window at the
+next rotation and the frozen window one rotation after that, so `HOTKEYS GET` may
+report the previous name or database for up to roughly twice
+`hotkeys-window-seconds`.

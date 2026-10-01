@@ -22,9 +22,8 @@ have to match on an error string to tell "disabled" from "nothing is hot". That
 is the case when:
 
 * Detection is disabled (`hotkeys-top-k` is `0`, the default).
-* No window has completed yet, because detection was just enabled, the
-  configuration just changed, or [`HOTKEYS RESET`](hotkeys-reset.md) was just
-  called.
+* No window has completed yet, because detection was just enabled or
+  [`HOTKEYS RESET`](hotkeys-reset.md) was just called.
 * The last window was dropped for spanning more than twice
   `hotkeys-window-seconds`.
 * No accesses were sampled during the last completed window.
