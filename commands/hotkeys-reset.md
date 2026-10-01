@@ -10,11 +10,12 @@ last completed one; `HOTKEYS RESET` is what discards that too.
 
 Hot key state is also cleared automatically by anything that discards an entire
 database or slot range: [`FLUSHDB`](flushdb.md), [`FLUSHALL`](flushall.md), a
-full sync or RDB reload that empties the dataset, a cluster reset, and dropping a
-slot. `HOTKEYS RESET` is for clearing it on demand outside of those events.
-Ordinary key access and removal is treated as activity rather than a reset, so
-[`DEL`](del.md) and [`UNLINK`](unlink.md) count as accesses, and expiry and
-eviction do not clear state.
+full sync or RDB reload (except a `repl-diskless-load swapdb` sync, which swaps
+the loaded dataset in place and leaves hot key state untouched), a cluster reset,
+and dropping a slot. `HOTKEYS RESET` is for clearing it on demand outside of
+those events. Ordinary key access and removal is treated as activity rather than
+a reset, so [`DEL`](del.md) and [`UNLINK`](unlink.md) count as accesses, and
+expiry and eviction do not clear state.
 
 Hot key detection is enabled by setting `hotkeys-top-k` to a positive value
 (`0`, the default, disables it). While it is disabled there is nothing to clear
