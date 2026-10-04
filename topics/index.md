@@ -87,6 +87,7 @@ It's released under the
 ## 5. Performance & Troubleshooting
 * [Troubleshooting](problems.md): Problems? Bugs? High latency? Other issues? Use our problems troubleshooting page as a starting point to find more information.
 * [Memory optimization](memory-optimization.md): Understand how Valkey uses RAM.
+* [Hot key detection](hotkeys.md): Find the most frequently accessed keys on a server.
 * [Latency monitoring](latency-monitor.md): Integrated latency monitoring and reporting help tuning for low latency.
 * [valkey-benchmark](benchmark.md): The benchmarking tool shipped with Valkey.
 * [On-CPU profiling and tracing](performance-on-cpu.md): How to find on-CPU resource bottlenecks.
