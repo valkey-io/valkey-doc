@@ -1,20 +1,30 @@
-Returns the hottest keys observed during the last completed detection window,
-ordered by estimated accesses per second (QPS), from highest to lowest. At most
-`hotkeys-top-k` entries are returned.
+The `HOTKEYS GET` command returns the hottest keys observed during the last
+completed detection window, ordered by estimated queries per second (QPS), from
+highest to lowest. It takes no arguments and returns at most `hotkeys-top-k`
+entries.
+
+See [`HOTKEYS`](hotkeys.md) and [Hot key detection](../topics/hotkeys.md) for how
+detection is enabled and configured, what an empty reply can mean, and how state
+is reset.
 
 Each entry contains:
 
 * `key`: the key name.
 * `db`: the database in which the key was accessed.
-* `qps`: the estimated accesses per second over the completed window.
+* `qps`: the estimated accesses per second over the completed window. Each key a
+  command touches counts separately, so `MGET a b c` contributes one access to
+  each of the three keys.
 
-`qps` is an estimate rather than an exact value. Accesses are sampled, and counts
-are tracked approximately by the Space-Saving algorithm, which keeps each count
-together with the maximum amount by which it may over-estimate. The reported
-value is derived from the midpoint of that band, scaled back up by the sampling
-percentage that was in effect when the window was recorded, and divided by the
-span the window actually covered — the same span `INFO hotkeys` reports as
-`hotkeys_last_window_duration_ms`.
+`qps` is an estimate rather than an exact value, because accesses are sampled and
+counts are tracked approximately. It is measured over the span the window
+actually covered, which [`INFO`](info.md) reports as
+`hotkeys_last_window_duration_ms` in its `hotkeys` section. See
+[Choosing the sampling percentage and window](../topics/hotkeys.md#choosing-the-sampling-percentage-and-window)
+for how accurate a given entry is.
+
+A key that is accessed but does not exist is tracked like any other. This
+surfaces load against a missing key, for example from a bad key template or a
+stampede against a key an eviction just removed.
 
 The command returns an empty array rather than an error whenever there is nothing
 to report, so a polling client has a single reply shape to parse and does not
@@ -27,9 +37,6 @@ is the case when:
 * The last window was dropped for spanning more than twice
   `hotkeys-window-seconds`.
 * No accesses were sampled during the last completed window.
-
-See [`HOTKEYS`](hotkeys.md) for how detection is enabled and configured, what
-counts as an access, and how state is cleared.
 
 ## Examples
 
