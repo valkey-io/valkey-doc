@@ -548,7 +548,7 @@ line like the following:
 
     valkey-cli --cluster reshard <host>:<port> --cluster-from <node-id> --cluster-to <node-id> --cluster-slots <number of slots> --cluster-yes
 
-This allows to build some automatism if you are likely to reshard often,
+This allows you to build some automatism if you are likely to reshard often,
 however currently there is no way for `valkey-cli` to automatically
 rebalance the cluster checking the distribution of keys across the cluster
 nodes and intelligently moving slots as needed. This feature will be added
