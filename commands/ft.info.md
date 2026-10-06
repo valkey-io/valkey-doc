@@ -34,7 +34,7 @@ An array of key value pairs.
   - `default_score` (double) The index's configured `SCORE` value
   - `score_field` (string) The index's configured `SCORE_FIELD`, or an empty string if none
 
-  The two fields above require `search.emulate-release` to be `1.3.0` or later. Below that — including at the default setting — `index_definition` is a six-element block which omits `score_field` and reports `default_score` as the bulk string `"1"`. See [COMPATIBILITY.md](../../COMPATIBILITY.md).
+  The two fields above require `search.emulate-release` to be `1.3.0` or later. Below that — including at the default setting — `index_definition` is a six-element block which omits `score_field` and reports `default_score` as the bulk string `"1"`. See [COMPATIBILITY.md](https://github.com/valkey-io/valkey-search/blob/main/COMPATIBILITY.md).
 
 - `attributes` (array of arrays) One entry per declared attribute of the index.
   - `identifier` (string) identifier for this attribute
