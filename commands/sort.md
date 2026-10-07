@@ -8,7 +8,7 @@ interpreted as double precision floating point number.
 This is `SORT` in its simplest form:
 
 [tdtl]: ../topics/data-types.md#lists
-[tdts]: ../topics/data-types.md#set
+[tdts]: ../topics/data-types.md#sets
 [tdtss]: ../topics/data-types.md#sorted-sets
 
 ```

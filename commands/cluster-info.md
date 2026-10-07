@@ -45,7 +45,7 @@ Here are the explanation of these fields:
 * `cluster_stats_messages_pong_sent` and `cluster_stats_messages_pong_received`: PONG (reply to PING).
 * `cluster_stats_messages_meet_sent` and `cluster_stats_messages_meet_received`: Handshake message sent to a new node, either through gossip or [`CLUSTER MEET`](cluster-meet.md).
 * `cluster_stats_messages_fail_sent` and `cluster_stats_messages_fail_received`: Mark node xxx as failing.
-* `cluster_stats_messages_publish_sent` and `cluster_stats_messages_publish_received`: Pub/Sub Publish propagation, see [Pubsub](../topics/pubsub.md#pubsub).
+* `cluster_stats_messages_publish_sent` and `cluster_stats_messages_publish_received`: Pub/Sub Publish propagation, see [Pubsub](../topics/pubsub.md).
 * `cluster_stats_messages_auth-req_sent` and `cluster_stats_messages_auth-req_received`: Replica initiated leader election to replace its primary.
 * `cluster_stats_messages_auth-ack_sent` and `cluster_stats_messages_auth-ack_received`: Message indicating a vote during leader election.
 * `cluster_stats_messages_update_sent` and `cluster_stats_messages_update_received`: Another node slots configuration.

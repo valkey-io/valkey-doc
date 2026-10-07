@@ -175,7 +175,7 @@ Evaluating this script with more than one argument will return:
 * Available in scripts: yes
 * Available in functions: yes
 
-This is a helper function that returns an [error reply](protocol.md#simply-errors).
+This is a helper function that returns an [error reply](protocol.md#simple-errors).
 The helper accepts a single string argument and returns a Lua table with the `err` field set to that string.
 
 The outcome of the following code is that `error1` and `error2` are identical for all intents and purposes:
@@ -339,7 +339,7 @@ You can use it to override the default verbatim script replication mode used by 
 **Note:**
 Verbatim script replication is no longer supported.
 The only script replication mode supported is script effects' replication.
-For more information, please refer to [`Replicating commands instead of scripts`](eval-intro.md#replicating-commands-instead-of-scripts)
+For more information, please refer to [Script replication](eval-intro.md#script-replication)
 
 ### <a name="server.breakpoint"></a>  `server.breakpoint()`
 
@@ -437,7 +437,7 @@ You can use the following flags and instruct the server to treat the scripts' ex
     However, note that the server will return an error if the script attempts to call a write command.
     Also note that currently `PUBLISH`, `SPUBLISH` and `PFCOUNT` are also considered write commands in scripts, because they could attempt to propagate commands to replicas and AOF file.
 
-    For more information please refer to [Read-only scripts](programmability.md#read-only_scripts)
+    For more information please refer to [Read-only scripts](programmability.md#read-only-scripts)
 
 * `allow-oom`: use this flag to allow a script to execute when the server is out of memory (OOM).
 
