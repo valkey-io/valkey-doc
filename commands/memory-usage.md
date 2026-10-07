@@ -4,9 +4,12 @@ require to be stored in RAM.
 The reported usage is the total of memory allocations for data and
 administrative overheads that a key and its value require.
 
-For nested data types, the optional `SAMPLES` option can be provided, where
-`count` is the number of sampled nested values. The samples are averaged to estimate the total size.
-By default, this option is set to `5`. To sample the all of the nested values, use `SAMPLES 0`.
+For aggregate data types (lists, sets, hashes, sorted sets, and streams), the
+optional `SAMPLES` option can be provided, where `count` is the number of
+sampled elements. The sampled elements are averaged to estimate the total size.
+By default, this option is set to `5`. To sample all of the elements, use
+`SAMPLES 0`. The `SAMPLES` option has no effect on strings, whose size is
+always measured exactly.
 
 ## Examples
 
