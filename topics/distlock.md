@@ -39,7 +39,7 @@ already available that can be used for reference.
 * [Redis-plus-plus](https://github.com/sewenew/redis-plus-plus/#redlock) (C++ implementation).
 * [Redlock-cs](https://github.com/kidfashion/redlock-cs) (C#/.NET implementation).
 * [RedLock.net](https://github.com/samcook/RedLock.net) (C#/.NET implementation). Includes async and lock extension support.
-* [ScarletLock](https://github.com/psibernetic/scarletlock) (C# .NET implementation with configurable datastore).
+* [ScarletLock](https://github.com/aidapsibr/scarletlock) (C# .NET implementation with configurable datastore).
 * [Redlock4Net](https://github.com/LiZhenNet/Redlock4Net) (C# .NET implementation).
 * [node-redlock](https://github.com/mike-marcacci/node-redlock) (NodeJS implementation). Includes support for lock extension.
 * [redlock-universal](https://github.com/alexpota/redlock-universal) (NodeJS implementation). Supports node-redis, ioredis, and Valkey GLIDE. Features auto-extension and batch acquisition.

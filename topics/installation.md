@@ -120,7 +120,7 @@ cave resolve -x dev-db/valkey
 #### Miscellaneous
 
 Available on [SlackBuilds](https://slackbuilds.org/repository/15.0/system/valkey/)
-and openpkg on [OpenPKG](https://openpkg.com/).
+and openpkg on [OpenPKG](http://www.openpkg.org/).
 
 ### Windows
 
