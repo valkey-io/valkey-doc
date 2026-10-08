@@ -29,11 +29,12 @@ ways:
   middle of the resulting range.
 
 Counts accumulate in a *live* window. When `hotkeys-window-seconds` has elapsed
-the live window is *frozen* and a fresh one starts. `HOTKEYS GET` always reports
-the frozen window — the last one to complete — and never the partial window still
-accumulating. So a report describes a recent, completed interval rather than an
-average since the server started, and the figures in one reply are all measured
-over the same interval.
+the live window is *frozen* and a fresh one starts.
+[`HOTKEYS GET`](../commands/hotkeys-get.md) always reports the frozen window —
+the last one to complete — and never the partial window still accumulating. So a
+report describes a recent, completed interval rather than an average since the
+server started, and the figures in one reply are all measured over the same
+interval.
 
 State is per node. Each server tracks only the accesses it serves, so on a
 cluster query each node and read each reply on its own; there is no aggregated,
@@ -50,7 +51,8 @@ cluster-wide view.
 All three can be changed at runtime with
 [`CONFIG SET`](../commands/config-set.md). Changing any of them discards the
 in-progress window, whose counts were gathered under the old settings, but keeps
-the last completed window so an in-flight `HOTKEYS GET` still sees it. Use
+the last completed window so an in-flight
+[`HOTKEYS GET`](../commands/hotkeys-get.md) still sees it. Use
 [`HOTKEYS RESET`](../commands/hotkeys-reset.md) to discard everything.
 
 While detection is disabled no memory is allocated for it and no work is added to
@@ -77,9 +79,9 @@ are within each other's error may appear in either order, but a key with an orde
 of magnitude more traffic than another will reliably rank above it.
 
 Space-Saving guarantees that a key is tracked if it accounts for more than
-`1 / hotkeys-top-k` of the sampled accesses in the window. `INFO hotkeys` reports
-the window's sample total, so that threshold can be read off a live server (see
-[Monitoring](#monitoring)).
+`1 / hotkeys-top-k` of the sampled accesses in the window.
+[`INFO`](../commands/info.md) `hotkeys` reports the window's sample total, so
+that threshold can be read off a live server (see [Monitoring](#monitoring)).
 
 ## What counts as an access
 
@@ -116,15 +118,16 @@ inflate them.
 
 If the server is stalled long enough that the open window ends up covering more
 than twice `hotkeys-window-seconds`, its counts describe too coarse an interval
-to publish as "the last window" and are dropped instead. `HOTKEYS GET` then
-returns an empty array until the next window completes, rather than presenting a
-long-run average as if it were a single window. This bounds how stale a report
-can be, at the cost of discarding the accesses seen during the stall.
+to publish as "the last window" and are dropped instead.
+[`HOTKEYS GET`](../commands/hotkeys-get.md) then returns an empty array until the
+next window completes, rather than presenting a long-run average as if it were a
+single window. This bounds how stale a report can be, at the cost of discarding
+the accesses seen during the stall.
 
 ## Monitoring
 
-`INFO hotkeys` reports two fields describing the last completed window. The
-section is not part of the default [`INFO`](../commands/info.md) output, so
+[`INFO`](../commands/info.md) `hotkeys` reports two fields describing the last
+completed window. The section is not part of the default `INFO` output, so
 request it by name or use `INFO all`.
 
 * `hotkeys_last_window_samples`: how many accesses were sampled. Combined with
@@ -153,8 +156,9 @@ full sync or RDB reload, a cluster reset, and dropping a slot. A
 dataset in place instead of emptying the old one, and leaves hot key state
 untouched.
 
-Ordinary key access and removal is activity rather than a reset, so `DEL` and
-`UNLINK` count as accesses, and expiry and eviction do not clear state.
+Ordinary key access and removal is activity rather than a reset, so
+[`DEL`](../commands/del.md) and [`UNLINK`](../commands/unlink.md) count as
+accesses, and expiry and eviction do not clear state.
 
 Renaming or moving a key does not carry its statistics to the new name or
 database. An entry is tracked by (key name, database), so after
