@@ -20,7 +20,7 @@ current version of this tutorial, so please, stick with the official PHP
 implementation for the sake of following the article better).
 
 * [Retwis-RB](https://github.com/danlucraft/retwis-rb) is a port of Retwis to Ruby and Sinatra written by Daniel Lucraft.
-* [Retwis-J](https://docs.spring.io/spring-data/data-keyvalue/examples/retwisj/current/) is a port of Retwis to Java, using the Spring Data Framework, written by [Costin Leau](https://twitter.com/costinl). Its source code can be found on [GitHub](https://github.com/SpringSource/spring-data-keyvalue-examples).
+* [Retwis-J](https://docs.spring.io/spring-data/data-keyvalue/examples/retwisj/current/) is a port of Retwis to Java, using the Spring Data Framework, written by [Costin Leau](https://twitter.com/costinl). Its archived source code can be found on [GitHub](https://github.com/spring-attic/spring-data-keyvalue-examples).
 
 What is a key-value store?
 ---
