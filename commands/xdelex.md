@@ -1,12 +1,12 @@
-The `XDELEX` command is an extension of the [XDEL](xdel.md) command that allows you to delete one or more stream messages with more control over how those message entries are deleted concerning consumer groups.
+The `XDELEX` command is an extension of the [XDEL](xdel.md) command that deletes one or more stream messages with control over how deletion affects consumer groups.
 
 The command supports three deletion modes:
 
-- KEEPREF (default): deletes the stream entry but leaves pending entries list (PEL) references intact in all consumer groups,
-- DELREF: deletes the stream entry and forcibly removes it from all consumer group PELs,
-- ACKED: deletes a message only once no consumer group still needs it, meaning none has it pending (each has either acknowledged it or never picked it up), and no group can still deliver it later.
+- `KEEPREF` (default): deletes the stream message but leaves pending entries list (PEL) references intact in all consumer groups,
+- `DELREF`: deletes the stream message and forcibly removes it from all consumer group PELs,
+- `ACKED`: deletes a message only once no consumer group still needs it, meaning none has it pending (each has either acknowledged it or never picked it up), and no group can still deliver it later.
 
-The command returns a per-ID integer array: `1` for deleted, `2` for exists-but-not-yet-deletable (ACKED mode only), and `-1` when the message wasn't found.
+The command returns a per-ID integer array: `1` for deleted, `2` for exists-but-not-yet-deletable (`ACKED` mode only), and `-1` when the message wasn't found or the key isn't a stream.
 
 ## Examples
 
