@@ -96,16 +96,16 @@ Latency monitoring requires very little memory. However, enabling it increases t
 
 ## Report information with the LATENCY command
 
-The user interface to the latency monitoring subsystem is the [`LATENCY`](/commands/latency.md) command.
+The user interface to the latency monitoring subsystem is the [`LATENCY`](../commands/latency.md) command.
 Like many other Valkey commands, `LATENCY` accepts subcommands that modify its behavior.
 These subcommands are:
 
-* [`LATENCY LATEST`](/commands/latency-latest.md) - returns the latest latency samples for all events.
-* [`LATENCY HELP`](/commands/latency-help.md) - returns helpful text about the different subcommands.
-* [`LATENCY HISTORY`](/commands/latency-history.md) - returns timestamp-latency samples for an event.
-* [`LATENCY HISTOGRAM`](/commands/latency-histogram.md) - returns the cumulative distribution of latencies of a subset or all commands.
-* [`LATENCY RESET`](/commands/latency-reset.md) - resets the latency data for one or more events.
-* [`LATENCY GRAPH`](/commands/latency-graph.md) - returns a latency graph for an event.
-* [`LATENCY DOCTOR`](/commands/latency-doctor.md) - returns a human-readable latency analysis report.
+* [`LATENCY LATEST`](../commands/latency-latest.md) - returns the latest latency samples for all events.
+* [`LATENCY HELP`](../commands/latency-help.md) - returns helpful text about the different subcommands.
+* [`LATENCY HISTORY`](../commands/latency-history.md) - returns timestamp-latency samples for an event.
+* [`LATENCY HISTOGRAM`](../commands/latency-histogram.md) - returns the cumulative distribution of latencies of a subset or all commands.
+* [`LATENCY RESET`](../commands/latency-reset.md) - resets the latency data for one or more events.
+* [`LATENCY GRAPH`](../commands/latency-graph.md) - returns a latency graph for an event.
+* [`LATENCY DOCTOR`](../commands/latency-doctor.md) - returns a human-readable latency analysis report.
 
 Refer to each subcommand's documentation page for further information.
