@@ -191,6 +191,7 @@ defragmentable
 defragmentation
 defragmented
 del
+deletable
 Deno
 deny-oom
 deserialize
