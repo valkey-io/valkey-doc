@@ -748,7 +748,7 @@ RESP[0-9].*
 Resque
 resque
 resync
-resynchronization
+resynchronization\.?
 resynchronizations
 resyncs
 RetainString
