@@ -8,7 +8,7 @@ The command supports three deletion modes:
 - `DELREF`: acknowledges, deletes, and forcibly removes PEL references from all other groups,
 - `ACKED`: deletes a message only once no consumer group still needs it, meaning none has it pending (each has either acknowledged it or never picked it up), and no group can still deliver it later.
 
-The command returns a per-ID integer array: `1` when the message was acknowledged and deleted, `2` when it was acknowledged but not yet deletable because another group still needs it (`ACKED` mode only), and `-1` when the key isn't a stream, the group doesn't exist, or the message isn't in the PEL of `group`.
+The command returns a per-ID integer array: `1` when the message was acknowledged and deleted, or when a dangling PEL entry (whose stream message was already deleted) was acknowledged and removed; `2` when it was acknowledged but not yet deletable because another group still needs it (`ACKED` mode only); and `-1` when the key doesn’t exist, the group doesn’t exist, or the message isn’t in `group`’s PEL.
 
 ## Examples
 
