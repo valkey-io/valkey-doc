@@ -15,10 +15,14 @@ Each entry contains:
   command touches counts separately, so `MGET a b c` contributes one access to
   each of the three keys.
 
-`qps` is an estimate rather than an exact value, because accesses are sampled and
-counts are tracked approximately. It is measured over the span the window
-actually covered, which [`INFO`](info.md) reports as
-`hotkeys_last_window_duration_ms` in its `hotkeys` section. See
+`qps` is an estimate rather than an exact value, for two independent reasons:
+accesses are sampled when `hotkeys-sampling-percentage` is below `100` (its
+default is `1`), and counts are tracked approximately once a window sees more
+distinct keys than `hotkeys-top-k`. With sampling at `100` and no more distinct
+keys than `hotkeys-top-k`, the underlying count is exact. Either way the value is
+a rate measured over the span the window actually covered, which
+[`INFO`](info.md) reports as `hotkeys_last_window_duration_ms` in its `hotkeys`
+section. See
 [Choosing the sampling percentage and window](../topics/hotkeys.md#choosing-the-sampling-percentage-and-window)
 for how accurate a given entry is.
 
@@ -34,7 +38,7 @@ is the case when:
 * Detection is disabled (`hotkeys-top-k` is `0`, the default).
 * No window has completed yet, because detection was just enabled or
   [`HOTKEYS RESET`](hotkeys-reset.md) was just called.
-* The last window was dropped for spanning more than twice
+* The last window was discarded for spanning more than twice
   `hotkeys-window-seconds`.
 * No accesses were sampled during the last completed window.
 

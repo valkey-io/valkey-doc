@@ -4,9 +4,12 @@ no arguments. Afterwards, [`HOTKEYS GET`](hotkeys-get.md) returns an empty array
 until the next window completes.
 
 Use it to start monitoring from a clean baseline. Changing
-`hotkeys-top-k`, `hotkeys-sampling-percentage` or `hotkeys-window-seconds`
-already discards the in-progress window on its own, but deliberately keeps the
-last completed one; `HOTKEYS RESET` is what discards that too.
+`hotkeys-sampling-percentage` or `hotkeys-window-seconds` already discards the
+in-progress window on its own, but deliberately keeps the last completed one;
+`HOTKEYS RESET` is what discards that too, without changing the configuration.
+See
+[Configuration](../topics/hotkeys.md#configuration) for what each parameter
+change does to the last completed window.
 
 While detection is disabled (`hotkeys-top-k` is `0`, the default) there is
 nothing to clear and the command succeeds as a no-op.
