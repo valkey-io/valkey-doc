@@ -60,8 +60,8 @@ ports on which the others can actually reach it:
 
 The announced information is published in the cluster bus messages, so the other
 nodes can map the node to its reachable address. Announcing the bus port matters
-because it is otherwise assumed to be the client port plus 10000, which doesn't hold
-when the ports are remapped.
+because Valkey otherwise uses `cluster-port`, if configured, or the client port
+plus 10000, which doesn't hold when the ports are remapped.
 
 A few related options cover more specific setups:
 
