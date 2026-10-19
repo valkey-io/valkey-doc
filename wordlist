@@ -83,6 +83,7 @@ backslashed
 backticks
 backtrace
 balancer
+balancer.
 bazzar
 bc
 bcc
@@ -147,6 +148,7 @@ cluster-config-file
 [Cc]md
 cmsgpack
 Cn
+codec
 codename
 codenamed
 Collina's
@@ -445,6 +447,7 @@ keytool
 Kleppman's
 Kleppmann
 knockknock
+Kubernetes
 kqueue
 L3
 last-failover-wins
@@ -512,6 +515,7 @@ Lua-to-Valkey
 Lua's
 lubs
 Lucraft
+LZ4
 M1
 MacBook
 [mM]acOS
@@ -1036,6 +1040,7 @@ zeroed-ACLs
 Zhao
 ziplists
 zset
+Zstandard
 linux
 Devuan
 Raspbian
