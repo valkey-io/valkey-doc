@@ -105,11 +105,11 @@ The query operations: `FT.SEARCH` and `FT.AGGREGATE` can only be executed by nod
 
 ## Configuration Settings
 
-The Search module has a large list of configurable items. See [Search Configurations](../topics/search-configurables.md) for details.
+The Search module has a large list of configurable items. See [Search Configurations](search-configurables.md) for details.
 
 ## INFO Fields
 
-See [Search Info Fields](../topics/search-observables.md) for details.
+See [Search Info Fields](search-observables.md) for details.
 ---
 title: "Valkey Search - Overview"
 description: Valkey Search Module Overview
@@ -217,8 +217,8 @@ The query operations: `FT.SEARCH` and `FT.AGGREGATE` can only be executed by nod
 
 ## Configuration Settings
 
-The Search module has a large list of configurable items. See [Search Configurations](../topics/search-configurables.md) for details.
+The Search module has a large list of configurable items. See [Search Configurations](search-configurables.md) for details.
 
 ## INFO Fields
 
-See [Search Info Fields](../topics/search-observables.md) for details.
+See [Search Info Fields](search-observables.md) for details.
