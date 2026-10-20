@@ -1,0 +1,21 @@
+# Menu entries for the valkey-search module, merged into the core menu (nav.yml).
+# An entry with "id" creates a new section. "after" places it after a section
+# in the core menu; without it, the section goes at the end.
+- id: search
+  title: Search
+  after: programmability
+  landing: search
+  commands: [search]
+  topics:
+    - topic: search-query
+      title: Queries
+    - topic: search-expressions
+      title: Aggregation expressions
+    - topic: search-data-formats
+      title: Data formats
+    - topic: search-configurables
+      title: Configuration
+    - topic: search-monitoring
+      title: Metrics and configurations
+    - topic: search-observables
+      title: INFO SEARCH metrics
