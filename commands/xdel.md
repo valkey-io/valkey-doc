@@ -1,4 +1,4 @@
-Removes the specified entries from a stream, and returns the number of entries
+The `XDEL` command removes the specified entries from a stream, and returns the number of entries
 deleted.  This number may be less than the number of IDs passed to the command in
 the case where some of the specified IDs do not exist in the stream.
 
@@ -6,6 +6,8 @@ Normally you may think at a Stream as an append-only data structure,
 however Streams are represented in memory, so we are also able to 
 delete entries. This may be useful, for instance, in order to comply with
 certain privacy policies.
+
+For more control over how consumer group PEL references are handled when deleting entries, see [XDELEX](xdelex.md), which extends this command with explicit `KEEPREF`, `DELREF`, and `ACKED` deletion modes.
 
 ## Understanding the low level details of entries deletion
 
