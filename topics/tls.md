@@ -68,6 +68,22 @@ tls-ca-cert-file /path/to/ca.crt
 tls-ca-cert-dir /path/to/ca-certs/
 ```
 
+**Alternate server certificate and key**
+
+If `tls-cert-file` uses an algorithm that doesn't have wide support yet,
+for example ML-DSA or other Post-Quantum Cryptography (PQC) algorithms, older
+clients may not be able to connect to the server using these certificates.
+Users can configure Valkey with an alternative certificate and private key
+to fall back to in cases like this. This functionality was added in Valkey 9.2.
+The alternate certificate **must** use
+a different algorithm than the main one (for example: two RSA certificates
+won't work). This is configured using:
+
+```
+tls-alt-cert-file /path/to/valkey-rsa.crt
+tls-alt-key-file /path/to/valkey-rsa.key
+```
+
 **Client certificate and key (mutual TLS)**
 
 When mutual TLS (mTLS) is enabled, Valkey can be configured with a client
@@ -76,6 +92,17 @@ certificate and private key to authenticate itself to connecting peers:
 ```
 tls-client-cert-file /path/to/client.crt
 tls-client-key-file /path/to/client.key
+```
+
+**Key passphrases**
+
+If a private key is encrypted using a passphrase, the passphrase can be specified
+for the server, alternate, and/or client keys using:
+
+```
+tls-key-file-pass pass1
+tls-alt-key-file-pass pass2
+tls-client-key-file-pass pass3
 ```
 
 **Automatic TLS material reload**
