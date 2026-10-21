@@ -53,6 +53,13 @@ _Navigation session_ pattern section below.
 
 `EXPIRE` would return 0 and not alter the timeout for a key with a timeout set.
 
+## Reply
+
+One of the following:
+
+* Integer: `0` if the timeout was not set; for example, the key doesn't exist, or the operation was skipped because of the provided arguments.
+* Integer: `1` if the timeout was set.
+
 ## Examples
 
 ```

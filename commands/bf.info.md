@@ -14,6 +14,20 @@ Returns usage information and properties of a specific bloom filter.
 For non-scaling filters, the `TIGHTENING` and `MAXSCALEDCAPACITY` fields are not applicable and will not be returned.
 When no optional fields are specified, all available fields for the given filter type are returned.
 
+## Reply
+
+When no optional arguments are provided:
+
+* Array of information about the bloom filter.
+
+When an optional argument excluding ERROR is provided:
+
+* Integer: argument value
+
+When ERROR is provided as an optional argument:
+
+* Double: argument value
+
 ## Examples
 
 ```

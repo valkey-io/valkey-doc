@@ -2,6 +2,12 @@ Adds one or more items to a bloom filter. If the specified bloom filter does not
 
 If you want to create a bloom filter with non-default properties, use the [`BF.INSERT`](bf.insert.md) or [`BF.RESERVE`](bf.reserve.md) command.
 
+## Reply
+
+Array of integers (`1` or `0`)
+
+An error will occur if input is invalid, if a non bloom filter key with the same name already exists, if the bloom filter creation / scale out exceeds limits, or if an item is being added to a full non scaling filter.
+
 ## Examples
 
 ```

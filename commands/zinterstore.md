@@ -13,6 +13,10 @@ For a description of the `WEIGHTS` and `AGGREGATE` options, see `ZUNIONSTORE`.
 
 If `destination` already exists, it is overwritten.
 
+## Reply
+
+Integer: the number of members in the resulting sorted set at the _destination_.
+
 ## Examples
 
 ```

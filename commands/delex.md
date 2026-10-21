@@ -5,6 +5,13 @@ Delete `key` based on condition.
 * `IFEQ` *comparison-value* -- Delete the key only if the comparison value matches key's existing value. Error is returned if provided key or value is not string.
 * `IFNE` *comparison-value* -- Delete the key only if the comparison value does not matches key's existing value. Error is returned if provided key or value is not string.
 
+## Reply
+
+One of the following:
+
+* Integer: `1` if `key` was deleted.
+* Integer: `0` if `key` was not deleted because it did not exist or the value did not follow the condition.
+
 ## Example
 
 Delete the `key` if given value is equal to existing value.

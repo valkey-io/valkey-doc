@@ -14,6 +14,13 @@ with the highest scores instead of popping the ones with the lowest scores.
 
 [cb]: bzpopmin.md
 
+## Reply
+
+One of the following:
+
+* Null: when no element could be popped and the _timeout_ expired.
+* Array: the keyname, popped member, and its score.
+
 ## Examples
 
 ```

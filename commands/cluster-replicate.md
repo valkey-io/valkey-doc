@@ -20,3 +20,7 @@ only if the following additional conditions are met:
 2. The node is empty, no keys are stored at all in the key space.
 
 If the command succeeds the new replica will immediately try to contact its primary in order to replicate from it.
+
+## Reply
+
+`OK` if the command was successful. Otherwise an error is returned.

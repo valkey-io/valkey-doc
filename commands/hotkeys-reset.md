@@ -9,6 +9,10 @@ configuration.
 Hot key state is also cleared automatically by several server events. See
 [Hot key tracking](../topics/hotkeys.md) for the list.
 
+## Reply
+
+`OK`.
+
 ## Examples
 
 ```

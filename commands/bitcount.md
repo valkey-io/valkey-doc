@@ -15,6 +15,10 @@ We can use an additional argument `BIT` to specify a bit index.
 So 0 is the first bit, 1 is the second bit, and so forth.
 For negative values, -1 is the last bit, -2 is the penultimate, and so forth.
 
+## Reply
+
+Integer: the number of bits set to 1.
+
 ## Examples
 
 ```

@@ -9,6 +9,10 @@ data inconsistencies.
 The caller must have ACL permission to access **both** of the databases being
 swapped. See [database permissions](../topics/acl.md#database-permissions).
 
+## Reply
+
+`OK`.
+
 ## Examples
 
 ```

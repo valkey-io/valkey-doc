@@ -24,6 +24,13 @@ This can be done using `GETSET mycounter "0"`:
 
 `SET` with the `GET` argument.
 
+## Reply
+
+One of the following:
+
+* String: the old value stored at the key.
+* Null: if the key does not exist.
+
 ## Examples
 
 ```

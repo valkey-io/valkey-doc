@@ -1,5 +1,19 @@
 Get number of keys in the object values at the path.
 
+## Reply
+
+* If the path is enhanced syntax:
+  * Array of integers representing the object length at each path.
+  * Null: For each path where the value is not an object.
+  * Null: If the document key does not exist.
+* If the path is restricted syntax:
+  * Integer: Number of keys in the object.
+  * Integer: If multiple objects are selected, returns the first object's length.
+  * Null: If the document key does not exist.
+* Error:
+  * if the value at the path is not an object (only for restricted syntax).
+  * if the path does not exist (only for restricted syntax).
+
 ## Examples
 
 Enhanced path syntax:

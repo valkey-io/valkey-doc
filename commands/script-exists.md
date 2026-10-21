@@ -9,3 +9,7 @@ operation can be performed solely using [`EVALSHA`](evalsha.md) instead of [`EVA
 bandwidth.
 
 For more information about `EVAL` scripts please refer to [Introduction to Eval Scripts](../topics/eval-intro.md).
+
+## Reply
+
+Array of integers that correspond to the specified SHA1 digest arguments.

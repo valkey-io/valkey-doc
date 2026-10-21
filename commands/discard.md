@@ -4,3 +4,7 @@ connection state to normal.
 [tt]: ../topics/transactions.md
 
 If `WATCH` was used, `DISCARD` unwatches all keys watched by the connection.
+
+## Reply
+
+`OK`.

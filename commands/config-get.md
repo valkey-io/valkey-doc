@@ -39,3 +39,7 @@ configuration parameter used in the [valkey.conf][hgcarr22rc] file:
 Note that you should look at the valkey.conf file relevant to the version you're
 working with as configuration options might change between versions. The link
 above is to the latest development version.
+
+## Reply
+
+Map of configuration parameters matching the provided arguments.

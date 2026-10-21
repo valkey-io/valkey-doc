@@ -11,3 +11,7 @@ The capabilities currently supported are:
   Valkey will return `-REDIRECT primary-ip:port` to this connection.
   Note that the `primary-ip` can be an IPv6 which itself contains colons, so to properly parse ip and port, a client needs to locate the *last* colon.
   Using the [`READONLY`](readonly.md) command can enable this connection to execute read commands on the replica node.
+
+## Reply
+
+`OK`.

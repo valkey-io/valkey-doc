@@ -15,6 +15,11 @@ Set JSON values at the path.
     * If the parent element exists and the index is valid, the element will be replaced by the new JSON value.
 * If the path calls for an object or array, the value (object or array) will be replaced by the new JSON value.
 
+## Reply
+
+* `OK` on success.
+* Null: If the NX or XX condition is not met.
+
 ## Examples
 
 Enhanced path syntax:

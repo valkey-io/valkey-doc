@@ -8,6 +8,10 @@ configuration file if you wish (but make sure to check [`ACL SAVE`](acl-save.md)
 Implicit defaults may be omitted: for example, access to all databases (`alldbs`)
 is not shown, while explicit `db=<dbid>` and `resetdbs` rules are shown.
 
+## Reply
+
+Array of strings.
+
 ## Examples
 
 ```

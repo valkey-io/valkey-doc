@@ -5,3 +5,7 @@ Once deleted the information is lost forever.
 ## Alternative
 
 `COMMANDLOG RESET SLOW`
+
+## Reply
+
+`OK`.

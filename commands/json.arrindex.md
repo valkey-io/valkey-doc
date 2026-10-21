@@ -4,6 +4,17 @@ Search for the first occurrence of a scalar JSON value in the arrays at the path
 * Out of range errors are treated by rounding the index to the array's start and end.
 * If start > end, return -1 (not found).
 
+## Reply
+
+* If the path is enhanced syntax:
+  * Array of integers. Each value is the index of the matching element in the array at the path. The value is -1 if not found.
+  * Null: For each path where the value is not an array.
+* If the path is restricted syntax:
+  * Integer: The index of matching element, or -1 if not found.
+* Error:
+  * if the path does not exist.
+  * if the value at the path is not an array (only for restricted syntax).
+
 ## Examples
 
 Enhanced path syntax:

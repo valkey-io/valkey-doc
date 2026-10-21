@@ -1,5 +1,13 @@
 Get serialized JSON objects from multiple document keys at the specified path. Return null for non-existent keys or JSON paths.
 
+## Reply
+
+* Array of Bulk Strings with size equal to the number of keys in the command.
+  * Each element is either:
+    * String: Serialized JSON as located by the path.
+    * Null: If the key does not exist, the path does not exist in the document, or the path is invalid.
+* Error: WRONGTYPE error if any specified key exists but is not a JSON key.
+
 ## Examples
 
 Enhanced path syntax:

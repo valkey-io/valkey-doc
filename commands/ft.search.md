@@ -278,3 +278,7 @@ Simple query showing selecting return of additional fields
 ## Query showing NOCONTENT
 
 ## Query showing SORTBY
+
+## Reply
+
+Array: the first entry in the array represents the count of matching keys, followed by one array entry for each matching key. When `NOCONTENT` is specified, each entry in the response contains only the matching key name, otherwise, each entry includes the matching key name, followed by an array of the returned fields

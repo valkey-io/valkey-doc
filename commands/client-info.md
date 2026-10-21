@@ -2,6 +2,10 @@ The command returns information and statistics about the current client connecti
 
 The reply format is identical to that of [`CLIENT LIST`](client-list.md), and the content consists only of information about the current client.
 
+## Reply
+
+Verbatim string: a unique string for the current client, as described at the `CLIENT LIST` page.
+
 ## Examples
 
 ```

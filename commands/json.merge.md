@@ -16,6 +16,11 @@ Merge a JSON value into the value at the path using [RFC 7396](https://www.rfc-e
 * Document nesting is subject to the configured maximum depth (`json.max-path-limit`).
   A merge whose result would exceed that depth returns a `LIMIT` error and leaves the document unchanged.
 
+## Reply
+
+* `OK` if the operation was successful.
+* Error: If the operation failed.
+
 ## Examples
 
 Restricted path syntax:

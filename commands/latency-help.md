@@ -4,3 +4,7 @@ subcommands.
 For more information refer to the [Latency Monitoring Framework page][lm].
 
 [lm]: ../topics/latency-monitor.md
+
+## Reply
+
+Array of sub-commands and their descriptions.

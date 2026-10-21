@@ -28,6 +28,10 @@ collection in case a given macro-node reaches a given amount of deleted
 entries. Currently with the usage we anticipate for this data structure, it is
 not a good idea to add such complexity.
 
+## Reply
+
+Integer: the number of entries that were deleted.
+
 ## Examples
 
 ```

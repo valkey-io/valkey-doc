@@ -29,6 +29,10 @@ The command returns an empty array when there is nothing to report: either hot
 key tracking is disabled, or no hot keys were tracked in the last completed
 window.
 
+## Reply
+
+Array of the hottest keys of the last completed window, ordered by estimated QPS descending. Each element is a map with the fields `key`, `db` and `qps`.
+
 ## Examples
 
 Enable tracking, then read the hottest keys:
