@@ -1638,7 +1638,7 @@ The function always returns `VALKEYMODULE_OK`.
 **Available since:** 7.0.0
 
 Add attributes (metadata) to the reply. Should be done before adding the
-actual reply. see [https://valkey.io/topics/protocol#attribute-type](https://valkey.io/topics/protocol#attribute-type)
+actual reply. see [https://valkey.io/topics/protocol](https://valkey.io/topics/protocol)
 
 After starting an attribute's reply, the module must make `len*2` calls to other
 `ReplyWith*` style functions in order to emit the elements of the attribute map.
