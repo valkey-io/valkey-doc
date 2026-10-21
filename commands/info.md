@@ -307,12 +307,12 @@ Here is the meaning of all fields in the **server** section:
 *   `shutdown_in_milliseconds`: The maximum time remaining for replicas to catch up the replication before completing the shutdown sequence.
     This field is only present during shutdown.
 
-Here is the meaning of all fields in the **TLS** section:
+Here is the meaning of all fields in the **TLS** section, added in Valkey 9.1:
 
-*   `tls_server_cert_serial`: The primary server certificate's serial number
-*   `tls_server_cert_expires_in_seconds`: Time until the primary server certificate expires
-*   `tls_server_alt_cert_serial`: The [alternate server certificate](../topics/tls.md)'s serial number
-*   `tls_server_alt_cert_expires_in_seconds`: Time until the alternate server certificate expires
+*   `tls_server_cert_serial`: The server certificate's serial number
+*   `tls_server_cert_expires_in_seconds`: Time until the server certificate expires
+*   `tls_server_alt_cert_serial`: The [alternate server certificate](../topics/tls.md)'s serial number. Added in Valkey 9.2
+*   `tls_server_alt_cert_expires_in_seconds`: Time until the alternate server certificate expires. Added in Valkey 9.2
 *   `tls_client_cert_serial`: The client certificate's serial number
 *   `tls_client_cert_expires_in_seconds`: Time until the client certificate expires
 *   `tls_ca_cert_serial`: The Certificate Authority (CA) certificate's serial number
