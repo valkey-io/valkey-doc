@@ -54,7 +54,8 @@ Valkey instance is:
 
 The command above reports the list of users in the same format that is
 used in the Valkey configuration files, by translating the current ACLs set
-for the users back into their description.
+for the users back into their description. If [roles](#roles) are defined,
+they are reported first, in lines starting with "role".
 
 The first two words in each line are "user" followed by the username. The
 next words are ACL rules that describe different things. We'll show how the rules work in detail, but for now it is enough to say that the default
@@ -129,9 +130,14 @@ Configure selectors for the user:
 * `(<rule list>)`: Create a new selector to match rules against. Selectors are evaluated after the user permissions, and are evaluated according to the order they are defined. If a command matches either the user permissions or any selector, it is allowed. See [selectors](#selectors) for more information.
 * `clearselectors`: Delete all of the selectors attached to the user.
 
+Assign roles to the user (Added in version 9.2):
+
+* `role=<role>[,<role> ...]`: Assign the named roles to the user, replacing any role the user already had. At least one role has to be named, and every named role must already exist. See [roles](#roles) for more information.
+* `resetroles`: Remove every role from the user.
+
 Reset the user:
 
-* `reset` Performs the following actions: resetpass, resetkeys, resetchannels, allchannels (if acl-pubsub-default is set), resetdbs, alldbs, off, clearselectors, -@all. The user returns to the same state it had immediately after its creation.
+* `reset` Performs the following actions: resetpass, resetkeys, resetchannels, allchannels (if acl-pubsub-default is set), resetdbs, alldbs, off, clearselectors, -@all, resetroles. The user returns to the same state it had immediately after its creation.
 
 ## Create and edit user ACLs with the ACL SETUSER command
 
@@ -415,6 +421,48 @@ Unlike the user's root permissions, selectors cannot be modified after they are 
 Instead, selectors can be removed with the `clearselectors` keyword, which removes all of the added selectors.
 Note that `clearselectors` does not remove the root permissions.
 
+## Roles
+
+Starting with Valkey 9.2, permissions can be defined once in a named _role_ and assigned to any number of users, instead of being repeated in every user.
+A role holds the same kind of permissions a user does: commands, key patterns, channel patterns, databases and selectors.
+Roles are created and modified with `ACL SETROLE`, which accepts the same rules as `ACL SETUSER` except for the ones that only make sense for a user: `on`, `off`, `reset`, the password rules, `role=` and `resetroles`.
+Roles are assigned to a user with the `role=` rule, and removed with `resetroles`:
+
+    > ACL SETROLE reader ~app:* +@read
+    OK
+    > ACL SETROLE writer ~app:* +@write
+    OK
+    > ACL SETUSER alice on >alicepass role=reader
+    OK
+    > ACL SETUSER bob on >bobpass role=reader,writer
+    OK
+    > ACL DRYRUN alice SET app:1 x
+    "User alice has no permissions to run the 'set' command"
+    > ACL DRYRUN bob SET app:1 x
+    OK
+
+The `role=` rule replaces the whole set of roles held by the user, so `ACL SETUSER bob role=writer` leaves bob with the writer role only.
+
+A user's own permissions and the permissions of each of its roles are evaluated independently, and a command is allowed if any of them allows it, in the same way [selectors](#selectors) work.
+The user's own permissions are checked first, followed by the roles in the order they were assigned.
+This means a user can be granted permissions on top of a role, but cannot be restricted below what a role grants.
+
+Other things to know about roles:
+
+* Changes to a role with `ACL SETROLE` take effect immediately for every user holding it. Pub/Sub clients of those users that lose access to their channels are disconnected.
+* Roles cannot be nested, cannot have passwords, and cannot be authenticated against.
+* A role cannot be deleted with `ACL DELROLE` while it is assigned to a user. `ACL GETROLE` lists the users holding a role.
+* `ACL ROLES` lists the role names, `ACL USERS` lists only the users. `ACL LIST` reports both, with the `role` lines listed before the `user` lines.
+* `ACL GETUSER` reports the roles held by a user in the `roles` field, but the other fields only describe the user's own rules. Use `ACL DRYRUN` to check the effective permissions of a user.
+* Role names are case sensitive and may contain any printable ASCII character except for spaces, commas, quotes and backslashes. Roles have their own namespace, so a role may share its name with a user, a command, or a category.
+
+**Note:** like a new user, a new role starts with access to all databases (`alldbs`, see [database permissions](#database-permissions)), and to all Pub/Sub channels if `acl-pubsub-default` is set to `allchannels`.
+Since permissions are combined with OR logic, such a role grants all databases (and channels) to its users, even to a user restricted with `resetdbs`, `db=<id>` or `resetchannels`.
+To limit what a role grants, restrict the role itself, for example:
+
+    > ACL SETROLE reader ~app:* +@read db=0 resetchannels
+    OK
+
 ## Key permissions
 
 key patterns can also be used to define how a command is able to touch a key.
@@ -620,6 +668,18 @@ the following:
 For instance:
 
     user worker +@list +@connection ~jobs:* on >ffa9203c493aa99
+
+[Roles](#roles) are defined in the same way, using the `role` keyword:
+
+    role <rolename> ... acl rules ...
+
+For instance:
+
+    role jobs +@list ~jobs:*
+    user worker +@connection on >ffa9203c493aa99 role=jobs
+
+Roles are loaded before users, so the `role` and `user` lines may appear in
+any order. `ACL SAVE` writes the roles before the users.
 
 When you want to use an external ACL file, you are required to specify
 the configuration directive called `aclfile`, like this:

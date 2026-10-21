@@ -1,6 +1,6 @@
 The command returns all the rules defined for an existing ACL user.
 
-Specifically, it lists the user's ACL flags, password hashes, commands, key patterns, channel patterns (Added in version 6.2), selectors (Added in version 7.0) and databases (Added in version 9.1).
+Specifically, it lists the user's ACL flags, password hashes, commands, key patterns, channel patterns (Added in version 6.2), selectors (Added in version 7.0), databases (Added in version 9.1) and roles (Added in version 9.2).
 Additional information may be returned in the future if more metadata is added to the user.
 
 Command rules are always returned in the same format as the one used in the [`ACL SETUSER`](acl-setuser.md) command.
@@ -8,6 +8,10 @@ Before version 7.0, keys and channels were returned as an array of patterns, how
 Note: This description of command rules reflects the user's effective permissions, so while it may not be identical to the set of rules used to configure the user, it is still functionally identical.
 
 Selectors are listed in the order they were applied to the user, and include information about commands, key patterns, channel patterns, and database permissions.
+
+Roles are listed in the order they were assigned to the user.
+The commands, keys, channels, databases and selectors fields only describe the user's own rules, not the permissions the user gets from its roles.
+Use [`ACL GETROLE`](acl-getrole.md) to inspect the rules of a role, and [`ACL DRYRUN`](acl-dryrun.md) to check the effective permissions of a user.
 
 ## Examples
 
