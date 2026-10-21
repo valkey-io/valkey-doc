@@ -1,0 +1,29 @@
+{
+    "name": "kotlin-valkey",
+    "description": "A streaming/pipelining-first client for Kotlin/JVM with zero dependencies (except SLF4J). Binary safe, does not hold values in memory, supports transactions, Pub/Sub, TLS and connection pooling.",
+    "repo": "https://codeberg.org/sebdehne/kotlin-valkey",
+    "website": "https://dehnes.com/kotlin-valkey/",
+    "installation": [
+        {
+            "type": "Maven",
+            "command": "<dependency>\n  <groupId>com.dehnes.kotlinvalkey</groupId>\n  <artifactId>kotlin-valkey</artifactId>\n  <version>0.1.0</version>\n</dependency>"
+        },
+        {
+            "type": "Gradle",
+            "command": "implementation(\"com.dehnes.kotlinvalkey:kotlin-valkey:0.1.0\")"
+        }
+    ],
+    "version": "v0.1.0",
+    "version_released": "2026-10-15",
+    "language": "kotlin",
+    "license": "MIT",
+    "read_from_replica": false,
+    "smart_backoff_to_prevent_connection_storm": false,
+    "pubsub_state_restoration": true,
+    "cluster_scan": false,
+    "latency_based_read_from_replica": false,
+    "AZ_based_read_from_replica": false,
+    "client_side_caching": false,
+    "client_capa_redirect": false,
+    "persistent_connection_pool": true
+}
