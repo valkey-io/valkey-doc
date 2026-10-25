@@ -3,19 +3,15 @@ node, discarding both the in-progress window and the last completed one. It take
 no arguments. Afterwards, [`HOTKEYS GET`](hotkeys-get.md) returns an empty array
 until the next window completes.
 
-Use it to start monitoring from a clean baseline. Changing
-`hotkeys-sampling-percentage` or `hotkeys-window-seconds` already discards the
-in-progress window on its own, but deliberately keeps the last completed one;
-`HOTKEYS RESET` is what discards that too, without changing the configuration.
-See
-[Configuration](../topics/hotkeys.md#configuration) for what each parameter
-change does to the last completed window.
+Use it to start monitoring from a clean baseline, without changing the
+configuration.
 
 While detection is disabled (`hotkeys-top-k` is `0`, the default) there is
 nothing to clear and the command succeeds as a no-op.
 
-Hot key state is also cleared automatically by several server events. See
-[State and resets](../topics/hotkeys.md#state-and-resets) for the full list.
+Hot key state is also cleared automatically by several server events, and a
+configuration change clears part of it. See
+[Hot key detection](../topics/hotkeys.md) for both.
 
 ## Examples
 

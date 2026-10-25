@@ -10,40 +10,32 @@ cannot be split across shards; on a single server they are the keys worth cachin
 client-side, sharding across several keys, or rate-limiting. Hot key detection
 finds them, on the server, from the traffic the server actually serves.
 
-Detection is disabled by default. Enable it by setting `hotkeys-top-k` to a
-positive value, then read the result with [`HOTKEYS GET`](../commands/hotkeys-get.md).
-
 ## How it works
 
-Measuring every access to every key exactly would cost memory proportional to the
-keyspace and add work to every lookup. Detection instead approximates, in two
-ways:
-
-* **Sampling.** Only `hotkeys-sampling-percentage` percent of accesses are
-  recorded, chosen independently at random. At `100` every access is recorded and
-  this source of error disappears.
-* **Bounded tracking.** Sampled accesses feed the Space-Saving algorithm, which
-  tracks at most `hotkeys-top-k` keys in a fixed amount of memory. While there is
-  room, counts are exact. Once it is full, rather than discard a new key it
-  replaces the coldest tracked key and inherits its count, which can
-  over-estimate. Space-Saving keeps that possible over-estimate alongside each
-  count, and the reported rate is derived from the middle of the resulting range.
-  So this source of error appears only once a window sees more distinct keys than
-  `hotkeys-top-k`.
+Counting every access to every key exactly would cost memory proportional to the
+keyspace and add work to every lookup. Detection approximates instead: it records
+a random `hotkeys-sampling-percentage` of accesses, and tracks at most
+`hotkeys-top-k` keys at a time. So a reported rate is an estimate, and a key
+quieter than the top-K may not appear at all.
 
 Counts accumulate in a *live* window. When `hotkeys-window-seconds` has elapsed
 the live window is *frozen* and a fresh one starts.
 [`HOTKEYS GET`](../commands/hotkeys-get.md) always reports the frozen window —
 the last one to complete — and never the partial window still accumulating. A
 report therefore describes a recent, completed interval rather than an average
-since the server started. It also means the figures in one reply are all measured
-over the same interval.
+since the server started, and the figures in one reply are all measured over the
+same interval. A window can run slightly past its nominal length; rates divide by
+the span actually measured, so that does not inflate them.
 
 State is per node. Each server tracks only the accesses it serves, so on a
 cluster query each node and read each reply on its own; there is no aggregated,
 cluster-wide view.
 
 ## Configuration
+
+Detection is disabled by default. Enable it by setting `hotkeys-top-k` to a
+positive value, then read the result with
+[`HOTKEYS GET`](../commands/hotkeys-get.md).
 
 | Parameter | Default | Range | Meaning |
 | --- | --- | --- | --- |
@@ -74,29 +66,16 @@ the access path.
 
 ## Choosing the sampling percentage and window
 
-A reported rate is a statistical estimate, and its precision depends on how many
-samples the key contributed to the window:
+Both `hotkeys-sampling-percentage` and `hotkeys-window-seconds` improve accuracy,
+because both increase how many samples a key contributes to a window. Each has a
+cost: a higher sampling percentage adds per-access overhead, while a longer
+window makes the report slower to react to a change in traffic. The defaults
+(1%, 1 second) keep overhead low and the report quick to react, so raise either
+when the rates you care about are too low to resolve.
 
-```
-samples ≈ qps × hotkeys-sampling-percentage / 100 × hotkeys-window-seconds
-```
-
-Sampling is independent per access, so the relative sampling error of an estimate
-falls as roughly `1 / sqrt(samples)`, and a key that contributes few samples has
-a correspondingly coarse estimate. Both `hotkeys-sampling-percentage` and
-`hotkeys-window-seconds` scale the sample count in proportion, so both improve
-accuracy; the trade-off is that a higher sampling percentage adds per-access
-overhead, while a longer window makes the report slower to react to a change in
-traffic.
-
-The ranking is more robust than the individual numbers. Two keys whose estimates
-are within each other's error may appear in either order, but a key with an order
-of magnitude more traffic than another will reliably rank above it.
-
-Space-Saving guarantees that a key is tracked if it accounts for more than
-`1 / hotkeys-top-k` of the sampled accesses in the window.
-[`INFO`](../commands/info.md) `hotkeys` reports the window's sample total, so
-that threshold can be read off a live server (see [Monitoring](#monitoring)).
+The ranking is more robust than the individual numbers. Two keys with similar
+rates may appear in either order, but a key with an order of magnitude more
+traffic than another will reliably rank above it.
 
 ## What counts as an access
 
@@ -128,19 +107,12 @@ Not counted:
 * Background maintenance such as active defragmentation, which relocates keys
   in memory without going through the lookup path at all.
 
-## Windows
-
-Windows are closed by the server's periodic task rather than by a dedicated
-timer, so a window is frozen at or shortly after its nominal boundary and spans
-`hotkeys-window-seconds` plus a small lag.
-[`HOTKEYS GET`](../commands/hotkeys-get.md) also closes an elapsed window before
-reading, so a client polling faster than the server's `hz` will see rotations
-driven by its own polls. Reported rates divide by the span actually measured
-rather than by the configured length, so the lag does not inflate them.
+## Discarded windows
 
 If the server is stalled long enough that the open window ends up covering more
 than twice `hotkeys-window-seconds`, its counts no longer describe a single
-window and are discarded. `HOTKEYS GET` then returns an empty array until the
+window and are discarded.
+[`HOTKEYS GET`](../commands/hotkeys-get.md) then returns an empty array until the
 next window completes, rather than presenting a long-run average as if it were a
 single window. This bounds how stale a report can be, at the cost of discarding
 the accesses seen during the stall.
@@ -151,9 +123,9 @@ the accesses seen during the stall.
 completed window. The section is not part of the default `INFO` output, so
 request it by name or use `INFO all`.
 
-* `hotkeys_last_window_samples`: how many accesses were sampled. Combined with
-  `hotkeys-top-k` this gives the detection floor described above, and it
-  indicates how much to trust a given entry.
+* `hotkeys_last_window_samples`: how many accesses were sampled. A window with
+  few samples supports only a coarse estimate, so this indicates how much to
+  trust a given report.
 * `hotkeys_last_window_duration_ms`: the real span the window covered, which is
   also the denominator of every reported rate. `0` means there is no completed
   window to describe: detection is disabled, it was just enabled or reset, or the

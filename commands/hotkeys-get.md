@@ -15,16 +15,13 @@ Each entry contains:
   command touches counts separately, so `MGET a b c` contributes one access to
   each of the three keys.
 
-`qps` is an estimate rather than an exact value, for two independent reasons:
-accesses are sampled when `hotkeys-sampling-percentage` is below `100` (its
-default is `1`), and counts are tracked approximately once a window sees more
-distinct keys than `hotkeys-top-k`. With sampling at `100` and no more distinct
-keys than `hotkeys-top-k`, the underlying count is exact. Either way the value is
-a rate measured over the span the window actually covered, which
-[`INFO`](info.md) reports as `hotkeys_last_window_duration_ms` in its `hotkeys`
-section. See
+`qps` is an estimate rather than an exact value, because accesses are sampled
+when `hotkeys-sampling-percentage` is below `100` (its default is `1`), and
+because only `hotkeys-top-k` keys are tracked at a time. It is a rate over the
+span the window actually covered, which [`INFO`](info.md) reports as
+`hotkeys_last_window_duration_ms` in its `hotkeys` section. See
 [Choosing the sampling percentage and window](../topics/hotkeys.md#choosing-the-sampling-percentage-and-window)
-for how accurate a given entry is.
+for how accuracy depends on those two settings.
 
 A key that is accessed but does not exist is tracked like any other. This
 surfaces load against a missing key, for example from a bad key template or a
