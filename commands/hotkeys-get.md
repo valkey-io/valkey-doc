@@ -27,17 +27,11 @@ A key that is accessed but does not exist is tracked like any other. This
 surfaces load against a missing key, for example from a bad key template or a
 stampede against a key an eviction just removed.
 
-The command returns an empty array rather than an error whenever there is nothing
-to report, so a polling client has a single reply shape to parse and does not
-have to match on an error string to tell "disabled" from "nothing is hot". That
-is the case when:
-
-* Detection is disabled (`hotkeys-top-k` is `0`, the default).
-* No window has completed yet, because detection was just enabled or
-  [`HOTKEYS RESET`](hotkeys-reset.md) was just called.
-* The last window was discarded for spanning more than twice
-  `hotkeys-window-seconds`.
-* No accesses were sampled during the last completed window.
+The command returns an empty array rather than an error when there is nothing to
+report: either hot key tracking is disabled, or no hot keys were tracked in the
+last completed window. A polling client therefore has a single reply shape to
+parse, and does not have to match on an error string to tell "disabled" from
+"nothing is hot".
 
 ## Examples
 

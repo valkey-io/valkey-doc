@@ -1,13 +1,10 @@
 The `HOTKEYS RESET` command clears all accumulated hot key statistics on this
 node, discarding both the in-progress window and the last completed one. It takes
-no arguments. Afterwards, [`HOTKEYS GET`](hotkeys-get.md) returns an empty array
-until the next window completes.
+no arguments. It always replies `OK`, including when hot key tracking is
+disabled, in which case there is nothing to clear.
 
 Use it to start monitoring from a clean baseline, without changing the
 configuration.
-
-While detection is disabled (`hotkeys-top-k` is `0`, the default) there is
-nothing to clear and the command succeeds as a no-op.
 
 Hot key state is also cleared automatically by several server events, and a
 configuration change clears part of it. See

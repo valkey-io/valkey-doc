@@ -24,8 +24,12 @@ the live window is *frozen* and a fresh one starts.
 the last one to complete — and never the partial window still accumulating. A
 report therefore describes a recent, completed interval rather than an average
 since the server started, and the figures in one reply are all measured over the
-same interval. A window can run slightly past its nominal length; rates divide by
-the span actually measured, so that does not inflate them.
+same interval.
+
+Keys are tracked over the whole keyspace, not per logical database and not per
+cluster slot. There is one top-K list, and every key competes for a place in it
+whichever database or slot it belongs to; each entry records the database it was
+accessed in so the keys can be told apart.
 
 State is per node. Each server tracks only the accesses it serves, so on a
 cluster query each node and read each reply on its own; there is no aggregated,
@@ -44,9 +48,9 @@ positive value, then read the result with
 | `hotkeys-window-seconds` | `1` | 1-300 | Length of the reporting window |
 
 All three can be changed at runtime with
-[`CONFIG SET`](../commands/config-set.md). Any change discards the in-progress
-window, whose counts were gathered under the old settings. What happens to the
-last completed window depends on which parameter changed:
+[`CONFIG SET`](../commands/config-set.md). Any change aborts the current key
+access tracking, and what happens to the last completed window depends on which
+parameter changed:
 
 * `hotkeys-sampling-percentage`, `hotkeys-window-seconds`, or raising
   `hotkeys-top-k`: it is kept, so an in-flight
@@ -66,12 +70,15 @@ the access path.
 
 ## Choosing the sampling percentage and window
 
-Both `hotkeys-sampling-percentage` and `hotkeys-window-seconds` improve accuracy,
-because both increase how many samples a key contributes to a window. Each has a
-cost: a higher sampling percentage adds per-access overhead, while a longer
-window makes the report slower to react to a change in traffic. The defaults
-(1%, 1 second) keep overhead low and the report quick to react, so raise either
-when the rates you care about are too low to resolve.
+Both `hotkeys-sampling-percentage` and `hotkeys-window-seconds` can improve
+accuracy by increasing the number of samples a key contributes to each
+measurement window. Each comes with a different trade-off: a higher sampling
+percentage increases per-access overhead, while a longer window provides more
+samples but makes the report slower to reflect changes in access patterns, since
+samples from earlier in the window are still included. The defaults (1% sampling
+and a 1-second window) keep overhead low while allowing the report to react
+quickly to changing traffic. Increase either setting when the hot key rates you
+care about are too low to resolve reliably.
 
 The ranking is more robust than the individual numbers. Two keys with similar
 rates may appear in either order, but a key with an order of magnitude more
@@ -107,16 +114,6 @@ Not counted:
 * Background maintenance such as active defragmentation, which relocates keys
   in memory without going through the lookup path at all.
 
-## Discarded windows
-
-If the server is stalled long enough that the open window ends up covering more
-than twice `hotkeys-window-seconds`, its counts no longer describe a single
-window and are discarded.
-[`HOTKEYS GET`](../commands/hotkeys-get.md) then returns an empty array until the
-next window completes, rather than presenting a long-run average as if it were a
-single window. This bounds how stale a report can be, at the cost of discarding
-the accesses seen during the stall.
-
 ## Monitoring
 
 [`INFO`](../commands/info.md) `hotkeys` reports two fields describing the last
@@ -129,7 +126,7 @@ request it by name or use `INFO all`.
 * `hotkeys_last_window_duration_ms`: the real span the window covered, which is
   also the denominator of every reported rate. `0` means there is no completed
   window to describe: detection is disabled, it was just enabled or reset, or the
-  last window was discarded for spanning more than twice the configured length.
+  server stalled for longer than the window and the counts were discarded.
 
 ```
 127.0.0.1:6379> INFO hotkeys
@@ -140,29 +137,40 @@ hotkeys_last_window_duration_ms:1002
 
 ## State and resets
 
-Hot key state, both the live window and the last completed one, is cleared by
-[`HOTKEYS RESET`](../commands/hotkeys-reset.md) and automatically by anything
-that discards an entire database or slot range:
-[`FLUSHDB`](../commands/flushdb.md), [`FLUSHALL`](../commands/flushall.md), a
-full sync or RDB reload that empties the dataset, a cluster reset, and dropping a
-slot. The qualifier matters: a reload that keeps the existing data, such as
-`DEBUG RELOAD NOFLUSH`, or one that is rejected by the RDB compatibility check,
-never empties the dataset and so leaves hot key state in place. A
-`repl-diskless-load swapdb` full sync is a further exception: it swaps the loaded
-dataset in place instead of emptying the old one, and also leaves hot key state
-untouched.
+Hot key tracking keeps statistics for both the current (live) window and the last
+completed window. You can clear this state explicitly with
+[`HOTKEYS RESET`](../commands/hotkeys-reset.md), or it is cleared automatically
+when an operation discards an entire database or slot range.
 
-Ordinary key access and removal is activity rather than a reset, so
-[`DEL`](../commands/del.md) and [`UNLINK`](../commands/unlink.md) count as
-accesses, and expiry and eviction do not clear state.
+The following operations clear hot key state:
 
-Renaming or moving a key does not carry its statistics to the new name or
-database. An entry is tracked by (key name, database), so after
-[`RENAME`](../commands/rename.md), [`MOVE`](../commands/move.md) or
-[`SWAPDB`](../commands/swapdb.md) the accumulated counts stay under the key's
-previous identity. The entry stops accruing new hits immediately and then ages
-out: it leaves the live window at the next rotation and the frozen window one
-rotation after that, so a report can show the previous name or database for up to
+* [`FLUSHDB`](../commands/flushdb.md) and [`FLUSHALL`](../commands/flushall.md)
+* A full sync or RDB reload that empties the dataset
+* A cluster reset
+* Dropping a slot
+
+Note that a reload which keeps the existing data, such as `DEBUG RELOAD NOFLUSH`
+or a `repl-diskless-load swapdb` sync, does not empty the dataset and so leaves
+hot key state in place.
+
+### Key access and removal
+
+Normal key activity does not reset hot key state. For example,
+[`DEL`](../commands/del.md) and [`UNLINK`](../commands/unlink.md) are treated as
+accesses, and neither expiration nor eviction clears the tracking state.
+
+### Renaming and moving keys
+
+Hot key statistics are associated with a key's name and database, rather than
+with the underlying key itself. As a result, renaming or moving a key does not
+transfer its statistics to its new name or database.
+
+After [`RENAME`](../commands/rename.md), [`MOVE`](../commands/move.md), or
+[`SWAPDB`](../commands/swapdb.md), the existing statistics remain associated with
+the key's previous identity. The entry stops accumulating new hits immediately,
+then ages out of the tracking windows: it leaves the live window at the next
+window rotation, and the last-completed (frozen) window one rotation later. As a
+result, a report can continue to show the old key name or database for up to
 roughly twice `hotkeys-window-seconds`.
 
 ## Commands
