@@ -86,33 +86,10 @@ traffic than another will reliably rank above it.
 
 ## What counts as an access
 
-Each key a command touches is counted separately, so one command can record
-several accesses: `MGET a b c` counts one access each for `a`, `b` and `c`.
+An access is counted whenever a client command touches a key, whether the command reads, writes, or removes the key. Each key is counted separately, so a command that touches multiple keys contributes one access for each key. Accesses to keys that do not exist are also counted, which helps reveal load caused by missing keys or repeated requests for keys that have been evicted. Client-driven traffic during data imports is counted as well.
 
-Counted:
+Internal activity is not counted. This includes replication and AOF traffic, loading data from RDB or AOF files, introspection commands, and background maintenance such as active defragmentation. Key expiration and eviction are also not counted as accesses because the removal itself is internal activity. However, a client lookup that triggers a lazy expiration is still counted, since the lookup was initiated by the client.
 
-* Reads and writes alike, by any client executing a command.
-* Accesses to keys that do not exist. This is deliberate — it surfaces load
-  against a missing key, for example a bad key template, or a stampede on a key
-  an eviction just removed.
-* [`DEL`](../commands/del.md) and [`UNLINK`](../commands/unlink.md), which are
-  activity on the key like any other access.
-* Traffic served while importing, which is user-driven load.
-
-Not counted:
-
-* Replication and AOF traffic, so a replica reports the load its own clients
-  generate rather than its primary's.
-* Keys touched while loading an RDB or AOF file.
-* Introspection lookups, such as those made by
-  [`OBJECT`](../commands/object.md) and [`DEBUG`](../commands/debug.md).
-* Key expiry, whether removed by the active expiry cycle or lazily on access,
-  and eviction. The removal itself is not client access. Note that the client
-  lookup which *triggers* a lazy expiry is still counted, as an access to a key
-  that is now missing.
-* Administrative bulk slot deletion.
-* Background maintenance such as active defragmentation, which relocates keys
-  in memory without going through the lookup path at all.
 
 ## Monitoring
 
