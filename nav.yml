@@ -12,7 +12,12 @@
 #             topics/ without .md), or a mapping with "topic", an optional
 #             shorter menu "title" and optional "commands".
 #
-# "commands" relates commands to a topic, for breadcrumbs and "see also" links.
+# The section with the id "command-reference" is filled by the website with
+# links to the command reference and its command categories. It has no
+# topics. Without it, the website adds it at the end of the menu.
+#
+# "commands" relates commands to a topic, for breadcrumbs and the topic's command
+# list in the menu.
 # Each item is one of:
 #
 #   - a command group in lowercase, e.g. "list" (the "group" in the command JSON)
@@ -35,6 +40,9 @@
     - installation
     - faq
     - migration
+
+- id: command-reference
+  title: Command reference
 
 - id: data-types
   title: Data types
