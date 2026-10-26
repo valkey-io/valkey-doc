@@ -86,10 +86,19 @@ traffic than another will reliably rank above it.
 
 ## What counts as an access
 
-An access is counted whenever a client command touches a key, whether the command reads, writes, or removes the key. Each key is counted separately, so a command that touches multiple keys contributes one access for each key. Accesses to keys that do not exist are also counted, which helps reveal load caused by missing keys or repeated requests for keys that have been evicted. Client-driven traffic during data imports is counted as well.
+An access is counted whenever a client command touches a key, whether the
+command reads, writes, or removes the key. Each key is counted separately, so a
+command that touches multiple keys contributes one access for each key. Accesses
+to keys that do not exist are also counted, which helps reveal load caused by
+missing keys or repeated requests for keys that have been evicted. Client-driven
+traffic during data imports is counted as well.
 
-Internal activity is not counted. This includes replication and AOF traffic, loading data from RDB or AOF files, introspection commands, and background maintenance such as active defragmentation. Key expiration and eviction are also not counted as accesses because the removal itself is internal activity. However, a client lookup that triggers a lazy expiration is still counted, since the lookup was initiated by the client.
-
+Internal activity is not counted. This includes replication and AOF traffic,
+loading data from RDB or AOF files, introspection commands, and background
+maintenance such as active defragmentation. Key expiration and eviction are also
+not counted as accesses because the removal itself is internal activity.
+However, a client lookup that triggers a lazy expiration is still counted, since
+the lookup was initiated by the client.
 
 ## Monitoring
 
