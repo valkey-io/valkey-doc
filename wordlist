@@ -206,6 +206,7 @@ defragmentable
 defragmentation
 defragmented
 del
+deletable
 Deno
 deny-oom
 deserialize
@@ -764,7 +765,7 @@ RESP[0-9].*
 Resque
 resque
 resync
-resynchronization
+resynchronization\.?
 resynchronizations
 resyncs
 RetainString
@@ -810,6 +811,7 @@ sdiff
 sdown
 sds
 se
+security@lists\.valkey\.io
 seeked
 Selectable
 semantical
