@@ -6,6 +6,7 @@ description: Horizontal scaling with Valkey Cluster
 Valkey scales horizontally with a deployment topology called Valkey Cluster. 
 This topic will teach you how to set up, test, and operate Valkey Cluster in production.
 You will learn about the availability and consistency characteristics of Valkey Cluster from the end user's point of view.
+Valkey Cluster handles failover itself and doesn't use [Valkey Sentinel](sentinel.md), which is a separate way to get high availability for Valkey without sharding.
 
 If you plan to run a production Valkey Cluster deployment or want to understand better how Valkey Cluster works internally, consult the [Valkey Cluster specification](cluster-spec.md).
 
