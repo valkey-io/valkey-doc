@@ -80,8 +80,12 @@
     - topic: pubsub
       commands: [pubsub]
     - notifications
-    - client-side-caching
+
+- id: patterns
+  title: Patterns and tutorials
+  topics:
     - lru-cache
+    - client-side-caching
     - distlock
     - indexing
     - twitter-clone
