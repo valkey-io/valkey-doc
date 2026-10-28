@@ -2,6 +2,19 @@
 [\w-]+\.\w+
 \d+\w+.*
 .rdb
+BF16
+BFLOAT16
+Configurables
+dtype
+FF0C
+fullwidth
+Haswell
+ideographic
+lossy
+NEON-BF16
+revalidate
+SVE-BF16
+unnormalized
 ˈrɛd-ɪs
 A1
 AArch64
@@ -70,6 +83,7 @@ backslashed
 backticks
 backtrace
 balancer
+balancer.
 bazzar
 bc
 bcc
@@ -134,6 +148,7 @@ cluster-config-file
 [Cc]md
 cmsgpack
 Cn
+codec
 codename
 codenamed
 Collina's
@@ -191,6 +206,7 @@ defragmentable
 defragmentation
 defragmented
 del
+deletable
 Deno
 deny-oom
 deserialize
@@ -432,6 +448,7 @@ keytool
 Kleppman's
 Kleppmann
 knockknock
+Kubernetes
 kqueue
 L3
 last-failover-wins
@@ -499,6 +516,7 @@ Lua-to-Valkey
 Lua's
 lubs
 Lucraft
+LZ4
 M1
 MacBook
 [mM]acOS
@@ -747,7 +765,7 @@ RESP[0-9].*
 Resque
 resque
 resync
-resynchronization
+resynchronization\.?
 resynchronizations
 resyncs
 RetainString
@@ -793,6 +811,7 @@ sdiff
 sdown
 sds
 se
+security@lists\.valkey\.io
 seeked
 Selectable
 semantical
@@ -1023,6 +1042,7 @@ zeroed-ACLs
 Zhao
 ziplists
 zset
+Zstandard
 linux
 Devuan
 Raspbian
