@@ -1,6 +1,7 @@
 The command returns all the rules defined for an existing ACL role, and the users that hold it.
+The command returns a null reply if the role does not exist.
 
-Specifically, it lists the role's commands, key patterns, channel patterns, databases and selectors, in the same format as [`ACL GETUSER`](acl-getuser.md), followed by the names of the users the role is assigned to.
+Specifically, it lists the role's commands, key patterns, channel patterns, databases and selectors, with rules returned in the same format as the one used in the [`ACL SETROLE`](acl-setrole.md) command, followed by the names of the users the role is assigned to.
 
 ## Examples
 

@@ -43,4 +43,6 @@ Here's an example configuration for a user
        6) ""
        7) "databases"
        8) "alldbs"
+15) "roles"
+16) (empty array)
 ```

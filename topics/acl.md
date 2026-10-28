@@ -425,7 +425,7 @@ Note that `clearselectors` does not remove the root permissions.
 
 Starting with Valkey 9.2, permissions can be defined once in a named _role_ and assigned to any number of users, instead of being repeated in every user.
 A role holds the same kind of permissions a user does: commands, key patterns, channel patterns, databases and selectors.
-Roles are created and modified with `ACL SETROLE`, which accepts the same rules as `ACL SETUSER` except for the ones that only make sense for a user: `on`, `off`, `reset`, the password rules, `role=` and `resetroles`.
+Roles are created and modified with [`ACL SETROLE`](../commands/acl-setrole.md), which accepts the same rules as [`ACL SETUSER`](../commands/acl-setuser.md) except for the ones that only make sense for a user: `on`, `off`, `reset`, the password rules, `role=` and `resetroles`.
 Roles are assigned to a user with the `role=` rule, and removed with `resetroles`:
 
     > ACL SETROLE reader ~app:* +@read
@@ -449,11 +449,11 @@ This means a user can be granted permissions on top of a role, but cannot be res
 
 Other things to know about roles:
 
-* Changes to a role with `ACL SETROLE` take effect immediately for every user holding it. Pub/Sub clients of those users that lose access to their channels are disconnected.
+* Changes to a role with [`ACL SETROLE`](../commands/acl-setrole.md) take effect immediately for every user holding it. Pub/Sub clients of those users that lose access to their channels are disconnected.
 * Roles cannot be nested, cannot have passwords, and cannot be authenticated against.
-* A role cannot be deleted with `ACL DELROLE` while it is assigned to a user. `ACL GETROLE` lists the users holding a role.
-* `ACL ROLES` lists the role names, `ACL USERS` lists only the users. `ACL LIST` reports both, with the `role` lines listed before the `user` lines.
-* `ACL GETUSER` reports the roles held by a user in the `roles` field, but the other fields only describe the user's own rules. Use `ACL DRYRUN` to check the effective permissions of a user.
+* A role cannot be deleted with [`ACL DELROLE`](../commands/acl-delrole.md) while it is assigned to a user. [`ACL GETROLE`](../commands/acl-getrole.md) lists the users holding a role.
+* [`ACL ROLES`](../commands/acl-roles.md) lists the role names, [`ACL USERS`](../commands/acl-users.md) lists only the users. [`ACL LIST`](../commands/acl-list.md) reports both, with the `role` lines listed before the `user` lines.
+* [`ACL GETUSER`](../commands/acl-getuser.md) reports the roles held by a user in the `roles` field, but the other fields only describe the user's own rules. Use [`ACL DRYRUN`](../commands/acl-dryrun.md) to check the effective permissions of a user.
 * Role names are case sensitive and may contain any printable ASCII character except for spaces, commas, quotes and backslashes. Roles have their own namespace, so a role may share its name with a user, a command, or a category.
 
 **Note:** like a new user, a new role starts with access to all databases (`alldbs`, see [database permissions](#database-permissions)), and to all Pub/Sub channels if `acl-pubsub-default` is set to `allchannels`.
