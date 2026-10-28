@@ -1,19 +1,17 @@
 The `HOTKEYS GET` command returns the hottest keys observed during the last
-completed detection window, ordered by estimated queries per second (QPS), from
+completed tracking window, ordered by estimated queries per second (QPS), from
 highest to lowest. It takes no arguments and returns at most `hotkeys-top-k`
 entries.
 
-See [`HOTKEYS`](hotkeys.md) and [Hot key detection](../topics/hotkeys.md) for how
-detection is enabled and configured, what an empty reply can mean, and how state
+See [`HOTKEYS`](hotkeys.md) and [Hot key tracking](../topics/hotkeys.md) for how
+tracking is enabled and configured, what an empty reply can mean, and how state
 is reset.
 
 Each entry contains:
 
 * `key`: the key name.
 * `db`: the database in which the key was accessed.
-* `qps`: the estimated accesses per second over the completed window. Each key a
-  command touches counts separately, so `MGET a b c` contributes one access to
-  each of the three keys.
+* `qps`: the estimated accesses per second over the completed window.
 
 `qps` is an estimate rather than an exact value, because accesses are sampled
 when `hotkeys-sampling-percentage` is below `100` (its default is `1`), and
@@ -27,15 +25,13 @@ A key that is accessed but does not exist is tracked like any other. This
 surfaces load against a missing key, for example from a bad key template or a
 stampede against a key an eviction just removed.
 
-The command returns an empty array rather than an error when there is nothing to
-report: either hot key tracking is disabled, or no hot keys were tracked in the
-last completed window. A polling client therefore has a single reply shape to
-parse, and does not have to match on an error string to tell "disabled" from
-"nothing is hot".
+The command returns an empty array when there is nothing to report: either hot
+key tracking is disabled, or no hot keys were tracked in the last completed
+window.
 
 ## Examples
 
-Enable detection, then read the hottest keys:
+Enable tracking, then read the hottest keys:
 
 ```
 127.0.0.1:6379> CONFIG SET hotkeys-top-k 16
@@ -53,11 +49,4 @@ OK
    4) (integer) 0
    5) "qps"
    6) (integer) 12700
-```
-
-Before the first window has completed, or while detection is disabled:
-
-```
-127.0.0.1:6379> HOTKEYS GET
-(empty array)
 ```

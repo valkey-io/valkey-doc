@@ -1,5 +1,5 @@
 ---
-title: "Hot key detection"
+title: "Hot key tracking"
 description: >
     Finding the most frequently accessed keys on a Valkey server
 ---
@@ -7,16 +7,17 @@ description: >
 A small number of keys often receives a disproportionate share of the traffic. On
 a cluster those keys limit how evenly load can be spread, since a single hot key
 cannot be split across shards; on a single server they are the keys worth caching
-client-side, sharding across several keys, or rate-limiting. Hot key detection
+client-side, sharding across several keys, or rate-limiting. Hot key tracking
 finds them, on the server, from the traffic the server actually serves.
 
 ## How it works
 
 Counting every access to every key exactly would cost memory proportional to the
-keyspace and add work to every lookup. Detection approximates instead: it records
+keyspace and add work to every lookup. Tracking approximates instead: it records
 a random `hotkeys-sampling-percentage` of accesses, and tracks at most
-`hotkeys-top-k` keys at a time. So a reported rate is an estimate, and a key
-quieter than the top-K may not appear at all.
+`hotkeys-top-k` keys at a time. The result is an approximate set of candidates:
+neither exact top-K membership nor the relative order of the entries is
+guaranteed, and a key quieter than the top-K may not appear at all.
 
 Counts accumulate in a *live* window. When `hotkeys-window-seconds` has elapsed
 the live window is *frozen* and a fresh one starts.
@@ -26,10 +27,15 @@ report therefore describes a recent, completed interval rather than an average
 since the server started, and the figures in one reply are all measured over the
 same interval.
 
-Keys are tracked over the whole keyspace, not per logical database and not per
-cluster slot. There is one top-K list, and every key competes for a place in it
-whichever database or slot it belongs to; each entry records the database it was
-accessed in so the keys can be told apart.
+If the server stalls long enough that the live window has spanned at least twice
+`hotkeys-window-seconds` by the time it rotates, its counts no longer describe a
+single window. Both the live and the frozen state are then discarded, and
+`HOTKEYS GET` returns an empty result until the next valid window completes.
+
+Keys are tracked over the whole keyspace, not per logical database. There is one
+top-K list, and every key competes for a place in it whichever database it
+belongs to; each entry records the database it was accessed in so the keys can be
+told apart.
 
 State is per node. Each server tracks only the accesses it serves, so on a
 cluster query each node and read each reply on its own; there is no aggregated,
@@ -37,36 +43,19 @@ cluster-wide view.
 
 ## Configuration
 
-Detection is disabled by default. Enable it by setting `hotkeys-top-k` to a
-positive value, then read the result with
-[`HOTKEYS GET`](../commands/hotkeys-get.md).
+Tracking is disabled by default. Enable it by setting `hotkeys-top-k` to a
+positive value.
 
 | Parameter | Default | Range | Meaning |
 | --- | --- | --- | --- |
-| `hotkeys-top-k` | `0` (disabled) | 0-1000 | Number of keys tracked, and the on/off switch: `0` disables detection entirely, any positive value enables it |
+| `hotkeys-top-k` | `0` (disabled) | 0-1000 | Number of keys tracked: `0` disables tracking entirely, any positive value enables it |
 | `hotkeys-sampling-percentage` | `1` | 1-100 | Percentage of client key accesses that are sampled; `100` samples every access |
 | `hotkeys-window-seconds` | `1` | 1-300 | Length of the reporting window |
 
 All three can be changed at runtime with
-[`CONFIG SET`](../commands/config-set.md). Any change aborts the current key
-access tracking, and what happens to the last completed window depends on which
-parameter changed:
-
-* `hotkeys-sampling-percentage`, `hotkeys-window-seconds`, or raising
-  `hotkeys-top-k`: it is kept, so an in-flight
-  [`HOTKEYS GET`](../commands/hotkeys-get.md) still sees it. The estimate uses
-  the sampling percentage that was in effect when that window was recorded, not
-  the new one.
-* Lowering `hotkeys-top-k`: it is trimmed to the new top-K, so the coldest
-  entries disappear from the next report.
-* Setting `hotkeys-top-k` to `0`: detection is disabled and both windows are
-  released.
-
-Use [`HOTKEYS RESET`](../commands/hotkeys-reset.md) to discard everything
-without changing the configuration.
-
-While detection is disabled no memory is allocated for it and no work is added to
-the access path.
+[`CONFIG SET`](../commands/config-set.md). A change takes at least one full
+window to take effect, since a report always describes a window that has already
+completed.
 
 ## Choosing the sampling percentage and window
 
@@ -80,48 +69,29 @@ and a 1-second window) keep overhead low while allowing the report to react
 quickly to changing traffic. Increase either setting when the hot key rates you
 care about are too low to resolve reliably.
 
-The ranking is more robust than the individual numbers. Two keys with similar
-rates may appear in either order, but a key with an order of magnitude more
-traffic than another will reliably rank above it.
-
 ## What counts as an access
 
-An access is counted whenever a client command touches a key, whether the
-command reads, writes, or removes the key — [`DEL`](../commands/del.md) and
-[`UNLINK`](../commands/unlink.md) included. Each key is counted separately, so a
-command that touches multiple keys contributes one access for each key. Accesses
-to keys that do not exist are also counted, which helps reveal load caused by
-missing keys or repeated requests for keys that have been evicted. Client-driven
-traffic during data imports is counted as well.
+Accesses are sampled at individual key lookups and at successful key removals,
+not once per command and key pair. So a command that touches several keys
+contributes one access for each of them, and a command that both reads and
+removes the same key contributes two: `MGET a b c` records one access against
+each of `a`, `b` and `c`, while `GETDEL` on an existing key records two against
+that one key.
 
-Internal activity is not counted. This includes replication and AOF traffic,
-loading data from RDB or AOF files, introspection commands such as
-[`OBJECT`](../commands/object.md) and [`DEBUG`](../commands/debug.md), and
-background maintenance such as active defragmentation. Key expiration and
-eviction are also not counted as accesses because the removal itself is internal
-activity. However, a client lookup that triggers a lazy expiration is still
-counted, since the lookup was initiated by the client.
+A lookup counts whether or not the key exists, which helps reveal load caused by
+missing keys or repeated requests for keys that have been evicted. A removal only
+counts when it removes something, so [`DEL`](../commands/del.md) and
+[`UNLINK`](../commands/unlink.md) on an existing key count as accesses while the
+same commands on a missing key record nothing. Client-driven traffic during data
+imports is counted as well.
 
-## Monitoring
-
-[`INFO`](../commands/info.md) `hotkeys` reports two fields describing the last
-completed window. The section is not part of the default `INFO` output, so
-request it by name or use `INFO all`.
-
-* `hotkeys_last_window_samples`: how many accesses were sampled. A window with
-  few samples supports only a coarse estimate, so this indicates how much to
-  trust a given report.
-* `hotkeys_last_window_duration_ms`: the real span the window covered, which is
-  also the denominator of every reported rate. `0` means there is no completed
-  window to describe: detection is disabled, it was just enabled or reset, or the
-  server stalled for longer than the window and the counts were discarded.
-
-```
-127.0.0.1:6379> INFO hotkeys
-# Hotkeys
-hotkeys_last_window_samples:19
-hotkeys_last_window_duration_ms:1002
-```
+Internal activity is not counted. This includes the write stream a replica
+applies from its primary and the commands a server loads from an RDB or AOF file,
+introspection lookups such as those made by [`OBJECT`](../commands/object.md),
+administrative bulk slot deletion, and background maintenance such as active
+defragmentation. Key expiration and eviction are also not counted, because the
+removal itself is internal activity — but a client lookup that triggers a lazy
+expiration is still counted, since the lookup was initiated by the client.
 
 ## State and resets
 
@@ -137,15 +107,8 @@ The following operations clear hot key state:
 * A cluster reset
 * Dropping a slot
 
-Note that a reload which keeps the existing data, such as `DEBUG RELOAD NOFLUSH`
-or a `repl-diskless-load swapdb` sync, does not empty the dataset and so leaves
-hot key state in place.
-
-### Key access and removal
-
-Normal key activity does not reset hot key state. For example,
-[`DEL`](../commands/del.md) and [`UNLINK`](../commands/unlink.md) are treated as
-accesses, and neither expiration nor eviction clears the tracking state.
+Normal key activity does not clear hot key state: `DEL` and `UNLINK` are treated
+as accesses, and neither expiration nor eviction clears the tracking state.
 
 ### Renaming and moving keys
 
@@ -155,11 +118,19 @@ transfer its statistics to its new name or database.
 
 After [`RENAME`](../commands/rename.md), [`MOVE`](../commands/move.md), or
 [`SWAPDB`](../commands/swapdb.md), the existing statistics remain associated with
-the key's previous identity. The entry stops accumulating new hits immediately,
-then ages out of the tracking windows: it leaves the live window at the next
-window rotation, and the last-completed (frozen) window one rotation later. As a
-result, a report can continue to show the old key name or database for up to
-roughly twice `hotkeys-window-seconds`.
+the key's previous identity, and clients still accessing that old name or
+database keep adding to them — a lookup of a key that is no longer there is
+counted like any other. Once no further accesses are recorded against it, the
+entry ages out of the tracking windows: it leaves the live window at the next
+window rotation, and the last-completed (frozen) window one rotation later. So a
+report can continue to show the old key name or database for up to roughly twice
+`hotkeys-window-seconds` after the last access to it.
+
+## Monitoring
+
+`INFO hotkeys` describes the last completed window: how many accesses were
+sampled, and the length of the window those samples were measured over. See
+[`INFO`](../commands/info.md) for the fields.
 
 ## Commands
 
@@ -168,17 +139,3 @@ roughly twice `hotkeys-window-seconds`.
 * [`HOTKEYS RESET`](../commands/hotkeys-reset.md): clear all collected
   statistics.
 * [`HOTKEYS HELP`](../commands/hotkeys-help.md): help text for the subcommands.
-
-## Comparison with `valkey-cli --hotkeys`
-
-[`valkey-cli`](cli.md) has a `--hotkeys` option, which is a different mechanism
-with different requirements. It scans the whole keyspace from the client and
-reads each key's [`OBJECT FREQ`](../commands/object-freq.md), so it requires
-`maxmemory-policy` to be set to an LFU policy, and its cost grows with the size
-of the keyspace. What it reports is the LFU counter: a logarithmic, decaying
-approximation of access frequency, shaped by `lfu-log-factor` and
-`lfu-decay-time`, rather than a count of accesses over a known interval.
-
-Server-side detection needs no particular eviction policy, costs nothing
-proportional to the keyspace, and reports a rate over a recent window — which is
-what identifies a key that is hot *now*.

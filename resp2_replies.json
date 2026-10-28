@@ -653,7 +653,7 @@
   ],
   "HOTKEYS": [],
   "HOTKEYS GET": [
-    "[Array reply](../topics/protocol.md#arrays): a list of the hottest keys from the last completed detection window, ordered by estimated QPS from highest to lowest, where each element is a flat array of the field-value pairs `key`, `db`, and `qps`. An empty array when there is nothing to report: hot key detection is disabled, no window has completed yet, or no accesses were sampled during the last completed window."
+    "[Array reply](../topics/protocol.md#arrays): a list of the hottest keys of the last completed window, ordered by estimated QPS descending. Each element is a flat array of the fields `key`, `db` and `qps`."
   ],
   "HOTKEYS HELP": [
     "[Array reply](../topics/protocol.md#arrays): a list of sub-commands and their descriptions."
