@@ -6,6 +6,9 @@ description: Valkey's serialization protocol (RESP) is the wire protocol that cl
 To communicate with the Valkey server, Valkey clients use a protocol called REdis Serialization Protocol (RESP).
 While the protocol was designed for Redis, it's used by many other client-server software projects.
 
+This page is for client authors.
+If you're looking for an existing client, see the [client libraries](../clients/).
+
 RESP is a compromise among the following considerations:
 
 * Simple to implement.
@@ -19,8 +22,6 @@ The array's contents are the command and its arguments that the server should ex
 The server's reply type is command-specific.
 
 RESP is binary-safe and uses prefixed length to transfer bulk data so it does not require processing bulk data transferred from one process to another.
-
-RESP is the protocol you should implement in your Valkey client.
 
 **Note:**
 The protocol outlined here is used only for client-server communication.

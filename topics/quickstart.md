@@ -19,7 +19,7 @@ If you just want to try Valkey quickly, head over to [Try-Valkey](https://valkey
 
 Once connected with Valkey, you can interact by issuing commands to store and retrieve data. Valkey behaves like a **remote dictionary** – you can think of it as a giant hash map on a server. Each piece of data is stored under a unique **key**, and you use commands to read or modify values associated with those keys.
 
-Let’s walk through some fundamental operations **** with two of the most commonly used data types in Valkey: **strings** and **hashes**.
+Let’s walk through some fundamental operations with two of the most commonly used data types in Valkey, **strings** and **hashes**, using [`valkey-cli`](cli.md), the Valkey command line interface.
 
 * **Strings:** The simplest data type in Valkey is a string (binary-safe sequence of bytes). You can store text or binary data under a key. For example, to store a string value and then retrieve it:
 

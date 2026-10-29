@@ -48,6 +48,7 @@ Examples: `../commands/#sorted-set`, `../topics/`, `./`.
 ### Topics
 
 The files under `topics/` are generic documentation pages. The `index.md` page is a starting point.
+When adding a topic, also add it to the menu (see [Menu](#menu)).
 
 In the top of these files, there's a frontmatter metadata section, between two
 lines of three dashes (`---`). These are YAML fields of which we use only the
@@ -142,6 +143,29 @@ when processed, produce Markdown content. Here's an example:
   ...
 }
 ```
+
+### Menu
+
+The documentation menu on the website is defined in [`nav.yml`](nav.yml).
+It groups the topics into sections and relates commands to the topic that
+explains them.
+The website uses this for the menu in the left column, for breadcrumbs, and to
+list a topic's commands in the menu.
+
+When adding a topic, add it to a section in `nav.yml`.
+When adding a command, check that a menu entry covers it.
+Commands can be covered by their command group (e.g. `list`), their container
+command (e.g. `ACL` for all `ACL` subcommands) or their name (e.g. `BGSAVE`).
+The format is described in the comments at the top of `nav.yml`.
+
+Topics and commands provided by modules are listed in the module's own file in
+[`modules-nav/`](modules-nav/), which the website merges into the menu.
+A module file can add topics to a section in `nav.yml` or add a section of its
+own.
+
+Pages that aren't in the menu are still published and listed in the alphabetical
+index on the website's topics page and in the command reference, but they're
+harder to find, so please keep the menu up to date.
 
 ### Styling guidelines
 
