@@ -1,18 +1,20 @@
-Merge a JSON value into the value at the path using [RFC 7386](https://www.rfc-editor.org/rfc/rfc7386) JSON Merge Patch semantics.
+Merge a JSON value into the value at the path using [RFC 7396](https://www.rfc-editor.org/rfc/rfc7396) JSON Merge Patch semantics.
 
 * If the key does not exist:
     * A new key is created when the path is the document root (`.` or `$`).
     * Otherwise, the command returns a `SYNTAXERR` error.
 * If the key exists:
-    * If the value at the path is an object and the patch value is an object, members are merged recursively:
+    * If the patch value is an object, its members are merged recursively into the value at the path. A non-object value at the path is treated as an empty object:
         * Members present only in the patch are added.
         * Members present in both are replaced by the merged result.
         * Members set to `null` in the patch are deleted from the target.
     * If the patch value is not an object (for example a string, number, boolean, array, or `null`), the value at the path is replaced entirely.
-    * If the path exists except for the final child, and the parent is an object, the final child is created and set to the patch value.
+    * If the path exists except for the final child, and the parent is an object, the final child is created and set to the patch value with `null` members removed.
+    * If the parent does not exist, the command returns a `NONEXISTENT` error.
+    * If the parent exists but is not an object, the command returns an `ERROR` error.
     * Arrays are replaced, not merged element-by-element.
 * Document nesting is subject to the configured maximum depth (`json.max-path-limit`).
-  Once the recursion depth reaches that limit, merging stops and the new value is used as-is for the remainder of the path.
+  A merge whose result would exceed that depth returns a `LIMIT` error and leaves the document unchanged.
 
 ## Examples
 
