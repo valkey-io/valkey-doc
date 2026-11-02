@@ -64,6 +64,16 @@ Each record is represented by an array which contains the field/value pairs of e
 
 If `WITHCURSOR` is specified the output is a two element array. The first element is an array whose first element is the number of records returned, followed by one element for each returned record. The second element is the cursor id to pass to [`FT.CURSOR READ`](ft.cursor.md), or 0 if all records were returned, in which case no cursor is created.
 
+## Reply
+
+Array: the first element is an integer that should be ignored (it is the number of records in the reply), followed by one array per record output by the final processing stage.
+Each record's array contains its field/value pairs.
+
+If `WITHCURSOR` is specified, an array of two elements:
+
+1. Array: an integer, the number of records returned, followed by one array per record.
+2. Integer: the cursor id to pass to [`FT.CURSOR READ`](ft.cursor.md), or 0 if all records were returned.
+
 # Processing Stages
 
 ## APPLY Stage
