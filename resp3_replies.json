@@ -1617,6 +1617,12 @@
   "XACK": [
     "[Integer reply](../topics/protocol.md#integers): The command returns the number of messages successfully acknowledged. Certain message IDs may no longer be part of the PEL (for example because they have already been acknowledged), and XACK will not count them as successfully acknowledged."
   ],
+  "XACKDEL": [
+    "[Array reply](../topics/protocol.md#arrays): a list of integer codes, one per requested ID, in the same order as the IDs are given.",
+    "* -1: The key doesn't exist, the group doesn't exist, or the ID isn't in the group's PEL.",
+    "* 1: The entry was acknowledged and deleted, or a dangling PEL entry (whose stream entry was already deleted) was acknowledged.",
+    "* 2: The entry was acknowledged but not deleted because another consumer group still needs it (`ACKED` mode only)."
+  ],
   "XADD": [
     "One of the following:",
     "* [Bulk string reply](../topics/protocol.md#bulk-strings): The ID of the added entry. The ID is the one automatically generated if an asterisk (`*`) is passed as the _id_ argument, otherwise the command just returns the same ID specified by the user during insertion.",
@@ -1635,6 +1641,12 @@
   ],
   "XDEL": [
     "[Integer reply](../topics/protocol.md#integers): the number of entries that were deleted."
+  ],
+  "XDELEX": [
+    "[Array reply](../topics/protocol.md#arrays): a list of integer codes, one per requested ID, in the same order as the IDs are given.",
+    "* -1: The ID doesn't exist in the stream, or the key doesn't exist.",
+    "* 1: The entry was deleted.",
+    "* 2: The entry was not deleted because a consumer group still needs it (`ACKED` mode only)."
   ],
   "XGROUP": [],
   "XGROUP CREATE": [

@@ -14,6 +14,8 @@ so that such message does not get processed again, and as a side effect,
 the PEL entry about this message is also purged, releasing memory from the
 Valkey server.
 
+To acknowledge and delete entries in a single step, with control over how other consumer groups' PEL references are handled, see [XACKDEL](xackdel.md), which extends this command with explicit `KEEPREF`, `DELREF`, and `ACKED` deletion modes.
+
 ## Examples
 
 ```
