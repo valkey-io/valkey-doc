@@ -5,6 +5,10 @@ If the library doesn't exist, the server returns an error.
 
 For more information please refer to [Introduction to Valkey Functions](../topics/functions-intro.md).
 
+## Reply
+
+`OK`.
+
 ## Examples
 
 ```

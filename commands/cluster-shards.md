@@ -51,6 +51,10 @@ Clients may treat the empty string in the same way as NULL, that is the same end
 
 The 'id' field is the unique id of the shard, which is randomly generated and 40 characters long.
 
+## Reply
+
+Nested array of maps of hash ranges and shard nodes describing individual shards.
+
 ## Examples
 
 ```

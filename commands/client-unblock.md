@@ -28,6 +28,13 @@ will return and can be finally reissued.
 This example shows the application in the context of streams, however
 the pattern is a general one and can be applied to other cases.
 
+## Reply
+
+One of the following:
+
+* Integer: `0` if the client was unblocked successfully.
+* Integer: `1` if the client wasn't unblocked.
+
 ## Examples
 
 ```

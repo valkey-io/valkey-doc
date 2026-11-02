@@ -2,6 +2,10 @@ Returns all the members of the set value stored at `key`.
 
 This has the same effect as running `SINTER` with one argument `key`.
 
+## Reply
+
+Set: all members of the set.
+
 ## Examples
 
 ```

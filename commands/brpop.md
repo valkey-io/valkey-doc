@@ -10,6 +10,13 @@ the tail of a list instead of popping from the head.
 
 [cb]: blpop.md
 
+## Reply
+
+One of the following:
+
+* Null: no element could be popped and the timeout expired.
+* Array: the key from which the element was popped and the value of the popped element
+
 ## Examples
 
 ```

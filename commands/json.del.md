@@ -1,5 +1,12 @@
 Delete the JSON values at the path in a document key. If the path is the root path, it is equivalent to deleting the key from Valkey.
 
+## Reply
+
+* Integer:
+  * The number of elements deleted.
+  * Returns 0 if the Valkey key does not exist.
+  * Returns 0 if the JSON path is invalid or does not exist.
+
 ## Examples
 
 Enhanced path syntax:

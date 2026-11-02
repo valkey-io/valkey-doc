@@ -16,3 +16,7 @@ Since the currently selected database is a property of the connection, clients s
 While there is no dedicated command to query the currently selected database for a connection, you can infer it from the output of [`CLIENT LIST`](client-list.md) or [`CLIENT INFO`](client-info.md), where each client entry includes the `db=N` field indicating the selected database.
 
 Access to a database can be restricted with ACL [database permissions](../topics/acl.md#database-permissions). New connections always start in database 0 even when the authenticated user is not allowed to access database 0; in that case the client must issue `SELECT` to switch to an allowed database before running any command that accesses the keyspace. If the user does not have access to the target database, `SELECT` fails with a `NOPERM` error and the event is recorded in [`ACL LOG`](acl-log.md).
+
+## Reply
+
+`OK`.

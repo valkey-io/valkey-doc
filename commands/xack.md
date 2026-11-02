@@ -16,6 +16,10 @@ Valkey server.
 
 To acknowledge and delete entries in a single step, with control over how other consumer groups' PEL references are handled, see [XACKDEL](xackdel.md), which extends this command with explicit `KEEPREF`, `DELREF`, and `ACKED` deletion modes.
 
+## Reply
+
+Integer: The command returns the number of messages successfully acknowledged. Certain message IDs may no longer be part of the PEL (for example because they have already been acknowledged), and XACK will not count them as successfully acknowledged.
+
 ## Examples
 
 ```

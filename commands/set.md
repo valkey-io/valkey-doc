@@ -19,6 +19,24 @@ The `SET` command supports a set of options that modify its behavior:
 
 Note: Since the `SET` command options can replace `SETNX`, `SETEX`, `PSETEX`, `GETSET`, it is possible that in future versions of Valkey these commands will be deprecated and finally removed.
 
+## Reply
+
+If `GET` not given, any of the following:
+
+* Null: Operation was aborted (conflict with one of the `XX`/`NX` options).
+* `OK`: The key was set.
+
+If `GET` given, any of the following:
+
+* Null: The key didn't exist before the `SET`.
+* String: The previous value of the key.
+
+Note that when using `GET` together with `XX`/`NX`/`IFEQ`, the reply indirectly indicates whether the key was set:
+
+* `GET` and `XX` given: Non-null indicates the key was set.
+* `GET` and `NX` given: null indicates the key was set.
+* `GET` and `IFEQ` given: The key was set if the reply is equal to `comparison-value`.
+
 ## Examples
 
 Basic usage

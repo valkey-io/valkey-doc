@@ -6,6 +6,14 @@ The command supports three deletion modes:
 - `DELREF`: deletes the stream message and forcibly removes it from all consumer group PELs,
 - `ACKED`: deletes a message only once no consumer group still needs it, meaning none has it pending (each has either acknowledged it or never picked it up), and no group can still deliver it later.
 
+## Reply
+
+Array of integer codes, one per requested ID, in the same order as the IDs are given.
+
+* -1: The ID doesn't exist in the stream, or the key doesn't exist.
+* 1: The entry was deleted.
+* 2: The entry was not deleted because a consumer group still needs it (`ACKED` mode only).
+
 ## Examples
 
 ```

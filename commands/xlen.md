@@ -8,6 +8,10 @@ Streams are not auto-deleted once they have no entries inside (for instance
 after an `XDEL` call), because the stream may have consumer groups
 associated with it.
 
+## Reply
+
+Integer: the number of entries of the stream at _key_.
+
 ## Examples
 
 ```

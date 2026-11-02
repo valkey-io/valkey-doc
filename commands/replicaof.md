@@ -6,6 +6,10 @@ If a server is already a replica of some primary, `REPLICAOF` hostname port will
 
 The form `REPLICAOF` NO ONE will stop replication, turning the server into a MASTER, but will not discard the replication. So, if the old primary stops working, it is possible to turn the replica into a primary and set the application to use this new primary in read/write. Later when the other Valkey server is fixed, it can be reconfigured to work as a replica.
 
+## Reply
+
+`OK`.
+
 ## Examples
 
 ```

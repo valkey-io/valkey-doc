@@ -14,6 +14,13 @@ popped from.
 
 [cl]: blpop.md
 
+## Reply
+
+One of the following:
+
+* Null: when no element could be popped and the _timeout_ expired.
+* Array: the keyname, popped member, and its score.
+
 ## Examples
 
 ```

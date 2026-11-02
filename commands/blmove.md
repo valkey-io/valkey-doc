@@ -17,3 +17,10 @@ Please see the pattern description in the `LMOVE` documentation.
 ## Pattern: Circular list
 
 Please see the pattern description in the `LMOVE` documentation.
+
+## Reply
+
+One of the following:
+
+* String: the element being popped from the _source_ and pushed to the _destination_.
+* Null: the operation timed-out

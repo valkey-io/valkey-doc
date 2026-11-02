@@ -119,28 +119,25 @@ We process these files to provide a better experience.
     backticks.
     For example: `INCR`.
 
-The reply types and descriptions are stored in separate JSON files in this doc repo.
-Each command will have a description and both RESP2 and RESP3 return values.
-When adding or editing return values, be sure to edit both files. Use the following
-links for the reply type.
-Regarding the return values, these are contained in the files:
+Each command page has a `## Reply` section.
+It's placed before the `## Notes` and `## Examples` sections, or at the end of
+the page if there are none.
+It describes the reply in both RESP2 and RESP3.
+It uses the RESP3 types, written as plain words: "array", "string",
+"integer", "double", "map", "set", "verbatim string" and "null".
+The [protocol specification](topics/protocol.md) explains how each type is
+represented in RESP2.
+A value in backticks, such as `OK`, is a simple string.
+Other simple strings are written as "Simple string".
+Here's an example:
 
-* `resp2_replies.json`
-* `resp3_replies.json`
+```markdown
+## Reply
 
-Each file is a dictionary with a matching set of keys. Each key is an array of strings that,
-when processed, produce Markdown content. Here's an example:
+One of the following:
 
-```json
-{
-  ...
-  "ACL CAT": [
-    "One of the following:",
-    "* [Array reply](topics/protocol.md#arrays): an array of [Bulk string reply](topics/protocol.md#bulk-strings) elements representing ACL categories or commands in a given category.",
-    "* [Simple error reply](topics/protocol.md#simple-errors): the command returns an error if an invalid category name is given."
-  ],
-  ...
-}
+* String: the value of the key.
+* Null: if the key does not exist.
 ```
 
 ### Styling guidelines

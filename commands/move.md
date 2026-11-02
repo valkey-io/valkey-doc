@@ -6,3 +6,10 @@ It is possible to use `MOVE` as a locking primitive because of this.
 
 The caller must have access to the current and the destination databases. See
 [database permissions](../topics/acl.md#database-permissions).
+
+## Reply
+
+One of the following:
+
+* Integer: `1` if _key_ was moved.
+* Integer: `0` if _key_ already exists in the destination database, or it does not exist in the source database.

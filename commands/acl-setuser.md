@@ -101,6 +101,12 @@ This is a list of all the supported Valkey ACL rules:
 * `resetroles`: Removes every role from the user. (Added in version 9.2)
 * `reset`: Removes any capability from the user. They are set to off, without passwords, without roles, unable to execute any command, unable to access any key.
 
+## Reply
+
+`OK`.
+
+If the rules contain errors, the error is returned.
+
 ## Examples
 
 ```

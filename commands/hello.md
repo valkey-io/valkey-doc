@@ -60,3 +60,9 @@ protocol to the specified version and also accepts the following options:
 
 * `AUTH <username> <password>`: directly authenticate the connection in addition to switching to the specified protocol version. This makes calling [`AUTH`](auth.md) before `HELLO` unnecessary when setting up a new connection. Note that the `username` can be set to "default" to authenticate against a server that does not use ACLs, but rather the simpler `requirepass` mechanism.
 * `SETNAME <clientname>`: this is the equivalent of calling [`CLIENT SETNAME`](client-setname.md).
+
+## Reply
+
+Map of server properties.
+
+Error: if the `protover` requested does not exist.

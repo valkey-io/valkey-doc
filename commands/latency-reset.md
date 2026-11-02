@@ -28,3 +28,7 @@ Valid values for `event` are:
 For more information refer to the [Latency Monitoring Framework page][lm].
 
 [lm]: ../topics/latency-monitor.md
+
+## Reply
+
+Integer: the number of event time series that were reset.

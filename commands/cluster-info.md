@@ -54,3 +54,7 @@ Here are the explanation of these fields:
 * `cluster_stats_messages_publishshard_sent` and `cluster_stats_messages_publishshard_received`: Pub/Sub Publish shard propagation, see [Sharded Pubsub](../topics/pubsub.md#sharded-pub-sub).
 
 More information about the Current Epoch and Config Epoch variables are available in the [Valkey Cluster specification document](../topics/cluster-spec.md#cluster-current-epoch).
+
+## Reply
+
+Verbatim string: A map between named fields and values in the form of `<field>:<value>` lines separated by newlines composed by the two bytes `CRLF`.

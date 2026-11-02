@@ -7,6 +7,13 @@ Here, `-1` means the last element, `-2` means the penultimate and so forth.
 
 When the value at `key` is not a list, an error is returned.
 
+## Reply
+
+One of the following:
+
+* Null: when _index_ is out of range.
+* String: the requested element.
+
 ## Examples
 
 ```

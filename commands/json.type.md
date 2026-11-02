@@ -1,5 +1,16 @@
 Report type of the values at the given path.
 
+## Reply
+
+* If the path is enhanced syntax:
+  * Array of strings representing type of the value at each path (one of: 'null', 'boolean', 'string', 'number', 'integer', 'object', 'array').
+  * Null: For each path that does not exist.
+  * Array: Empty array if the document key does not exist.
+* If the path is restricted syntax:
+  * String: Type of the value.
+  * Null: If the document key does not exist.
+  * Null: If the JSON path is invalid or does not exist.
+
 ## Examples
 
 Enhanced path syntax:

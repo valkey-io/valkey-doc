@@ -38,3 +38,10 @@ Valkey objects can be encoded in different ways:
   - `stream`, encoded as a radix tree of listpacks.
 
 All the specially encoded types are automatically converted to the general type once you perform an operation that makes it impossible for Valkey to retain the space saving encoding.
+
+## Reply
+
+One of the following:
+
+* Null: if the key doesn't exist.
+* String: the encoding of the object.

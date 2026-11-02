@@ -9,3 +9,7 @@ and we ask `CLUSTER REPLICAS` to a node that has not yet received the
 configuration update, it may show stale information. However eventually
 (in a matter of seconds if there are no network partitions) all the nodes
 will agree about the set of nodes associated with a given primary.
+
+## Reply
+
+Array of replica nodes replicating from the specified primary node provided in the same format used by `CLUSTER NODES`.

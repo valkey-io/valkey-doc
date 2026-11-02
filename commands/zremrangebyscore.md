@@ -1,6 +1,10 @@
 Removes all elements in the sorted set stored at `key` with a score between
 `min` and `max` (inclusive).
 
+## Reply
+
+Integer: the number of members removed.
+
 ## Examples
 
 ```

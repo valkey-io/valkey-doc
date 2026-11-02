@@ -36,3 +36,7 @@ the node to force the receiver to accept it as a trusted node, it sends a
 `MEET` packet instead of a `PING` packet. The two packets have exactly the
 same format, but the former forces the receiver to acknowledge the node as
 trusted.
+
+## Reply
+
+`OK` if the command was successful. If the port or cluster bus port number is out of range, or if an invalid address is specified, an error is returned.

@@ -13,6 +13,13 @@ Roles are listed in the order they were assigned to the user.
 The commands, keys, channels, databases and selectors fields only describe the user's own rules, not the permissions the user gets from its roles.
 Use [`ACL GETROLE`](acl-getrole.md) to inspect the rules of a role, and [`ACL DRYRUN`](acl-dryrun.md) to check the effective permissions of a user.
 
+## Reply
+
+One of the following:
+
+* Map of ACL rule definitions for the user.
+* Null: if user does not exist.
+
 ## Examples
 
 Here's an example configuration for a user

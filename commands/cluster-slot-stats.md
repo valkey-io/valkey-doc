@@ -15,6 +15,10 @@ The following statistics are supported:
 * `ORDERBY` -- Returns an ordered slot statistics based on the specified statistic and sub-arguments to identify hot / cold slots across the cluster. Either `ASC` or `DESC` modifiers can be used. In the event of a tie in the stats, ascending slot number is used as a tie breaker.
 * `SLOTSRANGE` -- Returns slot statistics based on the slots range provided for pagination. The range is inclusive. The response is ordered in ascending slot number.
 
+## Reply
+
+Nested array of slot usage statistics.
+
 ## Examples
 
 ### Response in RESP2

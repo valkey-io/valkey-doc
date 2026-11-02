@@ -16,10 +16,16 @@ Merge a JSON value into the value at the path using [RFC 7396](https://www.rfc-e
 * Document nesting is subject to the configured maximum depth (`json.max-path-limit`).
   A merge whose result would exceed that depth returns a `LIMIT` error and leaves the document unchanged.
 
+## Reply
+
+* `OK` if the operation was successful.
+* Error: If the operation failed.
+
 ## Examples
 
 Restricted path syntax:
 
+```
 127.0.0.1:6379> JSON.MERGE k1 . '{"a":1,"b":2}'
 OK
 127.0.0.1:6379> JSON.GET k1
@@ -53,6 +59,7 @@ OK
 
 Enhanced path syntax:
 
+```
 127.0.0.1:6379> JSON.SET k1 . '{"users":[{"name":"Alice","meta":{"active":false}},{"name":"Bob","meta":{"active":false}}]}'
 OK
 127.0.0.1:6379> JSON.MERGE k1 '$..meta' '{"active":true,"updated":true}'

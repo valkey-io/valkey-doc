@@ -145,3 +145,7 @@ Inside `MULTI`/`EXEC` or a Lua script, no other nodes are queried and the LOCAL 
   - `identifier` (string) identifier for this attribute
   - `attribute` (string) The name used to refer to this index in query and aggregation expressions.
   - `user_indexed_memory` (integer) Number of bytes of user data ingested into this field, summed across all nodes, primaries and replicas.
+
+## Reply
+
+Array:: a map of index fields in the form of key followed by value

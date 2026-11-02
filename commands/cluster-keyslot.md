@@ -6,6 +6,10 @@ Example use cases for this command:
 1. Client libraries may use Valkey in order to test their own hashing algorithm, generating random keys and hashing them with both their local implementation and using Valkey `CLUSTER KEYSLOT` command, then checking if the result is the same.
 2. Humans may use this command in order to check what is the hash slot, and then the associated Valkey Cluster node, responsible for a given key.
 
+## Reply
+
+Integer: The hash slot number for the specified key
+
 ## Example
 
 ```
