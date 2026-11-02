@@ -651,6 +651,16 @@
   "HMSET": [
     "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
   ],
+  "HOTKEYS": [],
+  "HOTKEYS GET": [
+    "[Array reply](../topics/protocol.md#arrays): a list of the hottest keys of the last completed window, ordered by estimated QPS descending. Each element is a flat array of the fields `key`, `db` and `qps`."
+  ],
+  "HOTKEYS HELP": [
+    "[Array reply](../topics/protocol.md#arrays): a list of sub-commands and their descriptions."
+  ],
+  "HOTKEYS RESET": [
+    "[Simple string reply](../topics/protocol.md#simple-strings): `OK`."
+  ],
   "HRANDFIELD": [
     "Any of the following:",
     "* [Nil reply](../topics/protocol.md#bulk-strings): if the key doesn't exist",

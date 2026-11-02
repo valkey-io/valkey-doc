@@ -17,6 +17,7 @@ The optional parameter can be used to select a specific section of information:
 *   `modules`: Modules section
 *   `keyspace`: Database related statistics
 *   `errorstats`: Valkey error statistics
+*   `hotkeys`: Hot key tracking statistics
 
 It can also take the following values:
 
@@ -730,6 +731,13 @@ The statistics are the number of keys, and the number of keys with an expiration
 For each database, the following line is added:
 
 *   `dbXXX`: `keys=XXX,expires=XXX`
+
+The **hotkeys** section describes the last completed hot key tracking window.
+It is not part of the default output, so request it by name or use `INFO all`.
+See [Hot key tracking](../topics/hotkeys.md) for the feature itself.
+
+*   `hotkeys_last_window_samples`: Number of accesses sampled during the last completed window
+*   `hotkeys_last_window_duration_ms`: Length of the last completed window in milliseconds, and the denominator of every rate `HOTKEYS GET` reports. `0` when there is no completed window to describe
 
 The **debug** section contains experimental metrics, which might change or get removed in future versions.
 It won't be included when `INFO` or `INFO ALL` are called, and it is returned only when `INFO DEBUG` is used.

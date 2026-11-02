@@ -221,6 +221,10 @@ This topic covers the different aspects of `valkey-cli`, starting from the simpl
 : Sample keys looking for hot keys.
   Only works when maxmemory-policy is `*lfu`.
   This is equivalent to --hotkeys-count 16.
+  This scans the keyspace from the client and reads each key's LFU counter, a
+  logarithmic and decaying approximation of access frequency. For server-side
+  tracking that needs no particular eviction policy and reports a rate over a
+  recent window, see [Hot key tracking](hotkeys.md).
 
 **`--hotkeys-count`** _n_
 : Sample keys looking for the n most hot keys.
