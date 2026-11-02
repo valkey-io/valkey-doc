@@ -20,7 +20,6 @@ Merge a JSON value into the value at the path using [RFC 7396](https://www.rfc-e
 
 Restricted path syntax:
 
-```bash
 127.0.0.1:6379> JSON.MERGE k1 . '{"a":1,"b":2}'
 OK
 127.0.0.1:6379> JSON.GET k1
@@ -54,7 +53,6 @@ OK
 
 Enhanced path syntax:
 
-```bash
 127.0.0.1:6379> JSON.SET k1 . '{"users":[{"name":"Alice","meta":{"active":false}},{"name":"Bob","meta":{"active":false}}]}'
 OK
 127.0.0.1:6379> JSON.MERGE k1 '$..meta' '{"active":true,"updated":true}'
