@@ -24,15 +24,15 @@ In command arguments, the following placeholders are substituted:
   Multiple occurrences within a single command each get different values.
 
 `__rand_1st__`
-: Similar to __rand_int__ but multiple occurrences will have the same
-  value. __rand_2nd__ through __rand_9th__ are also available.
+: Similar to `__rand_int__` but multiple occurrences will have the same
+  value. `__rand_2nd__` through `__rand_9th__` are also available.
 
 `__data__`
 : Replaced with data of the size specified by the -d option.
 
 `__field:colname__`
 : Replaced with data from the specified field/column in the
-  dataset. Requires the --dataset option.
+  dataset. Requires the `--dataset` option.
 
 `{tag}`
 : Replaced with a tag that routes the command to the right cluster node.
@@ -70,7 +70,7 @@ In command arguments, the following placeholders are substituted:
 : Total number of requests (default 100000)
 
 **`--duration`** _seconds_
-: Run benchmark for specified number of seconds (mutually exclusive with -n)
+: Run benchmark for specified number of seconds (mutually exclusive with `-n`)
 
 **`--warmup`** _seconds_
 : Run benchmark for specified warmup period before recording data.
@@ -126,13 +126,13 @@ In command arguments, the following placeholders are substituted:
   use the same key.
 
 **`--sequential`**
-: Modifies the -r argument to replace the string __rand_int__
+: Modifies the -r argument to replace the string `__rand_int__`
   with 12 digit numbers sequentially instead of randomly.
-  __rand_1st__ through __rand_9th__ are available with independent counters.
+  `__rand_1st__` through `__rand_9th__` are available with independent counters.
   Used to create expected number of elements with multiple replacements.
-  Example: ZADD myzset __rand_int__ element:__rand_1st__
+  Example: `ZADD myzset __rand_int__ element:__rand_1st__`
 
-**`-P`** _numreq_ 
+**`-P`** _numreq_
 : Pipeline _numreq_ requests. Default 1 (no pipeline).
 
 **`-q`**
