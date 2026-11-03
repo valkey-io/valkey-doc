@@ -16,7 +16,7 @@ are fast and run in constant or logarithmic time. Other commands have
 Finally, Valkey is *mostly* single-threaded. This is usually an advantage
 from the point of view of the amount of work it can perform per core, and in
 the latency figures it is able to provide. However, it poses
-a challenge for latency, since the single-thread
+a challenge for latency, since the single thread
 must be able to perform certain tasks incrementally, for
 example key expiration, in a way that does not impact the other clients
 that are served.
@@ -87,9 +87,6 @@ Set the threshold according to the application's latency requirements.
 
 For example, if the application requires a maximum latency of 100 milliseconds, set the threshold to 100:
 
-```bash
-CONFIG SET latency-monitor-threshold 100
-```
 
 Latency monitoring is disabled by default.
 Latency monitoring requires very little memory. However, enabling it increases the baseline memory usage of a Valkey instance.
