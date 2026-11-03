@@ -1,0 +1,6 @@
+# Menu entries for the valkey-bloom module, merged into the core menu (nav.yml).
+# "section" adds topics to a section defined in the core menu.
+- section: data-types
+  topics:
+    - topic: bloomfilters
+      commands: [bloom]

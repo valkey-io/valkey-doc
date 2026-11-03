@@ -1,0 +1,180 @@
+# Menu structure for the documentation: topics and the commands related to them.
+#
+# Each entry is a first-level menu section:
+#
+#   id:       Stable identifier. Module docs use it to add topics to a section,
+#             so don't rename it without updating them.
+#   title:    Label shown in the menu.
+#   landing:  Optional topic shown as the section's overview page.
+#   commands: Optional commands belonging to the section as a whole (see below).
+#             They're related to the landing page, if there is one.
+#   topics:   Topics in menu order. Either a topic name (a file name in
+#             topics/ without .md), or a mapping with "topic", an optional
+#             shorter menu "title" and optional "commands".
+#
+# The section with the id "command-reference" is filled by the website with
+# links to the command reference and its command categories. It has no
+# topics. Without it, the website adds it at the end of the menu.
+#
+# "commands" relates commands to a topic, for breadcrumbs and the topic's command
+# list in the menu.
+# Each item is one of:
+#
+#   - a command group in lowercase, e.g. "list" (the "group" in the command JSON)
+#   - a container command in uppercase, e.g. "ACL" for all ACL subcommands
+#   - a command name in uppercase, e.g. "BGSAVE"
+#
+# The most specific item wins: a name over a container, a container over a group.
+#
+# Every topic should be listed exactly once, and every documented command (one
+# with a page in commands/) should be covered exactly once at its most specific
+# level. Topics and commands from modules are listed in the modules' own menu
+# files. The website leaves out what doesn't fit; pages missing from the menu
+# are still listed in the topic index and the command reference.
+
+- id: getting-started
+  title: Getting started
+  topics:
+    - introduction
+    - quickstart
+    - installation
+    - faq
+    - migration
+
+- id: command-reference
+  title: Command reference
+
+- id: data-types
+  title: Data types
+  landing: data-types
+  topics:
+    - topic: strings
+      commands: [string]
+    - topic: lists
+      commands: [list]
+    - topic: sets
+      commands: [set]
+    - topic: hashes
+      commands: [hash]
+    - topic: sorted-sets
+      commands: [sorted_set]
+    - topic: streams-intro
+      commands: [stream]
+    - topic: geospatial
+      commands: [geo]
+    - topic: bitmaps
+      commands: [bitmap]
+    - topic: bitfields
+      commands: [BITFIELD, BITFIELD_RO]
+    - topic: hyperloglogs
+      commands: [hyperloglog]
+
+- id: application-development
+  title: Application development
+  topics:
+    - topic: keyspace
+      commands: [generic, FLUSHDB, FLUSHALL, SWAPDB, DBSIZE]
+    - pipelining
+    - topic: transactions
+      commands: [transactions]
+    - topic: pubsub
+      commands: [pubsub]
+    - notifications
+
+- id: patterns
+  title: Patterns and tutorials
+  topics:
+    - lru-cache
+    - client-side-caching
+    - distlock
+    - indexing
+    - twitter-clone
+
+- id: programmability
+  title: Scripting and functions
+  landing: programmability
+  commands: [scripting]
+  topics:
+    - eval-intro
+    - functions-intro
+    - lua-api
+    - ldb
+
+- id: administration
+  title: Administration
+  commands: [server]
+  topics:
+    - server
+    - cli
+    - topic: valkey.conf
+      commands: [CONFIG]
+    - topic: persistence
+      commands: [SAVE, BGSAVE, BGREWRITEAOF, LASTSAVE]
+    - topic: replication
+      commands: [REPLICAOF, SLAVEOF, PSYNC, SYNC, REPLCONF, ROLE, FAILOVER]
+    - topic: sentinel
+      commands: [sentinel]
+    - admin
+    - topic: clients
+      commands: [connection]
+    - signals
+    - ARM
+    - RDMA
+
+- id: cluster
+  title: Cluster
+  topics:
+    - topic: cluster-tutorial
+      commands: [cluster]
+    - cluster-spec
+    - atomic-slot-migration
+
+- id: security
+  title: Security
+  landing: security
+  topics:
+    - topic: acl
+      commands: [ACL]
+    - tls
+
+- id: performance
+  title: Performance and troubleshooting
+  commands: [HOTKEYS]
+  topics:
+    - problems
+    - topic: memory-optimization
+      commands: [MEMORY]
+    - topic: latency-monitor
+      commands: [LATENCY]
+    - topic: latency
+      commands: [COMMANDLOG, SLOWLOG]
+    - benchmark
+    - performance-on-cpu
+    - debugging
+    - mass-insertion
+
+- id: modules-api
+  title: Module development
+  landing: modules-intro
+  commands: [MODULE]
+  topics:
+    - modules-native-types
+    - modules-blocking-ops
+    - modules-api-ref
+
+- id: client-development
+  title: Client development
+  topics:
+    - protocol
+    - topic: command-arguments
+      commands: [COMMAND]
+    - key-specs
+    - command-tips
+    - sentinel-clients
+
+- id: about
+  title: About Valkey
+  topics:
+    - releases
+    - history
+    - license

@@ -1,4 +1,5 @@
 The `REPLICAOF` command can change the replication settings of a replica on the fly.
+It's not allowed in cluster mode. In Valkey Cluster, use [`CLUSTER REPLICATE`](cluster-replicate.md) instead.
 
 If a Valkey server is already acting as replica, the command `REPLICAOF` NO ONE will turn off the replication, turning the Valkey server into a PRIMARY.  In the proper form `REPLICAOF` hostname port will make the server a replica of another server listening at the specified hostname and port.
 

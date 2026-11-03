@@ -1,4 +1,5 @@
 The command reconfigures a node as a replica of the specified primary.
+It's the cluster mode counterpart of [`REPLICAOF`](replicaof.md).
 If the node receiving the command is an *empty primary*, as a side effect
 of the command, the node role is changed from primary to replica.
 
