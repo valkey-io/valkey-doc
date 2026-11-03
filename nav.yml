@@ -139,7 +139,6 @@
 
 - id: performance
   title: Performance and troubleshooting
-  commands: [HOTKEYS]
   topics:
     - problems
     - topic: memory-optimization
@@ -148,6 +147,8 @@
       commands: [LATENCY]
     - topic: latency
       commands: [COMMANDLOG, SLOWLOG]
+    - topic: hotkeys
+      commands: [HOTKEYS]
     - benchmark
     - performance-on-cpu
     - debugging
