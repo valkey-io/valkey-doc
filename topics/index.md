@@ -62,7 +62,7 @@ It's released under the
 * [Persistence](persistence.md): Options for configuring durability using disk backups.
 * [Signals Handling](signals.md): How Valkey handles signals.
 * [Connections Handling](clients.md): How Valkey handles clients connections.
-* [Migration](migration.md): How to migrate from Redis to Valkey.
+* [Migration](migration.md): How to migrate from Redis to Valkey and check Redis compatibility.
 * [Releases and Versioning](releases.md): Valkey's development cycle and version numbering.
 * [Administration](admin.md): Various administration topics.
 
@@ -87,6 +87,7 @@ It's released under the
 ## 5. Performance & Troubleshooting
 * [Troubleshooting](problems.md): Problems? Bugs? High latency? Other issues? Use our problems troubleshooting page as a starting point to find more information.
 * [Memory optimization](memory-optimization.md): Understand how Valkey uses RAM.
+* [Hot key tracking](hotkeys.md): Find the most frequently accessed keys on a server.
 * [Latency monitoring](latency-monitor.md): Integrated latency monitoring and reporting help tuning for low latency.
 * [valkey-benchmark](benchmark.md): The benchmarking tool shipped with Valkey.
 * [On-CPU profiling and tracing](performance-on-cpu.md): How to find on-CPU resource bottlenecks.
@@ -100,4 +101,3 @@ It's released under the
 * [Command key specifications](key-specs.md): How to extract the names of keys accessed by every command.
 * [Command tips](command-tips.md): Command tips communicate non-trivial execution modes and post-processing information about commands.
 * [Command arguments](command-arguments.md): An overview of command arguments as returned by the `COMMAND DOCS` command.
-

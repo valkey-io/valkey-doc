@@ -69,6 +69,10 @@ The sentinel output is composed of the following parts:
 1. The string `sentinel`.
 2. An array of primary names monitored by this Sentinel instance.
 
+## Reply
+
+Array: where the first element is one of `master`, `slave`, or `sentinel`, and the additional elements are role-specific as illustrated above.
+
 ## Examples
 
 ```

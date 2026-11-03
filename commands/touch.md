@@ -1,6 +1,10 @@
 Alters the last access time of a key(s).
 A key is ignored if it does not exist.
 
+## Reply
+
+Integer: the number of touched keys.
+
 ## Examples
 
 ```

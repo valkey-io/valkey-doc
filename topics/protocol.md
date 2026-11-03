@@ -6,6 +6,9 @@ description: Valkey's serialization protocol (RESP) is the wire protocol that cl
 To communicate with the Valkey server, Valkey clients use a protocol called REdis Serialization Protocol (RESP).
 While the protocol was designed for Redis, it's used by many other client-server software projects.
 
+This page is for client authors.
+If you're looking for an existing client, see the [client libraries](../clients/).
+
 RESP is a compromise among the following considerations:
 
 * Simple to implement.
@@ -19,8 +22,6 @@ The array's contents are the command and its arguments that the server should ex
 The server's reply type is command-specific.
 
 RESP is binary-safe and uses prefixed length to transfer bulk data so it does not require processing bulk data transferred from one process to another.
-
-RESP is the protocol you should implement in your Valkey client.
 
 **Note:**
 The protocol outlined here is used only for client-server communication.
@@ -123,6 +124,7 @@ The following table summarizes the RESP data types that Valkey supports:
 | [Maps](#maps) | RESP3 | Aggregate | `%` |
 | [Sets](#sets) | RESP3 | Aggregate | `~` |
 | [Pushes](#pushes) | RESP3 | Aggregate | `>` |
+| [Attributes](#attributes) | RESP3 | Aggregate | `\|` |
 
 ### Simple strings
 Simple strings are encoded as a plus (`+`) character, followed by a string.
@@ -527,6 +529,43 @@ That means a client won't find push data in the middle of a map reply, for examp
 It also means that pushed data may appear before or after a command's reply, as well as by itself (without calling any command).
 
 Clients should react to pushes by invoking a callback that implements their handling of the pushed data.
+
+<a name="attribute-type"></a>
+
+### Attributes
+An attribute carries auxiliary data about the reply that follows it.
+It isn't the reply itself.
+
+Attributes are encoded like [maps](#maps), differing only in their first byte:
+
+    |<number-of-entries>\r\n<key-1><value-1>...<key-n><value-n>
+
+* A pipe character (`|`) as the first byte.
+* One or more decimal digits (`0`..`9`) as the number of entries, or key-value tuples, in the attribute as an unsigned, base-10 value.
+* The CRLF terminator.
+* Two additional RESP types for every key and value in the attribute.
+
+The reply follows the attribute's last value and isn't counted in the number of entries.
+For example, `DEBUG PROTOCOL attrib` replies to a RESP3 connection with an attribute of one entry, followed by a bulk string reply:
+
+    |1\r\n
+    $14\r\n
+    key-popularity\r\n
+    *2\r\n
+    $7\r\n
+    key:123\r\n
+    :90\r\n
+    $39\r\n
+    Some real reply following the attribute\r\n
+
+(The raw RESP encoding is split into multiple lines for readability).
+
+An attribute can also precede an element of an aggregate, such as one of the replies in an `EXEC` reply, and isn't counted in the aggregate's number of elements.
+
+Clients should return the value that follows the attribute as usual, and either expose the attribute separately or discard it.
+
+Attributes are RESP3 only.
+On a RESP2 connection, `DEBUG PROTOCOL attrib` replies with only the bulk string, and `ValkeyModule_ReplyWithAttribute` returns `VALKEYMODULE_ERR` instead of adding an attribute.
 
 ## Client handshake
 New RESP connections should begin the session by calling the `HELLO` command.

@@ -72,6 +72,13 @@ Will add a new entry but will also evict old entries so that the stream will con
 For further information about streams please check our
 [introduction to Streams document](../topics/streams-intro.md).
 
+## Reply
+
+One of the following:
+
+* String: The ID of the added entry. The ID is the one automatically generated if an asterisk (`*`) is passed as the _id_ argument, otherwise the command just returns the same ID specified by the user during insertion.
+* Null: if the NOMKSTREAM option is given and the key doesn't exist.
+
 ## Examples
 
 ```

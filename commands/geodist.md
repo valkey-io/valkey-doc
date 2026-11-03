@@ -13,6 +13,13 @@ The unit must be one of the following, and defaults to meters:
 
 The distance is computed assuming that the Earth is a perfect sphere, so errors up to 0.5% are possible in edge cases.
 
+## Reply
+
+One of the following:
+
+* Null: one or both of the elements are missing.
+* String: distance as a double (represented as a string) in the specified units.
+
 ## Examples
 
 ```

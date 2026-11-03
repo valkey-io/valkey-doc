@@ -3,6 +3,10 @@ sorted set, it is returned to the client.
 
 For a description of the `WEIGHTS` and `AGGREGATE` options, see `ZUNIONSTORE`.
 
+## Reply
+
+* Array: the result of the intersection including, optionally, scores when the _WITHSCORES_ option is used.
+
 ## Examples
 
 ```

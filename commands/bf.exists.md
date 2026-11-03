@@ -6,6 +6,13 @@ A bloom filter has two possible responses when you check if an item exists:
 
 * 1 - The item exists with a given false positive (`fp`) percentage. There is an `fp` rate % chance that the item does not exist. You can create bloom filters with a more strict false positive rate as needed.
 
+## Reply
+
+One of the following:
+
+* Integer: `1` if the item exists in the bloom filter
+* Integer: `0` if the bloom filter does not exist or the item has not been added to the bloom filter
+
 ## Examples
 
 ```

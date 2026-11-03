@@ -6,6 +6,13 @@ When _key_ does not exist it is assumed to be an empty string, so _offset_ is
 always out of range and the value is also assumed to be a contiguous space with
 0 bits.
 
+## Reply
+
+The bit value stored at _offset_, one of the following:
+
+* Integer: `0`.
+* Integer: `1`.
+
 ## Examples
 
 ```

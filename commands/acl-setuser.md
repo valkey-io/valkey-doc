@@ -28,6 +28,13 @@ The root user permissions only allow executing the get command, but can be execu
 The selector then grants a secondary set of permissions: access to the [`SET`](set.md) command to be executed on any key that starts with `app1`.
 Using multiple selectors allows you to grant permissions that are different depending on what keys are being accessed.
 
+Permissions can also be defined once in a named _role_, created with [`ACL SETROLE`](acl-setrole.md), and assigned to any number of users with the `role=` rule:
+
+    ACL SETROLE reader ~app:* +@read
+    ACL SETUSER virginia on >password role=reader
+
+A user's own permissions are combined with those of its roles, so a user can add permissions on top of a role but cannot take away what a role grants.
+
 When we want to be sure to define a user from scratch, without caring if
 it had previously defined rules associated, we can use the special rule
 `reset` as first rule, in order to flush all the other existing rules:
@@ -72,6 +79,12 @@ This is a list of all the supported Valkey ACL rules:
 * `-<command>`: Remove the command to the list of commands the user can call. It can be used with `|` for blocking subcommands (e.g., "-config|set").
 * `-@<category>`: Like `+@<category>` but removes all the commands in the category instead of adding them.
 * `nocommands`: Alias for `-@all`. Removes all the commands, and the user is no longer able to execute anything.
+* `db=<id>[,<id>...]`: Sets the specified database id(s) as the databases the selector is allowed to access.
+  Multiple ids are separated by commas, e.g. `db=0,1,2`; at least one id is required.
+  Clears the `alldbs` flag and any previously configured database ids on the selector.
+  See [database permissions](../topics/acl.md#database-permissions) for more information.
+* `alldbs`: Allows the selector to access all databases. This is the default for new selectors and is omitted from generated ACL strings.
+* `resetdbs`: Removes all databases from the list of allowed databases and clears the `alldbs` flag.
 
 ### User management rules
 
@@ -84,7 +97,15 @@ This is a list of all the supported Valkey ACL rules:
 * `!<hashedpassword>`: Like `#<hashedpassword>` but removes the password instead of adding it.
 * `(<rule list>)`: Creates a new selector to match rules against. Selectors are evaluated after the user permissions, and are evaluated according to the order they are defined. If a command matches either the user permissions or any selector, it is allowed. See [selectors](../topics/acl.md#selectors) for more information.
 * `clearselectors`: Deletes all of the selectors attached to the user.
-* `reset`: Removes any capability from the user. They are set to off, without passwords, unable to execute any command, unable to access any key.
+* `role=<role>[,<role> ...]`: Assigns the named roles to the user, replacing any role the user already had. At least one role has to be named, and every named role must already exist (see [`ACL SETROLE`](acl-setrole.md)). The permissions of each role are combined with those of the user using OR logic, the same way selectors are. See [roles](../topics/acl.md#roles) for more information. Example: `role=reader,writer`. (Added in version 9.2)
+* `resetroles`: Removes every role from the user. (Added in version 9.2)
+* `reset`: Removes any capability from the user. They are set to off, without passwords, without roles, unable to execute any command, unable to access any key.
+
+## Reply
+
+`OK`.
+
+If the rules contain errors, the error is returned.
 
 ## Examples
 
@@ -94,3 +115,38 @@ OK
 127.0.0.1:6379> ACL SETUSER antirez heeyyyy
 (error) ERR Error in ACL SETUSER modifier 'heeyyyy': Syntax error
 ```
+
+Restrict a user to a subset of databases:
+
+```
+127.0.0.1:6379> ACL SETUSER alice on +@all ~* db=0,1 nopass
+OK
+127.0.0.1:6379> ACL LIST
+1) "user alice on nopass ~* resetchannels db=0,1 +@all"
+2) "user default on nopass ~* &* +@all"
+```
+
+A later `db=` rule replaces the previous database list:
+
+```
+127.0.0.1:6379> ACL SETUSER alice db=2,3
+OK
+127.0.0.1:6379> ACL LIST
+1) "user alice on nopass ~* resetchannels db=2,3 +@all"
+2) "user default on nopass ~* &* +@all"
+```
+
+Different selectors can grant access on different databases:
+
+```
+127.0.0.1:6379> ACL SETUSER bob on nopass (db=0,1 +@write +select ~*) (db=2,3 +@read +select ~*)
+OK
+127.0.0.1:6379> ACL LIST
+1) "user bob on nopass resetchannels -@all (~* resetchannels db=0,1 -@all +@write +select) (~* resetchannels db=2,3 -@all +@read +select)"
+2) "user default on nopass ~* &* +@all"
+```
+
+The `ACL LIST` output shows three sets of permissions for `bob`: the root
+permissions (`-@all`, with implicit `alldbs`) and two selectors, one for each
+parenthesized rule set. A command is allowed when the root permissions or any selector matches it.
+See [selectors](../topics/acl.md#selectors) for more information.

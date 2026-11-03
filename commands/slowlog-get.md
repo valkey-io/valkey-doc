@@ -24,3 +24,7 @@ restart will reset it.
 ## Alternative
 
 `COMMANDLOG GET <count> SLOW`.
+
+## Reply
+
+Array of slow log entries per the above format.

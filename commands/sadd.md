@@ -5,6 +5,10 @@ members.
 
 An error is returned when the value stored at `key` is not a set.
 
+## Reply
+
+Integer: the number of elements that were added to the set, not including all the elements already present in the set.
+
 ## Examples
 
 ```

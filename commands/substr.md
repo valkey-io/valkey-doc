@@ -11,6 +11,10 @@ the actual length of the string.
 
 `GETRANGE`
 
+## Reply
+
+String: the substring of the string value stored at key, determined by the offsets start and end (both are inclusive).
+
 ## Examples
 
 ```

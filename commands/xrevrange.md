@@ -14,6 +14,10 @@ enough to send:
 
     XREVRANGE somestream + - COUNT 1
 
+## Reply
+
+Array: The command returns the entries with IDs matching the specified range. The returned entries are complete, which means that the ID and all the fields they are composed of are returned. Moreover, the entries are returned with their fields and values in the same order as `XADD` added them.
+
 ## Examples
 
 ```

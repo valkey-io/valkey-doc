@@ -2,6 +2,13 @@ Returns the scores associated with the specified `members` in the sorted set sto
 
 For every `member` that does not exist in the sorted set, a `nil` value is returned.
 
+## Reply
+
+One of the following:
+
+* Null: if the member does not exist in the sorted set.
+* Array of double _member_ scores as double-precision floating point numbers.
+
 ## Examples
 
 ```

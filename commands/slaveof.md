@@ -16,3 +16,7 @@ So, if the old primary stops working, it is possible to turn the replica into a
 primary and set the application to use this new primary in read/write.
 Later when the other Valkey server is fixed, it can be reconfigured to work as a
 replica.
+
+## Reply
+
+`OK`.

@@ -8,6 +8,10 @@ Apart from the reversed ordering, `ZREVRANGE` is similar to `ZRANGE`.
 
 `ZRANGE` with the `REV` argument.
 
+## Reply
+
+* Array of the members in the specified range, optionally with their scores if _WITHSCORE_ was used.
+
 ## Examples
 
 ```

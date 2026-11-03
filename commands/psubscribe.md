@@ -15,3 +15,6 @@ Note that [`RESET`](reset.md) can be called to exit subscribed state.
 
 For more information, see [Pub/sub](../topics/pubsub.md).
 
+## Reply
+
+When successful, this command doesn't return anything. Instead, for each pattern, one message with the first element being the string `psubscribe` is pushed as a confirmation that the command succeeded.

@@ -8,6 +8,12 @@ In this case, the number of returned elements is the absolute value of the speci
 
 The optional `WITHSCORES` modifier changes the reply so it includes the respective scores of the randomly selected elements from the sorted set.
 
+## Reply
+
+String: without the additional _count_ argument, the command returns a randomly selected member, or null when _key_ doesn't exist.
+
+Array: when the additional _count_ argument is passed, the command returns an array of members, or an empty array when _key_ doesn't exist. If the _WITHSCORES_ modifier is used, the reply is a list of members and their scores from the sorted set.
+
 ## Examples
 
 ```

@@ -3,6 +3,10 @@ You can restore the serialized payload later with the [`FUNCTION RESTORE`](funct
 
 For more information please refer to [Introduction to Valkey Functions](../topics/functions-intro.md).
 
+## Reply
+
+String: the serialized payload
+
 ## Examples
 
 The following example shows how to dump loaded libraries using `FUNCTION DUMP` and then it calls [`FUNCTION FLUSH`](function-flush.md) deletes all the libraries.
