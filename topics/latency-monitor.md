@@ -87,6 +87,10 @@ Set the threshold according to the application's latency requirements.
 
 For example, if the application requires a maximum latency of 100 milliseconds, set the threshold to 100:
 
+```
+CONFIG SET latency-monitor-threshold 100
+```
+
 
 Latency monitoring is disabled by default.
 Latency monitoring requires very little memory. However, enabling it increases the baseline memory usage of a Valkey instance.
