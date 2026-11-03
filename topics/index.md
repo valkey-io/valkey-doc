@@ -53,7 +53,6 @@ It's released under the
 ## 4. Administration
 
 ### Core Management
-* [License](license.md): License information for Valkey.
 * [Installation](installation.md): How to install and configure Valkey. This targets people without prior experience with Valkey.
 * [Release Downloads](https://valkey.io/download/releases/): Lists links to download all current and previous releases.
 * [valkey-cli](cli.md): The Valkey command line interface, used for administration, troubleshooting and experimenting with Valkey.
