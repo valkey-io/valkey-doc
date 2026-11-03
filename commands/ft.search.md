@@ -38,7 +38,7 @@ FT.SEARCH <index> <query>
 - `SOMESHARDS` (Optional): If specified, the command will generate a best-effort reply if all shards have not responded within the timeout interval.
 - `SORTBY <field> [ASC | DESC]` (Optional): If present, results are sorted according the value of the specified field and the optional sort-direction instruction. By default, KNN results are sorted in distance order and other results are not sorted in any particular order. Sorting is applied before the `LIMIT` clause is applied.
 - `TIMEOUT <timeout>` (optional): Lets you set a timeout value for the search command. This must be an integer in milliseconds.
-- `SCORER <scorer>` (Optional): Selects the relevance scoring function used to rank text results.
+- `SCORER <scorer>` (Optional): Selects the relevance scoring function used to rank text results. The only supported scorer is `BM25STD`, which is also the default.
 - `WITHCURSOR [COUNT <count>] [MAXIDLE <maxidle>]` (Optional): Returns at most `<count>` of the keys selected by the `LIMIT` clause and saves the remaining keys in a cursor, which is read with [`FT.CURSOR`](ft.cursor.md). `<count>` must be between 1 and `search.cursor-max-count`, the default is 1000. `<maxidle>` is the number of milliseconds the cursor may go unread before it is destroyed; it must be between 1 and `search.cursor-max-idle-ms`, the default is 300000. If it is given more than once, the last one is used. This option is a Valkey extension.
 - `WITHSCORES` (Optional): Augments the output with the relevance score computed for each returned key.
 - `WITHSORTKEYS` (Optional): If `SORTBY` is specified then enabling this option augments the output with the value of the field used for sorting.
@@ -78,6 +78,25 @@ The response is a three element array:
 1. The count of the number of keys which match the query, as above.
 2. An array with one element per returned key. Each element is an array holding the entries for that key described above, e.g. the key name and its array of name/value pairs.
 3. The cursor id to pass to [`FT.CURSOR READ`](ft.cursor.md), or 0 if all keys were returned, in which case no cursor is created.
+
+## Reply
+
+Array: the first element is an integer, the number of keys that match the query, which isn't affected by `LIMIT`.
+For a KNN vector query the count is at most K.
+It's followed by these elements for each returned key, one after another:
+
+* String: the key name.
+* String: the key's relevance score, if `WITHSCORES` is specified.
+* String: the value of the `SORTBY` field, prefixed with `#` for a numeric field or `$` for a string field, if `WITHSORTKEYS` is specified and `NOCONTENT` isn't.
+  Null if the key doesn't have that field.
+  Below `search.emulate-release` 1.3.0, the prefix is always `#` and a missing value is replied as `#`.
+* Array: the key's field/value pairs, unless `NOCONTENT` or `RETURN 0` is specified.
+
+If `WITHCURSOR` is specified, an array of three elements:
+
+1. Integer: the number of keys that match the query, as above.
+2. Array: one array per returned key, containing that key's elements listed above.
+3. Integer: the cursor id to pass to [`FT.CURSOR READ`](ft.cursor.md), or 0 if all keys were returned.
 
 # Examples
 
@@ -278,7 +297,3 @@ Simple query showing selecting return of additional fields
 ## Query showing NOCONTENT
 
 ## Query showing SORTBY
-
-## Reply
-
-Array: the first entry in the array represents the count of matching keys, followed by one array entry for each matching key. When `NOCONTENT` is specified, each entry in the response contains only the matching key name, otherwise, each entry includes the matching key name, followed by an array of the returned fields

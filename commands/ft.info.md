@@ -148,4 +148,4 @@ Inside `MULTI`/`EXEC` or a Lua script, no other nodes are queried and the LOCAL 
 
 ## Reply
 
-Array:: a map of index fields in the form of key followed by value
+Array: the index information as alternating keys and values, as described above.
