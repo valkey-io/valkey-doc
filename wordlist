@@ -157,7 +157,6 @@ commnad
 conf
 Config
 config
-config-commands
 config-file
 configEpoch
 configs
