@@ -4,7 +4,6 @@ store the result in the destination key.
 The `BITOP` command supports four bitwise operations: **AND**, **OR**, **XOR**
 and **NOT**, thus the valid forms to call the command are:
 
-
 * `BITOP AND destkey srckey1 srckey2 srckey3 ... srckeyN`
 * `BITOP OR  destkey srckey1 srckey2 srckey3 ... srckeyN`
 * `BITOP XOR destkey srckey1 srckey2 srckey3 ... srckeyN`

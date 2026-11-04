@@ -44,7 +44,7 @@ To start a new debugging session using `valkey-cli` do the following:
 
 Note that with the `--eval` option of `valkey-cli` you can pass key names and arguments to the script, separated by a comma, like in the following example:
 
-```text
+```
 ./valkey-cli --ldb --eval /tmp/script.lua mykey somekey , arg1 arg2
 ```
 
@@ -61,7 +61,7 @@ Moreover the command will exit from `valkey-cli`.
 So a normal debugging cycle involves modifying the script after some debugging, and calling `restart` in order to start debugging again with the new script changes.
 * `help` -- this command is passed to the Valkey Lua debugger, that will print a list of commands like the following:
 
-```text
+```
 lua debugger> help
 Valkey Lua debugger help:
 [h]elp               Show this help.
@@ -101,7 +101,7 @@ It will stop at the first line of the script that actually does something before
 From this point you usually call `step` in order to execute the line and go to the next line.
 While you step Valkey will show all the commands executed by the server like in the following example:
 
-```text
+```
 * Stopped at 1, stop reason = step over
 -> 1   server.call('ping')
 lua debugger> step
@@ -141,7 +141,7 @@ So for example instead of typing `step` you can just type `s`.
 Adding and removing breakpoints is trivial as described in the online help.
 Just use `b 1 2 3 4` to add a breakpoint in line 1, 2, 3, 4.
 The command `b 0` removes all the breakpoints. Selected breakpoints can be
-removed using as argument the line where the breakpoint we want to remove is, but prefixed by a minus sign. 
+removed using as argument the line where the breakpoint we want to remove is, but prefixed by a minus sign.
 So for example `b -3` removes the breakpoint from line 3.
 
 Note that adding breakpoints to lines that Lua never executes, like declaration of local variables or comments, will not work.
@@ -155,7 +155,7 @@ when something special happens. In order to do so, you can use the
 `server.breakpoint()` function inside your Lua script. When called it simulates
 a breakpoint in the next line that will be executed.
 
-```text
+```
 if counter > 10 then server.breakpoint() end
 ```
 
@@ -175,14 +175,14 @@ However for tracking certain bugs, you may want to retain the changes performed
 to the key space by each debugging session. When this is a good idea you
 should start the debugger using a special option, `ldb-sync-mode`, in `valkey-cli`.
 
-```text
+```
 ./valkey-cli --ldb-sync-mode --eval /tmp/script.lua
 ```
 
 > Note: Valkey server will be unreachable during the debugging session in this mode, so use with care.
 
 In this special mode, the `abort` command can stop the script half-way taking the changes operated to the dataset.
-Note that this is different compared to ending the debugging session normally. 
+Note that this is different compared to ending the debugging session normally.
 If you just interrupt `valkey-cli` the script will be fully executed and then the session terminated.
 Instead with `abort` you can interrupt the script execution in the middle and start a new debugging session if needed.
 
@@ -192,7 +192,7 @@ The `server.debug()` command is a powerful debugging facility that can be
 called inside the Valkey Lua script in order to log things into the debug
 console:
 
-```text
+```
 lua debugger> list
 -> 1   local a = {1,2,3}
    2   local b = false
@@ -222,7 +222,7 @@ print all variables and their respective values.
 The `eval` command executes small pieces of Lua scripts **outside the context of the current call frame** (evaluating inside the context of the current call frame is not possible with the current Lua internals).
 However you can use this command in order to test Lua functions.
 
-```text
+```
 lua debugger> e server.sha1hex('foo')
 <retval> "0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33"
 ```

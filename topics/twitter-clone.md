@@ -141,7 +141,7 @@ also to retrieve its score if it exists, we use the `ZSCORE` command:
 
 Sorted Sets are a very powerful data structure, you can query elements by
 score range, lexicographically, in reverse order, and so forth.
-To know more [please check the Sorted Set sections in the official Valkey commands documentation](https://valkey.io/topics/sorted-sets/).
+To know more [please check the Sorted Set overview](sorted-sets.md).
 
 The Hash data type
 ---
