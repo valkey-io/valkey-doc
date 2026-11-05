@@ -4,3 +4,7 @@ This is normally done automatically by cluster clients.
 If an `-ASK` redirect is received during a transaction, only one ASKING command needs to be sent to the target node before sending the complete transaction to the target node.
 
 See [ASK redirection in the Valkey Cluster Specification](../topics/cluster-spec.md#ask-redirection) for details.
+
+## Reply
+
+`OK`.

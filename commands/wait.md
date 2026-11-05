@@ -37,6 +37,10 @@ write command was executed in the context of a given client. When `WAIT` is
 called Valkey checks if the specified number of replicas already acknowledged
 this offset or a greater one.
 
+## Reply
+
+Integer: the number of replicas reached by all the writes performed in the context of the current connection.
+
 ## Examples
 
 ```

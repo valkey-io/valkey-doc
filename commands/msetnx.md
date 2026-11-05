@@ -10,6 +10,13 @@ that either all the fields or none at all are set.
 It is not possible for clients to see that some of the keys were updated while
 others are unchanged.
 
+## Reply
+
+One of the following:
+
+* Integer: `0` if no key was set (at least one key already existed).
+* Integer: `1` if all the keys were set.
+
 ## Examples
 
 ```

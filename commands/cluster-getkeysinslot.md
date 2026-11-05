@@ -16,3 +16,7 @@ of the [`CLUSTER SETSLOT`](cluster-setslot.md) command documentation.
 2) "key_89793"
 3) "key_92937"
 ```
+
+## Reply
+
+Array with up to count elements.

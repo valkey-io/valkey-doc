@@ -5,6 +5,10 @@ time is specified in milliseconds instead of seconds.
 
 `SET` with the `PX` argument.
 
+## Reply
+
+`OK`.
+
 ## Examples
 
 ```

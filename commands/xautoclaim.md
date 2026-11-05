@@ -25,6 +25,14 @@ These message IDs are returned to the caller as a part of `XAUTOCLAIM`s reply.
 Lastly, claiming a message with `XAUTOCLAIM` also increments the attempted deliveries count for that message, unless the `JUSTID` option has been specified (which only delivers the message ID, not the message itself).
 Messages that cannot be processed for some reason - for example, because consumers systematically crash when processing them - will exhibit high attempted delivery counts that can be detected by monitoring.
 
+## Reply
+
+Array, specifically, an array with three elements:
+
+1. A stream ID to be used as the _start_ argument for the next call to XAUTOCLAIM.
+2. An array containing all the successfully claimed messages in the same format as `XRANGE`.
+3. An array containing message IDs that no longer exist in the stream, and were deleted from the PEL in which they were found.
+
 ## Examples
 
 ```

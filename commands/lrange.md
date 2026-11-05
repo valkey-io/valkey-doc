@@ -23,6 +23,10 @@ If `start` is larger than the end of the list, an empty list is returned.
 If `stop` is larger than the actual end of the list, Valkey will treat it like
 the last element of the list.
 
+## Reply
+
+Array of elements in the specified range, or an empty array if the key doesn't exist.
+
 ## Examples
 
 ```

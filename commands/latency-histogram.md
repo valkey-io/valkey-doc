@@ -20,6 +20,10 @@ If you need to enable it, call [`CONFIG SET latency-tracking yes`](config-set.md
 
 To delete the latency histograms' data use the [`CONFIG RESETSTAT`](config-resetstat.md) command.
 
+## Reply
+
+Map where each key is a command name, and each value is a map with the total calls, and an inner map of the histogram time buckets.
+
 ## Examples
 
 ```

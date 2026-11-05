@@ -3,6 +3,10 @@ For more information on the `index` argument, see [`LINDEX`](lindex.md).
 
 An error is returned for out of range indexes.
 
+## Reply
+
+`OK`.
+
 ## Examples
 
 ```

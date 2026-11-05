@@ -6,6 +6,10 @@ The `SORT_RO` variant was introduced in order to allow `SORT` behavior in read-o
 
 See original `SORT` for more details.
 
+## Reply
+
+Array of sorted elements.
+
 ## Examples
 
 ```

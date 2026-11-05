@@ -2,6 +2,10 @@ Each node in a Valkey Cluster maintains a pair of long-lived TCP link with each 
 
 `CLUSTER LINKS` outputs information of all such peer links as an array, where each array element is a map that contains attributes and their values for an individual link.
 
+## Reply
+
+Array of maps where each map contains various attributes and their values of a cluster link.
+
 ## Examples
 
 The following is an example output:

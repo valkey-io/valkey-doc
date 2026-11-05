@@ -6,6 +6,10 @@ See `MSETNX` if you don't want to overwrite existing values.
 It is not possible for clients to see that some of the keys were updated while
 others are unchanged.
 
+## Reply
+
+`OK`, since `MSET` can't fail.
+
 ## Examples
 
 ```

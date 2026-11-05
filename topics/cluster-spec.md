@@ -30,6 +30,7 @@ manual resharding, multi-key operations may become unavailable for some time
 while single-key operations are always available.
 
 Starting with version 9.0, Valkey cluster supports multiple databases, similar to standalone mode but with some additional restrictions.
+You can enable multi-database support using the `cluster-databases` setting (default value is `1`).
 
 ## Client and Server roles in the Valkey cluster protocol
 
@@ -716,6 +717,12 @@ When this happens the client should update its hash slot map as explained in
 the previous sections.
 
 The readonly state of the connection can be cleared using the `READWRITE` command.
+
+Commands sent with no key arguments, such as `SCAN`, `DBSIZE` or `FLUSHDB`,
+are not tied to a hash slot, so a replica never answers them with `-MOVED`.
+Since Valkey 9.2, if the client uses [`CLIENT CAPA redirect`](../commands/client-capa.md)
+and is not in readonly mode, the replica answers read and write commands of this kind
+with `-REDIRECT primary-ip:port`, pointing to its own primary.
 
 ## Fault Tolerance
 

@@ -12,6 +12,10 @@ An error is returned when `seconds` is invalid.
 
 `SET` with the `EX` argument.
 
+## Reply
+
+`OK`.
+
 ## Examples
 
 ```

@@ -10,6 +10,15 @@ If the value is container, the response is RESP array or nested array.
 * JSON Arrays are represented as RESP Arrays, where the first element is the simple string [, followed by the array's elements.
 * JSON Objects are represented as RESP Arrays, where the first element is the simple string {, followed by key-value pairs, each of which is a RESP bulk string.
 
+## Reply
+
+* If the path is enhanced syntax:
+  * Array of arrays, each representing the RESP form of the value at one path.
+  * Array: Empty array if the document key does not exist.
+* If the path is restricted syntax:
+  * Array: Representing the RESP form of the value at the path.
+  * Null: If the document key does not exist.
+
 ## Examples
 
 Enhanced path syntax:

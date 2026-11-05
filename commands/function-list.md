@@ -15,3 +15,7 @@ The following information is provided for each of the libraries in the response:
 * **library_code:** the library's source code (when given the `WITHCODE` modifier).
 
 For more information please refer to [Introduction to Valkey Functions](../topics/functions-intro.md).
+
+## Reply
+
+Array: information about functions and libraries.

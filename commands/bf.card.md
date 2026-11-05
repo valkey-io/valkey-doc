@@ -1,5 +1,9 @@
 Returns the cardinality of a bloom filter which is the number of items that have been successfully added to it. 
 
+## Reply
+
+Integer: The number of items successfully added to the bloom filter, or 0 if the key does not exist
+
 ## Examples
 
 ```

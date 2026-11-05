@@ -3,6 +3,13 @@ It returns an error when `key` does not exist.
 
 In Cluster mode, both `key` and `newkey` must be in the same **hash slot**, meaning that in practice only keys that have the same hash tag can be reliably renamed in cluster.
 
+## Reply
+
+One of the following:
+
+* Integer: `1` if `key` was renamed to `newkey`.
+* Integer: `0` if `newkey` already exists.
+
 ## Examples
 
 ```

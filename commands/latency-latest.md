@@ -12,6 +12,10 @@ Each reported event has the following fields:
 "All-time" means the maximum latency since the Valkey instance was
 started, or the time that events were reset [`LATENCY RESET`](latency-reset.md).
 
+## Reply
+
+Array where each element is a four elements array representing the event's name, timestamp, latest and all-time latency measurements.
+
 ## Examples
 
 ```

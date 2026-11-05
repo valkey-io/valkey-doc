@@ -5,6 +5,10 @@ If `newkey` already exists, it is overwritten. By default, Valkey uses implicit 
 
 In Cluster mode, both `key` and `newkey` must be in the same **hash slot**, meaning that in practice only keys that have the same hash tag can be reliably renamed in cluster.
 
+## Reply
+
+`OK`.
+
 ## Examples
 
 ```

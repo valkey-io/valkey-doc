@@ -74,3 +74,10 @@ When all nodes share the same [`hash-seed`](scan.md), the fingerprint stays cons
 ## Return value
 
 An array with two elements: the cursor to pass in the next call, and an array of key names.
+
+## Reply
+
+Array with two elements.
+
+* The first element is a string that represents the cursor.
+* The second element is an array with the names of scanned keys.

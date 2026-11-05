@@ -368,11 +368,11 @@ Example of rule 2:
 127.0.0.1:6379> EXISTS bikes:repairs
 (integer) 1
 127.0.0.1:6379> LPOP bikes:repairs
-"bike:3"
+"bike:1"
 127.0.0.1:6379> LPOP bikes:repairs
 "bike:2"
 127.0.0.1:6379> LPOP bikes:repairs
-"bike:1"
+"bike:3"
 127.0.0.1:6379> EXISTS bikes:repairs
 (integer) 0
 ```

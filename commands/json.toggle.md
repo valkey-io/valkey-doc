@@ -1,5 +1,16 @@
 Toggle boolean values between true and false at the path.
 
+## Reply
+
+* If the path is enhanced syntax:
+  * Array of integers (0 for false, 1 for true) representing the resulting boolean value at each path.
+  * Null: For each path where the value is not a boolean.
+* If the path is restricted syntax:
+  * String: 'true' or 'false' representing the resulting boolean value.
+* Error:
+  * if the document key does not exist.
+  * if the value at the path is not a boolean (only for restricted syntax).
+
 ## Examples
 
 Enhanced path syntax:

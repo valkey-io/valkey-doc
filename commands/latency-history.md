@@ -22,6 +22,10 @@ Valid values for `event` are:
 * `fork`
 * `rdb-unlink-temp-file`
 
+## Reply
+
+Array where each element is a two elements array representing the timestamp and the latency of the event.
+
 ## Examples
 
 ```

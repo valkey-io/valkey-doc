@@ -6,6 +6,10 @@ If no `pattern` is specified, all the channels are listed, otherwise if pattern 
 
 The information returned about the active shard channels are at the shard level and not at the cluster level.
 
+## Reply
+
+Array of active channels, optionally matching the specified pattern.
+
 ## Examples
 
 ```

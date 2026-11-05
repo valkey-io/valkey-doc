@@ -17,6 +17,7 @@ The optional parameter can be used to select a specific section of information:
 *   `modules`: Modules section
 *   `keyspace`: Database related statistics
 *   `errorstats`: Valkey error statistics
+*   `hotkeys`: Hot key tracking statistics
 
 It can also take the following values:
 
@@ -250,6 +251,7 @@ used_cpu_sys_children:0.003157
 used_cpu_user_children:0.008264
 used_cpu_sys_main_thread:68.478353
 used_cpu_user_main_thread:219.404508
+used_active_time_main_thread:192.003980
 
 # Modules
 
@@ -261,6 +263,12 @@ cluster_enabled:0
 
 # Keyspace
 ```
+
+## Reply
+
+Verbatim string: a map of info fields, one field per line in the form of `<field>:<value>` where the value can be a comma separated map like `<key>=<val>`. Also contains section header lines starting with `#` and blank lines.
+
+Lines can contain a section name (starting with a `#` character) or a property. All the properties are in the form of `field:value` terminated by `\r\n`.
 
 ## Notes
 
@@ -597,6 +605,7 @@ If the instance is a replica, these additional fields are provided:
 *   `master_link_status`: Status of the link (up/down)
 *   `master_last_io_seconds_ago`: Number of seconds since the last interaction
      with primary
+*   `last_successful_sync_duration_ms`: The duration of the last successful full sync in milliseconds, or -1 if no successful sync has occurred
 *   `master_sync_in_progress`: Indicate the primary is syncing to the replica
 *   `slave_read_repl_offset`: The read replication offset of the replica instance.
 *   `slave_repl_offset`: The replication offset of the replica instance
@@ -658,6 +667,22 @@ Here is the meaning of all fields in the **cpu** section:
 *   `used_cpu_user_children`: User CPU consumed by the background processes
 *   `used_cpu_sys_main_thread`: System CPU consumed by the Valkey server main thread
 *   `used_cpu_user_main_thread`: User CPU consumed by the Valkey server main thread
+*   `used_active_time_main_thread`: Clock time the Valkey server main thread has spent on actual work,
+    excluding time waiting for work.
+*   `used_active_time_io_thread_N` (where *N* is a number from 1 to the configured number of I/O threads):
+    Clock time each I/O thread spends doing actual work, excluding time waiting for work.
+
+The fields `used_active_time_main_thread` and `used_active_time_io_thread_N`
+were added in Valkey 9.1. They are a better indication than the CPU time metrics
+of the spare capacity of each thread, because Valkey uses busy-waiting when I/O
+threads are used, which makes the CPU time appear to be near 100% even if the
+server has spare capacity for handling more commands.
+
+The active time fields grow linearly with the server load. To understand how to
+interpret them, consider this example: If the main thread's used active time
+increases 5 seconds between two INFO calls 10 seconds apart, it means the main
+thread has spent half of the time executing commands and the other half waiting.
+It means that it's running at 50% of its capacity.
 
 The **commandstats** section provides statistics based on the command type,
  including the number of calls that reached command execution (not rejected),
@@ -712,6 +737,13 @@ The statistics are the number of keys, and the number of keys with an expiration
 For each database, the following line is added:
 
 *   `dbXXX`: `keys=XXX,expires=XXX`
+
+The **hotkeys** section describes the last completed hot key tracking window.
+It is not part of the default output, so request it by name or use `INFO all`.
+See [Hot key tracking](../topics/hotkeys.md) for the feature itself.
+
+*   `hotkeys_last_window_samples`: Number of accesses sampled during the last completed window
+*   `hotkeys_last_window_duration_ms`: Length of the last completed window in milliseconds, and the denominator of every rate `HOTKEYS GET` reports. `0` when there is no completed window to describe
 
 The **debug** section contains experimental metrics, which might change or get removed in future versions.
 It won't be included when `INFO` or `INFO ALL` are called, and it is returned only when `INFO DEBUG` is used.
