@@ -15,3 +15,7 @@ a non-existing `key` will return a list of `nil` values.
 2) "World"
 3) (nil)
 ```
+
+## Reply
+
+Array of values associated with the given fields, in the same order as they are requested.

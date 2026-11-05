@@ -9,3 +9,7 @@ Terminating a connection on the client side is preferable, as it eliminates `TIM
 ## Alternative
 
 Just closing the connection.
+
+## Reply
+
+`OK`.

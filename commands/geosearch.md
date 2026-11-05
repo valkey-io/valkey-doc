@@ -32,6 +32,16 @@ When the `ANY` option is used, the command returns as soon as enough matches are
 When `ANY` is not provided, the command will perform an effort that is proportional to the number of items matching the specified area and sort them,
 so to query very large areas with a very small `COUNT` option may be slow even if just a few results are returned.
 
+## Reply
+
+One of the following:
+
+* If no `WITH*` option is specified, an array of matched member names
+* If `WITHCOORD`, `WITHDIST`, or `WITHHASH` options are specified, the command returns an array of arrays, where each sub-array represents a single item:
+    * The distance from the center as a floating point number, in the same unit specified in the radius.
+    * The Geohash integer.
+    * The coordinates as a two items x,y array (longitude,latitude).
+
 ## Examples
 
 ```

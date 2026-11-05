@@ -3,3 +3,7 @@ This is a read-only variant of the [`EVALSHA`](evalsha.md) command that cannot e
 For more information about when to use this command vs `EVALSHA`, please refer to [Read-only scripts](../topics/programmability.md#read-only-scripts).
 
 For more information about `EVALSHA` scripts, please refer to [Introduction to Eval Scripts](../topics/eval-intro.md).
+
+## Reply
+
+The return value depends on the script that was executed.

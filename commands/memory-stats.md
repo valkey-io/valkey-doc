@@ -55,3 +55,7 @@ values. The following metrics are reported:
 *   `fragmentation.bytes`: See `INFO`'s `mem_fragmentation_bytes`
 
 **A note about the word slave used in this man page**: If not for backward compatibility, the Valkey project no longer uses the words "master" and "slave". Unfortunately in the given commands these words are part of the protocol, so we'll be able to remove such occurrences only when this API will be naturally deprecated.
+
+## Reply
+
+Map: memory usage metrics and their values.

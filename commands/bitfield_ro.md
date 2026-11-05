@@ -9,3 +9,7 @@ See original `BITFIELD` for more details.
 ```
 BITFIELD_RO hello GET i8 16
 ```
+
+## Reply
+
+Array: each entry being the corresponding result of the sub-command given at the same position.

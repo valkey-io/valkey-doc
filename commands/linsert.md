@@ -6,6 +6,14 @@ performed.
 
 An error is returned when `key` exists but does not hold a list value.
 
+## Reply
+
+One of the following:
+
+* Integer: the list length after a successful insert operation.
+* Integer: `0` when the key doesn't exist.
+* Integer: `-1` when the pivot wasn't found.
+
 ## Examples
 
 ```

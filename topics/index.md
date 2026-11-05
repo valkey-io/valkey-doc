@@ -53,7 +53,6 @@ It's released under the
 ## 4. Administration
 
 ### Core Management
-* [License](license.md): License information for Valkey.
 * [Installation](installation.md): How to install and configure Valkey. This targets people without prior experience with Valkey.
 * [Release Downloads](https://valkey.io/download/releases/): Lists links to download all current and previous releases.
 * [valkey-cli](cli.md): The Valkey command line interface, used for administration, troubleshooting and experimenting with Valkey.
@@ -87,6 +86,7 @@ It's released under the
 ## 5. Performance & Troubleshooting
 * [Troubleshooting](problems.md): Problems? Bugs? High latency? Other issues? Use our problems troubleshooting page as a starting point to find more information.
 * [Memory optimization](memory-optimization.md): Understand how Valkey uses RAM.
+* [Hot key tracking](hotkeys.md): Find the most frequently accessed keys on a server.
 * [Latency monitoring](latency-monitor.md): Integrated latency monitoring and reporting help tuning for low latency.
 * [valkey-benchmark](benchmark.md): The benchmarking tool shipped with Valkey.
 * [On-CPU profiling and tracing](performance-on-cpu.md): How to find on-CPU resource bottlenecks.

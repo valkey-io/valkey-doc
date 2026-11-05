@@ -14,6 +14,10 @@ Comparing the rules themselves is impractical, because the server reports them i
 own normalized form rather than the form they were written in, so a client would need its
 own copy of the rule parser to compare them.
 
+## Reply
+
+String: the digest of the ACL rules currently in effect, as a hexadecimal string.
+
 ## Examples
 
 ```

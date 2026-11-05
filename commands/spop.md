@@ -6,6 +6,14 @@ By default, the command pops a single member from the set. When provided with
 the optional `count` argument, the reply will consist of up to `count` members,
 depending on the set's cardinality.
 
+## Reply
+
+One of the following:
+
+* Null: if the key does not exist.
+* String: when called without the _count_ argument, the removed member.
+* Set: when called with the _count_ argument, the set of removed members.
+
 ## Examples
 
 ```

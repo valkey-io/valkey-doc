@@ -14,6 +14,11 @@ Set JSON values for multiple keys. The operation is atomic. Either all values ar
     * If the parent element exists and the index is valid, the element will be replaced by the new JSON value.
 * If the path calls for an object or array, the value (object or array) will be replaced by the new JSON value.
 
+## Reply
+
+* `OK` if the operation was successful.
+* Error: If the operation failed.
+
 ## Examples
 
 Enhanced path syntax:

@@ -1,5 +1,9 @@
 Returns the set cardinality (number of elements) of the set stored at `key`.
 
+## Reply
+
+Integer: the cardinality (number of elements) of the set, or `0` if the key does not exist.
+
 ## Examples
 
 ```

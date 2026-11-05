@@ -3,6 +3,13 @@ If the key does not exist the special value `nil` is returned.
 An error is returned if the value stored at `key` is not a string, because `GET`
 only handles string values.
 
+## Reply
+
+One of the following:
+
+* String: the value of the key.
+* Null: if the key does not exist.
+
 ## Examples
 
 ```

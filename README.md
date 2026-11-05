@@ -48,6 +48,7 @@ Examples: `../commands/#sorted-set`, `../topics/`, `./`.
 ### Topics
 
 The files under `topics/` are generic documentation pages. The `index.md` page is a starting point.
+When adding a topic, also add it to the menu (see [Menu](#menu)).
 
 In the top of these files, there's a frontmatter metadata section, between two
 lines of three dashes (`---`). These are YAML fields of which we use only the
@@ -119,29 +120,49 @@ We process these files to provide a better experience.
     backticks.
     For example: `INCR`.
 
-The reply types and descriptions are stored in separate JSON files in this doc repo.
-Each command will have a description and both RESP2 and RESP3 return values.
-When adding or editing return values, be sure to edit both files. Use the following
-links for the reply type.
-Regarding the return values, these are contained in the files:
+Each command page has a `## Reply` section.
+It's placed before the `## Notes` and `## Examples` sections, or at the end of
+the page if there are none.
+It describes the reply in both RESP2 and RESP3.
+It uses the RESP3 types, written as plain words: "array", "string",
+"integer", "double", "map", "set", "verbatim string" and "null".
+The [protocol specification](topics/protocol.md) explains how each type is
+represented in RESP2.
+A value in backticks, such as `OK`, is a simple string.
+Other simple strings are written as "Simple string".
+Here's an example:
 
-* `resp2_replies.json`
-* `resp3_replies.json`
+```markdown
+## Reply
 
-Each file is a dictionary with a matching set of keys. Each key is an array of strings that,
-when processed, produce Markdown content. Here's an example:
+One of the following:
 
-```json
-{
-  ...
-  "ACL CAT": [
-    "One of the following:",
-    "* [Array reply](topics/protocol.md#arrays): an array of [Bulk string reply](topics/protocol.md#bulk-strings) elements representing ACL categories or commands in a given category.",
-    "* [Simple error reply](topics/protocol.md#simple-errors): the command returns an error if an invalid category name is given."
-  ],
-  ...
-}
+* String: the value of the key.
+* Null: if the key does not exist.
 ```
+
+### Menu
+
+The documentation menu on the website is defined in [`nav.yml`](nav.yml).
+It groups the topics into sections and relates commands to the topic that
+explains them.
+The website uses this for the menu in the left column, for breadcrumbs, and to
+list a topic's commands in the menu.
+
+When adding a topic, add it to a section in `nav.yml`.
+When adding a command, check that a menu entry covers it.
+Commands can be covered by their command group (e.g. `list`), their container
+command (e.g. `ACL` for all `ACL` subcommands) or their name (e.g. `BGSAVE`).
+The format is described in the comments at the top of `nav.yml`.
+
+Topics and commands provided by modules are listed in the module's own file in
+[`modules-nav/`](modules-nav/), which the website merges into the menu.
+A module file can add topics to a section in `nav.yml` or add a section of its
+own.
+
+Pages that aren't in the menu are still published and listed in the alphabetical
+index on the website's topics page and in the command reference, but they're
+harder to find, so please keep the menu up to date.
 
 ### Styling guidelines
 

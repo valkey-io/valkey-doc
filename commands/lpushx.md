@@ -3,6 +3,10 @@ already exists and holds a list.
 In contrary to [`LPUSH`](lpush.md), no operation will be performed when `key` does not yet
 exist.
 
+## Reply
+
+Integer: the length of the list after the push operation.
+
 ## Examples
 
 ```

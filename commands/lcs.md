@@ -70,3 +70,11 @@ Finally to also have the match len:
 3) "len"
 4) (integer) 6
 ```
+
+## Reply
+
+One of the following:
+
+* String: the longest common subsequence.
+* Integer: the length of the longest common subsequence when _LEN_ is given.
+* Map with the LCS length and all the ranges in both the strings when _IDX_ is given.

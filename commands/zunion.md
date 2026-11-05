@@ -3,6 +3,10 @@ sorted set, it is returned to the client.
 
 For a description of the `WEIGHTS` and `AGGREGATE` options, see `ZUNIONSTORE`.
 
+## Reply
+
+Array: the result of the union with, optionally, their scores when _WITHSCORES_ is used.
+
 ## Examples
 
 ```
