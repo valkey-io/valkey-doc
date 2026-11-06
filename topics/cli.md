@@ -45,6 +45,8 @@ This topic covers the different aspects of `valkey-cli`, starting from the simpl
 
 **`--user`** _username_
 : Used to send ACL style 'AUTH username pass'. Needs `-a`.
+  You can also use the `VALKEYCLI_USER` environment variable.
+  (If both are used, this argument takes precedence.)
 
 **`--pass`** _password_
 : Alias of -a for consistency with the new --user option.
@@ -410,6 +412,17 @@ perform authentication saving the need of explicitly using the `AUTH` command:
 
 **NOTE:** For security reasons, provide the password to `valkey-cli` automatically via the
 `VALKEYCLI_AUTH` environment variable.
+
+To authenticate as an [ACL user](acl.md), pass the username with `--user`, or set it in
+the `VALKEYCLI_USER` environment variable (Valkey 9.2 and later). The username is only
+sent together with a password, so also set one with `-a`, `--askpass`, or `VALKEYCLI_AUTH`:
+
+    $ export VALKEYCLI_USER=alice
+    $ export VALKEYCLI_AUTH=password
+    $ valkey-cli PING
+    PONG
+
+Command line options take precedence over the environment variables.
 
 Finally, it's possible to send a command that operates on a database number
 other than the default number zero by using the `-n <dbnum>` option:
