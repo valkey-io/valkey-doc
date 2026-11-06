@@ -748,6 +748,7 @@ See [Hot key tracking](../topics/hotkeys.md) for the feature itself.
 The **debug** section contains experimental metrics, which might change or get removed in future versions.
 It won't be included when `INFO` or `INFO ALL` are called, and it is returned only when `INFO DEBUG` is used.
 
+*   `used_memory_module_external`: Number of bytes that modules allocated outside the Valkey allocator and reported with `ValkeyModule_IncrExternalMemory` (already included in `used_memory`)
 *   `eventloop_duration_aof_sum`: Total time spent on flushing AOF in eventloop in microseconds
 *   `eventloop_duration_cron_sum`: Total time consumption of cron in microseconds (including serverCron and beforeSleep, but excluding IO and AOF flushing)
 *   `eventloop_duration_max`: The maximal time spent in a single eventloop cycle in microseconds
