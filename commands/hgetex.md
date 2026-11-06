@@ -18,6 +18,10 @@ Note for the following:
 2. Providing '0' expiration TTL via `EX` or `PX` optional arguments will cause the specified fields to expire immediately and be removed from the hash.
 3. Providing past expiration time via `EXAT` or `PXAT` optional arguments will cause the specified fields to expire immediately and be removed from the hash.
 
+## Reply
+
+Array of values associated with the given fields, in the same order as they are requested.
+
 ## Examples
 
 ```

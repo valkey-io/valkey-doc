@@ -1,0 +1,5 @@
+# Menu entries for Valkey Bundle, merged into the core menu (nav.yml).
+- section: getting-started
+  topics:
+    - topic: valkey-bundle
+      title: Valkey Bundle

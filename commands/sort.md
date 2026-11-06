@@ -8,7 +8,7 @@ interpreted as double precision floating point number.
 This is `SORT` in its simplest form:
 
 [tdtl]: ../topics/data-types.md#lists
-[tdts]: ../topics/data-types.md#set
+[tdts]: ../topics/data-types.md#sets
 [tdtss]: ../topics/data-types.md#sorted-sets
 
 ```
@@ -150,3 +150,9 @@ SORT mylist BY weight_*->fieldname GET object_*->fieldname
 The string `->` is used to separate the key name from the hash field name.
 The key is substituted as documented above, and the hash stored at the resulting
 key is accessed to retrieve the specified hash field.
+
+## Reply
+
+Array: without passing the _STORE_ option, the command returns a list of sorted elements.
+
+Integer: when the _STORE_ option is specified, the command returns the number of sorted elements in the destination list.

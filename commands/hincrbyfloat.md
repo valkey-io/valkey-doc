@@ -12,6 +12,10 @@ The exact behavior of this command is identical to the one of the `INCRBYFLOAT`
 command, please refer to the documentation of [`INCRBYFLOAT`](incrbyfloat.md) for further
 information.
 
+## Reply
+
+String: the value of the field after the increment operation.
+
 ## Examples
 
 ```

@@ -2,6 +2,14 @@ The `HEXPIRETIME` command returns the absolute Unix timestamp (since January 1, 
 
 See also the [`HPEXPIRETIME`](hpexpiretime.md) command that returns the same information with milliseconds resolution.
 
+## Reply
+
+Array of values associated with the result of getting the absolute expiry timestamp of the specific fields, in the same order as they are requested.
+
+* -2: Field does not exist in the provided hash key, or the hash key is empty.
+* -1: Field exists in the provided hash key, but has no expiration associated with it.
+* Integer: The expiration time associated with the hash key field, in seconds.
+
 ## Examples
 
 ```

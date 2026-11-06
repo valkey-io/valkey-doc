@@ -9,6 +9,14 @@ The command returns the following values in case of errors:
 
 See also the [`PTTL`](pttl.md) command that returns the same information with milliseconds resolution.
 
+## Reply
+
+One of the following:
+
+* Integer: TTL in seconds.
+* Integer: `-1` if the key exists but has no associated expiration.
+* Integer: `-2` if the key does not exist.
+
 ## Examples
 
 ```

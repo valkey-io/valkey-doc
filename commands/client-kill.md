@@ -52,6 +52,13 @@ When the new form is used the command no longer returns `OK` or an error, but in
 Valkey Sentinel uses CLIENT KILL to terminate client connections when an instance is reconfigured.
 This mechanism ensures that clients re-establish a connection with a Sentinel, refreshing their configurations.
 
+## Reply
+
+One of the following:
+
+* `OK` when called in 3 argument format and the connection has been closed.
+* Integer: when called in filter/value format, the number of clients killed.
+
 ## Notes
 
 Due to the single-threaded nature of Valkey, it is not possible to

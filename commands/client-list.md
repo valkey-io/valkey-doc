@@ -137,6 +137,10 @@ r: the client socket is readable (event loop)
 w: the client socket is writable (event loop)
 ```
 
+## Reply
+
+Verbatim string: information and statistics about client connections.
+
 ## Examples
 
 ```bash

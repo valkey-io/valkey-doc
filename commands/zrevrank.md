@@ -8,6 +8,14 @@ The optional `WITHSCORE` argument supplements the command's reply with the score
 Use `ZRANK` to get the rank of an element with the scores ordered from low to
 high.
 
+## Reply
+
+One of the following:
+
+* Null: if the key does not exist or the member does not exist in the sorted set.
+* Integer: The rank of the member when _WITHSCORE_ is not used.
+* Array: The rank and score of the member when _WITHSCORE_ is used.
+
 ## Examples
 
 ```

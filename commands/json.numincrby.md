@@ -1,5 +1,19 @@
 Increment the number values at the path by a given number.
 
+## Reply
+
+* If the path is enhanced syntax:
+  * Array of bulk strings representing the resulting value at each path.
+  * Null: For each path where the value is not a number.
+* If the path is restricted syntax:
+  * String: The resulting value.
+  * String: If multiple values are selected, returns the result of the last updated value.
+* Error:
+  * if the number cannot be parsed.
+  * if the result is out of the range of double.
+  * if the document key does not exist.
+  * if the value at the path is not a number (only for restricted syntax).
+
 ## Examples
 
 Enhanced path syntax:

@@ -99,3 +99,7 @@ If a cluster instance has non-contiguous slots (e.g. 1-400,900,1800-6000) then p
 **Warning:** In future versions there could be more elements describing the node better.
 In general a client implementation should just rely on the fact that certain parameters are at fixed positions as specified, but more parameters may follow and should be ignored.
 Similarly a client library should try if possible to cope with the fact that older versions may just have the primary endpoint and port parameter.
+
+## Reply
+
+Nested array of slot ranges with networking information.

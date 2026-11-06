@@ -3,6 +3,10 @@ is stored in `destination`.
 
 If `destination` already exists, it is overwritten.
 
+## Reply
+
+Integer: the number of elements in the resulting set.
+
 ## Examples
 
 ```

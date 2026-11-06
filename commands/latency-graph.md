@@ -20,6 +20,10 @@ Valid values for `event` are:
 * `fork`
 * `rdb-unlink-temp-file`
 
+## Reply
+
+Verbatim string: Latency graph
+
 ## Examples
 
 ```

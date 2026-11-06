@@ -20,3 +20,7 @@ LOLWUT version should have the following properties:
 3. LOLWUT output should be fast to generate so that the command can be called in production instances without issues. It should remain fast even when the user experiments with odd parameters.
 4. LOLWUT implementations should be safe and carefully checked for security, and resist to untrusted inputs if they take arguments.
 5. LOLWUT must always display the Valkey version at the end.
+
+## Reply
+
+Verbatim string containing generative computer art and the Valkey version.

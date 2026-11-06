@@ -8,3 +8,7 @@ The slow log can be cleared with the `SLOWLOG RESET` command.
 ## Alternative
 
 `COMMANDLOG LEN SLOW`
+
+## Reply
+
+Integer: the number of entries in the slow log.
