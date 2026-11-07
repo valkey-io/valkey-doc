@@ -9,7 +9,7 @@ used to make the task of writing complex Lua scripts much simpler.
 The Valkey Lua debugger, codenamed LDB, has the following important features:
 
 * It uses a server-client model, so it's a remote debugger.
-The Valkey server acts as the debugging server, while the default client is `valkey-cli`. 
+The Valkey server acts as the debugging server, while the default client is `valkey-cli`.
 However other clients can be developed by following the simple protocol implemented by the server.
 * By default every new debugging session is a forked session.
 It means that while the Valkey Lua script is being debugged, the server does not block and is usable for development or in order to execute multiple debugging sessions in parallel.
@@ -116,7 +116,6 @@ If you use `continue` in order to execute the script till the next breakpoint, c
 
 ## Termination of the debugging session
 
-
 When the scripts terminates naturally, the debugging session ends and
 `valkey-cli` returns in its normal non-debugging mode. You can restart the
 session using the `restart` command as usual.
@@ -142,7 +141,7 @@ So for example instead of typing `step` you can just type `s`.
 Adding and removing breakpoints is trivial as described in the online help.
 Just use `b 1 2 3 4` to add a breakpoint in line 1, 2, 3, 4.
 The command `b 0` removes all the breakpoints. Selected breakpoints can be
-removed using as argument the line where the breakpoint we want to remove is, but prefixed by a minus sign. 
+removed using as argument the line where the breakpoint we want to remove is, but prefixed by a minus sign.
 So for example `b -3` removes the breakpoint from line 3.
 
 Note that adding breakpoints to lines that Lua never executes, like declaration of local variables or comments, will not work.
@@ -159,6 +158,7 @@ a breakpoint in the next line that will be executed.
 ```
 if counter > 10 then server.breakpoint() end
 ```
+
 This feature is extremely useful when debugging, so that we can avoid
 continuing the script execution manually multiple times until a given condition
 is encountered.
@@ -182,7 +182,7 @@ should start the debugger using a special option, `ldb-sync-mode`, in `valkey-cl
 > Note: Valkey server will be unreachable during the debugging session in this mode, so use with care.
 
 In this special mode, the `abort` command can stop the script half-way taking the changes operated to the dataset.
-Note that this is different compared to ending the debugging session normally. 
+Note that this is different compared to ending the debugging session normally.
 If you just interrupt `valkey-cli` the script will be fully executed and then the session terminated.
 Instead with `abort` you can interrupt the script execution in the middle and start a new debugging session if needed.
 
@@ -207,7 +207,6 @@ Note that the function accepts multiple arguments, that are separated by a comma
 Tables and nested tables are displayed correctly in order to make values simple to observe for the programmer debugging the script.
 
 ## Inspecting the program state with `print` and `eval`
-
 
 While the `server.debug()` function can be used in order to print values
 directly from within the Lua script, often it is useful to observe the local
