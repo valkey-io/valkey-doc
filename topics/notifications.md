@@ -66,11 +66,12 @@ following table:
     z     Sorted set commands
     t     Stream commands
     d     Module key type events
+    p     Path Hash commands (since Valkey 9.2)
     x     Expired events (events generated every time a key expires)
     e     Evicted events (events generated when a key is evicted for maxmemory)
     m     Key miss events (events generated when a key that doesn't exist is accessed)
     n     New key events (Note: not included in the 'A' class)
-    A     Alias for "g$lshztxed", so that the "AKE" string means all the events except "m" and "n".
+    A     Alias for "g$lshztxedp" in Valkey 9.2, so that "AKE" enables all events except "m" and "n".
 
 At least `K` or `E` should be present in the string, otherwise no event
 will be delivered regardless of the rest of the string.
@@ -115,6 +116,10 @@ Different commands generate different kind of events according to the following 
 * `HSETEX` and `HGETEX` generate a single `hexpire` event when called with a positive timeout (or a future timestamp). Note that when these commands are called with a negative timeout value or timestamp in the past, only a single `hexpired` event is generated and if the hash object has no more items left it will be deleted and a `del` event is generated as well.
 * `HPERSIST` and `HGETEX`, will generate an `hpersist` event if at least 1 hash field expiration time was removed. 
 * `HDEL` generates a single `hdel` event, and an additional `del` event if the resulting hash is empty and the key is removed.
+* `PHSET` and `PHMSET` generate one `phset` and `phmset` event respectively per successful write, regardless of the number of fields or paths written.
+* `PHDEL` and `PHPATHDEL` generate one `phdel` and `phpathdel` event respectively when they remove fields or paths.
+  If the last path is removed, the key is deleted and a generic `del` event follows.
+  Enable `g` in addition to `p` to receive both events.
 * `SADD` generates a single `sadd` event, even in the variadic case.
 * `SREM` generates a single `srem` event, and an additional `del` event if the resulting set is empty and the key is removed.
 * `SMOVE` generates an `srem` event for the source key, and an `sadd` event for the destination key.

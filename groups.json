@@ -43,6 +43,10 @@
     "display": "List",
     "description": "Operations on the List data type"
   },
+  "pathhash": {
+    "display": "Path Hash",
+    "description": "Operations on the Path Hash data type"
+  },
   "pubsub": {
     "display": "Pub/Sub",
     "description": "Pub/Sub commands"
