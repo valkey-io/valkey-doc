@@ -3,8 +3,6 @@
     "description": "The Python interface to the Valkey key-value store.",
     "repo":"https://github.com/valkey-io/valkey-py",
     "installation": "pip install valkey",
-    "version":"6.1.0",
-    "version_released":"2025-02-11",
     "language":"python",
     "license": "MIT",
     "read_from_replica": true,

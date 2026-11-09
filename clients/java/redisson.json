@@ -12,8 +12,6 @@
             "command":"implementation 'org.redisson:redisson:+'"
         }
     ],
-    "version": "v4.7.0",
-    "version_released": "2026-08-04",
     "language": "java",
     "license": "Apache-2.0",
     "read_from_replica": true,
