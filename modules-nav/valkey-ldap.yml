@@ -1,0 +1,5 @@
+# Menu entries for the valkey-ldap module, merged into the core menu (nav.yml).
+- section: security
+  topics:
+    - topic: ldap
+      title: LDAP authentication

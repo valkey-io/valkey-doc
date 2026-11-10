@@ -1,0 +1,7 @@
+# Menu entries for the valkey-json module, merged into the core menu (nav.yml).
+# "section" adds topics to a section defined in the core menu.
+- section: data-types
+  topics:
+    - topic: valkey-json
+      title: JSON
+      commands: [json]

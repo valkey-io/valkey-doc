@@ -1,5 +1,6 @@
 This command, that can only be sent to a Valkey Cluster replica node, forces
 the replica to start a manual failover of its primary instance.
+For non-clustered Valkey, see [`FAILOVER`](failover.md).
 
 A manual failover is a special kind of failover that is usually executed when
 there are no actual failures, but we wish to swap the current primary with one
