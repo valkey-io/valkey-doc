@@ -18,6 +18,7 @@ The optional parameter can be used to select a specific section of information:
 *   `keyspace`: Database related statistics
 *   `errorstats`: Valkey error statistics
 *   `hotkeys`: Hot key tracking statistics
+*   `throttling`: Throttling statistics
 
 It can also take the following values:
 
@@ -745,6 +746,14 @@ See [Hot key tracking](../topics/hotkeys.md) for the feature itself.
 *   `hotkeys_last_window_samples`: Number of accesses sampled during the last completed window
 *   `hotkeys_last_window_duration_ms`: Length of the last completed window in milliseconds, and the denominator of every rate `HOTKEYS GET` reports. `0` when there is no completed window to describe
 
+Here is the meaning of all fields in the **throttling** section:
+
+*   `total_throttled_commands`: Total number of commands deferred across all throttlers since the server started.
+*   `repl_throttle_rate`: Current replication throttle rate in operations per second. `-1` when the throttler is inactive.
+*   `repl_throttle_activation_events`: Number of times the replication throttler has been activated since the server started.
+*   `repl_throttle_below_guardrail_secs`: Seconds the throttle rate has been continuously below the minimum rate guardrail.
+*   `repl_throttle_total_commands`: Number of commands deferred by the replication throttler since the server started.
+
 The **debug** section contains experimental metrics, which might change or get removed in future versions.
 It won't be included when `INFO` or `INFO ALL` are called, and it is returned only when `INFO DEBUG` is used.
 
@@ -752,6 +761,9 @@ It won't be included when `INFO` or `INFO ALL` are called, and it is returned on
 *   `eventloop_duration_cron_sum`: Total time consumption of cron in microseconds (including serverCron and beforeSleep, but excluding IO and AOF flushing)
 *   `eventloop_duration_max`: The maximal time spent in a single eventloop cycle in microseconds
 *   `eventloop_cmd_per_cycle_max`: The maximal number of commands processed in a single eventloop cycle
+*   `repl_throttle_more_events`: Number of times the replication throttle rate was decreased.
+*   `repl_throttle_less_events`: Number of times the replication throttle rate was increased.
+*   `repl_throttle_current_clients`: Number of clients currently queued by the replication throttler.
 
 [hcgcpgp]: http://code.google.com/p/google-perftools/
 
