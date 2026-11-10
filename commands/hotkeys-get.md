@@ -16,8 +16,7 @@ Each entry contains:
 `qps` is an estimate rather than an exact value, because accesses are sampled
 when `hotkeys-sampling-percentage` is below `100` (its default is `1`), and
 because only `hotkeys-top-k` keys are tracked at a time. It is a rate over the
-span the window actually covered, which [`INFO`](info.md) reports as
-`hotkeys_last_window_duration_ms` in its `hotkeys` section. See
+span the window actually covered. See
 [Choosing the sampling percentage and window](../topics/hotkeys.md#choosing-the-sampling-percentage-and-window)
 for how accuracy depends on those two settings.
 
