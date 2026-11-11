@@ -11,7 +11,7 @@ script cache.
 
 Scripts loaded with this command are not evicted when the number of cached `EVAL` scripts
 or the `maxmemory-scripts` limit is reached.
-Starting from Valkey 9.2, `SCRIPT LOAD` is flagged as `DENYOOM`: when the server is over
+Starting from Valkey 9.2, `SCRIPT LOAD` is flagged as [`DENYOOM`](command.md#flags): when the server is over
 the `maxmemory` limit and can't free memory by eviction, the command is rejected with an out of memory error.
 
 For more information about `EVAL` scripts please refer to [Introduction to Eval Scripts](../topics/eval-intro.md).
