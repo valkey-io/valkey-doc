@@ -746,7 +746,7 @@ See [Hot key tracking](../topics/hotkeys.md) for the feature itself.
 *   `hotkeys_last_window_samples`: Number of accesses sampled during the last completed window
 *   `hotkeys_last_window_duration_ms`: Length of the last completed window in milliseconds, and the denominator of every rate `HOTKEYS GET` reports. `0` when there is no completed window to describe
 
-Here is the meaning of all fields in the **throttling** section:
+The **throttling** section, contains metrics related to client command throttling.
 
 *   `total_throttled_commands`: Total number of commands deferred across all throttlers since the server started.
 *   `repl_throttle_rate`: Current replication throttle rate in operations per second. `-1` when the throttler is inactive.
