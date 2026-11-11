@@ -17,6 +17,12 @@ cluster_current_epoch:6
 cluster_my_epoch:2
 cluster_stats_messages_sent:1483972
 cluster_stats_messages_received:1483968
+cluster_stats_bytes_sent:3248192
+cluster_stats_bytes_received:3248080
+cluster_stats_pubsub_bytes_sent:0
+cluster_stats_pubsub_bytes_received:0
+cluster_stats_module_bytes_sent:0
+cluster_stats_module_bytes_received:0
 total_cluster_links_buffer_limit_exceeded:0
 ```
 
@@ -35,6 +41,10 @@ total_cluster_links_buffer_limit_exceeded:0
 * `cluster_my_epoch`: The [Config Epoch](../topics/cluster-spec.md#configuration-epoch) of the node we are talking with. This is the current configuration version assigned to this node.
 * `cluster_stats_messages_sent`: Number of messages sent via the cluster node-to-node binary bus.
 * `cluster_stats_messages_received`: Number of messages received via the cluster node-to-node binary bus.
+* `cluster_stats_bytes_sent`: Number of bytes sent via the cluster node-to-node binary bus, across all message types. Added in Valkey 9.1.
+* `cluster_stats_bytes_received`: Number of bytes received via the cluster node-to-node binary bus, across all message types. Added in Valkey 9.1.
+* `cluster_stats_pubsub_bytes_sent` and `cluster_stats_pubsub_bytes_received`: The portion of `cluster_stats_bytes_sent` and `cluster_stats_bytes_received` used by Pub/Sub global publish and sharded publish propagation, see [Pubsub](../topics/pubsub.md). Added in Valkey 9.1.
+* `cluster_stats_module_bytes_sent` and `cluster_stats_module_bytes_received`: The portion of `cluster_stats_bytes_sent` and `cluster_stats_bytes_received` used by module cluster API messages. Added in Valkey 9.1.
 * `total_cluster_links_buffer_limit_exceeded`: Accumulated count of cluster links freed due to exceeding the `cluster-link-sendbuf-limit` configuration.
 
 The following message-related fields may be included in the reply if the value is not 0:
