@@ -1,12 +1,17 @@
-Clear the arrays or objects at the path.
+Clear the values at the path.
+Arrays and objects become empty.
+Strings become empty strings, numbers become 0 and booleans become `false`.
+Null values are not changed.
 
 ## Reply
 
 * Integer:
-  * The number of containers cleared.
-  * Returns 0 if clearing an empty array or object.
-  * Returns 0 if clearing a non-container value.
-  * Returns 0 if no array or object value is located by the path.
+  * The number of values cleared.
+  * A value is counted only if it changes: a non-empty array, object or string, a non-zero number, or `true`.
+  * Returns 0 if the values are already empty, 0, `false` or `null`.
+  * Returns 0 if no value is located by the path.
+* Error:
+  * if the document key does not exist.
 
 ## Examples
 
