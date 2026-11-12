@@ -302,6 +302,7 @@ The following is a list of command categories and their meanings:
   key, or metadata will also have the `write` category. Commands that only read
   the keyspace, key, or metadata will have the `read` category.
 * **list** - Data type: lists related.
+* **pathhash** - Data type: [Path Hash](path-hashes.md) commands (since Valkey 9.2).
 * **pubsub** - PubSub-related commands.
 * **read** - Reading from keys (values or metadata). Note that commands that don't
   interact with keys, will not have either `read` or `write`.
@@ -343,9 +344,9 @@ Examples:
     19) "connection"
     20) "transaction"
     21) "scripting"
+    22) "pathhash"
 
-As you can see, so far there are 21 distinct categories. Now let's check what
-command is part of the *geo* category:
+Use `ACL CAT geo` to see which commands are in the *geo* category:
 
      > ACL CAT geo
      1) "geohash"
