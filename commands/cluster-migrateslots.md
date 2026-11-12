@@ -26,3 +26,12 @@ To cancel the slot migration jobs, use the [`CLUSTER CANCELSLOTMIGRATIONS`](clus
 Because slot migrations may move keys belonging to any database, the caller
 must have ACL access to all databases (the `alldbs` rule). See
 [database permissions](../topics/acl.md#database-permissions).
+
+## Options
+
+* `AUTH <username> <password>` -- Authenticate with the given username and password
+  pair to the target node.
+  Available since Valkey 9.2.0.
+  The `username` can be set to `default` when the target uses `requirepass`.
+  If `AUTH` is omitted, the source node's configured `primaryuser` and
+  `primaryauth` credentials are used.
