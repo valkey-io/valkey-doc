@@ -135,6 +135,7 @@ CentOS
 Changelog
 changelogs
 charset
+checksums
 Chemeris
 cheprasov
 ciphersuites
@@ -170,6 +171,7 @@ Craigslist
 CRC
 CRC-16
 CRC16
+CRC32C
 CRC64
 CRDTs
 CRLF-terminated
@@ -270,6 +272,7 @@ executables
 expiries
 explainer
 explainers
+ext4
 facto
 factorializing
 Failover
@@ -387,6 +390,7 @@ incrby_get_mget
 indexable
 Infiniband
 ing
+inode
 init
 int_vals
 internals-eventlib
@@ -395,6 +399,7 @@ internals-sds
 internals-vm
 intsets
 invalidations
+io_uring
 iojob
 IOPs
 iostat
@@ -452,6 +457,7 @@ knockknock
 Kubernetes
 kqueue
 L3
+largeobj
 last-failover-wins
 lastkey
 lastVoteEpoch
@@ -472,6 +478,7 @@ lenptr
 Levelgraph
 lexicographically
 libc
+libfabric
 LibLZF
 libssl-dev
 libvalkey
@@ -595,6 +602,7 @@ num-items
 numactl
 numkeys
 numreq
+NVMe
 nx
 observability
 octothorpe
@@ -645,6 +653,7 @@ pmessage
 Pool2
 POP3
 ppa:redislabs
+pre-allocated
 pre-built
 pre-conditions
 pre-configured
@@ -704,6 +713,7 @@ RDB-saving
 rdd
 rdd-1
 rdd-2
+RDMA-capable
 reacquisition
 react-redlock
 readibility
@@ -793,6 +803,7 @@ RU102
 RU202
 runid
 runlevels
+rustup
 RW
 Rx/Tx
 S[1-9]
@@ -883,6 +894,8 @@ subcommand.
 subcommand's
 Subcommands
 subcommands
+subdirectories
+subdirectory
 subevent
 subevents
 suboptimal
@@ -913,6 +926,8 @@ TLS-encrypted
 tls-port
 tmp
 tmux
+tokenizer
+toolchain
 toolkits
 topologies
 tonumber
