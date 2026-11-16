@@ -1,163 +1,128 @@
 ---
-title: Forkless Operations
-description: How to use forkless persistence and replication in Valkey
+title: Forkless operations
+description: Overview of forkless operations
 ---
 
-Valkey traditionally uses the operating system's `fork()` mechanism to create point-in-time snapshots for persistence (`BGSAVE`) and full synchronization (replication).
-When Valkey forks, the child process shares the parent's memory pages using copy-on-write (CoW).
-This approach has several operational drawbacks:
+Valkey uses the `fork()` system call for several background operations, including saving the dataset to disk and fully synchronizing replicas.
+Fork-based operations have been part of Valkey since its earliest days and are a simple, proven approach.
+They also come with tradeoffs that can matter for some workloads.
+One of them is memory usage: the forked child process shares memory with Valkey through copy-on-write, so memory usage can grow while the child is running.
+In extreme cases, where writes are spread across much of the dataset during that time, memory usage can grow by up to 2x.
 
-1. The `fork()` syscall blocks the main thread while the kernel duplicates the process's page table.
-   The duration scales with dataset size — typically ranging from tens of milliseconds to hundreds of milliseconds on large instances.
-   Valkey is unresponsive for the entire duration.
-2. Under write-heavy workloads, CoW can cause memory usage to grow up to 2x, as every modified page must be duplicated by the kernel.
-   In memory-constrained environments (such as Kubernetes pods or cgroups), this unpredictable memory growth can trigger the OOM-killer.
+Valkey 9.2 introduces **forkless save** and **forkless full sync**, which perform these two operations without calling `fork()`.
+Valkey takes the snapshot inside the running process, which keeps memory usage steadier and more predictable while the operation runs.
+In this case, the tradeoff is that writes can briefly wait and latency can be slightly higher during the operation, as discussed later in [Impact on clients](#impact-on-clients).
 
-Forkless operations eliminate these problems by performing persistence and replication without calling `fork()`.
-Because no fork occurs, there is no CoW, no memory spike, and no latency freeze.
-The tradeoff is that clients writing to a key can be briefly blocked while that key is being captured, and forkless operations can be slightly slower end-to-end.
+It is important to note that forkless is not yet a full replacement for `fork()`.
+In some situations, Valkey falls back to a fork-based save or full sync even when it is configured to prefer forkless operations.
+When using forkless, it is highly encouraged to plan the configuration in a way that avoids these fallbacks, and to take into account that other operations, such as AOF rewrite and atomic slot migration, still use `fork()`.
+This page describes how to plan for forkless operations.
 
-## When to use forkless
+## Enabling forkless operations
 
-Forkless is most beneficial when:
+Forkless operations are disabled by default.
+Two configuration parameters control them:
 
-* Memory is constrained and CoW overhead is unacceptable.
-* Fork latency spikes are unacceptable.
+- `forkless-infrastructure-enabled`: enables support for forkless operations.
+  It is `no` by default and can only be set at startup.
+  When enabled, Valkey stores an additional 4 bytes with each key.
+  This setting does not change how saves or full syncs are performed on its own.
+- `forkless-policy`: selects how background saves and full syncs are performed.
+  The default, `require-fork`, always uses `fork()`.
+  `prefer-forkless` uses forkless operations when possible and falls back to `fork()` otherwise, as described in [When Valkey uses fork instead](#when-valkey-uses-fork-instead).
+  It can be changed at runtime with `CONFIG SET`, and can only be set to `prefer-forkless` when `forkless-infrastructure-enabled` is `yes`.
 
-When memory is plentiful and brief fork latency spikes are acceptable, fork-based operations may still be preferred.
+### When Valkey uses fork instead
 
-## Consistency guarantees
+As the name suggests, `prefer-forkless` does not guarantee that every save and full sync is forkless.
+Before each operation, Valkey checks whether a forkless operation is possible, and uses `fork()` when it is not.
+Each fallback is logged to the server log, and counted in the `debug` section of `INFO`.
 
-Forkless provides two consistency modes depending on the operation:
+Valkey uses `fork()` for saves when:
 
-* **Forkless save (persistence)**: provides a point-in-time snapshot, equivalent to a fork-based `BGSAVE`.
-  All keys are captured as they existed at the moment the operation began.
-* **Forkless full synchronization (replication)**: provides eventual consistency, equivalent to fork-based full synchronization.
-  Keys are captured as they currently exist, and writes to already-captured keys are streamed inline.
-  The replica achieves full consistency by the end of the transfer.
+- **A loaded module does not support forkless operations.**
+  Every loaded module must declare support, as described in [For module developers](#for-module-developers).
+  Counted in `forkless_fallbacks_module`.
+- **The node is receiving slots through atomic slot migration.**
+  This applies to the target node of a [`CLUSTER MIGRATESLOTS`](atomic-slot-migration.md) operation, for example while resharding.
+  Saves and full syncs on that node use `fork()` until the migration finishes.
+  `CLUSTER GETSLOTMIGRATIONS` shows which migrations are in progress.
+  Counted in `forkless_fallbacks_slot_import`.
 
-Read commands are never affected in either mode.
+For full syncs, the conditions above apply, and Valkey additionally uses `fork()` when:
 
-## Client blocking behavior
+- **The replica runs a Valkey version older than 9.2.**
+  Counted in `forkless_fallbacks_missing_inband_repl` or `forkless_fallbacks_old_rdb_version`.
+- **The replica uses `repl-diskless-load swapdb`.**
+  This only applies when the primary uses diskless sync (`repl-diskless-sync yes`, the default).
+  Counted in `forkless_fallbacks_missing_inband_repl`.
+- **The replica loads a module that does not support forkless operations.**
+  This only applies when the primary uses diskless sync (`repl-diskless-sync yes`, the default).
+  Counted in `forkless_fallbacks_missing_inband_repl`.
+- **Replication compression is enabled.**
+  When `repl-compression` is enabled on both the primary and the replica, the full sync uses `fork()`.
+  Counted in `forkless_fallbacks_compression`.
+- **A client requests an RDB file that contains only functions**, for example with `valkey-cli --functions-rdb`.
+  Counted in `forkless_fallbacks_exclude_data`.
 
-During forkless operations, a client may be briefly blocked when it writes to a key that is currently being captured.
-The blocking duration depends on the size of the key — larger keys (such as large sorted sets or hashes) take longer to capture and block for longer.
+### Events that cancel forkless operations
 
-Key characteristics of blocking:
+Some events that do not affect a fork-based save or full sync cancel a forkless one:
 
-* Only write commands can be blocked; reads are never affected.
-* The probability of hitting a key while it is being captured is generally low.
-* For small keys (typically <= 512 bytes), an optimization allows the client to proceed immediately without blocking.
-* Applications with very large keys and high write rates to those keys should account for possible latency spikes. Consider breaking large collections into smaller keys to reduce blocking duration.
+- **`FLUSHDB`** cancels a forkless save to disk, including the save performed for a disk-based full sync (`repl-diskless-sync no`).
+  During a diskless full sync, `FLUSHDB` cancels the sync only when the flushed database holds more than half of all keys.
+  Otherwise, the flush is sent to the replica as part of the sync.
+- **The start of a slot import** cancels a forkless full sync on the target node of an atomic slot migration.
+  The replica's next full sync uses `fork()`, as described above.
 
-## Configuration
-
-### Enabling forkless support
-
-Forkless requires per-key metadata.
-Enable it at startup (this is an immutable configuration):
-
-    forkless-options-supported yes
-
-When enabled, the server allocates 4 additional bytes per key in the database.
-Enabling this setting does not change any behavior on its own — it only enables the infrastructure.
-
-### Forkless persistence
-
-Once `forkless-options-supported` is enabled, configure automatic forkless saves:
-
-    CONFIG SET threadsave-enabled-for-backup yes
-
-When set to `yes`, both auto-save rules and plain `BGSAVE` commands use forkless snapshots.
-
-You can also trigger specific methods explicitly:
-
-* `BGSAVE THREAD` — explicitly triggers a forkless snapshot.
-* `BGSAVE FORK` — explicitly triggers a fork-based snapshot.
-* `BGSAVE` — uses the method configured by `threadsave-enabled-for-backup`.
-
-### Forkless replication
-
-On the primary, enable both settings:
-
-    forkless-options-supported yes
-    threadsave-enabled-for-replication yes
-
-On the replica, no special configuration is needed — the replica only needs to be running a version of Valkey that includes forkless support.
-A compatible replica automatically advertises its support during the handshake.
-
-The primary uses forkless full synchronization when all conditions are met:
-
-1. `forkless-options-supported` is enabled on the primary.
-2. `threadsave-enabled-for-replication` is enabled on the primary.
-3. All connected replicas support the feature.
-
-If any condition is not met, the primary falls back to fork-based sync automatically.
-This makes the transition safe — a primary with forkless enabled can serve both new and old replicas without manual intervention.
-
-Forkless replication supports both disk-target and socket-target modes (controlled by `repl-diskless-sync`).
+When a full sync is cancelled, the replica reconnects and starts a new full sync.
+When a save is cancelled, automatic saves configured with `save` are retried later, and a save started with `BGSAVE` must be started again.
 
 ## Monitoring forkless operations
 
-Forkless operations report their status through the `INFO` command.
-The `rdb_current_bgsave_type` and `rdb_last_bgsave_type` fields indicate which method is in use or was last used — `thread` for forkless, `fork` for fork-based, or `none` if no save is in progress.
+The `persistence` section of `INFO` shows which method Valkey uses:
 
-During an active forkless operation, additional fields are available:
+- `rdb_current_bgsave_type`: the method of the save or full sync in progress, `fork` or `forkless`, or `none` when no save is running.
+- `rdb_last_bgsave_type`: the method of the last completed save to disk.
+- `forkless_estimated_seconds_remaining`: an estimate of the time left in the forkless save or full sync in progress, or `-1` when none is running.
 
-* `threadsave_current_item_seconds`: how long the current key has been serializing. A high value here indicates a large key that is blocking clients.
-* `threadsave_estimated_seconds_remaining`: estimated time to completion based on keys processed so far.
+The server log records the method of each full sync, and the reason for each fallback.
+For debugging, the `debug` section of `INFO` also includes the `forkless_fallbacks_*` counters described in [When Valkey uses fork instead](#when-valkey-uses-fork-instead).
 
-For more granular debugging, the following fields are available in the `debug` section of `INFO`:
+## Impact on clients
 
-* `threadsave_current_queue_length`: number of items currently queued for processing.
-* `threadsave_queue_length_target`: the target queue depth.
-* `threadsave_dbentries_queued`: total entries placed in the queue so far.
-* `threadsave_dbentries_processed`: total entries processed by the background thread so far.
+A forkless operation runs while Valkey keeps serving clients, so it can affect commands that write to the dataset:
 
-## Comparison with fork-based operations
+- **Writes can briefly wait.**
+  A write to a key during a forkless operation has a small risk of waiting briefly.
+  The larger the key, the higher the risk and the longer the wait.
+  String values of up to 512 bytes are generally not affected.
+  Read commands do not wait, except for the few that modify data internally, such as `PFCOUNT`.
+- **Latency can be slightly higher.**
+  Command latency can be slightly higher while a forkless operation runs, compared to a comparable fork-based operation.
 
-There is an infinite number of scenarios and variables one can tweak when comparing fork-based and forkless full synchronization: the number of replicas, the number of connected clients, write intensity, key sizes, data types, whether writes overwrite existing keys, add new keys, delete them, or a combination at various ratios — and more. The scenarios presented here were chosen to show forkless close to its extremes — at its best and at its worst — to illustrate when forkless should and should not be chosen over fork-based sync.
+Workloads with very large keys that receive frequent writes are the most affected.
+Splitting very large collections into smaller keys reduces both the chance that a write waits and how long it waits.
 
-### Scenario 1: Many small keys under heavy writes
+## For module developers
 
-In this scenario, a primary holds a 6GB dataset composed of 50 million keys, with concurrent SET commands overwriting existing keys during the sync. A single replica connects for full synchronization.
+A module declares that it supports forkless operations by setting the `VALKEYMODULE_OPTIONS_HANDLE_FORKLESS` option with `ValkeyModule_SetModuleOptions`.
+Forkless operations are used only when every loaded module sets this option.
+A module that does not set it keeps working as before, and Valkey uses `fork()` for saves and full syncs while that module is loaded, even when `forkless-policy` is set to `prefer-forkless`.
 
-![Scenario 1: Memory, sync time, and latency comparison](forkless_scenario1.png)
+By setting the option, a module agrees to the following:
 
-**Memory:**
+- **RDB save callbacks must be thread-safe.**
+  A module that registers a data type declares that its RDB save callbacks can run on a background thread, at the same time as commands run on the main thread.
+  The value being saved does not change during the callback, but any other module state that the callback reads must be protected with synchronization.
+- **Auxiliary save callbacks must be small.**
+  An `aux_save` or `aux_save2` callback must run only in the `VALKEYMODULE_AUX_BEFORE_RDB` section and save only a limited amount of data, because it runs on the main thread and blocks it during a forkless operation.
+- **Opening a key for write can return `NULL`.**
+  While a forkless operation is running, `ValkeyModule_OpenKey` with `VALKEYMODULE_WRITE` can return `NULL` for keys that the module command did not declare.
+  For the keys that a module command declares, the risk is the same as for other writes, as described in [Impact on clients](#impact-on-clients): the command can briefly wait.
+  For undeclared keys, including keys opened outside of a command, such as from a timer, there is a chance that `NULL` is returned.
+  From the module's point of view, when `NULL` is returned can seem random, because it depends on internal server state that changes rapidly and cannot generally be monitored.
+  Therefore, modules should be designed so that every such write can handle a `NULL` return.
 
-In the fork-based case, total system memory grows from approximately 6GB to 12GB — nearly 2x the initial dataset. This growth is composed almost entirely of copy-on-write: because the writes were hitting keys dispersed across the entire key space during the sync, virtually every page was duplicated by the kernel. In practice, writes do not need to hit the entire key space or be particularly intense — it is sufficient for writes to touch keys dispersed among many different pages. Hitting a single key on a page just once is enough for that page to be duplicated.
-
-Additionally, in fork-based sync without dual-channel-replication, incoming replication commands are accumulated in a Client Output Buffer (COB) and only sent to the replica once the initial RDB transfer completes.
-
-In the forkless case, all three metrics — total system memory, CoW, and COB — remain nearly flat, due to the virtually zero memory overhead of forkless operations.
-
-It is also worth noting that in a memory-constrained environment, forkless is particularly beneficial. If the 6GB dataset represents 50% of available memory capacity, fork-based sync would push usage to 100%. If 6GB is only a small fraction of available memory (e.g. 10%), doubling to 20% may be acceptable — but the fork freeze described below should still be considered.
-
-**Sync completion time:**
-
-Fork-based sync completes slightly earlier than forkless in this scenario. However, when accounting for the additional time required for the fork-based approach to drain the COB (which is necessary for the replica to fully catch up), the difference shrinks. In some configurations, forkless sync matches or even slightly beats fork-based sync in total time to replica readiness.
-
-**Latency:**
-
-During forkless sync, client write latency is slightly higher — in this scenario, approximately 2x compared to fork-based. This is the tradeoff for the memory savings.
-
-However, fork-based sync shows a clear latency spike at the very beginning: the fork() freeze. In this case, the freeze is approximately 65ms. Forkless sync shows no such spike. The duration of the fork freeze is empirically proportional to the initial dataset size — the larger the dataset, the longer the freeze due to the page table that must be copied.
-
-### Scenario 2: Large collection keys
-
-In this scenario, the dataset is 2.4GB, composed of 50,000 lists, each containing 250 elements of 200 bytes. This is engineered to showcase the blocking behavior of forkless operations on large keys.
-
-![Scenario 2: Memory and latency comparison with large keys](forkless_scenario2.png)
-
-**Memory:**
-
-The memory story is similar to scenario 1: fork-based sync shows memory growth correlated with CoW and some COB growth, though in this case it does not reach 2x. Forkless memory consumption also grows slightly but remains far below the fork-based case.
-
-**Latency:**
-
-At p50 and p99, latency remains roughly the same between fork and forkless, apart from some outliers. The fork freeze is also visible in the fork-based case.
-
-At p100, the difference is striking. Fork-based latency stays mostly flat, but forkless shows spikes reaching up to 75ms. These are clients blocked on in-use keys — their SET commands are writing to keys currently being serialized. Serializing large lists takes time, and the client is blocked for the duration.
-
-However, a notable observation: these spikes are clearly visible in the p100 graph but do not appear at all in p99. This tells us that even in this scenario — engineered specifically to showcase blocking — it is still quite rare for a client to be blocked. The probability of hitting a key at the exact moment it is being serialized is low. In more extreme cases (for example, a single massive key that represents the entire dataset), blocking probability would approach 100%. But in typical workloads, blocking is infrequent — as demonstrated here, where fewer than 1% of writes experienced it.
+A module cannot be loaded while a forkless save or full sync is running.
+`MODULE LOAD` returns an error, and the module can be loaded after the operation finishes.
