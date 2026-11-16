@@ -3,7 +3,7 @@
 # in the core menu; without it, the section goes at the end.
 - id: large-object
   title: Large object
-  after: data-types
+  after: programmability
   landing: large-object
   commands: [large_object]
   topics:
