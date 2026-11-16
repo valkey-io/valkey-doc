@@ -10,13 +10,14 @@ This repo comes with a Makefile to build and install man pages.
 ```bash
 make VALKEY_ROOT=path/to/valkey VALKEY_BLOOM_ROOT=path/to/valkey-bloom              \
      VALKEY_JSON_ROOT=path/to/valkey-json VALKEY_SEARCH_ROOT=path/to/valkey-search  \
+     VALKEY_LARGE_OBJECT_ROOT=path/to/valkey-large-object                           \
 sudo make install INSTALL_MAN_DIR=/usr/local/share/man
 ```
 
 Prerequisites: GNU Make, Python 3, Python 3 YAML (pyyaml), Pandoc.
 Additionally, the scripts need access to the valkey code repo,
 where metadata files about the commands are stored. Additionally,
-access to `valkey-bloom`, `valkey-json` and `valkey-search` repos is optional.
+access to `valkey-bloom`, `valkey-json`, `valkey-search` and `valkey-large-object` repos is optional.
 
 The pages are generated under `_build/man/` by default. The default install
 location is `/usr/local/share/man` (in the appropriate subdirectories).

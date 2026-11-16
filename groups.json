@@ -39,6 +39,10 @@
     "display": "JSON",
     "description": "Operations on the JSON data type"
   },
+  "large-object": {
+    "display": "Large object",
+    "description": "Operations on the large object data type"
+  },
   "list": {
     "display": "List",
     "description": "Operations on the List data type"

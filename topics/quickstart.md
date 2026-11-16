@@ -110,6 +110,7 @@ Now that you have Valkey running and understand the basics, you can explore more
     * **[Valkey Bloom](bloomfilters.md)**
     * **[Valkey LDAP](ldap.md)**
     * **[Valkey Search](search.md)**
+    * **[Valkey Large Object](large-object.md)** (version 0.x)
 * **Publish/Subscribe Messaging:** Dive into Valkey’s Pub/Sub feature to build real-time apps (such as chat systems o live notifications). See the [**Pub/Sub** section](pubsub.md) of the docs for patterns and best practices (Valkey’s Pub/Sub supports pattern subscriptions and sharded channels for scalability).
 * **Clustering and High Availability:** When you need to scale out or ensure uptime, Valkey Cluster mode allows sharding data across multiple nodes with automatic failover. Check out the **[Valkey Cluster tutorial](cluster-tutorial.md)** for a step-by-step guide to setting up a cluster and using replication.
 * **Further Documentation:** Explore the **[Valkey Documentation by Topic](index.md)** for in-depth guides on persistence, security, Lua scripting, modules, and more. Key references include the [Commands Reference](../commands/) for details on every command, and the [FAQ](faq.md) for answers to common questions.
