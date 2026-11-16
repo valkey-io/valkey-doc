@@ -9,6 +9,10 @@
   topics:
     - topic: search-query
       title: Queries
+    - topic: search-scoring
+      title: Scoring
+    - topic: search-scoring-examples
+      title: Scoring examples
     - topic: search-expressions
       title: Aggregation expressions
     - topic: search-data-formats
