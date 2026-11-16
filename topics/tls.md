@@ -71,13 +71,15 @@ tls-ca-cert-dir /path/to/ca-certs/
 **Alternate server certificate and key**
 
 If `tls-cert-file` uses an algorithm that doesn't have wide support yet,
-for example ML-DSA or other Post-Quantum Cryptography (PQC) algorithms, older
-clients may not be able to connect to the server using these certificates.
+for example ML-DSA or other Post-Quantum Cryptography (PQC) algorithms,
+older clients may not be able to connect to the server using these certificates.
 Users can configure Valkey with an alternative certificate and private key
 to fall back to in cases like this. This functionality was added in Valkey 9.2.
-The alternate certificate **must** use
-a different algorithm than the main one (for example: two RSA certificates
-won't work). This is configured using:
+The alternate certificate **must** use a different algorithm than the main one
+(for example: two RSA certificates won't work). Both certificates are offered
+to the peer, but which one is picked is negotiated from the signature algorithms
+that both sides support, and `tls-prefer-server-ciphers` decides whose preference
+order wins. This is configured using:
 
 ```
 tls-alt-cert-file /path/to/valkey-rsa.crt
