@@ -21,6 +21,13 @@ should be used.
 
 If `key` does not exist a nil bulk reply is returned.
 
+## Reply
+
+One of the following:
+
+* String: the serialized value of the key.
+* Null: the key does not exist.
+
 ## Examples
 
 ```

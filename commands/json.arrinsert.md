@@ -5,6 +5,18 @@ Insert one or more values into the array values at path before the index.
 * A negative index values is interpreted as starting from the end.
 * The index must be in the array's boundary.
 
+## Reply
+
+* If the path is enhanced syntax:
+  * Array of integers representing the new length of the array at each path.
+  * Null: For each path where the value is an empty array or not an array.
+* If the path is restricted syntax:
+  * Integer: The new length of the array.
+* Error:
+  * if the path does not exist.
+  * if the value at the path is not an array (only for restricted syntax).
+  * if the index argument is out of bounds.
+
 ## Examples
 
 Enhanced path syntax:

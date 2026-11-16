@@ -13,3 +13,7 @@ the Valkey process in a hard way and preventing it from persisting with half-wri
 information.
 
 For more information about `EVAL` scripts please refer to [Introduction to Eval Scripts](../topics/eval-intro.md).
+
+## Reply
+
+`OK`.

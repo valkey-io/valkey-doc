@@ -21,6 +21,13 @@ Note for the following:
 3. Providing '0' expiration TTL via `EX` or `PX` optional arguments will result in the specified fields immediately expiring and being removed from the hash.
 4. Providing past expiration time via `EXAT` or `PXAT` optional arguments will result in the specified fields immediately expiring and being removed from the hash.
 
+## Reply
+
+One of the following:
+
+* Integer: `0` if none of the provided fields' values and/or expiration times were set.
+* Integer: `1` if all the fields' values and/or expiration times were set.
+
 ## Examples
 
 Add 3 new items without expiration time to a 'myhash'

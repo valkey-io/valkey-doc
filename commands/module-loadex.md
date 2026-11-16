@@ -9,3 +9,7 @@ Any additional arguments that follow the `ARGS` keyword are passed unmodified to
 
 **Note**: modules can also be loaded at server startup with `loadmodule`
 configuration directive in `valkey.conf`.
+
+## Reply
+
+`OK` if the module was loaded.

@@ -1,6 +1,14 @@
 The `HPERSIST` remove the existing expiration on a hash key's field(s), turning the field(s) from volatile (a field with expiration set) 
 to persistent (a field that will never expire as no TTL (time to live) is associated).
 
+## Reply
+
+Array of integer codes indicating the result of setting expiry on each specified field, in the same order as the fields are requested.
+
+* -2: Field does not exist in the provided hash key, or the hash key does not exist.
+* -1: Field exists in the provided hash key, but has no expiration associated with it.
+* 1: The expiration time was removed from the hash key field.
+
 ## Examples
 
 ```

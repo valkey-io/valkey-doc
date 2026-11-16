@@ -18,6 +18,10 @@ no-op if `wherefrom` is the same as `whereto`).
 This command comes in place of the now deprecated [`RPOPLPUSH`](rpoplpush.md). Doing
 `LMOVE RIGHT LEFT` is equivalent.
 
+## Reply
+
+String: the element being popped and pushed.
+
 ## Examples
 
 ```

@@ -13,6 +13,10 @@ Apart from the reversed ordering, `ZREVRANGEBYSCORE` is similar to
 
 `ZRANGE` with the `REV` and `BYSCORE` arguments.
 
+## Reply
+
+* Array of the members and, optionally, their scores in the specified score range.
+
 ## Examples
 
 ```

@@ -10,3 +10,7 @@ It is possible to use one of the following modifiers to dictate the flushing mod
 * `!SYNC`: flushes the database synchronously
 
 Note: an asynchronous `FLUSHDB` command only deletes keys that were present at the time the command was invoked. Keys created during an asynchronous flush will be unaffected.
+
+## Reply
+
+`OK`.

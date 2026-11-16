@@ -1,6 +1,10 @@
 Returns the sorted set cardinality (number of elements) of the sorted set stored
 at `key`.
 
+## Reply
+
+Integer: the cardinality (number of members) of the sorted set, or 0 if the key doesn't exist.
+
 ## Examples
 
 ```

@@ -7,6 +7,13 @@ When `key` already holds a value, no operation is performed.
 
 `SET` with the `NX` argument.
 
+## Reply
+
+One of the following:
+
+* Integer: `0` if the key was not set.
+* Integer: `1` if the key was set.
+
 ## Examples
 
 ```

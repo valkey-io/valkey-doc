@@ -76,3 +76,10 @@ Then we may want to know what commands are part of a given category:
 30) "psync"
 31) "sort"
 ```
+
+## Reply
+
+One of the following:
+
+* Array of strings representing ACL categories or commands in a given category.
+* Error: the command returns an error if an invalid category name is given.

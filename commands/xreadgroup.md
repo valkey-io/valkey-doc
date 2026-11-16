@@ -132,3 +132,10 @@ OK
 Reading the [Streams introduction](../topics/streams-intro.md) is highly
 suggested in order to understand more about the streams overall behavior
 and semantics.
+
+## Reply
+
+One of the following:
+
+* Map where each key is a stream key name and each value is the entries reported for that key. The entries reported are full stream entries, having IDs and the list of all the fields and values. Field and values are guaranteed to be reported in the same order they were added by `XADD`. In RESP2, the reply is instead an array where each element is a two-element array containing the key name and the entries reported for that key.
+* Null: if the _BLOCK_ option is given and a timeout occurs, or if there is no stream that can be served.

@@ -12,6 +12,13 @@ removed from the source set.
 
 An error is returned if `source` or `destination` does not hold a set value.
 
+## Reply
+
+One of the following:
+
+* Integer: `1` if the element is moved.
+* Integer: `0` if the element is not a member of _source_ and no operation was performed.
+
 ## Examples
 
 ```

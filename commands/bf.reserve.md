@@ -9,6 +9,12 @@ To specify the scaling / non scaling nature of the bloom filter, use the options
 * EXPANSION expansion - This option will specify the bloom filter as scaling and controls the size of the sub filter that will be created upon scale out / expansion of the bloom filter.
 * NONSCALING - This option will configure the bloom filter as non scaling; it cannot expand / scale beyond its specified capacity.
 
+## Reply
+
+`OK`.
+
+An error will occur if input is invalid, if a key with the same name already exists, or if the bloom filter creation exceeds limits.
+
 ## Examples
 
 ```

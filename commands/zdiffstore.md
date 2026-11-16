@@ -6,6 +6,10 @@ Keys that do not exist are considered to be empty sets.
 
 If `destination` already exists, it is overwritten.
 
+## Reply
+
+Integer: the number of members in the resulting sorted set at _destination_.
+
 ## Examples
 
 ```

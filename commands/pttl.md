@@ -7,6 +7,14 @@ The command returns the following values in case of errors:
 * The command returns `-2` if the key does not exist.
 * The command returns `-1` if the key exists but has no associated expire.
 
+## Reply
+
+One of the following:
+
+* Integer: TTL in milliseconds.
+* Integer: `-1` if the key exists but has no associated expiration.
+* Integer: `-2` if the key does not exist.
+
 ## Examples
 
 ```

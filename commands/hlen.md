@@ -1,5 +1,9 @@
 Returns the number of fields contained in the hash stored at `key`.
 
+## Reply
+
+Integer: the number of fields in the hash, or 0 when the key does not exist.
+
 ## Examples
 
 ```

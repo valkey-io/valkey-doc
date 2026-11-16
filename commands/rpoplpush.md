@@ -17,6 +17,13 @@ list, so it can be considered as a list rotation command.
 
 `LMOVE` with the `RIGHT` and `LEFT` arguments.
 
+## Reply
+
+One of the following:
+
+* String: the element being popped and pushed.
+* Null: if the source list is empty.
+
 ## Examples
 
 ```

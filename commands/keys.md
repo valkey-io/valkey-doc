@@ -33,6 +33,10 @@ when searching for keys matching the pattern.
 For example, with the pattern `{a}h*llo`, Valkey would only try to match it with the keys in slot 15495, which hash tag `{a}` implies.
 To use pattern with hash tag, see [Hash tags](../topics/cluster-spec.md#hash-tags) in the Cluster specification for more information.
 
+## Reply
+
+Array of keys matching _pattern_.
+
 ## Examples
 
 ```

@@ -2,6 +2,19 @@
 [\w-]+\.\w+
 \d+\w+.*
 .rdb
+BF16
+BFLOAT16
+Configurables
+dtype
+FF0C
+fullwidth
+Haswell
+ideographic
+lossy
+NEON-BF16
+revalidate
+SVE-BF16
+unnormalized
 ˈrɛd-ɪs
 A1
 AArch64
@@ -70,6 +83,7 @@ backslashed
 backticks
 backtrace
 balancer
+balancer.
 bazzar
 bc
 bcc
@@ -104,6 +118,7 @@ breakpoint
 broadcasted
 brpop
 bt
+btree
 btree1-az
 C[1-9]
 cacert
@@ -133,6 +148,7 @@ cluster-config-file
 [Cc]md
 cmsgpack
 Cn
+codec
 codename
 codenamed
 Collina's
@@ -190,6 +206,7 @@ defragmentable
 defragmentation
 defragmented
 del
+deletable
 Deno
 deny-oom
 deserialize
@@ -295,6 +312,7 @@ Fsyncing
 fsyncing
 fsyncs
 func
+fuzzer
 Garantia
 Gbit
 gdb
@@ -431,6 +449,7 @@ keytool
 Kleppman's
 Kleppmann
 knockknock
+Kubernetes
 kqueue
 L3
 last-failover-wins
@@ -498,6 +517,7 @@ Lua-to-Valkey
 Lua's
 lubs
 Lucraft
+LZ4
 M1
 MacBook
 [mM]acOS
@@ -736,6 +756,7 @@ rescanned
 reseek
 resends
 resetpass
+resetroles
 Reshard
 reshard
 resharded
@@ -746,7 +767,7 @@ RESP[0-9].*
 Resque
 resque
 resync
-resynchronization
+resynchronization\.?
 resynchronizations
 resyncs
 RetainString
@@ -792,6 +813,7 @@ sdiff
 sdown
 sds
 se
+security@lists\.valkey\.io
 seeked
 Selectable
 semantical
@@ -964,6 +986,7 @@ VMware
 volatile-lru
 volatile-ttl
 vtype
+warmup
 Westmere
 wget
 wherefrom
@@ -1022,6 +1045,7 @@ zeroed-ACLs
 Zhao
 ziplists
 zset
+Zstandard
 linux
 Devuan
 Raspbian

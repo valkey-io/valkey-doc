@@ -21,6 +21,13 @@ The `MSETEX` command supports a set of options similar to the `SET` command:
 Note: The `EX`, `PX`, `EXAT`, `PXAT`, `KEEPTTL` options are mutually exclusive.
 The `NX` and `XX` options are also mutually exclusive.
 
+## Reply
+
+One of the following:
+
+* Integer: `0` if no key was set (at least one key already existed when `NX` was used, or at least one key didn't exist when `XX` was used).
+* Integer: `1` if all the keys were set.
+
 ## Examples
 
 ```

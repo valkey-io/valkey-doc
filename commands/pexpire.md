@@ -13,6 +13,13 @@ The `PEXPIRE` command supports a set of options
 A non-volatile key is treated as an infinite TTL for the purpose of `GT` and `LT`.
 The `GT`, `LT` and `NX` options are mutually exclusive.
 
+## Reply
+
+One of the following:
+
+* Integer: `0`if the timeout was not set. For example, if the key doesn't exist, or the operation skipped because of the provided arguments.
+* Integer: `1` if the timeout was set.
+
 ## Examples
 
 ```

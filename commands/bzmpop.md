@@ -6,3 +6,10 @@ When all sorted sets are empty, Valkey will block the connection until another c
 A `timeout` of zero can be used to block indefinitely.
 
 See `ZMPOP` for more information.
+
+## Reply
+
+One of the following:
+
+* Null: when no element could be popped.
+* Two-element array with the first element being the name of the key from which elements were popped, and the second element is an array of the popped elements. Every entry in the elements array is also an array that contains the member and its score.

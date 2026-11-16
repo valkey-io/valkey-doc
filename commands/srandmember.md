@@ -6,6 +6,13 @@ The array's length is either `count` or the set's cardinality (`SCARD`), whichev
 If called with a negative `count`, the behavior changes and the command is allowed to return the **same element multiple times**.
 In this case, the number of returned elements is the absolute value of the specified `count`.
 
+## Reply
+
+One of the following:
+
+* String: without the additional _count_ argument, the command returns a randomly selected member, or a null when _key_ doesn't exist.
+* Array: when the optional _count_ argument is passed, the command returns an array of members, or an empty array when _key_ doesn't exist.
+
 ## Examples
 
 ```

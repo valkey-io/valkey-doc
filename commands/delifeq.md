@@ -4,6 +4,13 @@ This command is typically used to safely release locks in distributed systems, e
 
 If the key exists and the stored value is a string that exactly matches the provided value, the key is removed and `1` is returned. Otherwise, the key is left unchanged and `0` is returned.
 
+## Reply
+
+One of the following:
+
+* Integer: `1` if the key was deleted.
+* Integer: `0` if the key was not deleted because it did not exist or the value was not equal to the provided value.
+
 ## Examples
 
 Basic usage:

@@ -16,3 +16,7 @@ tracked using `CLIENT CACHING no`.
 Basically the command sets a state in the connection, that is valid only
 for the next command execution, that will modify the behavior of client
 tracking.
+
+## Reply
+
+`OK` or an error if the argument is not "yes" or "no".

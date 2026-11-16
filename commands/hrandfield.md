@@ -8,6 +8,15 @@ In this case, the number of returned fields is the absolute value of the specifi
 
 The optional `WITHVALUES` modifier changes the reply so it includes the respective values of the randomly selected hash fields.
 
+## Reply
+
+Any of the following:
+
+* Null: if the key doesn't exist
+* String: a single, randomly selected field when the `count` option is not used
+* Array containing `count` fields when the `count` option is used, or an empty array if the key does not exists.
+* Array of fields and their values when `count` and `WITHVALUES` were both used.
+
 ## Examples
 
 ```

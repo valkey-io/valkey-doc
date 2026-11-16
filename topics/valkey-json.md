@@ -56,6 +56,7 @@ For each of these categories and a row for each command, if the cell contains a 
 | JSON.DEL       | y     |       | y      | y     |       |
 | JSON.FORGET    | y     |       | y      | y     |       |
 | JSON.GET       | y     | y     |        | y     |       |
+| JSON.MERGE     | y     |       | y      |       | y     |
 | JSON.MGET      | y     | y     |        | y     |       |
 | JSON.MSET      | y     |       | y      |       | y     |
 | JSON.NUMINCRBY | y     |       | y      | y     |       |

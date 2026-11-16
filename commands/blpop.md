@@ -76,6 +76,13 @@ thing that happens when the timeout is reached.
 If you like science fiction, think of time flowing at infinite speed inside a
 `MULTI` / `EXEC` block...
 
+## Reply
+
+One of the following:
+
+* Null: no element could be popped and the timeout expired
+* Array: the key from which the element was popped and the value of the popped element.
+
 ## Examples
 
 ```

@@ -58,6 +58,15 @@ The lexicographic ordering used is binary, it compares strings as array of bytes
 
 If the user inserts all the elements in a sorted set with the same score (for example 0), all the elements of the sorted set are sorted lexicographically, and range queries on elements are possible using the command `ZRANGEBYLEX` (Note: it is also possible to query sorted sets by range of scores using `ZRANGEBYSCORE`).
 
+## Reply
+
+Any of the following:
+
+* Null: if the operation was aborted because of a conflict with one of the `XX`/`NX`/`LT`/`GT` options.
+* Integer: the number of new members when the _CH_ option is not used.
+* Integer: the number of new or updated members when the _CH_ option is used.
+* Double: the updated score of the member when the _INCR_ option is used.
+
 ## Examples
 
 ```

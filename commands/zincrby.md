@@ -11,6 +11,10 @@ The `score` value should be the string representation of a numeric value, and
 accepts double precision floating point numbers.
 It is possible to provide a negative value to decrement the score.
 
+## Reply
+
+Double: the new score of _member_.
+
 ## Examples
 
 ```

@@ -21,6 +21,10 @@ the minimum or maximum score of an element across the inputs where it exists.
 
 If `destination` already exists, it is overwritten.
 
+## Reply
+
+Integer: the number of elements in the resulting sorted set.
+
 ## Notes
 
 If an option `WEIGHTS` or `AGGREGATE` is given multiple times, it is undefined

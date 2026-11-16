@@ -1,5 +1,12 @@
 Returns if `member` is a member of the set stored at `key`.
 
+## Reply
+
+One of the following:
+
+* Integer: `0` if the element is not a member of the set, or when the key does not exist.
+* Integer: `1` if the element is a member of the set.
+
 ## Examples
 
 ```

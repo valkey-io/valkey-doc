@@ -1,5 +1,18 @@
 Append a string to the JSON strings at the path.
 
+## Reply
+
+* If the path is enhanced syntax:
+  * Array of integers representing the new length of the string at each path.
+  * Null: For each path where the value is not a string.
+* If the path is restricted syntax:
+  * Integer: The string's new length.
+  * Integer: If multiple string values are selected, returns the new length of the last updated string.
+* Error:
+  * if the input json argument is not a valid JSON string.
+  * if the path does not exist.
+  * if the value at the path is not a string (only for restricted syntax).
+
 ## Examples
 
 Enhanced path syntax:

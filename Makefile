@@ -3,8 +3,8 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 # Version info
-VERSION ?= 9.0.0
-DATE ?= 2025-10-21
+VERSION ?= 9.1.0
+DATE ?= 2026-05-19
 
 # Path to the code repo.
 VALKEY_ROOT ?= ../valkey
@@ -268,3 +268,23 @@ distclean:
 install: install-man
 
 uninstall: uninstall-man
+
+# ---- Modules API Reference ----
+
+.PHONY: generate-modules-api-ref verify-modules-api-ref
+
+generate-modules-api-ref:
+	@git -C $(VALKEY_ROOT) tag -d 8.0.8 2>/dev/null || true
+	ruby $(VALKEY_ROOT)/utils/generate-module-api-doc.rb > topics/modules-api-ref.md
+
+verify-modules-api-ref:
+	@git -C $(VALKEY_ROOT) tag -d 8.0.8 2>/dev/null || true
+	@ruby $(VALKEY_ROOT)/utils/generate-module-api-doc.rb > topics/modules-api-ref.md.tmp
+	@if ! cmp -s topics/modules-api-ref.md topics/modules-api-ref.md.tmp; then \
+		echo "ERROR: topics/modules-api-ref.md does not match generated output from $(VALKEY_ROOT)/src/module.c"; \
+		diff -u topics/modules-api-ref.md topics/modules-api-ref.md.tmp; \
+		rm -f topics/modules-api-ref.md.tmp; \
+		exit 1; \
+	fi
+	@rm -f topics/modules-api-ref.md.tmp
+	@echo "topics/modules-api-ref.md matches $(VALKEY_ROOT)/src/module.c"

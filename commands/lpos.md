@@ -57,6 +57,14 @@ Finally, the `MAXLEN` option tells the command to compare the provided element o
 
 When `MAXLEN` is used, it is possible to specify 0 as the maximum number of comparisons, as a way to tell the command we want unlimited comparisons. This is better than giving a very large `MAXLEN` option because it is more general.
 
+## Reply
+
+Any of the following:
+
+* Null: if there is no matching element.
+* Integer representing the matching element.
+* Array: If the COUNT option is given, an array of integers representing the matching elements (or an empty array if there are no matches).
+
 ## Examples
 
 ```

@@ -15,6 +15,10 @@ We can use an additional argument `BIT` to specify a bit index.
 So 0 is the first bit, 1 is the second bit, and so forth.
 For negative values, -1 is the last bit, -2 is the penultimate, and so forth.
 
+## Reply
+
+Integer: the number of bits set to 1.
+
 ## Examples
 
 ```
@@ -53,7 +57,7 @@ Later it will be trivial to know the number of single days the user visited the
 web site simply calling the `BITCOUNT` command against the bitmap.
 
 A similar pattern where user IDs are used instead of days is described
-in the article called "[Fast easy realtime metrics using Redis bitmaps][hbgc212fermurb]".
+in the article called "[Fast easy real-time metrics using Redis bitmaps][hbgc212fermurb]".
 
 [hbgc212fermurb]: http://blog.getspool.com/2011/11/29/fast-easy-realtime-metrics-using-redis-bitmaps
 

@@ -8,6 +8,13 @@ To call the command without elements but just the variable name is valid, this w
 
 For an introduction to HyperLogLog data structure check the [`PFCOUNT`](pfcount.md) command page.
 
+## Reply
+
+One of the following:
+
+* Integer: `1` if at least one HyperLogLog internal register was altered.
+* Integer: `0` if no HyperLogLog internal registers were altered.
+
 ## Examples
 
 ```

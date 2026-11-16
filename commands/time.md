@@ -3,6 +3,10 @@ timestamp and the amount of microseconds already elapsed in the current second.
 Basically the interface is very similar to the one of the `gettimeofday` system
 call.
 
+## Reply
+
+Array: specifically, a two-element array consisting of the Unix timestamp in seconds and the microseconds' count.
+
 ## Examples
 
 ```

@@ -194,6 +194,10 @@ Each element in the array represents one subcommand and follows the same specifi
 [td]: ../topics/key-specs.md
 [tr]: ../topics/key-specs.md
 
+## Reply
+
+Nested array of command details. The order of the commands in the array is random.
+
 ## Examples
 
 The following is `COMMAND`'s output for the [`GET`](get.md) command:

@@ -44,6 +44,10 @@ The following keys may be included in the mapped reply:
 
 [td]: ../topics/command-arguments.md
 
+## Reply
+
+Map where each key is a command name, and each value is the documentary information.
+
 ## Examples
 
 ```

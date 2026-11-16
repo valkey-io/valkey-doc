@@ -12,6 +12,10 @@ SDIFF key1 key2 key3 = {b,d}
 
 Keys that do not exist are considered to be empty sets.
 
+## Reply
+
+Set: the resulting set.
+
 ## Examples
 
 ```

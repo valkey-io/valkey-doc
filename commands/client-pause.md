@@ -32,3 +32,7 @@ failover. This is also the mode used during cluster failover.
 This command also prevents keys to be evicted or expired during the time clients are paused.
 This way the dataset is guaranteed to be static not just from the point of view of clients not being able to write,
 but also from the point of view of internal operations.
+
+## Reply
+
+`OK` or an error if the timeout is invalid.

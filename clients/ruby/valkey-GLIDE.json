@@ -1,0 +1,21 @@
+{
+    "name": "Valkey GLIDE Ruby",
+    "description": "Valkey GLIDE Ruby is designed for reliability, optimized performance, and high-availability, for Valkey and Redis OSS based applications. GLIDE is a multi language client library, written in Rust with programming language bindings, such as Java, node.js and Python.",
+    "repo":"https://github.com/valkey-io/valkey-glide-ruby",
+    "website": "https://glide.valkey.io/getting-started/quickstart/?lang=ruby",
+    "installation": "gem install valkey-glide-rb",
+    "version":"v1.0.0",
+    "version_released":"2026-08-13",
+    "language":"ruby",
+    "license": "Apache-2.0",
+    "read_from_replica": true,
+    "smart_backoff_to_prevent_connection_storm": true,
+    "pubsub_state_restoration": false,
+    "cluster_scan": false,
+    "latency_based_read_from_replica": false,
+    "AZ_based_read_from_replica": true,
+    "client_side_caching": false,
+    "client_capa_redirect": false,
+    "persistent_connection_pool": false,
+    "specific_properties": ["Available in sync API"]
+}

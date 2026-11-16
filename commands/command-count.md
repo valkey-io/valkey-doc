@@ -1,5 +1,9 @@
 Returns the total number of commands in this Valkey server.
 
+## Reply
+
+Integer: the number of commands returned by `COMMAND`.
+
 ## Examples
 
 ```

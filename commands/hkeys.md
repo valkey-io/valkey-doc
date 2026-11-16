@@ -1,5 +1,9 @@
 Returns all field names in the hash stored at `key`.
 
+## Reply
+
+Array of fields in the hash, or an empty array when the key does not exist.
+
 ## Examples
 
 ```

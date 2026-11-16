@@ -94,3 +94,7 @@ Notes:
   ```
 
   Here, `timeout` is measured in seconds, with 0 meaning to wait indefinitely.
+
+## Reply
+
+`OK` if the command was successful. Otherwise an error is returned.

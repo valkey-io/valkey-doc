@@ -43,6 +43,10 @@ Will return all the elements with `5 < score < 10` (5 and 10 excluded).
 
 `ZRANGE` with the `BYSCORE` argument.
 
+## Reply
+
+* Array of the members with, optionally, their scores in the specified score range.
+
 ## Examples
 
 ```

@@ -6,3 +6,7 @@ Unless called with the optional mode argument, the `lazyfree-lazy-user-flush` co
 * `!SYNC`: Synchronously flush the libraries.
 
 For more information please refer to [Introduction to Valkey Functions](../topics/functions-intro.md).
+
+## Reply
+
+`OK`.

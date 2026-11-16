@@ -3,3 +3,7 @@ the memory allocator.
 
 This command is currently implemented only when using **jemalloc** as an
 allocator, and evaluates to a benign NOOP for all others.
+
+## Reply
+
+Verbatim string: the memory allocator's internal statistics report.

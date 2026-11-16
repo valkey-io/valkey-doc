@@ -718,6 +718,12 @@ the previous sections.
 
 The readonly state of the connection can be cleared using the `READWRITE` command.
 
+Commands sent with no key arguments, such as `SCAN`, `DBSIZE` or `FLUSHDB`,
+are not tied to a hash slot, so a replica never answers them with `-MOVED`.
+Since Valkey 9.2, if the client uses [`CLIENT CAPA redirect`](../commands/client-capa.md)
+and is not in readonly mode, the replica answers read and write commands of this kind
+with `-REDIRECT primary-ip:port`, pointing to its own primary.
+
 ## Fault Tolerance
 
 ### Heartbeat and gossip messages

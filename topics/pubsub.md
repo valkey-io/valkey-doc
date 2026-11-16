@@ -172,7 +172,7 @@ In `subscribe`, `unsubscribe`, `psubscribe` and `punsubscribe` message types, th
 This number is the total number of channels and patterns the client is still subscribed to. 
 So the client will exit the Pub/Sub state only when this count drops to zero as a result of unsubscribing from all the channels and patterns.
 
-## Sharded Pub/Sub
+## <a name="sharded-pubsub"></a>Sharded Pub/Sub
 
 From Redis OSS 7.0, sharded Pub/Sub is introduced in which shard channels are assigned to slots by the same algorithm used to assign keys to slots. 
 A shard message must be sent to a node that owns the slot the shard channel is hashed to. 

@@ -3,6 +3,14 @@ When provided with the optional `count` argument, the reply will consist of up
 to `count` elements, depending on the list's length.
 Deletes the list if the last element was popped.
 
+## Reply
+
+One of the following:
+
+* Null: if the key does not exist.
+* String: when called without the _count_ argument, the value of the last element.
+* Array: when called with the _count_ argument, a list of popped elements.
+
 ## Examples
 
 ```

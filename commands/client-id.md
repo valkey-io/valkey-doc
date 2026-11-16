@@ -7,6 +7,10 @@ ID has certain guarantees:
 This command is especially useful together with [`CLIENT UNBLOCK`](client-unblock.md).
 Check the `CLIENT UNBLOCK` command page for a pattern involving the two commands.
 
+## Reply
+
+Integer: the ID of the client.
+
 ## Examples
 
 ```

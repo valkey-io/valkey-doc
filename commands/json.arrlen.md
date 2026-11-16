@@ -1,5 +1,19 @@
 Get length of the array at the path.
 
+## Reply
+
+* If the path is enhanced syntax:
+  * Array of integers representing the array length at each path.
+  * Null: For each path where the value is not an array.
+  * Null: If the document key does not exist.
+* If the path is restricted syntax:
+  * Integer: The array length.
+  * Integer: If multiple objects are selected, returns the first array's length.
+  * Null: If the document key does not exist.
+* Error:
+  * if the path does not exist.
+  * if the value at the path is not an array (only for restricted syntax).
+
 ## Examples
 
 Enhanced path syntax:

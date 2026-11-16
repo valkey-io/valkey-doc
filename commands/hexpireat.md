@@ -15,6 +15,15 @@ The `HEXPIREAT` command supports a set of options that modify its behavior:
 * GT — For each specified field, set expiration only when the new expiration is greater than current one.
 * LT — For each specified field, set expiration only when the new expiration is less than current one.
 
+## Reply
+
+Array of integer codes indicating the result of setting expiry on each specified field, in the same order as the fields are requested.
+
+* -2: Field does not exist in the HASH, or key does not exist.
+* 0: The specified NX | XX | GT | LT condition has not been met.
+* 1: The expiration time was applied.
+* 2: When called with 0 seconds.
+
 ## Examples
 
 ```

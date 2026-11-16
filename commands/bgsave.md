@@ -23,3 +23,9 @@ Please refer to the [persistence documentation][tp] for detailed information.
 
 [tp]: ../topics/persistence.md
 
+## Reply
+
+One of the following:
+
+* `Background saving started`.
+* `Background saving scheduled`.

@@ -6,6 +6,10 @@ value that is higher than the sorted set's cardinality will not produce an
 error. When returning multiple elements, the one with the lowest score will
 be the first, followed by the elements with greater scores.
 
+## Reply
+
+* Array of popped elements and scores.
+
 ## Examples
 
 ```

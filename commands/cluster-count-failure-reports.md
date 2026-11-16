@@ -16,3 +16,7 @@ This command returns the number of failure reports for the current node which ar
 
 This command is mainly useful for debugging, when the failure detector of
 Valkey Cluster is not operating as we believe it should.
+
+## Reply
+
+Integer: the number of active failure reports for the node.

@@ -13,10 +13,29 @@ The `SET` command supports a set of options that modify its behavior:
 * `NX` -- Only set the key if it does not already exist.
 * `XX` -- Only set the key if it already exists.
 * `IFEQ` *comparison-value* -- Set the key if the comparison value matches the existing value. An error is returned and `SET` aborted if the value stored at key is not a string.
+* `IFNE` *comparison-not-equal* -- Set the key if the comparison value does not match the existing value. If the key does not exist, `IFNE` matches and the key is set. SET aborts if the value stored at key is not a string.
 * `KEEPTTL` -- Retain the time to live associated with the key.
 * `GET` -- Return the old string stored at key, or nil if key did not exist. An error is returned and `SET` aborted if the value stored at key is not a string.
 
 Note: Since the `SET` command options can replace `SETNX`, `SETEX`, `PSETEX`, `GETSET`, it is possible that in future versions of Valkey these commands will be deprecated and finally removed.
+
+## Reply
+
+If `GET` not given, any of the following:
+
+* Null: Operation was aborted (conflict with one of the `XX`/`NX` options).
+* `OK`: The key was set.
+
+If `GET` given, any of the following:
+
+* Null: The key didn't exist before the `SET`.
+* String: The previous value of the key.
+
+Note that when using `GET` together with `XX`/`NX`/`IFEQ`, the reply indirectly indicates whether the key was set:
+
+* `GET` and `XX` given: Non-null indicates the key was set.
+* `GET` and `NX` given: null indicates the key was set.
+* `GET` and `IFEQ` given: The key was set if the reply is equal to `comparison-value`.
 
 ## Examples
 

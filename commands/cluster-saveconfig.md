@@ -9,3 +9,7 @@ configuration via the `CLUSTER` command in order to ensure the new configuration
 is persisted on disk, however all the commands should normally be able to
 auto schedule to persist the configuration on disk when it is important
 to do so for the correctness of the system in the event of a restart.
+
+## Reply
+
+`OK` if the command was successful. Otherwise an error is returned.

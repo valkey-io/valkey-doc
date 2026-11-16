@@ -18,3 +18,10 @@ Please see the pattern description in the `RPOPLPUSH` documentation.
 ## Alternative
 
 `BLMOVE` with the `RIGHT` and `LEFT` arguments.
+
+## Reply
+
+One of the following:
+
+* String: the element being popped from _source_ and pushed to _destination_.
+* Null: the timeout is reached.

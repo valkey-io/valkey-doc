@@ -4,7 +4,11 @@ In Valkey Cluster, shard channels are assigned to slots by the same algorithm us
 A shard message must be sent to a node that own the slot the shard channel is hashed to. 
 The cluster makes sure that published shard messages are forwarded to all the node in the shard, so clients can subscribe to a shard channel by connecting to any one of the nodes in the shard.
 
-For more information about sharded pubsub, see [Sharded Pubsub](../topics/pubsub.md#sharded-pubsub).
+For more information about sharded pubsub, see [Sharded Pubsub](../topics/pubsub.md#sharded-pub-sub).
+
+## Reply
+
+Integer: the number of clients that received the message. Note that in a Valkey Cluster, only clients that are connected to the same node as the publishing client are included in the count
 
 ## Examples
 

@@ -64,6 +64,10 @@ Flags are:
 * `nofailover`: Replica will not try to failover.
 * `noflags`: No flags at all.
 
+## Reply
+
+Verbatim string: the serialized cluster configuration.
+
 ## Notes on published config epochs
 
 Replicas broadcast their primary's config epochs (in order to get an `UPDATE`

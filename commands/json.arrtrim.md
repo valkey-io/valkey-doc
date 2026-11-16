@@ -6,6 +6,18 @@ Trim arrays at the path so that it becomes subarray [start, end], both inclusive
 * If end >= size (size of the array), treat it as size-1.
 * If start >= size or start > end, empty the array and return 0.
 
+## Reply
+
+* If the path is enhanced syntax:
+  * Array of integers representing the new length of the array at each path.
+  * Null: For each path where the value is an empty array or not an array.
+* If the path is restricted syntax:
+  * Integer: The new length of the array.
+  * Null: If the array is empty.
+* Error:
+  * if the value at the path is not an array (only for restricted syntax).
+  * if an index argument is out of bounds.
+
 ## Examples
 
 Enhanced path syntax:

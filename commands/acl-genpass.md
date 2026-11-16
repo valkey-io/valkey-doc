@@ -25,6 +25,10 @@ rounded to the next multiple of 4. So for instance asking for just 1
 bit password will result in 4 bits to be emitted, in the form of a single
 hex character.
 
+## Reply
+
+String: pseudorandom data. By default it contains 64 bytes, representing 256 bits of data. If `bits` was given, the output string length is the number of specified bits (rounded to the next multiple of 4) divided by 4.
+
 ## Examples
 
 ```

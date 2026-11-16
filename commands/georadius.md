@@ -43,6 +43,20 @@ Two read-only variants of the commands were added. They are exactly like the ori
 
 `GEOSEARCH` and `GEOSEARCHSTORE` with the `BYRADIUS` argument.
 
+## Reply
+
+One of the following:
+
+* If no `WITH*` option is specified, an array of matched member names
+* If `WITHCOORD`, `WITHDIST`, or `WITHHASH` options are specified, the command returns an array of arrays, where each sub-array represents a single item:
+    1. The distance from the center as a floating point number, in the same unit specified in the radius.
+    1. The Geohash integer.
+    1. The coordinates as a two items x,y array (longitude,latitude).
+
+For example, the command `GEORADIUS Sicily 15 37 200 km WITHCOORD WITHDIST` will return each item in the following way:
+
+`["Palermo","190.4424",["13.361389338970184","38.115556395496299"]]`
+
 ## Examples
 
 ```

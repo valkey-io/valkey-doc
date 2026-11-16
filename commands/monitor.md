@@ -84,3 +84,7 @@ Note that,
 *  [`AUTH`](auth.md) is excluded from the command's output.
 *  [`RESET`](reset.md) can be called to exit monitor mode.
 *  `AUTH`, [`HELLO`](hello.md), [`EVAL`](eval.md), [`EVAL_RO`](eval_ro.md), [`EVALSHA`](evalsha.md) and [`EVALSHA_RO`](evalsha_ro.md) are included in the command's output.
+
+## Reply
+
+**Non-standard return value**. Dumps the received commands in an infinite flow.

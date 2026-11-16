@@ -1,5 +1,12 @@
 Returns the value associated with `field` in the hash stored at `key`.
 
+## Reply
+
+One of the following:
+
+* String: The value associated with the field.
+* Null: If the field is not present in the hash or key does not exist.
+
 ## Examples
 
 ```

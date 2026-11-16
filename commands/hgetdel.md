@@ -5,6 +5,10 @@ Because non-existing keys are treated as empty hashes, running `HGETDEL` against
 
 When the last field is deleted, the key is also deleted.
 
+## Reply
+
+Array of values associated with the given fields that are deleted or null for the fields that do not exist. These are in same order as requested.
+
 ## Examples
 
 ```

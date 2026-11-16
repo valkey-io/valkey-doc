@@ -169,6 +169,10 @@ of XRANGE:
 For further information about streams please check our
 [introduction to Streams document](../topics/streams-intro.md).
 
+## Reply
+
+Array of stream entries with IDs matching the specified range.
+
 ## Examples
 
 ```

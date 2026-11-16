@@ -4,7 +4,6 @@ store the result in the destination key.
 The `BITOP` command supports four bitwise operations: **AND**, **OR**, **XOR**
 and **NOT**, thus the valid forms to call the command are:
 
-
 * `BITOP AND destkey srckey1 srckey2 srckey3 ... srckeyN`
 * `BITOP OR  destkey srckey1 srckey2 srckey3 ... srckeyN`
 * `BITOP XOR destkey srckey1 srckey2 srckey3 ... srckeyN`
@@ -23,6 +22,10 @@ zero-padded up to the length of the longest string.
 
 The same holds true for non-existent keys, that are considered as a stream of
 zero bytes up to the length of the longest string.
+
+## Reply
+
+Integer: the size of the string stored in the destination key is equal to the size of the longest input string.
 
 ## Examples
 
@@ -44,7 +47,7 @@ documentation.
 Different bitmaps can be combined in order to obtain a target bitmap where
 the population counting operation is performed.
 
-See the article called "[Fast easy realtime metrics using Valkey
+See the article called "[Fast easy real-time metrics using Valkey
 bitmaps][hbgc212fermurb]" for an interesting use cases.
 
 [hbgc212fermurb]: http://blog.getspool.com/2011/11/29/fast-easy-realtime-metrics-using-redis-bitmaps

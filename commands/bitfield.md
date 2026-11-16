@@ -108,3 +108,10 @@ bitmap previously set to all zeroes, will produce the following representation:
 When offsets and integer sizes are aligned to bytes boundaries, this is the
 same as big endian, however when such alignment does not exist, its important
 to also understand how the bits inside a byte are ordered.
+
+## Reply
+
+One of the following:
+
+* Array: each entry being the corresponding result of the sub-command given at the same position.
+* Null: if OVERFLOW FAIL was given and overflows or underflows are detected.

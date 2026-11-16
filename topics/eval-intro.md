@@ -189,6 +189,18 @@ During normal operation, an application's scripts are meant to stay indefinitely
 The underlying reasoning is that the script cache contents of a well-written application are unlikely to grow continuously.
 Even large applications that use hundreds of cached scripts shouldn't be an issue in terms of cache memory usage.
 
+There are two exceptions to this rule, which exist to protect the server from unbounded memory usage:
+
+* Starting from Valkey 8.0, scripts cached by `EVAL` are kept in an LRU cache of at most 500 scripts.
+  When the limit is reached, the least recently used `EVAL` script is evicted to make room for a new one.
+  Starting from Valkey 9.2, the memory used by these scripts can also be capped with the `maxmemory-scripts` configuration.
+  When the limit is reached, the least recently used `EVAL` scripts are evicted until the memory usage is back under the limit.
+  The two limits are independent, and both are enforced.
+* Scripts loaded with `SCRIPT LOAD` are never evicted and aren't counted against the 500 scripts limit or `maxmemory-scripts`.
+  Starting from Valkey 9.2, `SCRIPT LOAD` is denied with an out of memory error when the server is over the `maxmemory` limit and can't free memory by eviction.
+
+An evicted script can be loaded again, as described in the [cache volatility](#cache-volatility) section.
+
 The only way to flush the script cache is by explicitly calling the `SCRIPT FLUSH` command.
 Running the command will _completely flush_ the scripts cache, removing all the scripts executed so far.
 Typically, this is only needed when the instance is going to be instantiated for another customer or application in a cloud environment.

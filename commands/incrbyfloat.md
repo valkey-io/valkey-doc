@@ -23,6 +23,10 @@ Trailing zeroes are always removed.
 The precision of the output is fixed at 17 digits after the decimal point
 regardless of the actual internal precision of the computation.
 
+## Reply
+
+String: the value of the key after the increment.
+
 ## Examples
 
 ```

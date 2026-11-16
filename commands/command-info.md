@@ -6,6 +6,10 @@ get returned.
 If you request details about non-existing commands, their return
 position will be nil.
 
+## Reply
+
+Nested array of command details.
+
 ## Examples
 
 ```

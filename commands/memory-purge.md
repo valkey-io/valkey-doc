@@ -3,3 +3,7 @@ reclaimed by the allocator.
 
 This command is currently implemented only when using **jemalloc** as an
 allocator, and evaluates to a benign NOOP for all others.
+
+## Reply
+
+`OK`.

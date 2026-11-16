@@ -5,3 +5,7 @@ It is intended primary for debugging, allowing users to introspect the contents 
 For example, an admin may only have access to a script's SHA1 from the monitor or slowlog and needs to determine the script's contents for debugging.
 
 For more information about `EVAL` scripts please refer to [Introduction to Eval Scripts](../topics/eval-intro.md).
+
+## Reply
+
+String: Lua script if `sha1` hash exists in script cache.

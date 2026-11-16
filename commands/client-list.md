@@ -122,6 +122,7 @@ T: the client will not touch the LRU/LFU of the keys it accesses
 R: the client tracking target client is invalid
 B: the client enabled broadcast tracking mode
 I: the client is an import source
+h: the client is being throttled
 ```
 
 Client's capabilities can be:
@@ -136,6 +137,10 @@ The file descriptor events can be:
 r: the client socket is readable (event loop)
 w: the client socket is writable (event loop)
 ```
+
+## Reply
+
+Verbatim string: information and statistics about client connections.
 
 ## Examples
 

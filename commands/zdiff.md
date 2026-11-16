@@ -1,6 +1,10 @@
 This command is similar to `ZDIFFSTORE`, but instead of storing the resulting
 sorted set, it is returned to the client.
 
+## Reply
+
+* Array: the result of the difference including, optionally, scores when the _WITHSCORES_ option is used.
+
 ## Examples
 
 ```

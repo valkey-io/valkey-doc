@@ -2,6 +2,14 @@ Returns the absolute Unix timestamp (since January 1, 1970) in seconds at which 
 
 See also the [`PEXPIRETIME`](pexpiretime.md) command which returns the same information with milliseconds resolution.
 
+## Reply
+
+One of the following:
+
+* Integer: the expiration Unix timestamp in seconds.
+* Integer: `-1` if the key exists but has no associated expiration time.
+* Integer: `-2` if the key does not exist.
+
 ## Examples
 
 ```

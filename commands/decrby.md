@@ -6,6 +6,10 @@ This operation is limited to 64 bit signed integers.
 
 See `INCR` for extra information on increment/decrement operations.
 
+## Reply
+
+Integer: the value of the key after decrementing it.
+
 ## Examples
 
 ```

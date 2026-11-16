@@ -4,6 +4,10 @@ Given a sorted set representing a geospatial index, populated using the [`GEOADD
 
 The command can accept a variable number of arguments so it always returns an array of positions even when a single element is specified.
 
+## Reply
+
+Array where each element is a two elements array representing longitude and latitude (x,y) of each member name passed as argument to the command. Non-existing elements are reported as null elements of the array.
+
 ## Examples
 
 ```

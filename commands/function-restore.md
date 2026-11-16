@@ -9,3 +9,7 @@ The following policies are allowed:
 * **REPLACE:** appends the restored libraries to the existing libraries, replacing any existing ones in case of name collisions. Note that this policy doesn't prevent function name collisions, only libraries.
 
 For more information please refer to [Introduction to Valkey Functions](../topics/functions-intro.md).
+
+## Reply
+
+`OK`.

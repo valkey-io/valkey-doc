@@ -14,3 +14,7 @@ Note: an asynchronous `FLUSHALL` command only deletes keys that were present at 
 Because `FLUSHALL` operates on every database, the caller must have ACL access
 to all databases (the `alldbs` rule). See
 [database permissions](../topics/acl.md#database-permissions).
+
+## Reply
+
+`OK`.

@@ -1,6 +1,26 @@
 Get the serialized JSON at one or multiple paths.
 
 
+## Reply
+
+* For enhanced path syntax:
+  * If one path is given:
+    * String: Serialized string of an array of values.
+    * Array: Empty array if no value is selected.
+  * If multiple paths are given:
+    * String: JSON object serialized as a string, where each path is a key.
+    * Result conforms to enhanced syntax if there are mixed enhanced and restricted path syntax.
+    * Array: Empty array for paths that do not exist.
+* For restricted path syntax:
+  * If one path is given:
+    * String: Serialized string of the value at the path.
+    * String: First value if multiple values are selected.
+    * Error: If the path does not exist.
+  * If multiple paths are given:
+    * String: JSON object serialized as a string, where each path is a key.
+    * Result conforms to restricted syntax only if all paths are restricted.
+    * Error: If any path does not exist.
+
 ## Examples
 
 Enhanced path syntax:

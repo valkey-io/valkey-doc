@@ -70,3 +70,7 @@ The server waits for lagging replicas up to a configurable `shutdown-timeout`, b
 This provides a best effort minimizing the risk of data loss in a situation where no save points are configured and AOF is disabled.
 Before version 7.0, shutting down a heavily loaded primary node in a diskless setup was more likely to result in data loss.
 To minimize the risk of data loss in such setups, it's advised to trigger a manual [`FAILOVER`](failover.md) (or [`CLUSTER FAILOVER`](cluster-failover.md)) to demote the primary to a replica and promote one of the replicas to be the new primary, before shutting down a primary node.
+
+## Reply
+
+`OK` if _ABORT_ was specified and shutdown was aborted. On successful shutdown, nothing is returned because the server quits and the connection is closed. On failure, an error is returned.

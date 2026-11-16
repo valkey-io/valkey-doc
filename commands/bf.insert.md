@@ -16,6 +16,12 @@ When the `ITEMS` option is provided, all items provided will be attempted to be 
 
 Due to the nature of `NONSCALING` and `VALIDATESCALETO` arguments, specifying `NONSCALING` and `VALIDATESCALETO` together is not allowed.
 
+## Reply
+
+Array of integers (`1` or `0`) - if filter already exists or if creation was successful. An empty array if no items are provided
+
+An error will occur if input is invalid, if a non bloom filter key with the same name already exists, if the bloom filter creation / scale out exceeds limits, or if an item is being added to a full non scaling filter.
+
 ## Examples
 
 ```

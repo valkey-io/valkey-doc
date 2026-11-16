@@ -7,6 +7,10 @@ If `key` does not exist, a new key holding a hash is created.
 
 `HSET` with multiple field-value pairs.
 
+## Reply
+
+`OK`.
+
 ## Examples
 
 ```

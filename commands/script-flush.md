@@ -9,3 +9,7 @@ It is possible to use one of the following modifiers to dictate the flushing mod
 * `SYNC`: flushes the cache synchronously
 
 For more information about `EVAL` scripts please refer to [Introduction to Eval Scripts](../topics/eval-intro.md).
+
+## Reply
+
+`OK`.

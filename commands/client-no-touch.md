@@ -3,3 +3,7 @@ The `CLIENT NO-TOUCH` command controls whether commands sent by the client will 
 When turned on, the current client will not change LFU/LRU stats, unless it sends the [`TOUCH`](touch.md) command.
 
 When turned off, the client touches LFU/LRU stats just as a normal client.
+
+## Reply
+
+`OK`.

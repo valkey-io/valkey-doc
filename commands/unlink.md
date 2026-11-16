@@ -5,6 +5,10 @@ blocking, while `DEL` is. This is where the command name comes from: the
 command just **unlinks** the keys from the keyspace. The actual removal
 will happen later asynchronously.
 
+## Reply
+
+Integer: the number of keys that were unlinked.
+
 ## Examples
 
 ```

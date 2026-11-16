@@ -11,6 +11,12 @@ The `GETEX` command supports a set of options that modify its behavior:
 * `PXAT` *timestamp-milliseconds* -- Set the specified Unix time at which the key will expire, in milliseconds.
 * `PERSIST` -- Remove the time to live associated with the key.
 
+## Reply
+
+String: the value of `key`
+
+Null: if `key` does not exist.
+
 ## Examples
 
 ```

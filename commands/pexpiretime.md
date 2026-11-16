@@ -1,5 +1,13 @@
 `PEXPIRETIME` has the same semantic as [`EXPIRETIME`](expiretime.md), but returns the absolute Unix expiration timestamp in milliseconds instead of seconds.
 
+## Reply
+
+One of the following:
+
+* Integer: Expiration Unix timestamp in milliseconds.
+* Integer: `-1` if the key exists but has no associated expiration time.
+* Integer: `-2` if the key does not exist.
+
 ## Examples
 
 ```

@@ -3,6 +3,13 @@ yet exist.
 If `key` does not exist, a new key holding a hash is created.
 If `field` already exists, this operation has no effect.
 
+## Reply
+
+One of the following:
+
+* Integer: `0` if the field already exists in the hash and no operation was performed.
+* Integer: `1` if the field is a new field in the hash and the value was set.
+
 ## Examples
 
 ```

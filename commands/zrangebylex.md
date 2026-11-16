@@ -51,6 +51,10 @@ we can store the value of the element we are actually indexing.
 
 `ZRANGE` with the `BYLEX` argument.
 
+## Reply
+
+Array of elements in the specified score range.
+
 ## Examples
 
 ```

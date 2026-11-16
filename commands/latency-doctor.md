@@ -8,6 +8,10 @@ is provided, like the rate at which the system forks processes.
 
 This is the output you should provide if you are looking for help about Latency related issues.
 
+## Reply
+
+Verbatim string: a human readable latency analysis report.
+
 ## Examples
 
 ```

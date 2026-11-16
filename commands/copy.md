@@ -13,6 +13,13 @@ When the `DB` option is used, the caller must have ACL permission to access
 the specified destination database. See
 [database permissions](../topics/acl.md#database-permissions).
 
+## Reply
+
+One of the following:
+
+* Integer: `1` if _source_ was copied.
+* Integer: `0` if _source_ was not copied when the destination key already exists.
+
 ## Examples
 
 ```

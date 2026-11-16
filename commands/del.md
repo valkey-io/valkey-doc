@@ -1,6 +1,10 @@
 Removes the specified keys.
 A key is ignored if it does not exist.
 
+## Reply
+
+Integer: the number of keys that were removed.
+
 ## Examples
 
 ```

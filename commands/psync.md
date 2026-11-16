@@ -7,3 +7,7 @@ For more information about replication in Valkey please check the
 [replication page][tr].
 
 [tr]: ../topics/replication.md
+
+## Reply
+
+**Non-standard return value**, a bulk transfer of the data followed by `PING` and write requests from the primary.

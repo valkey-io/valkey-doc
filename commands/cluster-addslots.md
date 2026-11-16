@@ -10,6 +10,10 @@ However note that:
 2. The command fails if the same slot is specified multiple times.
 3. As a side effect of the command execution, if a slot among the ones specified as argument is set as `importing`, this state gets cleared once the node assigns the (previously unbound) slot to itself.
 
+## Reply
+
+`OK` if the command was successful. Otherwise an error is returned.
+
 ## Example
 
 For example the following command assigns slots 1 2 3 to the node receiving

@@ -8,3 +8,7 @@ The `CLIENT REPLY` command controls whether the server will reply the client's c
 
 **Note:**
 Starting with Valkey 9.0, the `CLIENT REPLY` command is disallowed inside a transaction `(MULTI/EXEC)`. In earlier versions, using `CLIENT REPLY` within a transaction could corrupt the reply stream. Attempting to use it within a transaction now results in an error reply.
+
+## Reply
+
+`OK` when called with `ON`. When called with either `OFF` or `SKIP` sub-commands, no reply is made.

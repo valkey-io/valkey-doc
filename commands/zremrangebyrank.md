@@ -7,6 +7,10 @@ the element with the highest score.
 For example: `-1` is the element with the highest score, `-2` the element with
 the second highest score and so forth.
 
+## Reply
+
+Integer: the number of members removed.
+
 ## Examples
 
 ```

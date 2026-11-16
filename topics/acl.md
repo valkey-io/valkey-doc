@@ -33,7 +33,7 @@ two main goals that are well served by ACLs:
 Another typical usage of ACLs is related to managed Valkey instances. Valkey is
 often provided as a managed service both by internal company teams that handle
 the Valkey infrastructure for the other internal customers they have, or is
-provided in a software-as-a-service setup by cloud providers. In both 
+provided in a software-as-a-service setup by cloud providers. In both
 setups, we want to be sure that configuration commands are excluded for the
 customers.
 
@@ -54,7 +54,8 @@ Valkey instance is:
 
 The command above reports the list of users in the same format that is
 used in the Valkey configuration files, by translating the current ACLs set
-for the users back into their description.
+for the users back into their description. If [roles](#roles) are defined,
+they are reported first, in lines starting with "role".
 
 The first two words in each line are "user" followed by the username. The
 next words are ACL rules that describe different things. We'll show how the rules work in detail, but for now it is enough to say that the default
@@ -94,7 +95,7 @@ Allow and disallow certain keys and key permissions:
 * `~<pattern>`: Add a pattern of keys that can be mentioned as part of commands. For instance `~*` allows all the keys. The pattern is a glob-style pattern like the one of `KEYS`. It is possible to specify multiple patterns.
 * `%R~<pattern>`: Add the specified read key pattern. This behaves similar to the regular key pattern but only grants permission to read from keys that match the given pattern. See [key permissions](#key-permissions) for more information.
 * `%W~<pattern>`: Add the specified write key pattern. This behaves similar to the regular key pattern but only grants permission to write to keys that match the given pattern. See [key permissions](#key-permissions) for more information.
-* `%RW~<pattern>`: Alias for `~<pattern>`. 
+* `%RW~<pattern>`: Alias for `~<pattern>`.
 * `allkeys`: Alias for `~*`.
 * `resetkeys`: Flush the list of allowed keys patterns. For instance the ACL `~foo:* ~bar:* resetkeys ~objects:*`, will only allow the client to access keys that match the pattern `objects:*`.
 
@@ -129,9 +130,14 @@ Configure selectors for the user:
 * `(<rule list>)`: Create a new selector to match rules against. Selectors are evaluated after the user permissions, and are evaluated according to the order they are defined. If a command matches either the user permissions or any selector, it is allowed. See [selectors](#selectors) for more information.
 * `clearselectors`: Delete all of the selectors attached to the user.
 
+Assign roles to the user (Added in version 9.2):
+
+* `role=<role>[,<role> ...]`: Assign the named roles to the user, replacing any role the user already had. At least one role has to be named, and every named role must already exist. See [roles](#roles) for more information.
+* `resetroles`: Remove every role from the user.
+
 Reset the user:
 
-* `reset` Performs the following actions: resetpass, resetkeys, resetchannels, allchannels (if acl-pubsub-default is set), resetdbs, alldbs, off, clearselectors, -@all. The user returns to the same state it had immediately after its creation.
+* `reset` Performs the following actions: resetpass, resetkeys, resetchannels, allchannels (if acl-pubsub-default is set), resetdbs, alldbs, off, clearselectors, -@all, resetroles. The user returns to the same state it had immediately after its creation.
 
 ## Create and edit user ACLs with the ACL SETUSER command
 
@@ -290,7 +296,7 @@ The following is a list of command categories and their meanings:
 * **hyperloglog** - Data type: hyperloglog related.
 * **fast** - Fast O(1) commands. May loop on the number of arguments, but not the
   number of elements in the key.
-* **keyspace** - Writing or reading from keys, databases, or their metadata 
+* **keyspace** - Writing or reading from keys, databases, or their metadata
   in a type agnostic way. Includes `DEL`, `RESTORE`, `DUMP`, `RENAME`, `EXISTS`, `DBSIZE`,
   `KEYS`, `EXPIRE`, `TTL`, `FLUSHALL`, etc. Commands that may modify the keyspace,
   key, or metadata will also have the `write` category. Commands that only read
@@ -415,6 +421,48 @@ Unlike the user's root permissions, selectors cannot be modified after they are 
 Instead, selectors can be removed with the `clearselectors` keyword, which removes all of the added selectors.
 Note that `clearselectors` does not remove the root permissions.
 
+## Roles
+
+Starting with Valkey 9.2, permissions can be defined once in a named _role_ and assigned to any number of users, instead of being repeated in every user.
+A role holds the same kind of permissions a user does: commands, key patterns, channel patterns, databases and selectors.
+Roles are created and modified with [`ACL SETROLE`](../commands/acl-setrole.md), which accepts the same rules as [`ACL SETUSER`](../commands/acl-setuser.md) except for the ones that only make sense for a user: `on`, `off`, `reset`, the password rules, `role=` and `resetroles`.
+Roles are assigned to a user with the `role=` rule, and removed with `resetroles`:
+
+    > ACL SETROLE reader ~app:* +@read
+    OK
+    > ACL SETROLE writer ~app:* +@write
+    OK
+    > ACL SETUSER alice on >alicepass role=reader
+    OK
+    > ACL SETUSER bob on >bobpass role=reader,writer
+    OK
+    > ACL DRYRUN alice SET app:1 x
+    "User alice has no permissions to run the 'set' command"
+    > ACL DRYRUN bob SET app:1 x
+    OK
+
+The `role=` rule replaces the whole set of roles held by the user, so `ACL SETUSER bob role=writer` leaves bob with the writer role only.
+
+A user's own permissions and the permissions of each of its roles are evaluated independently, and a command is allowed if any of them allows it, in the same way [selectors](#selectors) work.
+The user's own permissions are checked first, followed by the roles in the order they were assigned.
+This means a user can be granted permissions on top of a role, but cannot be restricted below what a role grants.
+
+Other things to know about roles:
+
+* Changes to a role with [`ACL SETROLE`](../commands/acl-setrole.md) take effect immediately for every user holding it. Pub/Sub clients of those users that lose access to their channels are disconnected.
+* Roles cannot be nested, cannot have passwords, and cannot be authenticated against.
+* A role cannot be deleted with [`ACL DELROLE`](../commands/acl-delrole.md) while it is assigned to a user. [`ACL GETROLE`](../commands/acl-getrole.md) lists the users holding a role.
+* [`ACL ROLES`](../commands/acl-roles.md) lists the role names, [`ACL USERS`](../commands/acl-users.md) lists only the users. [`ACL LIST`](../commands/acl-list.md) reports both, with the `role` lines listed before the `user` lines.
+* [`ACL GETUSER`](../commands/acl-getuser.md) reports the roles held by a user in the `roles` field, but the other fields only describe the user's own rules. Use [`ACL DRYRUN`](../commands/acl-dryrun.md) to check the effective permissions of a user.
+* Role names are case sensitive and may contain any printable ASCII character except for spaces, commas, quotes and backslashes. Roles have their own namespace, so a role may share its name with a user, a command, or a category.
+
+**Note:** like a new user, a new role starts with access to all databases (`alldbs`, see [database permissions](#database-permissions)), and to all Pub/Sub channels if `acl-pubsub-default` is set to `allchannels`.
+Since permissions are combined with OR logic, such a role grants all databases (and channels) to its users, even to a user restricted with `resetdbs`, `db=<id>` or `resetchannels`.
+To limit what a role grants, restrict the role itself, for example:
+
+    > ACL SETROLE reader ~app:* +@read db=0 resetchannels
+    OK
+
 ## Key permissions
 
 key patterns can also be used to define how a command is able to touch a key.
@@ -422,10 +470,10 @@ This is achieved through rules that define key permissions.
 The key permission rules take the form of `%(<permission>)~<pattern>`.
 Permissions are defined as individual characters that map to the following key permissions:
 
-* W (Write): The data stored within the key may be updated or deleted. 
-* R (Read): User supplied data from the key is processed, copied or returned. Note that this does not include metadata such as size information (example `STRLEN`), type information (example `TYPE`) or information about whether a value exists within a collection (example `SISMEMBER`). 
+* W (Write): The data stored within the key may be updated or deleted.
+* R (Read): User supplied data from the key is processed, copied or returned. Note that this does not include metadata such as size information (example `STRLEN`), type information (example `TYPE`) or information about whether a value exists within a collection (example `SISMEMBER`).
 
-Permissions can be composed together by specifying multiple characters. 
+Permissions can be composed together by specifying multiple characters.
 Specifying the permission as 'RW' is considered full access and is analogous to just passing in `~<pattern>`.
 
 For a concrete example, consider a user with ACL rules `+@all ~app1:* (+@read ~app2:*)`.
@@ -437,10 +485,10 @@ However, using key selectors you can define a set of ACL rules that can handle t
 The first pattern is able to match `app1:user` and the second pattern is able to match `app2:user`.
 
 Which type of permission is required for a command is documented through [key specifications](key-specs.md#logical-operation-flags).
-The type of permission is based off the keys logical operation flags. 
-The insert, update, and delete flags map to the write key permission. 
+The type of permission is based off the keys logical operation flags.
+The insert, update, and delete flags map to the write key permission.
 The access flag maps to the read key permission.
-If the key has no logical operation flags, such as `EXISTS`, the user still needs either key read or key write permissions to execute the command. 
+If the key has no logical operation flags, such as `EXISTS`, the user still needs either key read or key write permissions to execute the command.
 
 Note: Side channels to accessing user data are ignored when it comes to evaluating whether read permissions are required to execute a command.
 This means that some write commands that return metadata about the modified key only require write permission on the key to execute.
@@ -621,6 +669,18 @@ For instance:
 
     user worker +@list +@connection ~jobs:* on >ffa9203c493aa99
 
+[Roles](#roles) are defined in the same way, using the `role` keyword:
+
+    role <rolename> ... acl rules ...
+
+For instance:
+
+    role jobs +@list ~jobs:*
+    user worker +@connection on >ffa9203c493aa99 role=jobs
+
+Roles are loaded before users, so the `role` and `user` lines may appear in
+any order. `ACL SAVE` writes the roles before the users.
+
 When you want to use an external ACL file, you are required to specify
 the configuration directive called `aclfile`, like this:
 
@@ -654,11 +714,17 @@ Sentinel does not need to access any key in the database but does use Pub/Sub, s
 
 Valkey replicas require the following commands to be allowed on the primary instance:
 
-* PSYNC, REPLCONF, PING
+* SYNC, PSYNC, REPLCONF, PING
 
-For cluster deployments, Valkey 9.0 introduces the Atomic Slot Migration feature, which requires the replication user to be allowed to run `CLUSTER SYNCSLOTS`.
-No keys need to be accessed, so this translates to the following rules:
+Although `SYNC` is deprecated, it is still used in dual-channel replication when the RDB channel requests a full resynchronization. `PSYNC` is the preferred command for other replication scenarios.
 
-    ACL setuser replica-user on >somepassword +psync +replconf +ping +cluster|syncslots
+For cluster deployments, Valkey 9.0 introduces the Atomic Slot Migration feature, which requires additional permissions:
+
+* CLUSTER SYNCSLOTS, @write, SELECT
+
+Since `@write` also includes dangerous commands such as `FLUSHALL` and `FLUSHDB`, you will need to exclude them.
+This translate to the following rules:
+
+    ACL setuser replica-user on >somepassword +@write ~* -@dangerous +ping +select +sync +psync +replconf +cluster|syncslots -flushall -flushdb -restore -restore-asking
 
 Note that you don't need to configure the replicas to allow the primary to be able to execute any set of commands. The primary is always authenticated as the root user from the point of view of replicas.

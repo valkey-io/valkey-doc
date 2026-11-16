@@ -8,6 +8,30 @@ Report information. Supported subcommands are:
   containing JSON values. Each container value, except the root container, counts as one additional field.
 * HELP - print help messages of the command.
 
+## Reply
+
+Command response depends on the subcommand:
+
+* For MEMORY:
+  * If the path is enhanced syntax:
+    * Array of integers representing memory size (in bytes) of JSON value at each path.
+    * Array: Empty array if the Valkey key does not exist.
+  * If the path is restricted syntax:
+    * Integer: Memory size of the JSON value in bytes.
+    * Null: If the Valkey key does not exist.
+* For DEPTH:
+  * Integer: The maximum path depth of the JSON document.
+  * Null: If the Valkey key does not exist.
+* For FIELDS:
+  * If the path is enhanced syntax:
+    * Array of integers representing number of fields of JSON value at each path.
+    * Array: Empty array if the Valkey key does not exist.
+  * If the path is restricted syntax:
+    * Integer: Number of fields of the JSON value.
+    * Null: If the Valkey key does not exist.
+* For HELP:
+  * Array of help messages.
+
 ## Examples
 
 Enhanced path syntax:

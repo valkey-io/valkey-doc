@@ -1,6 +1,10 @@
 Returns the length of the string value stored at `key`.
 An error is returned when `key` holds a non-string value.
 
+## Reply
+
+Integer: the length of the string stored at key, or 0 when the key does not exist.
+
 ## Examples
 
 ```

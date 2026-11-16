@@ -10,6 +10,10 @@ leftmost element to the rightmost element.
 So for instance the command `LPUSH mylist a b c` will result into a list
 containing `c` as first element, `b` as second element and `a` as third element.
 
+## Reply
+
+Integer: the length of the list after the push operation.
+
 ## Examples
 
 ```

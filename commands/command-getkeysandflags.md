@@ -8,6 +8,10 @@ You can use [`COMMAND GETKEYS`](command-getkeys.md) or `COMMAND GETKEYSANDFLAGS`
 
 Refer to [key specifications](../topics/key-specs.md#logical-operation-flags) for information about the meaning of the key flags.
 
+## Reply
+
+Array of keys from the given command and their usage flags.
+
 ## Examples
 
 ```

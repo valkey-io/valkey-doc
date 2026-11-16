@@ -5,6 +5,10 @@ The `CLIENT IMPORT-SOURCE` command mark this client as an import source if impor
 * `ON`. In this mode the client can visit expired keys.
 * `OFF`. This is the default mode in which the client works as a normal client.
 
+## Reply
+
+`OK`.
+
 ## Notes
 
 The server needs to be configured with `import-mode yes` before marking a client connection as an import source.

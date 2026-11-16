@@ -27,6 +27,10 @@ associated with some node.
 3. As a side effect of the command execution, the node may go into
 *down* state because not all hash slots are covered.
 
+## Reply
+
+`OK` if the command was successful. Otherwise an error is returned.
+
 ## Example
 
 The following command removes the association for slots 5000 and

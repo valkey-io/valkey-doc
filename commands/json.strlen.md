@@ -1,5 +1,19 @@
 Get lengths of the JSON string values at the path.
 
+## Reply
+
+* If the path is enhanced syntax:
+  * Array of integers representing the length of string value at each path.
+  * Null: For each path where the value is not a string.
+  * Null: If the document key does not exist.
+* If the path is restricted syntax:
+  * Integer: The string's length.
+  * Integer: If multiple string values are selected, returns the first string's length.
+  * Null: If the document key does not exist.
+* Error:
+  * if the value at the path is not a string (only for restricted syntax).
+  * if the path does not exist (only for restricted syntax).
+
 ## Examples
 
 Enhanced path syntax:

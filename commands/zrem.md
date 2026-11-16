@@ -3,6 +3,10 @@ Non existing members are ignored.
 
 An error is returned when `key` exists and does not hold a sorted set.
 
+## Reply
+
+Integer: the number of members removed from the sorted set, not including non-existing members.
+
 ## Examples
 
 ```

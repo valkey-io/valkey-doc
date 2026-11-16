@@ -6,6 +6,10 @@ Apart from the reversed ordering, `ZREVRANGEBYLEX` is similar to `ZRANGEBYLEX`.
 
 `ZRANGE` with the `REV` and `BYLEX` arguments.
 
+## Reply
+
+Array of the members in the specified score range.
+
 ## Examples
 
 ```

@@ -44,6 +44,10 @@ When used, it specifies the maximal `count` of entries that will be evicted.
 When `LIMIT` and `count` aren't specified, the default value of 100 * the number of entries in a macro node will be implicitly used as the `count`.
 Specifying the value 0 as `count` disables the limiting mechanism entirely.
 
+## Reply
+
+Integer: The number of entries deleted from the stream.
+
 ## Examples
 
 ```

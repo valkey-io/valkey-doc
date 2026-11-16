@@ -15,12 +15,21 @@ The `HPEXPIREAT` command supports a set of options that modify its behavior:
 * GT — For each specified field, set expiration only when the new expiration is greater than current one.
 * LT — For each specified field, set expiration only when the new expiration is less than current one.
 
+## Reply
+
+Array of integer codes indicating the result of setting expiry on each specified field, in the same order as the fields are requested.
+
+* -2: Field does not exist in the HASH, or key does not exist.
+* 0: The specified NX | XX | GT | LT condition has not been met.
+* 1: The expiration time was applied.
+* 2: When called with 0 seconds.
+
 ## Examples
 
 ```
 127.0.0.1:6379> HSET myhash f1 v1 f2 v2 f3 v3
 (integer) 3
-27.0.0.1:6379> HPEXPIREAT myhash 1754847944000 FIELDS 2 f2 f3
+127.0.0.1:6379> HPEXPIREAT myhash 1754847944000 FIELDS 2 f2 f3
 1) (integer) 1
 2) (integer) 1
 127.0.0.1:6379> HPEXPIRETIME myhash FIELDS 3 f1 f2 f3

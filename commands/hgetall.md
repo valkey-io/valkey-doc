@@ -2,6 +2,10 @@ Returns all fields and values of the hash stored at `key`.
 In the returned value, every field name is followed by its value, so the length
 of the reply is twice the size of the hash.
 
+## Reply
+
+Map of fields and their values stored in the hash, or an empty map when key does not exist.
+
 ## Examples
 
 ```

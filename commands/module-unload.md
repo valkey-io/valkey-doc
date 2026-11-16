@@ -7,3 +7,7 @@ library's filename.
 Known limitations:
 
 *   Modules that register custom data types can not be unloaded.
+
+## Reply
+
+`OK` if the module was unloaded.

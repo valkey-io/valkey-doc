@@ -23,3 +23,8 @@ Please refer to the [persistence documentation][tp] for detailed information.
 
 [tp]: ../topics/persistence.md
 
+## Reply
+
+Simple string indicating that the rewriting started or is about to start ASAP when the call is executed with success.
+
+The command may reply with an error in certain cases, as documented above.

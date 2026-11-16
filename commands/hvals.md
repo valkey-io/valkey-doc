@@ -1,5 +1,9 @@
 Returns all values in the hash stored at `key`.
 
+## Reply
+
+Array of values in the hash, or an empty array when the key does not exist.
+
 ## Examples
 
 ```

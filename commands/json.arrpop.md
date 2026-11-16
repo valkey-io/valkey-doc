@@ -1,5 +1,16 @@
 Remove and return element at the index from the array. Popping an empty array returns null.
 
+## Reply
+
+* If the path is enhanced syntax:
+  * Array of bulk strings representing popped values at each path.
+  * Null: For each path where the value is an empty array or not an array.
+* If the path is restricted syntax:
+  * String: The popped JSON value.
+  * Null: If the array is empty.
+* Error:
+  * if the value at the path is not an array (only for restricted syntax).
+
 ## Examples
 
 Enhanced path syntax:

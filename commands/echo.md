@@ -1,5 +1,9 @@
 Returns `message`.
 
+## Reply
+
+String: the given string.
+
 ## Examples
 
 ```
