@@ -31,7 +31,6 @@ must have ACL access to all databases (the `alldbs` rule). See
 
 * `AUTH <username> <password>` -- Authenticate to the preceding `NODE` with the
   given username and password pair. Each `NODE` takes its own `AUTH`.
-  Added in Valkey 9.2.
   The `username` can be set to `default` when the target uses `requirepass`.
   If `AUTH` is omitted, the source node's configured `primaryuser` and
   `primaryauth` credentials are used.
