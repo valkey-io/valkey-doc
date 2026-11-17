@@ -3,14 +3,18 @@ that match the given patterns.
 It is similar to [`COMMAND INFO`](command-info.md), which returns metadata about
 commands.
 It is useful for discovering valid values programmatically, for example when
-automated tools need to generate valid config values without maintaining
-hardcoded enum options or numeric ranges.
+automated tools need to generate parameter values without maintaining
+hardcoded enum values or numeric ranges.
 To get the current values of configuration parameters, use
 [`CONFIG GET`](config-get.md).
 
-`CONFIG INFO` takes one or more glob-style patterns and returns one map for each
-matching configuration parameter.
-Each map contains:
+`CONFIG INFO` takes one or more case-insensitive glob-style patterns and returns
+one map for each matching configuration parameter.
+Results are sorted by name.
+A parameter that matches more than one pattern is returned once.
+If no parameter matches, the reply is an empty array.
+
+Each map can contain:
 
 * `name`: The name of the configuration parameter.
 * `type`: The type of the parameter: `bool`, `numeric`, `string`, `enum`, or
@@ -20,7 +24,8 @@ Each map contains:
   Only present when the parameter has another name.
 * `values`: An array of the valid values.
   Only present for `enum` parameters.
-* `range`: A two-element array `[min, max]` with the valid bounds.
+* `range`: A two-element array `[min, max]` with the valid bounds, returned as
+  strings.
   Only present for `numeric` parameters.
 
 The `flags` array can contain:
@@ -30,7 +35,7 @@ The `flags` array can contain:
 * `sensitive`: The value can contain sensitive information, such as a password.
 * `debug`: The parameter is useful for debugging.
 * `multi-arg`: The parameter takes multiple arguments.
-* `hidden`: The parameter is only matched by its exact name, not by glob
+* `hidden`: The parameter is only matched by its exact name, not by glob-style
   patterns.
 * `protected`: The parameter can only be changed when
   `enable-protected-configs` allows it.
@@ -41,34 +46,31 @@ The `flags` array can contain:
 * `volatile`: The value refers to data outside the configuration, such as a
   file, so setting the same value again still applies it.
 
-Results are sorted by name.
-A parameter that matches more than one pattern is returned once.
-If no parameter matches, the reply is an empty array.
-
-### Aliases
+## Parameters with another name
 
 A parameter that has another name is returned as two separate entries, one for
 each name.
 For example, `CONFIG INFO *` returns both `replicaof` and `slaveof`.
-The entry for the other name has `name` set to that name, and includes `alias`
-in its `flags`.
-This applies to exact names and to glob patterns such as `slave*`.
+The entry for the other name lists it in `name` and includes `alias` in its
+`flags`.
+The entry for the other name is returned both for its exact name and for
+glob-style patterns that match it, such as `slave*`.
 Tools that only need one entry per parameter can skip the entries with the
 `alias` flag.
 
-### Numeric ranges
+## Numeric ranges
 
 The bounds in `range` are in the parameter's base unit, for example bytes for
 memory parameters.
+The upper bound of an unsigned parameter can be as large as
+`18446744073709551615`.
 Some parameters give negative values a special meaning.
 For example, `maxmemory-clients` stores a percentage as a negative number, and
 `commandlog-request-larger-than` uses `-1` to disable a feature.
-`CONFIG INFO` does not report this, so check the parameter's description in
-`valkey.conf`.
-The upper bound of an unsigned parameter can be as large as
-`18446744073709551615`.
+`CONFIG INFO` does not report these special meanings, so check the parameter's
+description in `valkey.conf`.
 
-### Enum values
+## Enum values
 
 The `values` array can contain synonyms.
 For example, `oom-score-adj` returns `no`, `yes`, `relative`, and `absolute`,
@@ -78,11 +80,12 @@ accepts several values combined, although not every combination is valid.
 For example, `shutdown-on-sigterm` does not accept `save` together with
 `nosave`.
 
-### Special parameters
+## Special parameters
 
 Parameters with type `special`, such as `save` and
 `client-output-buffer-limit`, have no `values` or `range` field.
-They return `name`, `type`, `flags`, and `alias` if they have another name.
+Their entries contain `name`, `type`, `flags`, and `alias` when the parameter
+has another name.
 
 ## Reply
 
@@ -92,7 +95,7 @@ values.
 
 ## Examples
 
-### Enum config
+### Enum parameter
 
 ```
 127.0.0.1:6379> CONFIG INFO repl-diskless-load
@@ -110,7 +113,7 @@ values.
       4) "flush-before-load"
 ```
 
-### Numeric config
+### Numeric parameter
 
 ```
 127.0.0.1:6379> CONFIG INFO timeout
@@ -125,7 +128,7 @@ values.
       2) "2147483647"
 ```
 
-### Boolean config
+### Boolean parameter
 
 ```
 127.0.0.1:6379> CONFIG INFO activedefrag
@@ -137,7 +140,7 @@ values.
    6) 1) "debug"
 ```
 
-### String config
+### String parameter
 
 ```
 127.0.0.1:6379> CONFIG INFO dbfilename
@@ -149,7 +152,19 @@ values.
    6) 1) "protected"
 ```
 
-### Config with another name
+### Special parameter
+
+```
+127.0.0.1:6379> CONFIG INFO save
+1) 1) "name"
+   2) "save"
+   3) "type"
+   4) "special"
+   5) "flags"
+   6) 1) "multi-arg"
+```
+
+### Parameter with another name
 
 ```
 127.0.0.1:6379> CONFIG INFO replicaof
