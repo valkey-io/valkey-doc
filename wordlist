@@ -900,6 +900,8 @@ syntaxes
 syscall
 systemctl
 systemd
+SysV
+OpenRC
 T1
 T2
 taskset

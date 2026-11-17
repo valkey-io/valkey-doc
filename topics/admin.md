@@ -10,11 +10,13 @@ description: Advice for configuring and managing Valkey in production
 * Deploy Valkey using the Linux operating system.
   Valkey is also regularly tested on macOS and FreeBSD, and from time to time on other OpenBSD, NetBSD, DragonFlyBSD and Solaris-derived systems.
   However, Linux is where most of the stress testing is performed, and where most production deployments are run.
-  For more information on how to set Valkey up, see the [Installation guide](installation.md).
+  For installation steps, see the [Installation guide](installation.md).
+
+* Disable Transparent Huge Pages and set `vm.overcommit_memory = 1`. See [Recommended Linux settings](installation.md#recommended-linux-settings).
 
 ### Memory
 
-* Ensured that swap is enabled and that your swap file size is equal to amount of memory on your system. If Linux does not have swap set up, and your Valkey instance accidentally consumes too much memory, Valkey can crash when it is out of memory, or the Linux kernel OOM killer can kill the Valkey process. When swapping is enabled, you can detect latency spikes and act on them.
+* Ensure that swap is enabled and that your swap file size is equal to amount of memory on your system. If Linux does not have swap set up, and your Valkey instance accidentally consumes too much memory, Valkey can crash when it is out of memory, or the Linux kernel OOM killer can kill the Valkey process. When swapping is enabled, you can detect latency spikes and act on them.
 
 * Set an explicit `maxmemory` option limit in your instance to make sure that it will report errors instead of failing when the system memory limit is near to be reached. Note that `maxmemory` should be set by calculating the overhead for Valkey, other than data, and the fragmentation overhead. So if you think you have 10 GB of free memory, set it to 8 or 9.
 
@@ -36,7 +38,7 @@ description: Advice for configuring and managing Valkey in production
 
 ### Security
 
-For more information on securing Valkey, please see the [security section in the Install guide](installation.md#securing-valkey).
+* By default, Valkey does not require any authentication and listens on all network interfaces. Never expose an unsecured instance to the internet or other networks attackers can reach. See [Securing Valkey](installation.md#securing-valkey) and the [Security](security.md) page.
 
 ## Running Valkey on EC2
 
