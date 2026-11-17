@@ -20,12 +20,10 @@ not modified, allowing for a [check-and-set mechanism][ttc].
 * `XX` *key* -- Execute only if *key* exists.
 
 When multiple conditions are given, all of them must match.
-If any condition does not match, the transaction is discarded and `EXEC` returns a Null reply.
+If any condition does not match, or if a `WATCH`ed key was modified, the transaction is discarded and `EXEC` returns a Null reply.
 
 The transaction is discarded and `EXEC` returns an `EXECABORT` error if `IFEQ` or `IFNE` is used on a key that does not hold a string, if the conditions are malformed, or if the user has no read permission on a condition key.
 In cluster mode, condition keys must be in the same hash slot as the keys of the queued commands.
-
-If a `WATCH`ed key was modified, `EXEC` returns a Null reply without evaluating the conditions.
 
 ## Reply
 
