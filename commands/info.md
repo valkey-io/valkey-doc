@@ -462,6 +462,9 @@ Here is the meaning of all fields in the **persistence** section:
 *   `rdb_last_bgsave_status`: Status of the last RDB file save operation
 *   `rdb_last_bgsave_time_sec`: Duration of the last RDB save operation in seconds, including a diskless replication RDB save
 *   `rdb_current_bgsave_time_sec`: Duration of the on-going RDB save operation if any, including a diskless replication RDB save
+*   `rdb_current_bgsave_type`: The method of the on-going RDB save operation, including a diskless replication RDB save: `fork`, `forkless`, or `none` if no save is in progress. See [Forkless operations](../topics/forkless.md).
+*   `rdb_last_bgsave_type`: The method of the last RDB file save operation: `fork`, `forkless`, or `none` if no save has completed since startup.
+*   `forkless_estimated_seconds_remaining`: Estimated number of seconds until the on-going forkless save or full sync completes, or -1 if none is in progress.
 *   `rdb_last_cow_size`: The size in bytes of copy-on-write memory during
      the last RDB save operation
 *   `rdb_last_load_keys_expired`: Number of volatile keys deleted during the last RDB loading.
@@ -768,6 +771,12 @@ It won't be included when `INFO` or `INFO ALL` are called, and it is returned on
 *   `repl_throttle_more_events`: Number of times the replication throttle rate was decreased.
 *   `repl_throttle_less_events`: Number of times the replication throttle rate was increased.
 *   `repl_throttle_current_clients`: Number of clients currently queued by the replication throttler.
+*   `forkless_fallbacks_module`: Number of times a save or full sync used `fork()` instead of a forkless operation because a loaded module does not support forkless operations.
+*   `forkless_fallbacks_slot_import`: Number of times a save or full sync used `fork()` instead of a forkless operation because a slot import was in progress.
+*   `forkless_fallbacks_exclude_data`: Number of times a full sync used `fork()` instead of a forkless operation because an RDB without keyspace data, such as a functions-only RDB, was requested.
+*   `forkless_fallbacks_missing_inband_repl`: Number of times a full sync used `fork()` instead of a forkless operation because the replica does not support forkless full sync.
+*   `forkless_fallbacks_compression`: Number of times a full sync used `fork()` instead of a forkless operation because replication compression was negotiated.
+*   `forkless_fallbacks_old_rdb_version`: Number of times a full sync used `fork()` instead of a forkless operation because the replica requires an older RDB version.
 
 [hcgcpgp]: http://code.google.com/p/google-perftools/
 
