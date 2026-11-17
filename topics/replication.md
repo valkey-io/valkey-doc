@@ -399,6 +399,32 @@ able to work:
 
 Once a replica is promoted to a primary it will start to expire keys independently, and will not require any help from its old primary.
 
+## Replication throttling
+
+*Available since Valkey 9.2.*
+
+When the primary produces write commands faster than a replica can consume them,
+the replica's client output buffer (COB) grows. If the COB exceeds the configured
+`client-output-buffer-limit` for replicas, the replica is disconnected and must
+perform a full resynchronization, which is costly for both primary and replica.
+
+When enabled, the primary monitors every replica's client output buffer and, when
+it is projected to exceed a safe threshold, slows incoming write commands to let
+the replica catch up. The throttle rate adjusts gradually until the buffer
+stabilizes or the replica is fully caught up, at which point throttling is
+removed.
+
+Throttled clients are queued: their read handler is removed so no new commands are
+buffered, and they are released at the configured rate by a timer event. The
+command is not rejected; from the client's perspective, the response simply takes
+longer. Throttled clients can be identified by the `h` flag in
+[`CLIENT LIST`](../commands/client-list.md) output.
+
+To enable replication throttling, set `repl-throttling-enabled yes`. The default
+is `no`. This option can be changed at runtime with
+[`CONFIG SET`](../commands/config-set.md). Disabling it while throttling is active
+immediately releases all queued clients and tears down the throttler.
+
 ## Configuring replication with containers and NAT
 
 When containers using port forwarding, or Network Address Translation, are used, Valkey replication needs some extra care, especially when using Valkey Sentinel or other systems where the primary [`INFO`](../commands/info.md) or [`ROLE`](../commands/role.md) commands output is scanned to discover replicas' addresses.

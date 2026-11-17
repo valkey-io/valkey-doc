@@ -103,6 +103,17 @@ For more information, see:
 * [Bloom filter command reference](../commands/#bloom)
 * [Valkey-bloom module on GitHub](https://github.com/valkey-io/valkey-bloom/)
 
+## Large Object
+
+[Large objects](large-object.md) are large binary values, such as machine learning KV cache blocks, tensors, and embeddings, stored in DRAM or in tiered DRAM and NVMe storage, with optional RDMA transfer to and from client memory.
+
+The large object data type / command support is provided by the `valkey-large-object` module, which is at version 0.x.
+For more information, see:
+
+* [Overview of Large Objects](large-object.md)
+* [Large object command reference](../commands/#large-object)
+* [Valkey-large-object module on GitHub](https://github.com/valkey-io/valkey-large-object/)
+
 ## Extensions
 
 To extend the features provided by the included data types, use one of these options:
