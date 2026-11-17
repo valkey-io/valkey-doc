@@ -15,9 +15,17 @@ cluster_known_nodes:6
 cluster_size:3
 cluster_current_epoch:6
 cluster_my_epoch:2
+cluster_config_save_status:ok
+cluster_config_last_save_time:1788000000
 cluster_stats_messages_sent:1483972
 cluster_stats_messages_received:1483968
 total_cluster_links_buffer_limit_exceeded:0
+total_cluster_links_established_inbound:5
+total_cluster_links_established_outbound:5
+cluster_io_threaded_reads_processed:0
+cluster_io_threaded_writes_processed:0
+cluster_io_threaded_accepts_processed:0
+cluster_io_main_thread_fallbacks:0
 ```
 
 * `cluster_state`: State is `ok` if the node is able to receive queries. `fail` if there is at least one hash slot which is unbound (no node associated), in error state (node serving it is flagged with FAIL flag), or if the majority of primaries can't be reached by this node.
@@ -33,9 +41,17 @@ total_cluster_links_buffer_limit_exceeded:0
 * `cluster_size`: The number of primary nodes serving at least one hash slot in the cluster.
 * `cluster_current_epoch`: The local [Current Epoch](../topics/cluster-spec.md#cluster-current-epoch). This is used in order to create unique increasing version numbers during fail overs.
 * `cluster_my_epoch`: The [Config Epoch](../topics/cluster-spec.md#configuration-epoch) of the node we are talking with. This is the current configuration version assigned to this node.
+* `cluster_config_save_status`: Result of the last background save of the cluster configuration file (`nodes.conf`), either `ok` or `err`. Available since Valkey 9.2.
+* `cluster_config_last_save_time`: Unix time of the last successful save of the cluster configuration file. Available since Valkey 9.2.
 * `cluster_stats_messages_sent`: Number of messages sent via the cluster node-to-node binary bus.
 * `cluster_stats_messages_received`: Number of messages received via the cluster node-to-node binary bus.
 * `total_cluster_links_buffer_limit_exceeded`: Accumulated count of cluster links freed due to exceeding the `cluster-link-sendbuf-limit` configuration.
+* `total_cluster_links_established_inbound`: Accumulated count of inbound cluster links established with other nodes. Available since Valkey 9.2.
+* `total_cluster_links_established_outbound`: Accumulated count of outbound cluster links established with other nodes. Available since Valkey 9.2.
+* `cluster_io_threaded_reads_processed`: Number of cluster bus reads processed by I/O threads. Available since Valkey 9.2.
+* `cluster_io_threaded_writes_processed`: Number of cluster bus writes processed by I/O threads. Available since Valkey 9.2.
+* `cluster_io_threaded_accepts_processed`: Number of inbound cluster bus connections accepted by I/O threads. Available since Valkey 9.2.
+* `cluster_io_main_thread_fallbacks`: Number of cluster bus I/O operations that could not be offloaded to I/O threads and were handled by the main thread instead. Available since Valkey 9.2.
 
 The following message-related fields may be included in the reply if the value is not 0:
 Each message type includes statistics on the number of messages sent and received.
