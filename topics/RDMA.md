@@ -6,6 +6,9 @@ description: Valkey Over RDMA experimental support
 Valkey supports the Remote Direct Memory Access (RDMA) connection type via a
 Valkey module that can be dynamically loaded on demand.
 
+For bulk transfer of large objects between server memory and client memory with the large object module, see [Valkey Large Object - RDMA Transfers](large-object-rdma.md).
+That module uses its own RDMA path, which is independent of the connection type on this page.
+
 ## Getting Started
 
 [RDMA](https://en.wikipedia.org/wiki/Remote_direct_memory_access)

@@ -4,6 +4,7 @@ format that is simple to parse by computers and easy to read by humans.
 The optional parameter can be used to select a specific section of information:
 
 *   `server`: General information about the Valkey server
+*   `tls`: TLS information
 *   `clients`: Client connections section
 *   `memory`: Memory consumption related information
 *   `persistence`: RDB and AOF related information
@@ -17,7 +18,6 @@ The optional parameter can be used to select a specific section of information:
 *   `modules`: Modules section
 *   `keyspace`: Database related statistics
 *   `errorstats`: Valkey error statistics
-*   `hotkeys`: Hot key tracking statistics
 *   `throttling`: Throttling statistics
 
 It can also take the following values:
@@ -313,6 +313,17 @@ Here is the meaning of all fields in the **server** section:
 *   `availability_zone`: Inform Valkey of the Availability zone if running in a cloud environment, see `availability-zone` config for more details. Added in Valkey 8.0.
 *   `shutdown_in_milliseconds`: The maximum time remaining for replicas to catch up the replication before completing the shutdown sequence.
     This field is only present during shutdown.
+
+Here is the meaning of all fields in the **TLS** section, added in Valkey 9.1:
+
+*   `tls_server_cert_serial`: The server certificate's serial number
+*   `tls_server_cert_expires_in_seconds`: Time until the server certificate expires
+*   `tls_server_alt_cert_serial`: The [alternate server certificate](../topics/tls.md)'s serial number. Added in Valkey 9.2
+*   `tls_server_alt_cert_expires_in_seconds`: Time until the alternate server certificate expires. Added in Valkey 9.2
+*   `tls_client_cert_serial`: The client certificate's serial number
+*   `tls_client_cert_expires_in_seconds`: Time until the client certificate expires
+*   `tls_ca_cert_serial`: The Certificate Authority (CA) certificate's serial number
+*   `tls_ca_cert_expires_in_seconds`: Time until the CA certificate expires
 
 Here is the meaning of all fields in the **clients** section:
 
@@ -741,13 +752,6 @@ The statistics are the number of keys, and the number of keys with an expiration
 For each database, the following line is added:
 
 *   `dbXXX`: `keys=XXX,expires=XXX`
-
-The **hotkeys** section describes the last completed hot key tracking window.
-It is not part of the default output, so request it by name or use `INFO all`.
-See [Hot key tracking](../topics/hotkeys.md) for the feature itself.
-
-*   `hotkeys_last_window_samples`: Number of accesses sampled during the last completed window
-*   `hotkeys_last_window_duration_ms`: Length of the last completed window in milliseconds, and the denominator of every rate `HOTKEYS GET` reports. `0` when there is no completed window to describe
 
 The **throttling** section, contains metrics related to client command throttling.
 
