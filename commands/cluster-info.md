@@ -18,6 +18,10 @@ cluster_my_epoch:2
 cluster_stats_messages_sent:1483972
 cluster_stats_messages_received:1483968
 total_cluster_links_buffer_limit_exceeded:0
+cluster_io_threaded_reads_processed:0
+cluster_io_threaded_writes_processed:0
+cluster_io_threaded_accepts_processed:0
+cluster_io_main_thread_fallbacks:0
 ```
 
 * `cluster_state`: State is `ok` if the node is able to receive queries. `fail` if there is at least one hash slot which is unbound (no node associated), in error state (node serving it is flagged with FAIL flag), or if the majority of primaries can't be reached by this node.
@@ -36,6 +40,10 @@ total_cluster_links_buffer_limit_exceeded:0
 * `cluster_stats_messages_sent`: Number of messages sent via the cluster node-to-node binary bus.
 * `cluster_stats_messages_received`: Number of messages received via the cluster node-to-node binary bus.
 * `total_cluster_links_buffer_limit_exceeded`: Accumulated count of cluster links freed due to exceeding the `cluster-link-sendbuf-limit` configuration.
+* `cluster_io_threaded_reads_processed`: Number of cluster bus read operations completed by the I/O threads. Added in Valkey 9.2.
+* `cluster_io_threaded_writes_processed`: Number of cluster bus write operations completed by the I/O threads. Added in Valkey 9.2.
+* `cluster_io_threaded_accepts_processed`: Number of inbound cluster bus TLS accepts (handshakes) completed by the I/O threads. Added in Valkey 9.2.
+* `cluster_io_main_thread_fallbacks`: Number of cluster bus read, write, or inbound TLS accept operations performed on the main thread because they could not be offloaded to the I/O threads, either because no I/O threads were active or because the I/O job queue was full. I/O threads are only activated under load, so on a lightly loaded node most cluster bus I/O is expected to be counted here. Added in Valkey 9.2.
 
 The following message-related fields may be included in the reply if the value is not 0:
 Each message type includes statistics on the number of messages sent and received.

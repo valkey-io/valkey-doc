@@ -56,6 +56,7 @@ It's released under the
 * [Installation](installation.md): How to install and configure Valkey. This targets people without prior experience with Valkey.
 * [Release Downloads](https://valkey.io/download/releases/): Lists links to download all current and previous releases.
 * [valkey-cli](cli.md): The Valkey command line interface, used for administration, troubleshooting and experimenting with Valkey.
+* [Valkey Admin](https://valkey-admin.valkey.io/): An intuitive visual interface to monitor, manage, and interact with your Valkey deployments.
 * [valkey-server](server.md): How to run the Valkey server.
 * [Configuration](valkey.conf.md): How to configure Valkey.
 * [Persistence](persistence.md): Options for configuring durability using disk backups.
@@ -72,6 +73,7 @@ It's released under the
 * [Cluster tutorial](cluster-tutorial.md): A gentle introduction to Valkey Cluster, a deployment mode for horizontal scaling and high availability.
 * [Cluster specification](cluster-spec.md): The more formal description of the behavior and algorithms used in Valkey Cluster.
 * [Atomic slot migration](atomic-slot-migration.md): An overview of atomic slot migration in Valkey Cluster.
+* [Forkless operations](forkless.md): Saving and fully syncing replicas without `fork()`.
 
 ### Security
 * [Security](security.md): An overview of Valkey's security.

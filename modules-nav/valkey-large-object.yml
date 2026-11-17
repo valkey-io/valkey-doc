@@ -1,0 +1,17 @@
+# Menu entries for the valkey-large-object module, merged into the core menu (nav.yml).
+# An entry with "id" creates a new section. "after" places it after a section
+# in the core menu; without it, the section goes at the end.
+- id: large-object
+  title: Large object
+  after: programmability
+  landing: large-object
+  commands: [large_object]
+  topics:
+    - topic: large-object-getting-started
+      title: Getting started
+    - topic: large-object-use-cases
+      title: Use cases and examples
+    - topic: large-object-rdma
+      title: RDMA transfers
+    - topic: large-object-configuration
+      title: Configuration and monitoring

@@ -31,7 +31,8 @@ server can start again.
 
 Valkey allows for an extra guarantee to the
 above two, in the form of optimistic locking in a way very similar to a
-check-and-set (CAS) operation.
+check-and-set (CAS) operation, either with `WATCH` or with conditions
+given to `EXEC`.
 This is documented [later](#cas) on this page.
 
 ## Usage
@@ -286,6 +287,40 @@ EXEC
 ```
 
 If `EXEC` fails (i.e. returns a [Null reply](protocol.md#nil-reply)) we just repeat the operation.
+
+<a name="exec-conditions"></a>
+
+## Optimistic locking using EXEC conditions
+
+`WATCH` needs an extra round trip before `MULTI`, which is inconvenient for
+pipelined clients. Instead, conditions can be given to `EXEC`:
+
+```
+EXEC [IFEQ key value | IFNE key value | NX key | XX key] ...
+```
+
+The transaction is executed only if all the conditions match when `EXEC` is
+called. Otherwise it is discarded and `EXEC` returns a
+[Null reply](protocol.md#nil-reply), as when a `WATCH`ed key was modified.
+
+For example, a version key can protect a group of keys:
+
+```
+ver = GET ver{user:1}
+new_ver = ver + 1
+MULTI
+SET ver{user:1} $new_ver
+SET name{user:1} "Alice"
+EXEC IFEQ ver{user:1} $ver
+```
+
+If another client changed `ver{user:1}` after our `GET`, the `IFEQ` condition
+no longer matches, so `EXEC` returns a Null reply and we repeat the operation.
+
+Conditions can be combined with `WATCH`: the transaction is executed only if no
+`WATCH`ed key was modified and all the conditions match.
+
+See [`EXEC`](../commands/exec.md) for the details of each condition and the errors it can return.
 
 ## Valkey scripting and transactions
 
