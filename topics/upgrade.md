@@ -10,7 +10,7 @@ description: Step-by-step instructions for upgrading an existing Valkey instance
 
 Valkey is designed to run as a long-running process. Many configuration options can be modified without restarting the server using the `CONFIG SET` command. However, some changes, such as upgrading the Valkey process to a newer version or modifying unsupported configuration parameters, require a restart.
 
-You can minimise downtime during an upgrade by starting a new Valkey instance, synchronising it with the existing instance, and switching clients to the new instance.
+You can minimize downtime during an upgrade by starting a new Valkey instance, synchronizing it with the existing instance, and switching clients to the new instance.
 
 ## Upgrading a standalone Valkey instance
 
@@ -40,11 +40,11 @@ Then execute:
 REPLICAOF <old-primary-host> <old-primary-port>
 ```
 
-The new instance will connect to the existing primary and begin synchronising its dataset.
+The new instance will connect to the existing primary and begin synchronizing its dataset.
 
-### 3. Wait for initial synchronisation
+### 3. Wait for initial synchronization
 
-Wait for the initial replication synchronisation to complete. Check the new instance's log file for replication progress.
+Wait for the initial replication synchronization to complete. Check the new instance's log file for replication progress.
 
 You can also inspect the replication status:
 
@@ -52,7 +52,7 @@ You can also inspect the replication status:
 valkey-cli -h <new-instance-host> -p <new-instance-port> INFO replication
 ```
 
-Verify that `master_link_status` is `up` and `master_sync_in_progress` is `0`. These values indicate that the replication link is established and the initial synchronisation has completed.
+Verify that `master_link_status` is `up` and `master_sync_in_progress` is `0`. These values indicate that the replication link is established and the initial synchronization has completed.
 
 ### 4. Verify the dataset
 
