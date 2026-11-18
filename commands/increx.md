@@ -1,7 +1,7 @@
 Increments the numeric value stored at `key`, optionally setting or updating its expiration in the same atomic operation.
-If the key does not exist, it is set to `0` before performing the operation.
+If the key does not exist, its value is treated as `0`.
 An error is returned if the key contains a value of the wrong type or contains a
-string that can not be represented as a number.
+string that cannot be represented as an integer, or as a floating-point number with `BYFLOAT`.
 
 By default the increment is `1`. Use `BYINT` to increment by a 64 bit signed
 integer, or `BYFLOAT` to increment by a floating-point number.
@@ -27,6 +27,10 @@ adds optional lower and upper bounds on the resulting value.
 * `ENX` -- Only set the expiration if the key currently has no TTL.
   Requires one of `EX`, `PX`, `EXAT` or `PXAT`, and cannot be combined with `PERSIST`.
 
+Without an expiration option, the key keeps its existing TTL. With `EX`, `PX`,
+`EXAT` or `PXAT`, the TTL is set on every applied increment unless `ENX` is given.
+A call that is skipped or rejected never changes the TTL.
+
 ### Increment
 
 * `BYINT increment` -- Increment by a 64 bit signed integer.
@@ -40,11 +44,19 @@ adds optional lower and upper bounds on the resulting value.
   (or to the limits of the numeric type when no explicit bound is given) instead
   of rejecting the operation.
 
-The bound values are integers when used with `BYINT` and floating-point numbers
+The bound values are integers by default and with `BYINT`, and floating-point numbers
 when used with `BYFLOAT`.
 
 Without `SATURATE`, an operation that would take the value out of bounds is
 rejected: the value is left unchanged and the reply is `[current_value, 0]`.
+This includes an increment that would overflow a 64 bit signed integer, which
+`INCRBY` reports as an error instead.
+
+Bounds are checked against the result, not the current value. If the value is
+already out of bounds, an increment that leaves it out of bounds is rejected even
+if it moves the value toward the range, and with `SATURATE` the value is set to
+the bound, so the applied increment can have the opposite sign. For example, if
+the value is `50`, `INCREX mykey BYINT 1 UBOUND 20 SATURATE` replies `[20, -30]`.
 
 ## Reply
 
@@ -65,6 +77,9 @@ OK
 127.0.0.1:6379> INCREX mykey
 1) (integer) 11
 2) (integer) 1
+127.0.0.1:6379> INCREX myfloat BYFLOAT 2.5
+1) "2.5"
+2) "2.5"
 127.0.0.1:6379> INCREX mykey BYINT 5 EX 60
 1) (integer) 16
 2) (integer) 5
@@ -105,8 +120,11 @@ Use `LBOUND`, `UBOUND` and `SATURATE` to keep a value inside a range, for exampl
 an inventory level or a score that must never go below zero:
 
 ```
-SET stock:item42 2
-INCREX stock:item42 BYINT -3 LBOUND 0 SATURATE
+127.0.0.1:6379> SET stock:item42 2
+OK
+127.0.0.1:6379> INCREX stock:item42 BYINT -3 LBOUND 0 SATURATE
+1) (integer) 0
+2) (integer) -2
 ```
 
 If only 2 units remain, the key is set to `0` and the second element of the
