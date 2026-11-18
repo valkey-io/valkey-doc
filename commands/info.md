@@ -776,7 +776,6 @@ It won't be included when `INFO` or `INFO ALL` are called, and it is returned on
 *   `forkless_fallbacks_exclude_data`: Number of times a full sync used `fork()` instead of a forkless operation because an RDB without keyspace data, such as a functions-only RDB, was requested.
 *   `forkless_fallbacks_missing_inband_repl`: Number of times a full sync used `fork()` instead of a forkless operation because the replica does not support forkless full sync.
 *   `forkless_fallbacks_compression`: Number of times a full sync used `fork()` instead of a forkless operation because replication compression was negotiated.
-*   `forkless_fallbacks_old_rdb_version`: Number of times a full sync used `fork()` instead of a forkless operation because the replica requires an older RDB version.
 
 [hcgcpgp]: http://code.google.com/p/google-perftools/
 
