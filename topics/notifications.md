@@ -118,6 +118,9 @@ Different commands generate different kind of events according to the following 
 * `HDEL` generates a single `hdel` event, and an additional `del` event if the resulting hash is empty and the key is removed.
 * `SADD` generates a single `sadd` event, even in the variadic case.
 * `SREM` generates a single `srem` event, and an additional `del` event if the resulting set is empty and the key is removed.
+* `SADDEX` generates a single `sadd` event when its `NX`, `XX`, `MNX`, and `MXX` conditions are met, even if the set does not change. It also generates an `sexpire` event when called with an expiration time. When called with an expiration time of `0` or a time in the past, it also generates an `sexpired` event, and a `del` event if the set becomes empty and the key is removed.
+* `SEXPIRE` and its variants (`SPEXPIRE`, `SEXPIREAT`, and `SPEXPIREAT`) generate a single `sexpire` event when at least one member's expiration time is set. When called with an expiration time of `0` or a time in the past, they generate a single `sexpired` event instead, and a `del` event if the set becomes empty and the key is removed.
+* `SPERSIST` generates an `spersist` event if the expiration time of at least one member was removed.
 * `SMOVE` generates an `srem` event for the source key, and an `sadd` event for the destination key.
 * `SPOP` generates an `spop` event, and an additional `del` event if the resulting set is empty and the key is removed.
 * `SINTERSTORE`, `SUNIONSTORE`, `SDIFFSTORE` generate `sinterstore`, `sunionstore`, `sdiffstore` events respectively. In the special case the resulting set is empty, and the key where the result is stored already exists, a `del` event is generated since the key is removed.
@@ -170,7 +173,10 @@ The `expired` events are generated when a key is accessed and is found to be exp
 Since Valkey 9.0, hash fields can also have an associated time to live.
 Hash fields are deleted when explicitly provided an expiration time in the past or via the same background job which is also responsible to expire keys. For that reason, there are no guarantees that the Valkey server will be able to generate the `hexpired` event at the time the hash field time to live reaches the value of zero.
 
-Basically `expired` and `hexpired` events **are generated when the Valkey server deletes a key** and not when the time to live theoretically reaches the value of zero.
+Since Valkey 10.0, set members can also have an associated time to live.
+The same applies to set members and the `sexpired` event.
+
+Basically `expired`, `hexpired`, and `sexpired` events **are generated when the Valkey server deletes a key** and not when the time to live theoretically reaches the value of zero.
 For that reason there can be a significant delay between the time the key time to live drops to zero, and the time the corresponding event is generated.
 
 

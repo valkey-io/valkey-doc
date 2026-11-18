@@ -535,6 +535,7 @@ Here is the meaning of all fields in the **stats** section:
 *   `sync_partial_err`: The number of denied partial resync requests
 *   `expired_keys`: Total number of key expiration events
 *   `expired_stale_perc`: The percentage of keys probably expired
+*   `expired_set_members`: Total number of set members removed because their expiration time was reached
 *   `expired_time_cap_reached_count`: The count of times that active expiry cycles have stopped early
 *   `expire_cycle_cpu_milliseconds`: The cumulative amount of time spent on active expiry cycles
 *   `evicted_keys`: Number of evicted keys due to `maxmemory` limit
