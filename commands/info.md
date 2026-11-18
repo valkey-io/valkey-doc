@@ -4,6 +4,7 @@ format that is simple to parse by computers and easy to read by humans.
 The optional parameter can be used to select a specific section of information:
 
 *   `server`: General information about the Valkey server
+*   `tls`: TLS information
 *   `clients`: Client connections section
 *   `memory`: Memory consumption related information
 *   `persistence`: RDB and AOF related information
@@ -17,7 +18,7 @@ The optional parameter can be used to select a specific section of information:
 *   `modules`: Modules section
 *   `keyspace`: Database related statistics
 *   `errorstats`: Valkey error statistics
-*   `hotkeys`: Hot key tracking statistics
+*   `throttling`: Throttling statistics
 
 It can also take the following values:
 
@@ -313,6 +314,17 @@ Here is the meaning of all fields in the **server** section:
 *   `shutdown_in_milliseconds`: The maximum time remaining for replicas to catch up the replication before completing the shutdown sequence.
     This field is only present during shutdown.
 
+Here is the meaning of all fields in the **TLS** section, added in Valkey 9.1:
+
+*   `tls_server_cert_serial`: The server certificate's serial number
+*   `tls_server_cert_expires_in_seconds`: Time until the server certificate expires
+*   `tls_server_alt_cert_serial`: The [alternate server certificate](../topics/tls.md)'s serial number. Added in Valkey 9.2
+*   `tls_server_alt_cert_expires_in_seconds`: Time until the alternate server certificate expires. Added in Valkey 9.2
+*   `tls_client_cert_serial`: The client certificate's serial number
+*   `tls_client_cert_expires_in_seconds`: Time until the client certificate expires
+*   `tls_ca_cert_serial`: The Certificate Authority (CA) certificate's serial number
+*   `tls_ca_cert_expires_in_seconds`: Time until the CA certificate expires
+
 Here is the meaning of all fields in the **clients** section:
 
 *   `connected_clients`: Number of client connections (excluding connections
@@ -450,6 +462,9 @@ Here is the meaning of all fields in the **persistence** section:
 *   `rdb_last_bgsave_status`: Status of the last RDB file save operation
 *   `rdb_last_bgsave_time_sec`: Duration of the last RDB save operation in seconds, including a diskless replication RDB save
 *   `rdb_current_bgsave_time_sec`: Duration of the on-going RDB save operation if any, including a diskless replication RDB save
+*   `rdb_current_bgsave_type`: The method of the on-going RDB save operation, including a diskless replication RDB save: `fork`, `forkless`, or `none` if no save is in progress. See [Forkless operations](../topics/forkless.md).
+*   `rdb_last_bgsave_type`: The method of the last RDB file save operation: `fork`, `forkless`, or `none` if no save has completed since startup.
+*   `forkless_estimated_seconds_remaining`: Estimated number of seconds until the on-going forkless save or full sync completes, or -1 if none is in progress.
 *   `rdb_last_cow_size`: The size in bytes of copy-on-write memory during
      the last RDB save operation
 *   `rdb_last_load_keys_expired`: Number of volatile keys deleted during the last RDB loading.
@@ -524,7 +539,7 @@ Here is the meaning of all fields in the **stats** section:
 *   `expire_cycle_cpu_milliseconds`: The cumulative amount of time spent on active expiry cycles
 *   `evicted_keys`: Number of evicted keys due to `maxmemory` limit
 *   `evicted_clients`: Number of evicted clients due to `maxmemory-clients` limit.
-*   `evicted_scripts`: Number of evicted EVAL scripts due to LRU policy, see [`EVAL`](eval.md) for more details. Added in Valkey 8.0.
+*   `evicted_scripts`: Number of evicted EVAL scripts, see [Script cache semantics](../topics/eval-intro.md#script-cache-semantics). Added in Valkey 8.0.
 *   `total_eviction_exceeded_time`:  Total time `used_memory` was greater than `maxmemory` since server startup, in milliseconds
 *   `current_eviction_exceeded_time`: The time passed since `used_memory` last rose above `maxmemory`, in milliseconds
 *   `keyspace_hits`: Number of successful lookup of keys in the main dictionary
@@ -738,12 +753,13 @@ For each database, the following line is added:
 
 *   `dbXXX`: `keys=XXX,expires=XXX`
 
-The **hotkeys** section describes the last completed hot key tracking window.
-It is not part of the default output, so request it by name or use `INFO all`.
-See [Hot key tracking](../topics/hotkeys.md) for the feature itself.
+The **throttling** section, contains metrics related to client command throttling.
 
-*   `hotkeys_last_window_samples`: Number of accesses sampled during the last completed window
-*   `hotkeys_last_window_duration_ms`: Length of the last completed window in milliseconds, and the denominator of every rate `HOTKEYS GET` reports. `0` when there is no completed window to describe
+*   `total_throttled_commands`: Total number of commands deferred across all throttlers since the server started.
+*   `repl_throttle_rate`: Current replication throttle rate in operations per second. `-1` when the throttler is inactive.
+*   `repl_throttle_activation_events`: Number of times the replication throttler has been activated since the server started.
+*   `repl_throttle_below_guardrail_secs`: Seconds the throttle rate has been continuously below the minimum rate guardrail.
+*   `repl_throttle_total_commands`: Number of commands deferred by the replication throttler since the server started.
 
 The **debug** section contains experimental metrics, which might change or get removed in future versions.
 It won't be included when `INFO` or `INFO ALL` are called, and it is returned only when `INFO DEBUG` is used.
@@ -752,6 +768,14 @@ It won't be included when `INFO` or `INFO ALL` are called, and it is returned on
 *   `eventloop_duration_cron_sum`: Total time consumption of cron in microseconds (including serverCron and beforeSleep, but excluding IO and AOF flushing)
 *   `eventloop_duration_max`: The maximal time spent in a single eventloop cycle in microseconds
 *   `eventloop_cmd_per_cycle_max`: The maximal number of commands processed in a single eventloop cycle
+*   `repl_throttle_more_events`: Number of times the replication throttle rate was decreased.
+*   `repl_throttle_less_events`: Number of times the replication throttle rate was increased.
+*   `repl_throttle_current_clients`: Number of clients currently queued by the replication throttler.
+*   `forkless_fallbacks_module`: Number of times a save or full sync used `fork()` instead of a forkless operation because a loaded module does not support forkless operations.
+*   `forkless_fallbacks_slot_import`: Number of times a save or full sync used `fork()` instead of a forkless operation because a slot import was in progress.
+*   `forkless_fallbacks_exclude_data`: Number of times a full sync used `fork()` instead of a forkless operation because an RDB without keyspace data, such as a functions-only RDB, was requested.
+*   `forkless_fallbacks_missing_inband_repl`: Number of times a full sync used `fork()` instead of a forkless operation because the replica does not support forkless full sync.
+*   `forkless_fallbacks_compression`: Number of times a full sync used `fork()` instead of a forkless operation because replication compression was negotiated.
 
 [hcgcpgp]: http://code.google.com/p/google-perftools/
 

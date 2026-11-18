@@ -108,6 +108,7 @@ By default, a single String can be a maximum of 512 MB.
 
 * `INCRBY` atomically increments (and decrements when passing a negative number) counters stored at a given key.
 * Another command exists for floating point counters: `INCRBYFLOAT`.
+* `INCREX` increments a counter and sets its expiration in one atomic command, with optional lower and upper bounds.
 
 ### Bitwise operations
 

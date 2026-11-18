@@ -126,12 +126,6 @@ window rotation, and the last-completed (frozen) window one rotation later. So a
 report can continue to show the old key name or database for up to roughly twice
 `hotkeys-window-seconds` after the last access to it.
 
-## Monitoring
-
-`INFO hotkeys` describes the last completed window: how many accesses were
-sampled, and the length of the window those samples were measured over. See
-[`INFO`](../commands/info.md) for the fields.
-
 ## Commands
 
 * [`HOTKEYS GET`](../commands/hotkeys-get.md): the hottest keys of the last

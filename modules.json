@@ -17,6 +17,15 @@
         "description": "Module that allows users to use the JSON data type"
     },
 
+    "valkey_large_object": {
+        "name": "valkey-large-object",
+        "repo": "https://github.com/valkey-io/valkey-large-object",
+        "description": "Module that allows users to use the large object data type",
+        "topic": "large-object",
+        "command_prefix": "blob.",
+        "version_notice": "valkey-large-object is at version 0.x. Commands, arguments, replies, and configuration can change before version 1.0."
+    },
+
     "valkey_ldap": {
         "name": "valkey-ldap",
         "repo": "https://github.com/valkey-io/valkey-ldap",
