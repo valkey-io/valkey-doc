@@ -60,7 +60,7 @@ the value is `50`, `INCREX mykey BYINT 1 UBOUND 20 SATURATE` replies `[20, -30]`
 
 ## Reply
 
-Array: a two-element array.
+Array: a two-element array of Integers, or of Doubles when `BYFLOAT` is used.
 
 1. The value of the key after the operation. If the increment was not applied,
    this is the current value of the key.

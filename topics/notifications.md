@@ -97,7 +97,7 @@ Different commands generate different kind of events according to the following 
 * `SETRANGE` generates a `setrange` event.
 * `INCR`, `DECR`, `INCRBY`, `DECRBY` commands all generate `incrby` events.
 * `INCRBYFLOAT` generates an `incrbyfloat` events.
-* `INCREX` generates `incrby` events for BYINT updates and `incrbyfloat` for BYFLOAT updates.
+* `INCREX` generates an `incrby` event, or an `incrbyfloat` event with `BYFLOAT`. It also generates an `expire` event when it sets an expiration, and a `persist` event when `PERSIST` removes one. No events are generated when the call is skipped by `NX`/`XX` or rejected by a bound.
 * `APPEND` generates an `append` event.
 * `LPUSH` and `LPUSHX` generates a single `lpush` event, even in the variadic case.
 * `RPUSH` and `RPUSHX` generates a single `rpush` event, even in the variadic case.
