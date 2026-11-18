@@ -51,13 +51,12 @@ Valkey uses `fork()` for saves when:
 
 For full syncs, the conditions above apply, and Valkey additionally uses `fork()` when:
 
-- **The replica runs a Valkey version older than 9.2.**
-  Counted in `forkless_fallbacks_missing_inband_repl` or `forkless_fallbacks_old_rdb_version`.
-- **The replica uses `repl-diskless-load swapdb`.**
-  This only applies when the primary uses diskless sync (`repl-diskless-sync yes`, the default).
-  Counted in `forkless_fallbacks_missing_inband_repl`.
-- **The replica loads a module that does not support forkless operations.**
-  This only applies when the primary uses diskless sync (`repl-diskless-sync yes`, the default).
+- **The replica does not support forkless full sync.**
+  This is the case when any of the following is true:
+  - The replica runs a Valkey version older than 9.2.
+  - The replica uses `repl-diskless-load swapdb`, and the primary uses diskless sync (`repl-diskless-sync yes`, the default).
+  - The replica loads a module that does not support forkless operations, and the primary uses diskless sync.
+
   Counted in `forkless_fallbacks_missing_inband_repl`.
 - **Replication compression is enabled.**
   When `repl-compression` is enabled on both the primary and the replica, the full sync uses `fork()`.
