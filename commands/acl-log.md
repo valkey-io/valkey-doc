@@ -25,8 +25,8 @@ When called with `RESET`:
 
 ```
 127.0.0.1:6379> AUTH someuser wrongpassword
-(error) WRONGPASS invalid username-password pair
-> ACL LOG 1
+(error) WRONGPASS invalid username-password pair or user is disabled.
+127.0.0.1:6379> ACL LOG 1
 1)  1) "count"
     2) (integer) 1
     3) "reason"
@@ -40,7 +40,7 @@ When called with `RESET`:
    11) "age-seconds"
    12) "8.038"
    13) "client-info"
-   14) "id=3 addr=127.0.0.1:57275 laddr=127.0.0.1:6379 fd=8 name= age=16 idle=0 flags=N db=0 sub=0 psub=0 ssub=0 multi=-1 qbuf=48 qbuf-free=16842 argv-mem=25 multi-mem=0 rbs=1024 rbp=0 obl=0 oll=0 omem=0 tot-mem=18737 events=r cmd=auth user=default redir=-1 resp=2"
+   14) "id=3 addr=127.0.0.1:57275 laddr=127.0.0.1:6379 fd=8 name= age=16 idle=0 flags=N capa= db=0 sub=0 psub=0 ssub=0 multi=-1 watch=0 qbuf=48 qbuf-free=16842 argv-mem=25 multi-mem=0 rbs=1024 rbp=0 obl=0 oll=0 omem=0 tot-mem=18737 events=r cmd=auth user=default redir=-1 resp=2 lib-name= lib-ver= tot-net-in=48 tot-net-out=0 tot-cmds=0"
    15) "entry-id"
    16) (integer) 0
    17) "timestamp-created"

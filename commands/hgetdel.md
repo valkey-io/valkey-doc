@@ -30,7 +30,7 @@ Array of values associated with the given fields that are deleted or null for th
 1) "f1"
 2) "v1"
 127.0.0.1:6379> HGETDEL myhash FIELDS 3 f1 non-exist
-(error) ERR syntax error
+(error) ERR numfields should be greater than 0 and match the provided number of fields
 127.0.0.1:6379> HGETDEL myhash FIELDS 2 f1 non-exist
 1) "v1"
 2) (nil)
