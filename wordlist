@@ -5,6 +5,7 @@
 BF16
 BFLOAT16
 Configurables
+configurables
 dtype
 FF0C
 fullwidth
@@ -1098,6 +1099,7 @@ externalizer
 quiescing
 inorder
 pre-filtering
+pre-filter
 pre-allocation
 Valkey-Search's
 Chatbots
@@ -1130,6 +1132,10 @@ matcher
 matchers
 matcher.
 quantile
+lowercased
+BM25STD
+unshared
+non-UTF-8
 damerau-levenshtein
 fred
 Backfill
@@ -1145,8 +1151,10 @@ dayofyear
 monthofyear
 timefmt
 strftime
+strftime.
 parsetime
 strptime
+strptime.
 s1
 s2
 schemas

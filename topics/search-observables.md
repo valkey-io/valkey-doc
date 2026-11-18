@@ -11,9 +11,12 @@ Only Application metrics are listed here. These are kept compatible across relea
 Some metrics are reported only when they apply. The `coordinator_*` metrics appear only when the module is loaded with
 `--use-coordinator`. Metrics ending in `_latency_usec` additionally appear only after at least one sample has been recorded.
 
+Valkey prefixes each field with `search_` and each section with `search_` in `INFO` output, so `compatibility_usage` appears as
+`search_compatibility_usage` in section `search_compatibility`.
+
 | Metric Name                                                      |      Section       |     Unit     | Description                                                                                                                                                         |
 | :--------------------------------------------------------------- | :----------------: | :----------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `compatibility-invalid_data_drops_key`                           |  `compatibility`   |    Count     | Count of key mutations with malformed indexed data that kept the key indexed (field treated as missing) because `search.emulate-release` is below 1.3.0 (see below) |
+| `compatibility_usage`                                            |  `compatibility`   |    String    | Comma-separated `label=count` list of legacy behaviors used because `search.emulate-release` is below the release that fixed them (see below)                       |
 | `coordinator_bytes_in`                                           |   `coordinator`    |    Bytes     | Total size (in bytes) of incoming gRPC response messages received by the coordinator client from remote nodes                                                       |
 | `coordinator_bytes_out`                                          |   `coordinator`    |    Bytes     | Total size (in bytes) of outgoing gRPC request messages sent by the coordinator client to remote nodes                                                              |
 | `coordinator_client_get_global_metadata_failure_count`           |   `coordinator`    |    Count     | Count of failed client requests to get global metadata                                                                                                              |
@@ -53,9 +56,9 @@ Some metrics are reported only when they apply. The `coordinator_*` metrics appe
 | `used_memory_human`                                              |      `memory`      |    String    | Total memory used by the module (in human readable format)                                                                                                          |
 | `successful_requests_count`                                      |      `query`       |    Count     | Total count of successful query requests                                                                                                                            |
 | `failure_requests_count`                                         |      `query`       |    Count     | Total count of failed query requests                                                                                                                                |
-| `hybrid_requests_count`                                          |      `query`       |    Count     | Count of hybrid queries (combining vector and non-vector filters)                                                                                                   |
-| `nonvector_requests_count`                                       |      `query`       |    Count     | Number of requests that are exclusively non-vector search queries, including vector range (`VECTOR_RANGE`) queries                                                  |
-| `vector_requests_count`                                          |      `query`       |    Count     | Number of query requests that include a vector component                                                                                                            |
+| `hybrid_requests_count`                                          |      `query`       |    Count     | Count of KNN queries that also have a non-vector filter, for example `@color:{red}=>[KNN 10 @vec $v]`, including an `FT.HYBRID` `VSIM` arm with `FILTER`. It does not count `FT.HYBRID` commands as such                                                              |
+| `nonvector_requests_count`                                       |      `query`       |    Count     | Number of requests that are exclusively non-vector search queries, including vector range (`VECTOR_RANGE`) queries and the `SEARCH` arm of `FT.HYBRID`                                                  |
+| `vector_requests_count`                                          |      `query`       |    Count     | Number of KNN queries without a filter, for example `*=>[KNN 10 @vec $v]`. An `FT.HYBRID` `VSIM` arm without `FILTER` is not counted                                                                                                            |
 | `inline_filtering_requests_count`                                |      `query`       |    Count     | Count of queries using inline filtering                                                                                                                             |
 | `prefiltering_requests_count`                                    |      `query`       |    Count     | Count of queries using pre-filtering                                                                                                                                |
 | `result_record_dropped_count`                                    |      `query`       |    Count     | Tracks records dropped when FT.SEARCH results exceed configured limits                                                                                              |
@@ -82,7 +85,7 @@ Some metrics are reported only when they apply. The `coordinator_*` metrics appe
 
 ## Compatibility counters
 
-Each `compatibility-*` metric counts how often a legacy, incompatible behavior was used because `search.emulate-release` is set below
-the release that fixed it. See [Compatibility Defects](https://github.com/valkey-io/valkey-search/blob/main/COMPATIBILITY.md#compatibility-defects) for the full list and what each one
-changes. `compatibility-invalid_data_drops_key` is always reported; the others appear in `INFO SEARCH` only after the code path is first
-reached.
+The `compatibility_usage` metric is a comma-separated list of `label=count` pairs. Each count is how often a legacy, incompatible
+behavior was used because `search.emulate-release` is set below the release that fixed it. See
+[Compatibility Defects](https://github.com/valkey-io/valkey-search/blob/main/COMPATIBILITY.md#compatibility-defects) for the full list of labels and what each one changes. The metric
+is always reported; a label appears in the list only after its legacy behavior is first used, and an absent label has a count of 0.
