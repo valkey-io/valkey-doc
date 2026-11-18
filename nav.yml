@@ -112,6 +112,7 @@
       commands: [SAVE, BGSAVE, BGREWRITEAOF, LASTSAVE]
     - topic: replication
       commands: [REPLICAOF, SLAVEOF, PSYNC, SYNC, REPLCONF, ROLE, FAILOVER]
+    - forkless
     - topic: sentinel
       commands: [sentinel]
     - admin
