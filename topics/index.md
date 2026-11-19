@@ -54,6 +54,7 @@ It's released under the
 
 ### Core Management
 * [Installation](installation.md): How to install and configure Valkey. This targets people without prior experience with Valkey.
+* [Upgrading Valkey](upgrade.md): Step-by-step instructions for upgrading an existing Valkey instance with minimal downtime.
 * [Release Downloads](https://valkey.io/download/releases/): Lists links to download all current and previous releases.
 * [valkey-cli](cli.md): The Valkey command line interface, used for administration, troubleshooting and experimenting with Valkey.
 * [Valkey Admin](https://valkey-admin.valkey.io/): An intuitive visual interface to monitor, manage, and interact with your Valkey deployments.
@@ -65,6 +66,7 @@ It's released under the
 * [Migration](migration.md): How to migrate from Redis to Valkey and check Redis compatibility.
 * [Releases and Versioning](releases.md): Valkey's development cycle and version numbering.
 * [Administration](admin.md): Various administration topics.
+
 
 ### Deployment Topology
 * [Replication](replication.md): What you need to know to set up primary-replica replication.
