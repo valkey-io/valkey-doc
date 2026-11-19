@@ -16,8 +16,9 @@ RESP2, although future version may default to RESP3.
 such as: versions, modules loaded, client ID, replication role and so forth.
 The `availability_zone` field only shows up when it is set in the configs,
 see `availability-zone` config for more details, added in Valkey 8.1.
-The `server` field is "valkey" and the `version` field is the Valkey version.
+Starting with Valkey 8.0, the `server` field is "valkey" and the `version` field is the Valkey version.
 When `extended-redis-compatibility` is set to `yes`, they are reported as "redis" and "7.2.4" instead.
+In Valkey 7.2, the `server` field is "redis".
 
 When called without any arguments and its default use of RESP2
 protocol, the reply looks like this:
