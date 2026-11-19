@@ -271,4 +271,4 @@ The logarithm keeps a large sales value from hiding the score.
 ## Combine Text Results with Vector Results
 
 To rank keys by a text query and by vector similarity together, use [`FT.HYBRID`](../commands/ft.hybrid.md).
-See [Score Fusion in FT.HYBRID](search-scoring.md#score-fusion-in-fthybrid).
+See [Score Fusion in Hybrid Search](search-scoring.md#score-fusion-in-hybrid-search).
