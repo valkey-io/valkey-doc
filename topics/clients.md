@@ -102,6 +102,7 @@ It is possible to change the limit at runtime using the `CONFIG SET` command or 
 
 Every client is also subject to a query buffer limit. This is a hard limit that will close the connection when the client query buffer (that is the buffer we use to accumulate commands from the client) reaches 1 GB by default, and is actually only an extreme limit to avoid a server crash in case of client or server software bugs.
 The limit can be changed with the `client-query-buffer-limit` configuration directive, also at runtime using `CONFIG SET`.
+Starting with Valkey 8.0, when authentication is required, a client that has not yet authenticated is limited to 1 MB regardless of this setting.
 
 ## Client Eviction
 
