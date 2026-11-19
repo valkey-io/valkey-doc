@@ -2,7 +2,7 @@
 
 The command performs the following actions:
 
-* It stops processing all the pending commands from normal and pub/sub clients for the given mode. However interactions with replicas will continue normally. Note that clients are formally paused when they try to execute a command, so no work is taken on the server side for inactive clients.
+* It stops processing all the pending commands from normal and pub/sub clients for the given mode. Replica connections are not paused, but in both modes no writes are propagated to replicas while clients are paused. Note that clients are formally paused when they try to execute a command, so no work is taken on the server side for inactive clients.
 * However it returns OK to the caller ASAP, so the `CLIENT PAUSE` command execution is not paused by itself.
 * When the specified amount of time has elapsed, all the clients are unblocked: this will trigger the processing of all the commands accumulated in the query buffer of every client during the pause.
 
@@ -25,7 +25,7 @@ This command is useful as it makes able to switch clients from a Valkey instance
 * Turn one of the replicas into a primary.
 * Reconfigure clients to connect with the new primary.
 
-The recommended mode for client pause is `WRITE`. This mode will stop all replication traffic, can be
+The recommended mode for client pause is `WRITE`. This mode only blocks clients that attempt to write, can be
 aborted with the [`CLIENT UNPAUSE`](client-unpause.md) command, and allows reconfiguring the old primary without risking accepting writes after the
 failover. This is also the mode used during cluster failover.
 
