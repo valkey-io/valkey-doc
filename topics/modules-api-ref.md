@@ -853,7 +853,7 @@ which part of the info is invalid and why.
                                        ValkeyModuleString **argv,
                                        int argc);
 
-**Available since:** 8.0.8
+**Available since:** 8.1.0
 
 [`ValkeyModule_UpdateRuntimeArgs`](#ValkeyModule_UpdateRuntimeArgs) can be used to update the module argument values.
 The function parameter 'argc' indicates the number of updated arguments, and 'argv'
@@ -1594,7 +1594,7 @@ The function always returns `VALKEYMODULE_OK`.
                                                 const char *fmt,
                                                 ...);
 
-**Available since:** 8.0.8
+**Available since:** 9.1.0
 
 Reply with a custom error created from a printf format and arguments.
 
@@ -2117,7 +2117,7 @@ using an ACL user, NULL is returned and errno is set to ENOTSUP
 
     int ValkeyModule_MustObeyClient(ValkeyModuleCtx *ctx);
 
-**Available since:** 8.0.8
+**Available since:** 8.1.0
 
 Returns 1 if commands are arriving from the primary client or AOF client
 and should never be rejected.
@@ -3193,7 +3193,7 @@ See also [`ValkeyModule_ValueLength()`](#ValkeyModule_ValueLength), which return
                                       const char *buf,
                                       size_t len);
 
-**Available since:** 8.0.8
+**Available since:** 9.1.0
 
 Sets the value of a hash field to a non-owning string reference (stringRef)
 pointing to the buffer parameter, which remains owned by the module.
@@ -3215,7 +3215,7 @@ is missing, the key is not a hash, or the update fails.
     int ValkeyModule_HashHasStringRef(ValkeyModuleKey *key,
                                       ValkeyModuleString *field);
 
-**Available since:** 8.0.8
+**Available since:** 9.1.0
 
 Checks if the value of a hash entry is a shared string reference (stringRef).
 The function receives the hash key and field name to perform the check against.
@@ -5645,7 +5645,7 @@ With the following effects:
 
     unsigned int ValkeyModule_ClusterKeySlotC(const char *key, size_t keylen);
 
-**Available since:** 8.0.8
+**Available since:** 9.1.0
 
 Returns the cluster slot of a key, similar to the `CLUSTER KEYSLOT` command.
 This function works even if cluster mode is not enabled.
@@ -6036,7 +6036,7 @@ If the user is able to access the pubsub channel then `VALKEYMODULE_OK` is retur
                                          int dbid,
                                          ValkeyModuleACLLogEntryReason *denial_reason);
 
-**Available since:** 8.0.8
+**Available since:** 9.1.0
 
 Check if the command with its arguments can be executed by the user, according to the
 ACLs associated with it. This function performs a comprehensive ACL check including:
@@ -7993,7 +7993,7 @@ Create an integer config that server clients can interact with via the
                                                    ValkeyModuleConfigApplyFunc applyfn,
                                                    void *privdata);
 
-**Available since:** 8.0.8
+**Available since:** 9.1.0
 
 
 Create an unsigned integer config that server clients can interact with via the
@@ -8102,7 +8102,7 @@ Example:
                                              ValkeyModuleScriptingEngineCtx *engine_ctx,
                                              ValkeyModuleScriptingEngineMethods *engine_methods);
 
-**Available since:** 8.0.8
+**Available since:** 8.1.0
 
 Registers a new scripting engine in the server.
 
@@ -8127,7 +8127,7 @@ message is logged.
     int ValkeyModule_UnregisterScriptingEngine(ValkeyModuleCtx *ctx,
                                                const char *engine_name);
 
-**Available since:** 8.0.8
+**Available since:** 8.1.0
 
 Removes the scripting engine from the server.
 
@@ -8141,7 +8141,7 @@ Returns `VALKEYMODULE_OK`.
 
     ValkeyModuleScriptingEngineExecutionState ValkeyModule_GetFunctionExecutionState( ValkeyModuleScriptingEngineServerRuntimeCtx *server_ctx);
 
-**Available since:** 8.0.8
+**Available since:** 8.1.0
 
 Returns the state of the current function being executed by the scripting
 engine.
@@ -8158,7 +8158,7 @@ a `SCRIPT KILL`, or `FUNCTION KILL`.
     void ValkeyModule_ScriptingEngineDebuggerLog(ValkeyModuleString *msg,
                                                  int truncate);
 
-**Available since:** 8.0.8
+**Available since:** 9.1.0
 
 Function to send string messages to the client during a debug session.
 These messages are buffered in memory, and are only sent to the client when
@@ -8176,7 +8176,7 @@ These messages are buffered in memory, and are only sent to the client when
 
     void ValkeyModule_ScriptingEngineDebuggerLogRespReplyStr(const char *reply);
 
-**Available since:** 8.0.8
+**Available since:** 9.1.0
 
 Function to log a RESP reply C string as debugger output, in a human readable
 format.
@@ -8190,7 +8190,7 @@ the debugger settings, plus a few more chars used as prefix, it gets truncated.
 
     void ValkeyModule_ScriptingEngineDebuggerLogRespReply(ValkeyModuleCallReply *reply);
 
-**Available since:** 8.0.8
+**Available since:** 9.1.0
 
 Function to log a RESP reply as debugger output, in a human readable format.
 
@@ -8203,7 +8203,7 @@ the debugger settings, plus a few more chars used as prefix, it gets truncated.
 
     void ValkeyModule_ScriptingEngineDebuggerFlushLogs(void);
 
-**Available since:** 8.0.8
+**Available since:** 9.1.0
 
 Function to send all debugger messages in the memory buffer written with the
 [`ValkeyModule_ScriptingEngineDebuggerLog`](#ValkeyModule_ScriptingEngineDebuggerLog) function.
@@ -8215,7 +8215,7 @@ Function to send all debugger messages in the memory buffer written with the
     void ValkeyModule_ScriptingEngineDebuggerProcessCommands(int *client_disconnected,
                                                              ValkeyModuleString **err);
 
-**Available since:** 8.0.8
+**Available since:** 9.1.0
 
 Function used to process debugger commands sent by the client.
 
@@ -8622,7 +8622,7 @@ There is no guarantee that this info is always available, so this may return -1.
                                                   size_t len,
                                                   unsigned int flags);
 
-**Available since:** 8.0.8
+**Available since:** 9.1.0
 
 This function verifies that the user is authorized to carry out the operations indicated in the
 `flags` parameter on keys that begin with the specified prefix.
