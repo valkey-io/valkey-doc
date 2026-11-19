@@ -1,4 +1,4 @@
-Atomically sets fields at one or more exact paths in a [Path Hash](../topics/path-hashes.md).
+Atomically sets fields at one or more exact paths.
 Each group consists of a path followed by `FIELDS`, a positive pair count, and that many field-value pairs.
 The entire argument list is validated before any writes are applied.
 The command creates missing keys and paths as needed.
@@ -8,7 +8,7 @@ For a conditional write at one path, see [`PHSET`](phset.md).
 
 ## Reply
 
-`OK` in RESP2 and RESP3.
+`OK`.
 
 ## Examples
 

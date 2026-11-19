@@ -42,7 +42,7 @@ Checking for all the available categories is as simple as:
 ```
 
 The `pathhash` category is available since Valkey 9.2.
-Use `ACL CAT pathhash` to list [Path Hash](../topics/path-hashes.md) commands and `+@pathhash` in an ACL rule to grant them.
+Use `ACL CAT pathhash` to list Path Hash commands and `+@pathhash` in an ACL rule to grant them.
 
 Then we may want to know what commands are part of a given category:
 

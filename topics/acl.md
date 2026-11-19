@@ -302,7 +302,7 @@ The following is a list of command categories and their meanings:
   key, or metadata will also have the `write` category. Commands that only read
   the keyspace, key, or metadata will have the `read` category.
 * **list** - Data type: lists related.
-* **pathhash** - Data type: [Path Hash](path-hashes.md) commands (since Valkey 9.2).
+* **pathhash** - Data type: Path Hash commands (since Valkey 9.2).
 * **pubsub** - PubSub-related commands.
 * **read** - Reading from keys (values or metadata). Note that commands that don't
   interact with keys, will not have either `read` or `write`.

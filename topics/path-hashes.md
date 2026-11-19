@@ -3,8 +3,6 @@ title: "Path Hashes"
 description: Store field-value records at byte paths and query them by prefix
 ---
 
-Available since Valkey 9.2.
-
 A Path Hash stores multiple records under one Valkey key.
 Each record has a **path** and a map of **fields** to **values**.
 For example, a routing table might store a default backend at `app` and a different backend at `app/api`.
@@ -58,10 +56,10 @@ Counting with a nonempty prefix traverses the matching paths.
 * [`PHPATHSCAN`](../commands/phpathscan.md) lists paths in byte lexicographic order.
   Its `COUNT` sets a maximum page size, and its cursor is an opaque string that resumes after the last path returned.
 * [`PHSCAN`](../commands/phscan.md) scans field-value pairs at a single exact path.
-  It uses a numeric cursor like [`HSCAN`](../commands/hscan.md), supports glob filtering of field names with `MATCH`, and treats `COUNT` as a work hint.
+  It uses a numeric cursor like [`HSCAN`](../commands/hscan.md), supports glob-style filtering of field names with `MATCH`, and treats `COUNT` as a work hint.
 
 Start both scans with `0`, reuse each returned cursor with the same key and filter, and stop when the returned cursor is `0`.
-Neither scan takes a snapshot, so changes during iteration can affect which entries are returned.
+Neither scan takes a snapshot, so changes during iteration can affect which paths or fields are returned.
 
 ## Delete records and expire keys
 
@@ -79,7 +77,7 @@ Use a Path Hash when records have their own fields and you need to query related
 For example, a routing table can find a fallback record among the ancestors of a request path, and a prefix cache index can store worker placement metadata at each cached prefix.
 Use a [Hash](hashes.md) when one flat map of fields is enough, or a [Sorted Set](sorted-sets.md) when you need score-based ordering or ranges.
 
-## Server integration
+## Path Hash in other features
 
 [`TYPE`](../commands/type.md) and [`OBJECT ENCODING`](../commands/object-encoding.md) report `pathhash`.
 Use `SCAN TYPE pathhash` to discover keys and the [ACL](acl.md) category `@pathhash` to control access to Path Hash commands.

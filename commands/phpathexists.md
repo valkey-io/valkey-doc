@@ -1,10 +1,10 @@
-Checks whether the exact `path` has a field map in a [Path Hash](../topics/path-hashes.md).
+Checks whether the exact `path` has a field map.
 A path that is only a prefix of a stored path does not count as a match.
 Use [`PHPATHCOUNT`](phpathcount.md) with `PREFIX` to count paths below a prefix.
 
 ## Reply
 
-Integer in RESP2 and RESP3: `1` if the exact path exists, or `0` if the key or path does not exist.
+Integer: `1` if the exact path exists, or `0` if the key or path does not exist.
 
 ## Examples
 

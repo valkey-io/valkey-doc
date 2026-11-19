@@ -1,5 +1,5 @@
-Incrementally scans field-value pairs at the exact `path` in a [Path Hash](../topics/path-hashes.md).
-`MATCH` filters field names using a glob pattern.
+Incrementally scans field-value pairs at the exact `path`.
+`MATCH` filters field names using a glob-style pattern with the same syntax as [`KEYS`](keys.md).
 `COUNT` is a positive work hint and defaults to 10.
 A call may return more or fewer pairs than requested, or an empty page with a nonzero cursor.
 Field order is unspecified.
@@ -10,7 +10,7 @@ Use [`PHPATHSCAN`](phpathscan.md) to iterate over path names.
 
 ## Reply
 
-Two-element array in RESP2 and RESP3:
+Two-element array with the following elements:
 
 * String: the next cursor as an unsigned 64-bit number, or `"0"` when the scan is complete.
 * Array of strings: alternating field names and values.

@@ -1,4 +1,4 @@
-Sets one or more field-value pairs at the exact `path` in a [Path Hash](../topics/path-hashes.md).
+Sets one or more field-value pairs at the exact `path`.
 The `FIELDS` count must be positive and match the number of pairs supplied.
 A successful write creates the key or path if needed and overwrites existing values.
 If a field is supplied more than once, the last value wins.
@@ -13,7 +13,7 @@ If it fails, no fields are changed and no key or path is created.
 
 ## Reply
 
-One of the following in RESP2 and RESP3:
+One of the following:
 
 * `OK`: the fields were written.
 * Null: the condition was not met.

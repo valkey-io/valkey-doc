@@ -1,10 +1,11 @@
-Returns field values from one or more exact paths in a [Path Hash](../topics/path-hashes.md).
+Returns field values from one or more exact paths.
 Each group consists of a path followed by `FIELDS`, a positive field count, and that many field names.
 
 ## Reply
 
-Flat array in RESP2 and RESP3, in the order of the path groups and then of the fields within each group.
-Each entry is a string, or null if the corresponding field, path, or key does not exist.
+Flat array with one element per requested field, in the order of the path groups and then of the fields within each group.
+Each element is a string, or null if the field does not exist.
+If the key or a path does not exist, every field requested from it is null.
 
 ## Examples
 

@@ -1,4 +1,4 @@
-Deletes the specified fields at the exact `path` in a [Path Hash](../topics/path-hashes.md).
+Deletes the specified fields at the exact `path`.
 Missing fields are ignored.
 If no fields are specified, the command deletes the whole path and its field map.
 Deleting the last field removes the path.
@@ -8,7 +8,7 @@ To delete an exact path or a whole subtree, see [`PHPATHDEL`](phpathdel.md).
 
 ## Reply
 
-Integer in RESP2 and RESP3.
+Integer:
 With field arguments, the reply is the number of fields removed.
 Without field arguments, it is `1` if the path was removed or `0` otherwise.
 A missing key or path returns `0` in both forms.

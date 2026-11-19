@@ -71,7 +71,7 @@ following table:
     e     Evicted events (events generated when a key is evicted for maxmemory)
     m     Key miss events (events generated when a key that doesn't exist is accessed)
     n     New key events (Note: not included in the 'A' class)
-    A     Alias for "g$lshztxedp" in Valkey 9.2, so that "AKE" enables all events except "m" and "n".
+    A     Alias for "g$lshztxedp", so that "AKE" enables all events except "m" and "n".
 
 At least `K` or `E` should be present in the string, otherwise no event
 will be delivered regardless of the rest of the string.
