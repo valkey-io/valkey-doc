@@ -4,8 +4,6 @@
     "repo":"https://github.com/valkey-io/valkey-glide-ruby",
     "website": "https://glide.valkey.io/getting-started/quickstart/?lang=ruby",
     "installation": "gem install valkey-glide-rb",
-    "version":"v1.0.0",
-    "version_released":"2026-08-13",
     "language":"ruby",
     "license": "Apache-2.0",
     "read_from_replica": true,
