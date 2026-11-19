@@ -46,8 +46,6 @@ via `telnet`.
 Because of security concerns, no administrative commands are logged
 by `MONITOR`'s output, and credentials passed to [`AUTH`](auth.md) and [`HELLO`](hello.md) are shown as `"(redacted)"`.
 
-Furthermore, the command `QUIT` is also not logged.
-
 ## Cost of running MONITOR
 
 Because `MONITOR` streams back **all** commands, its use comes at a cost.
