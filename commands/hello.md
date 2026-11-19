@@ -16,15 +16,17 @@ RESP2, although future version may default to RESP3.
 such as: versions, modules loaded, client ID, replication role and so forth.
 The `availability_zone` field only shows up when it is set in the configs,
 see `availability-zone` config for more details, added in Valkey 8.1.
+The `server` field is "valkey" and the `version` field is the Valkey version.
+When `extended-redis-compatibility` is set to `yes`, they are reported as "redis" and "7.2.4" instead.
 
 When called without any arguments and its default use of RESP2
 protocol, the reply looks like this:
 
     > HELLO
      1) "server"
-     2) "redis"
+     2) "valkey"
      3) "version"
-     4) "255.255.255"
+     4) "9.2.0"
      5) "proto"
      6) (integer) 2
      7) "id"
@@ -42,8 +44,8 @@ Clients that want to handshake using the RESP3 mode need to call the `HELLO`
 command and specify the value "3" as the `protover` argument, like so:
 
     > HELLO 3
-    1# "server" => "redis"
-    2# "version" => "7.2.4"
+    1# "server" => "valkey"
+    2# "version" => "9.2.0"
     3# "proto" => (integer) 3
     4# "id" => (integer) 10
     5# "mode" => "standalone"
