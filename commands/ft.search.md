@@ -22,7 +22,8 @@ FT.SEARCH <index> <query>
 ```
 
 - `<index>` (required): This index name you want to query.
-- `<query>` (required): The query string, see [Search - query language](../topics/search-query.md) for details, including KNN queries and the [`VECTOR_RANGE` matcher](../topics/search-query.md#vector-range-match).
+- `<query>` (required): The query string, see [Search - query language](../topics/search-query.md) for details, including KNN queries
+  and the [`VECTOR_RANGE` matcher](../topics/search-query.md#vector-range-match).
 - `ALLSHARDS` (Optional): If specified, the command is terminated with a timeout error if a valid response from all shards is not received within the timeout interval. This is the default when `search.enable-partial-results` is `no`; otherwise `SOMESHARDS` is the default.
 - `CONSISTENT` (Optional): If specified, the command is terminated with an error if the cluster is in an inconsistent state. This is the default when `search.enable-consistent-results` is `yes`; otherwise `INCONSISTENT` is the default.
 - `DIALECT 2` (optional): Specifies your dialect. The only supported dialect is 2, which is also the default.

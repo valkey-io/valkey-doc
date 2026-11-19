@@ -26,7 +26,7 @@ Valkey Search measures relevance in three ways:
 
 - Text and tag clauses get a relevance score. A higher score is a better match. See [Text Fields](#text-fields).
 - For KNN queries whose filter has no text or tag clause, the vector distance measures relevance. A smaller distance is a better match. See [Vector Fields](#vector-fields).
-- `FT.HYBRID` fuses the results of a text search and a vector search into one score. See [Score Fusion in FT.HYBRID](#score-fusion-in-fthybrid).
+- `FT.HYBRID` fuses the results of a text search and a vector search into one score. See [Score Fusion in Hybrid Search](#score-fusion-in-hybrid-search).
 
 The clauses of an `FT.SEARCH` query select the score measure, and that measure sets the default sort order:
 
@@ -271,7 +271,7 @@ Valkey Search computes the score of a key from the bottom of the tree to the top
 - An OR of clauses (`shoes | jacket`) adds the scores of the clauses that match the key. A clause that does not match the key contributes nothing.
 - A negated clause (`-socks`) contributes 0.
 
-# Score Fusion in FT.HYBRID
+# Score Fusion in Hybrid Search
 
 The [`FT.HYBRID`](../commands/ft.hybrid.md) command runs two searches on one index: a text, tag, or numeric search and a vector search.
 It then fuses the two result lists into one list.
