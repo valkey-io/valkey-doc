@@ -100,7 +100,8 @@ It is possible to change the limit at runtime using the `CONFIG SET` command or 
 
 ## Query Buffer Hard Limit
 
-Every client is also subject to a query buffer limit. This is a non-configurable hard limit that will close the connection when the client query buffer (that is the buffer we use to accumulate commands from the client) reaches 1 GB, and is actually only an extreme limit to avoid a server crash in case of client or server software bugs.
+Every client is also subject to a query buffer limit. This is a hard limit that will close the connection when the client query buffer (that is the buffer we use to accumulate commands from the client) reaches 1 GB by default, and is actually only an extreme limit to avoid a server crash in case of client or server software bugs.
+The limit can be changed with the `client-query-buffer-limit` configuration directive, also at runtime using `CONFIG SET`.
 
 ## Client Eviction
 
