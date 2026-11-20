@@ -43,6 +43,15 @@ For more information, see:
 * [Overview of Hashes](hashes.md)
 * [Hashes command reference](../commands/#hash)
 
+## Path Hashes
+
+[Path Hashes](path-hashes.md) store a map of field-value pairs at each path under a single key.
+They support exact-path lookups, ancestor prefix matching, and operations on paths that share a byte prefix.
+For more information, see:
+
+* [Overview of Path Hashes](path-hashes.md)
+* [Path Hash command reference](../commands/#pathhash)
+
 ## Sorted sets
 
 [Sorted Sets](sorted-sets.md) are collections of unique strings that maintain order by each string's associated score.
