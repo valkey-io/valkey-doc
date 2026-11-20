@@ -59,6 +59,7 @@ Counting with a nonempty prefix traverses the matching paths.
   It uses a numeric cursor like [`HSCAN`](../commands/hscan.md), supports glob-style filtering of field names with `MATCH`, and treats `COUNT` as a work hint.
 
 Start both scans with `0`, reuse each returned cursor with the same key and filter, and stop when the returned cursor is `0`.
+For `PHSCAN`, also keep the path the same across calls.
 Neither scan takes a snapshot, so changes during iteration can affect which paths or fields are returned.
 
 ## Delete records and expire keys

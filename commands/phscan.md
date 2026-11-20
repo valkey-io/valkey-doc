@@ -4,7 +4,7 @@ Incrementally scans field-value pairs at the exact `path`.
 A call may return more or fewer pairs than requested, or an empty page with a nonzero cursor.
 Field order is unspecified.
 
-Start with cursor `0` and continue with the returned cursor using the same key and path until the cursor is `0` again.
+Start with cursor `0` and continue with the returned cursor using the same key, path, and `MATCH` pattern until the cursor is `0` again.
 The cursor and iteration behavior follow [`HSCAN`](hscan.md).
 Use [`PHPATHSCAN`](phpathscan.md) to iterate over path names.
 
