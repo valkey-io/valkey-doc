@@ -3,21 +3,20 @@ title: Administration
 description: Advice for configuring and managing Valkey in production
 ---
 
-## Valkey setup tips
+## Valkey administration tips
 
 ### Linux
 
 * Deploy Valkey using the Linux operating system.
   Valkey is also regularly tested on macOS and FreeBSD, and from time to time on other OpenBSD, NetBSD, DragonFlyBSD and Solaris-derived systems.
   However, Linux is where most of the stress testing is performed, and where most production deployments are run.
+  For installation steps, see the [Installation guide](installation.md).
 
-* Set the Linux kernel overcommit memory setting to 1. Add `vm.overcommit_memory = 1` to `/etc/sysctl.conf`. Then, reboot or run the command `sysctl vm.overcommit_memory=1` to activate the setting. See [FAQ: Background saving fails with a fork() error on Linux?](faq.md#background-saving-fails-with-a-fork-error-on-linux) for details. 
-
-* To ensure the Linux kernel feature Transparent Huge Pages does not impact Valkey memory usage and latency, run the command: `echo never > /sys/kernel/mm/transparent_hugepage/enabled` to disable it. See [Latency Diagnosis - Latency induced by transparent huge pages](latency.md#latency-induced-by-transparent-huge-pages) for additional context. 
+* Disable Transparent Huge Pages and set `vm.overcommit_memory = 1`. See [Recommended Linux settings](installation.md#recommended-linux-settings).
 
 ### Memory
 
-* Ensured that swap is enabled and that your swap file size is equal to amount of memory on your system. If Linux does not have swap set up, and your Valkey instance accidentally consumes too much memory, Valkey can crash when it is out of memory, or the Linux kernel OOM killer can kill the Valkey process. When swapping is enabled, you can detect latency spikes and act on them.
+* Ensure that swap is enabled and that your swap file size is equal to amount of memory on your system. If Linux does not have swap set up, and your Valkey instance accidentally consumes too much memory, Valkey can crash when it is out of memory, or the Linux kernel OOM killer can kill the Valkey process. When swapping is enabled, you can detect latency spikes and act on them.
 
 * Set an explicit `maxmemory` option limit in your instance to make sure that it will report errors instead of failing when the system memory limit is near to be reached. Note that `maxmemory` should be set by calculating the overhead for Valkey, other than data, and the fragmentation overhead. So if you think you have 10 GB of free memory, set it to 8 or 9.
 
@@ -25,7 +24,7 @@ description: Advice for configuring and managing Valkey in production
 
 * See the `LATENCY DOCTOR` and `MEMORY DOCTOR` commands to assist in troubleshooting.
 
-### Imaging
+### Process management
 
 * When running under daemontools, use `daemonize no`.
 
@@ -39,7 +38,7 @@ description: Advice for configuring and managing Valkey in production
 
 ### Security
 
-* By default, Valkey does not require any authentication and listens to all the network interfaces. This is a big security issue if you leave Valkey exposed on the internet or other places where attackers can reach it. Please check our [security page](security.md) and the [quick start](quickstart.md) for information about how to secure Valkey.
+* By default, Valkey does not require any authentication and listens on all network interfaces. Never expose an unsecured instance to the internet or other networks attackers can reach. See [Securing Valkey](installation.md#securing-valkey) and the [Security](security.md) page.
 
 ## Running Valkey on EC2
 
