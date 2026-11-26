@@ -900,6 +900,24 @@ Replicas exchange messages when the primary is failing in order to establish a (
 the replica with the most updated replication offset is at rank 0, the second most updated at rank 1, and so forth.
 In this way the most updated replicas try to get elected before others.
 
+Starting from Valkey 9.2, replicas with the same replication offset are ranked using the `cluster-replica-priority` configuration, set on each replica node.
+A replica with a lower `cluster-replica-priority` value gets a better rank and starts its election earlier than replicas with a higher value.
+If both the replication offset and the priority are equal, the replicas are ordered by node ID.
+In summary, replicas are ranked by:
+
+1. Replication offset (the most updated replica first).
+2. `cluster-replica-priority` (the lowest value first).
+3. Node ID.
+
+The default value of `cluster-replica-priority` is 0. A replica advertises its priority to the other nodes through the cluster bus,
+and a replica that doesn't advertise a priority is treated as having priority 0.
+The value can be changed at runtime using `CONFIG SET`, and a non-zero value is persisted in the `nodes.conf` file.
+
+The priority is only a tie-breaker. It is not consulted when the replication offsets differ, so under heavy write traffic, where the offsets
+of the replicas are likely to differ, the replication offset remains the deciding factor and the priority may have no effect.
+It is most useful in clusters with little write traffic, for example to prefer replicas located in the same availability zone as the failed primary,
+so that the new primary stays close to its clients.
+
 Rank order is not strictly enforced; if a replica of higher rank fails to be
 elected, the others will try shortly.
 
