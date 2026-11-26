@@ -8,5 +8,5 @@ Integer: the number of commands returned by `COMMAND`.
 
 ```
 127.0.0.1:6379> COMMAND COUNT
-(integer) 241
+(integer) 274
 ```

@@ -26,7 +26,7 @@ Here's an example configuration for a user
 
 ```
 127.0.0.1:6379> ACL SETUSER sample on nopass +GET allkeys &* (+SET ~key2)
-"OK"
+OK
 127.0.0.1:6379> ACL GETUSER sample
 1) "flags"
 2) 1) "on"

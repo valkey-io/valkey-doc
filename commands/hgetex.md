@@ -27,7 +27,7 @@ Array of values associated with the given fields, in the same order as they are 
 ```
 127.0.0.1:6379> HSET myhash f1 v1 f2 v2 f3 v3
 (integer) 3
-27.0.0.1:6379> HGETEX myhash EX 10 FIELDS 2 f2 f3
+127.0.0.1:6379> HGETEX myhash EX 10 FIELDS 2 f2 f3
 1) "v2"
 2) "v3"
 127.0.0.1:6379> HTTL myhash FIELDS 3 f1 f2 f3

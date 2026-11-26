@@ -12,9 +12,9 @@ Any of the following:
 
 ```
 127.0.0.1:6379> ACL SETUSER VIRGINIA +SET ~*
-"OK"
+OK
 127.0.0.1:6379> ACL DRYRUN VIRGINIA SET foo bar
-"OK"
+OK
 127.0.0.1:6379> ACL DRYRUN VIRGINIA GET foo
 "User VIRGINIA has no permissions to run the 'get' command"
 ```
