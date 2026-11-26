@@ -69,6 +69,76 @@ system-wide setting with the following commands:
 * `ulimit -Sn 100000 # This will only work if hard limit is big enough.`
 * `sysctl -w fs.file-max=100000`
 
+### Reserved Connections for Priority Clients
+
+Starting with Valkey 9.2, you can reserve a part of `maxclients` capacity for critical administrative traffic, such as control plane or monitoring connections, so that operators are not locked out when `maxclients` reaches its limit.
+
+Two configurations control this:
+
+* `priority-subnets` is a comma- or space-separated list of IPv4 or IPv6 addresses or CIDR subnets.
+Connections whose source address matches an entry are considered priority clients.
+The default is an empty `""` string (disabled).
+* `maxclients-reserved` is the number of guaranteed connections, within `maxclients`, for priority clients.
+The default is `0` (disabled).
+
+The reservation takes effect only when both configurations are set. Admission then follows these rules:
+
+* The total number of connections never exceeds `maxclients`.
+* Connections that are not priority clients are capped at `maxclients` minus `maxclients-reserved`.
+Cluster bus connections, and replica connections that don't come from a priority subnet, count toward this cap.
+* Priority clients can use any free slot up to `maxclients`.
+
+For example:
+
+```
+maxclients 10000
+priority-subnets "192.168.1.0/24 10.0.0.0/8"
+maxclients-reserved 128
+```
+
+In this configuration example, ordinary clients are capped at 9,872 connections (10000 - 128), and clients from `192.168.1.0/24` or `10.0.0.0/8` can always open at least 128 connections, and up to 10,000 if the slots are free.
+
+Both configurations can be changed at runtime using the [`CONFIG SET`](../commands/config-set.md) command, the changes apply to new connections only.
+If you set or increase `maxclients-reserved` while ordinary clients already hold the slots being reserved, Valkey doesn't evict them.
+Instead, it rejects new incoming normal connections until enough existing ones close.
+
+Priority clients are also served ahead of ordinary clients by the event loop, as described in [Event Loop Prioritization](#event-loop-prioritization).
+
+If you want to monitor priority clients, use the following:
+
+* `connected_priority_clients` in [`INFO clients`](../commands/info.md) reports
+  the number of connected priority clients.
+* `rejected_priority_connections` in `INFO stats` counts priority connections rejected because `maxclients` was reached.
+These are also counted in `rejected_connections`.
+* Priority connections show the `H` flag in [`CLIENT LIST`](../commands/client-list.md).
+
+## Event Loop Prioritization
+
+Starting with Valkey 9.2, Valkey processes events from system-critical internal connections ahead of ordinary client traffic. This keeps the cluster bus heartbeats, replication streams, and slot migration links responsive under heavy command workloads, helping to prevent false failovers.
+
+The following connections are high priority:
+
+* Cluster bus links.
+* Replication links, on both the primary and the replica side.
+* Slot migration links.
+* Clients connecting from `priority-subnets` (see [Reserved Connections for Priority Clients](#reserved-connections-for-priority-clients)).
+
+At the start of each event loop cycle, Valkey processes pending high-priority events first.
+When a batch of ordinary client events takes several milliseconds, for example with heavy pipelining or multi-key commands, Valkey also interrupts the batch periodically to drain pending high-priority events.
+
+The `priority-preemptive-poll-interval-us` configuration sets the maximum time, in microseconds, between these checks while processing ordinary events with the default being `2000` (2 milliseconds).
+Tuning guidelines:
+
+* Smaller values, such as `500` to `1000`, give tighter latency bounds for cluster heartbeats and replication during client traffic bursts.
+* Larger values, such as `5000` to `10000`, favor client throughput.
+* `0` disables mid-batch preemption.
+High-priority events are then processed only at the start of each event loop cycle.
+
+Event loop prioritization requires the epoll (Linux) or kqueue (macOS and BSD) event multiplexer.
+On other platforms, Valkey logs a notice at startup and processes all events without prioritization.
+
+The `eventloop_priority_*` fields in [`INFO`](../commands/info.md) report how much time Valkey spends on high-priority events.
+
 ## Output Buffer Limits
 
 Valkey needs to handle a variable-length output buffer for every client, since
