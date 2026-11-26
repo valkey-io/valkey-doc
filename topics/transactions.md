@@ -24,8 +24,10 @@ operations are performed. When using the
 to use a single write(2) syscall to write the transaction on disk.
 However if the Valkey server crashes or is killed by the system administrator
 in some hard way it is possible that only a partial number of operations
-are registered. Valkey will detect this condition at restart, and will exit with an error.
-Using the `valkey-check-aof` tool it is possible to fix the
+are registered. Valkey will detect this condition at restart.
+With `aof-load-truncated yes` (the default), Valkey logs a warning, removes the incomplete transaction from the end of the AOF, and starts.
+With `aof-load-truncated no`, Valkey exits with an error instead.
+In that case, using the `valkey-check-aof` tool it is possible to fix the
 append only file that will remove the partial transaction so that the
 server can start again.
 
