@@ -4,8 +4,6 @@
     "repo":"https://github.com/valkey-io/valkey-glide-php",
     "website": "https://glide.valkey.io/getting-started/quickstart/?lang=php",
     "installation": "pie install valkey-io/valkey-glide-php",
-    "version":"v1.1.2",
-    "version_released":"2026-07-03",
     "language":"php",
     "license": "Apache-2.0",
     "read_from_replica": true,
