@@ -873,6 +873,22 @@ A replica starts an election when the following conditions are met:
 * The primary was serving a non-zero number of slots.
 * The replica replication link was disconnected from the primary for no longer than a given amount of time, in order to ensure the promoted replica's data is reasonably fresh. This time is user configurable.
 
+A replica can also be prevented from starting an automatic election by the `cluster-replica-no-failover` configuration.
+It accepts the following values:
+
+* `no` (default): the replica can take part in automatic failovers.
+* `yes`: the replica never performs an automatic failover.
+* `if-empty`: the replica doesn't perform an automatic failover while its replication offset is 0, meaning it has never received any data from its primary.
+  This protects against promoting a replica that has not completed its initial synchronization, for example a newly added replica,
+  which would result in the loss of all the data of the shard.
+  As soon as the replica has received data from its primary, it can take part in automatic failovers.
+
+The `if-empty` value is available since Valkey 9.2. It trades availability for data safety:
+if the only remaining replica of a shard is empty, no automatic failover happens and the shard stays unavailable until the primary
+returns or the operator intervenes.
+A replica that has completed a full synchronization with an empty primary has a non-zero replication offset, so it is not considered empty.
+This setting only affects automatic failovers. A manual failover requested by the operator, for example using `CLUSTER FAILOVER`, is still allowed.
+
 In order to be elected, the first step for a replica is to increment its `currentEpoch` counter, and request votes from primary instances.
 
 Votes are requested by the replica by broadcasting a `FAILOVER_AUTH_REQUEST` packet to every primary node of the cluster. Then it waits for a maximum time of two times the `NODE_TIMEOUT` for replies to arrive (but always for at least 2 seconds).
