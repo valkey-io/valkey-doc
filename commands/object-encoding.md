@@ -37,6 +37,10 @@ Valkey objects can be encoded in different ways:
 
   - `stream`, encoded as a radix tree of listpacks.
 
+* Path Hashes can be encoded as:
+
+    - `pathhash`, a radix tree of paths with a field-value map at each stored path.
+
 All the specially encoded types are automatically converted to the general type once you perform an operation that makes it impossible for Valkey to retain the space saving encoding.
 
 ## Reply
